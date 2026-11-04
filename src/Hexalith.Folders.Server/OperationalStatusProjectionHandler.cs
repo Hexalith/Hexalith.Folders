@@ -34,7 +34,7 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
                 cancellationToken.ThrowIfCancellationRequested();
                 return DomainProjectionHandlerResult.Completed();
             }
-            OperationalStatusEvent[] events = Read(request);
+            OperationalStatusEvent[] events = Read(request, cancellationToken);
             var result = await writer.ApplyAsync(request.TenantId, request.AggregateId, dispatchId,
                 events, cancellationToken).ConfigureAwait(false);
             return ReadModelBatchProjectionResultMapper.Map(result);
@@ -64,7 +64,7 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         cancellationToken.ThrowIfCancellationRequested();
         if (OrganizationAclOperationalSource.IsCompletePrefix(request))
             throw new InvalidOperationException("Organization ACL source has no Folder operations; use bounded shared partition transport.");
-        OperationalStatusEvent[] events = Read(request);
+        OperationalStatusEvent[] events = Read(request, cancellationToken);
         // The SDK verifies original global positions against the sealed capture before invoking us.
         // Domain folding verifies the contiguous 1..N owner prefix, independently of later appends.
         long capturedSequence = events.LongLength;
@@ -134,8 +134,10 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         int bytes = 0;
         foreach (ReadModelBatchOperation operation in plan.Operations)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             SharedProjectionMutation mutation = SharedProjectionMutation.FromOperation(operation);
             int size = JsonSerializer.SerializeToUtf8Bytes(mutation).Length;
+            cancellationToken.ThrowIfCancellationRequested();
             if (page.Count > 0 && (page.Count == 16 || bytes + size > 32 * 1024))
             {
                 chunks.Add(JsonSerializer.SerializeToUtf8Bytes(page));
@@ -145,7 +147,9 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
             page.Add(mutation);
             bytes += size;
         }
+        cancellationToken.ThrowIfCancellationRequested();
         if (page.Count > 0) chunks.Add(JsonSerializer.SerializeToUtf8Bytes(page));
+        cancellationToken.ThrowIfCancellationRequested();
         return chunks;
     }
     /// <inheritdoc/>
@@ -160,10 +164,12 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         ArgumentNullException.ThrowIfNull(partitions);
         await foreach (var partition in partitions.ReadAllAsync(cancellationToken).ConfigureAwait(false))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             SharedProjectionMutation[] operations = JsonSerializer.Deserialize<SharedProjectionMutation[]>(partition.State.Span)
                 ?? throw new InvalidOperationException("Operational rebuild partition is unreadable.");
             foreach (SharedProjectionMutation operation in operations)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (operation.Kind != ReadModelBatchOperationKind.Write)
                     throw new InvalidOperationException("Unexpected operational rebuild operation.");
                 JsonObject value = JsonNode.Parse(operation.CanonicalValue)!.AsObject();
@@ -182,11 +188,15 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
             }
         }
     }
-    private static OperationalStatusEvent[] Read(ProjectionRequest request)
+    private static OperationalStatusEvent[] Read(ProjectionRequest request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         if (request.Domain != FoldersServerModule.DomainName || request.Events is null || request.Events.Length == 0)
             throw new InvalidOperationException("Invalid operational projection input.");
-        return request.Events.Select(OperationalStatusEventReader.ReadEffective).ToArray();
+        return request.Events.Select(item =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return OperationalStatusEventReader.ReadEffective(item);
+        }).ToArray();
     }
 }

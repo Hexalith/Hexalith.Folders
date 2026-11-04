@@ -604,6 +604,8 @@ src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusIntegrity.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusKeys.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusReceipt.cs
+src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusStateFold.cs
+src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTaskCompletion.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusUnavailableException.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusViewBinding.cs
@@ -1266,7 +1268,9 @@ tests/Hexalith.Folders.Server.Tests/SourceHeadBoundaryProxy.cs
 tests/Hexalith.Folders.Server.Tests/Task36ExistingHostedServiceObservationTests.cs
 tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs
 tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs
+tests/Hexalith.Folders.Server.Tests/Task36HostingStartupControlTests.cs
 tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs
+tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs
 tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs
 tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceCleanupStatusEndpointTests.cs
@@ -1387,6 +1391,8 @@ tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj
 tests/Hexalith.Folders.Tests/Observability/FolderAuditObservationTests.cs
 tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
 tests/Hexalith.Folders.Tests/Projections/FolderList/FolderRepositoryBindingProjectionReplayTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/CancelingOperationalClock.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/CancelingOperationalEvents.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/ObservedOperationalBatchStore.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs
@@ -1397,6 +1403,8 @@ tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFold
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReviewThreeTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundFiveTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/RoundFiveOperationalHistory.cs
 tests/Hexalith.Folders.Tests/Projections/SemanticIndexing/SemanticIndexingBridgeProjectionTests.cs
 tests/Hexalith.Folders.Tests/Projections/TenantAccess/FolderTenantAccessHandlerTests.cs
 tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityBoundaryTests.cs
@@ -1461,6 +1469,7 @@ tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusDiagnosticLogger.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/ThrowingLifecycleStatusReadModel.cs
+tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceCleanupStatusQueryHandlerTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLifecycleProjectionDeterminismTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLockStatusProjectionTests.cs
@@ -1505,7 +1514,9 @@ tests/tools/Task36FoldObserver/ExistingHostedServiceObservation.cs
 tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs
 tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs
 tests/tools/Task36FoldObserver/FoldObservationSink.cs
+tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs
 tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs
+tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs
 tests/tools/Task36FoldObserver/StartupHook.cs
 tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
 tests/tools/Task36FoldObserver/Task36HostingStartup.cs

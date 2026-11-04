@@ -1,0 +1,209 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "run-date": "2026-11-04",
+      "run-time": "10:51:13",
+      "errors": "0",
+      "failed": "0",
+      "passed": "24",
+      "skipped": "0",
+      "time": "3.459",
+      "total": "24"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.213",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "ObservationMustNotCreateARequestActivityWhenExistingCreationIsDisabled",
+      "case_ordinal": 1,
+      "display_name_sha256": "d9091e8b188c83293cc98ea2a599141e677379e2eed77bef3d9a236a26f87929"
+    },
+    {
+      "result": "Pass",
+      "time": "0.009",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "ConflictingExistingSpansMustNeverJoinThroughAnOtherwiseEqualFrameworkId",
+      "case_ordinal": 2,
+      "display_name_sha256": "24752df42d85da70b3e3af64d97df5c14fe25421b97e497b707c1baeb62522e5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "MissingAndRelatedOnlyIdsShouldStayUnavailableWhileAnExactFrameworkIdCanMatch",
+      "case_ordinal": 3,
+      "display_name_sha256": "533361e67f668e94bec7d7d41b7cb08a5f4ba81ada364c95905539a5982a4893"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "DuplicateIdentityShouldReportAmbiguityInsteadOfChoosingARequest",
+      "case_ordinal": 4,
+      "display_name_sha256": "475d7dda2c88c47b8a126e987823c92524dc8437e46a11b915f5ffbd044aa4c5"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "LateNotificationPredicateMustNotEnableActivityCreation",
+      "case_ordinal": 5,
+      "display_name_sha256": "147466200ddbb4bf2a079c6cdcea71879f0d6644da73ca6e7e60105a10a6ec01"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "LateNotificationPredicateMustNotEnableActivityCreation",
+      "case_ordinal": 6,
+      "display_name_sha256": "29bf1cf0e7a3a54478bd466718136820013db5bc699c8138c6998f071b15c55f"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "LateNotificationPredicateMustNotEnableActivityCreation",
+      "case_ordinal": 7,
+      "display_name_sha256": "5617d9bf06be2a15b6db52f7d8ebdc5d35d529cca43c085670b1b5f605663e1d"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "LateNotificationPredicateMustNotEnableActivityCreation",
+      "case_ordinal": 8,
+      "display_name_sha256": "e215ebbcaf2a40f00a580b0a5c62ff9eede19b442a4c68859401c6484c474c89"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "OverflowShouldBoundIdentitiesAndRefuseJoinsUntilTheObservedRequestsDrain",
+      "case_ordinal": 9,
+      "display_name_sha256": "50fdc88481efdeea4a3f93853f24e50ee86ec1ade740e3f3338aa227c5726b2d"
+    },
+    {
+      "result": "Pass",
+      "time": "1.05",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests",
+      "method": "RealHeldFrameworkRequestShouldKeepTheSameOpaqueIdentityThroughStoppingAndDrain",
+      "case_ordinal": 10,
+      "display_name_sha256": "9ec3f9cafca7c2c727b77e8c18618a63151ad641549b7ef6159e7774a334145f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.002",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 11,
+      "display_name_sha256": "e3478d0c0a3f32ced52bd4deae65ca88a9b278e843de08f63b03db0cbd0ee8d4"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 12,
+      "display_name_sha256": "00255b56f0dde924c8a9f185bc7eeb0b4dde5f1cbcfbf38596180988d8c1e06a"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 13,
+      "display_name_sha256": "fd8d28dac1866eb84df24628430afbc280a1eea939f9b65fc3381421a7993253"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 14,
+      "display_name_sha256": "de7fa14b6907b8b3da87f72897c75757b0b3a21a0fdd8bb551a9c23df9327523"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 15,
+      "display_name_sha256": "a03ce144f469ddcbd760918ac73aa97594984fdbf0253f32c3ac26d2b8a9a3ea"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 16,
+      "display_name_sha256": "972d9f70e48829d4e546d6f0ad8d3dfcab5cfcd297f93b9e3e6318bd53494dfd"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnsafeCaptureShouldRefuseBeforeAnyNewFactoryOrTransientInstance",
+      "case_ordinal": 17,
+      "display_name_sha256": "732d1a1afb814b54ffdacdbbbd3f8ec45eee76a2c36e844ca11c7f7885c6b87a"
+    },
+    {
+      "result": "Pass",
+      "time": "1.032",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "StartedCaptureShouldReuseExistingSingletonsAndObserveTheOriginalPendingTask",
+      "case_ordinal": 18,
+      "display_name_sha256": "e45318b44c7f81fe50edb4749fec80967cc06d7b179c558aa6b44bd5e7915de6"
+    },
+    {
+      "result": "Pass",
+      "time": "0",
+      "type": "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests",
+      "method": "UnknownProviderShouldBeRefusedWithoutCallingIt",
+      "case_ordinal": 19,
+      "display_name_sha256": "a307c2f93b33c07fba4460acee705bd16be271a5f0cfd48116985e7957aff32f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.018",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "RealFrameworkLifecycleShouldRetainOnlyClosedMetadataWithoutResolvingTransientServices",
+      "case_ordinal": 20,
+      "display_name_sha256": "2cd34877b3528c742bc9154e531d6ea260684827db5ba7ff566e7038df09390f"
+    },
+    {
+      "result": "Pass",
+      "time": "0.005",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "RealFrameworkLifecycleShouldRetainOnlyClosedMetadataWithoutResolvingTransientServices",
+      "case_ordinal": 21,
+      "display_name_sha256": "c9633bcc77697d07c0aaa542364d6cf959ac1522cf0a54500bf91b3e6ecb748b"
+    },
+    {
+      "result": "Pass",
+      "time": "0.001",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "SinkAndOptionalResolutionFailuresShouldRemainAdvisoryWithClosedEventIds",
+      "case_ordinal": 22,
+      "display_name_sha256": "03967a2e01690d224e4225e929bc7c9b981d1696a4d1d2615fb0f7ef169b5acb"
+    },
+    {
+      "result": "Pass",
+      "time": "0.003",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "SinkAndOptionalResolutionFailuresShouldRemainAdvisoryWithClosedEventIds",
+      "case_ordinal": 23,
+      "display_name_sha256": "fa56cd20ffe871ab675ca2fec7851a655436f5124787000f1e224ac97c6ae701"
+    },
+    {
+      "result": "Pass",
+      "time": "1.013",
+      "type": "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests",
+      "method": "ObserverShouldStayActiveAfterItsStopAndDistinguishServerStopFromLaterHostedStop",
+      "case_ordinal": 24,
+      "display_name_sha256": "265ad9cf200e6bd7f08c82a8deb3a54764cc7b9a26f5f49af0505283062ee0e1"
+    }
+  ]
+}

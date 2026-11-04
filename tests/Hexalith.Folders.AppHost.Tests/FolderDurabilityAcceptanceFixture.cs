@@ -771,6 +771,21 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         firstFailure?.Throw();
     }
 
+    /// <summary>Preserves mandatory fold evidence while forwarding the optional lifecycle control only to EventStore.</summary>
+    internal static void ConfigureObservers(IResourceBuilder<ProjectResource> folders, IResourceBuilder<ProjectResource> eventStore,
+        string observer, string foldPath, string shutdownPath, string? lifecycleDiagnosticsDisabled)
+    {
+        folders.WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
+            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
+            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", foldPath)
+            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", "");
+        eventStore.WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
+            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
+            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", "")
+            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", shutdownPath)
+            .WithEnvironment("FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED", lifecycleDiagnosticsDisabled ?? "");
+    }
+
     private async Task StartAsync()
     {
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
@@ -874,17 +889,12 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         string observer = Environment.GetEnvironmentVariable("FOLDERS_TASK36_OBSERVER")
             ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll"));
         if (!File.Exists(observer)) throw new InvalidOperationException("Build the Task36FoldObserver test project before running durability acceptance.");
-        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
-            .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
-            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
-            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", FoldObservationPath)
-            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", "");
-        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
-            .WithEnvironment("DOTNET_STARTUP_HOOKS", observer)
-            .WithEnvironment("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Task36FoldObserver")
-            .WithEnvironment("FOLDERS_TASK36_FOLD_LOG", "")
-            .WithEnvironment("FOLDERS_TASK36_SHUTDOWN_LOG", Environment.GetEnvironmentVariable("FOLDERS_TASK36_SHUTDOWN_LOG")
-                ?? Path.Combine(_temporaryDirectory, "eventstore-lifecycle.jsonl"));
+        ConfigureObservers(
+            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders")),
+            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore")),
+            observer, FoldObservationPath, Environment.GetEnvironmentVariable("FOLDERS_TASK36_SHUTDOWN_LOG")
+                ?? Path.Combine(_temporaryDirectory, "eventstore-lifecycle.jsonl"),
+            Environment.GetEnvironmentVariable("FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED"));
         if (QualifyContentReplica)
             _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
                 .WithEnvironment("FOLDERS_CONTENT_QUALIFICATION_CLOCK", Path.Combine(_temporaryDirectory, "content-clock-days"));
@@ -1452,7 +1462,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 IdempotencyKey: domain == "folders" ? NewId() : null)),
         };
         request.Headers.Add("X-Correlation-Id", correlationId ?? NewId());
-        FolderDurabilityGatewayScope.Apply(request, tenant);
+        FolderDurabilityGatewayScope.ApplyHumanCommand(request, tenant);
         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, caller).ConfigureAwait(false);
         await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command, caller).ConfigureAwait(false);
         JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(caller).ConfigureAwait(false);

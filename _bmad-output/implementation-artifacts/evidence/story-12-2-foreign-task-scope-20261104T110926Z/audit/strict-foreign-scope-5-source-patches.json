@@ -1,0 +1,21 @@
+[
+  {
+    "repository": "folders",
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/strict-foreign-scope-5-folders-source.patch",
+    "bytes": 81480,
+    "sha256": "8903f1a08e6bde436e7c5367745dc5c12cd7d724c19fcac972caf40a0708eaf5",
+    "untrackedInputs": [
+      "tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs",
+      "tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs",
+      "tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs",
+      "tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs"
+    ]
+  },
+  {
+    "repository": "eventstore",
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/strict-foreign-scope-5-eventstore-source.patch",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "untrackedInputs": []
+  }
+]

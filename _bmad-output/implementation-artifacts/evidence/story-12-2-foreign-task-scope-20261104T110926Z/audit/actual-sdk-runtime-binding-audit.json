@@ -1,0 +1,2111 @@
+{
+  "saved_expected_audit_sha256": "de3c36551258a87eaef4ec61df29724ba78a477a3cf62227236908b10793d7df",
+  "expected_sdk_sha256": {
+    "Hexalith.EventStore.Client": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+    "Hexalith.EventStore.Contracts": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+    "Hexalith.EventStore.DomainService": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+    "Hexalith.EventStore.ServiceDefaults": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+    "Hexalith.EventStore.Admin.Abstractions": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+    "Hexalith.EventStore.Gateway": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+    "Hexalith.EventStore.Server": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+    "Hexalith.EventStore.Aspire": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d"
+  },
+  "expected_current_observer": {
+    "sha256": "03053dc9af3cc4acb60fc05d8c62b3ddfb6a8e3cd3db1f73e70ff62e26dd84c6",
+    "pdb_sha256": "058156a9e1a9468f1f2a365eb1a8c4f647a5ec785d83c000836fdabf07752bd2",
+    "mvid": "11826b89-3e45-4c28-9ec5-81a7da697a25"
+  },
+  "attempts": [
+    {
+      "phase": "strict-foreign-scope-1",
+      "saved_runtime_sha256": "c36e01a863cd5d88efa925388458c7d42c2f606159f7559f2ad374959fcde317",
+      "observations": [
+        {
+          "kind": "poll",
+          "pid": 732717,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 732717,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 732717,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+          "sha256": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 732717,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 732717,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        }
+      ],
+      "observer_observations": [],
+      "observer_runtime_visibility": null,
+      "issues": [],
+      "limit": "Actual saved process mappings and fixture assembly bindings only. A startup-only attempt supplies no application behavior result."
+    },
+    {
+      "phase": "strict-foreign-scope-2",
+      "saved_runtime_sha256": "4eefe2a8af507da5af0f6db6a2bb34577cb3068f9016f31256514cbe7bba9c11",
+      "observations": [
+        {
+          "kind": "poll",
+          "pid": 1006710,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1006710,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1006710,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+          "sha256": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1006710,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1006710,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021642,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021642,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021642,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021642,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021628,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021628,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021628,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021628,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1014101,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1014101,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1014101,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1014101,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1021576,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        }
+      ],
+      "observer_observations": [],
+      "observer_runtime_visibility": null,
+      "issues": [],
+      "limit": "Actual saved process mappings and fixture assembly bindings only. A startup-only attempt supplies no application behavior result."
+    },
+    {
+      "phase": "strict-foreign-scope-3",
+      "saved_runtime_sha256": "39b067e06945a4180b348062335dbfa5fc4a223ffb596a2bd1f27d3e60ab4624",
+      "observations": [
+        {
+          "kind": "poll",
+          "pid": 1372151,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1372151,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1372151,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+          "sha256": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1372151,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1372151,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        }
+      ],
+      "observer_observations": [],
+      "observer_runtime_visibility": null,
+      "issues": [],
+      "limit": "Actual saved process mappings and fixture assembly bindings only. A startup-only attempt supplies no application behavior result."
+    },
+    {
+      "phase": "strict-foreign-scope-4",
+      "saved_runtime_sha256": "20a48741dfb1d11a3f5f1a10ee91b7e6d81297b122fbc9eb1f1698c6b9dce869",
+      "observations": [
+        {
+          "kind": "poll",
+          "pid": 1719543,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1719543,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1719543,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+          "sha256": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1719543,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 1719543,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728472,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728470,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1723772,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1728410,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1792917,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1805527,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1793889,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1793889,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1793889,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1793889,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1806347,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1795554,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1795554,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1795554,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1795554,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 1801241,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        }
+      ],
+      "observer_observations": [],
+      "observer_runtime_visibility": null,
+      "issues": [],
+      "limit": "Actual saved process mappings and fixture assembly bindings only. A startup-only attempt supplies no application behavior result."
+    },
+    {
+      "phase": "strict-foreign-scope-5",
+      "saved_runtime_sha256": "2617c1c636a3fdbc76aac3996b666d2499e25d82553aadacaa87bac4aa557055",
+      "observations": [
+        {
+          "kind": "poll",
+          "pid": 2277131,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 2277131,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 2277131,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Aspire.dll",
+          "sha256": "9b1e19a3c52b74d09b6348dbba3c69e06b3661be8ac9d565b851ab708453183d",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 2277131,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "poll",
+          "pid": 2277131,
+          "resource": null,
+          "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286089,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286087,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2281564,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2286010,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2349002,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2349002,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2349002,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2349002,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2350026,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2351221,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2351221,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2351221,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2351221,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2355119,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2359897,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2359897,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2359897,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2359897,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2375875,
+          "resource": "folders",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2360568,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2360568,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2360568,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2360568,
+          "resource": "folders-workers",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2361808,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2361808,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2361808,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2361808,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2378256,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2378256,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2378256,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2378256,
+          "resource": "folders-workers-replica",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.dll",
+          "sha256": "151aaae6127f14ebd48be800596937505b430da35779d7383d007253df502a42",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "sha256": "f9f38d22997b2b26aaa70ce3967dd00f9f700de666a28370342b1e74c167b0f2",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+          "sha256": "4e31332bad8166387bc1853b8a5a37e772f80f050da3ea87b1662fe0b95f8239",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2362894,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "sha256": "518bd22e46fe0e260e57d0255a476e6297afa15379eae5b92dd6724692c851a7",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Gateway.dll",
+          "sha256": "ee19716a0c96d186a289be55241091f81bb263cfd112e088f96d73329f5148fb",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+          "sha256": "732c5e7085c4b935d27ff2c01212a1cc37b1e9099a7c9df7beb40edd661084b0",
+          "matches_saved_audited_sdk_producer": true
+        },
+        {
+          "kind": "fixture",
+          "pid": 2380214,
+          "resource": "eventstore",
+          "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+          "sha256": "5a4d0acd26b8e96c28f2f348dbcf46a61396fccd034637316696539790c43cfb",
+          "matches_saved_audited_sdk_producer": true
+        }
+      ],
+      "observer_observations": [],
+      "observer_runtime_visibility": {
+        "eventstore_fixture_pids": [
+          2286010,
+          2355119,
+          2362894,
+          2380214
+        ],
+        "mapped_observer_pids": [],
+        "missing_mapped_observer_pids": [
+          2286010,
+          2355119,
+          2362894,
+          2380214
+        ],
+        "actual_observer_mapping_complete": false,
+        "limit": "Missing poll mappings are an observation gap, not a binary mismatch. Selected observer DLL/PDB/source are separately qualified; lifecycle emission proves execution of the opaque seam but does not supply an unrecorded module hash/MVID."
+      },
+      "issues": [],
+      "limit": "Actual saved process mappings and fixture assembly bindings only. A startup-only attempt supplies no application behavior result."
+    }
+  ],
+  "all_saved_observations_match": true
+}

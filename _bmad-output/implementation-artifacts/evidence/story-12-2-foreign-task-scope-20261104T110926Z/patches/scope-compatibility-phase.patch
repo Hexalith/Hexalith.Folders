@@ -1,0 +1,170 @@
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs
+@@ -18,6 +18,13 @@
+ {
+     /// <summary>Binds one exact supported scope without accepting the reserved storage tenant.</summary>
+     internal static void Apply(HttpRequestMessage request, string scope)
++        => ApplyCore(request, scope, includeTenantHeader: true);
++
++    /// <summary>Preserves body/bearer tenant binding for human commands and explicit platform namespaces.</summary>
++    internal static void ApplyHumanCommand(HttpRequestMessage request, string scope)
++        => ApplyCore(request, scope, includeTenantHeader: false);
++
++    private static void ApplyCore(HttpRequestMessage request, string scope, bool includeTenantHeader)
+     {
+         ArgumentNullException.ThrowIfNull(request);
+         if (request.Headers.Contains("X-Hexalith-Scope") || request.Headers.Contains("X-Hexalith-Tenant"))
+@@ -25,7 +32,9 @@
+         if (scope is TenantPlatformScopes.Tenants or TenantPlatformScopes.GlobalAdministrators)
+             request.Headers.Add("X-Hexalith-Scope", scope);
+         else if (TenantCanonicalizer.TryCanonicalize(scope, out string canonical) && scope == canonical)
+-            request.Headers.Add("X-Hexalith-Tenant", canonical);
++        {
++            if (includeTenantHeader) request.Headers.Add("X-Hexalith-Tenant", canonical);
++        }
+         else throw new InvalidOperationException("A durability request requires its exact canonical public scope.");
+     }
+ 
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -1452,7 +1452,7 @@
+                 IdempotencyKey: domain == "folders" ? NewId() : null)),
+         };
+         request.Headers.Add("X-Correlation-Id", correlationId ?? NewId());
+-        FolderDurabilityGatewayScope.Apply(request, tenant);
++        FolderDurabilityGatewayScope.ApplyHumanCommand(request, tenant);
+         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, false, caller).ConfigureAwait(false);
+         await RequireStatusAsync(response, HttpStatusCode.Accepted, "Authenticated " + command, caller).ConfigureAwait(false);
+         JsonElement accepted = await response.Content.ReadFromJsonAsync<JsonElement>(caller).ConfigureAwait(false);
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs
+@@ -1,10 +1,12 @@
+ using System.Net.Http.Headers;
+ using System.Net.Http.Json;
+ using System.Security.Cryptography;
++using System.Text.Json;
+ 
+ using Dapr.Client;
+ 
+ using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Commands;
+ using Hexalith.EventStore.Contracts.Streams;
+ using Hexalith.EventStore.ServiceDefaults.Authentication;
+ using Hexalith.Tenants.Contracts.Identity;
+@@ -17,6 +19,72 @@
+ /// <summary>Checks actual fixture request construction against supported explicit scopes and native proof APIs.</summary>
+ public sealed class FolderDurabilityGatewayScopeTests
+ {
++    /// <summary>Tenant commands use their original body/bearer while platform commands retain their namespace.</summary>
++    [Theory]
++    [InlineData("tenant-a")]
++    [InlineData(TenantPlatformScopes.Tenants)]
++    [InlineData(TenantPlatformScopes.GlobalAdministrators)]
++    public async Task HumanCommandPreservesExactBodyIdentityAndTracingWithoutAnAdditionalTenantHeader(string scope)
++    {
++        ArgumentNullException.ThrowIfNull(scope);
++        var command = new SubmitCommandRequest("original-message", scope, "folders", "original-aggregate", "OriginalCommand",
++            JsonSerializer.SerializeToElement(new { original = "payload" }), CorrelationId: "original-correlation",
++            Extensions: new Dictionary<string, string> { ["taskId"] = "original-task" }, IdempotencyKey: "original-key");
++        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands") { Content = JsonContent.Create(command) };
++        string bearer = Convert.ToHexString(RandomNumberGenerator.GetBytes(24));
++        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
++        request.Headers.Add("X-Correlation-Id", "original-correlation");
++        request.Headers.Add("Idempotency-Key", "original-key");
++        byte[] before = await request.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
++
++        FolderDurabilityGatewayScope.ApplyHumanCommand(request, scope);
++
++        request.Headers.Contains("X-Hexalith-Tenant").ShouldBeFalse();
++        if (scope.StartsWith("platform:", StringComparison.Ordinal)) request.Headers.GetValues("X-Hexalith-Scope").ShouldBe(new[] { scope });
++        else request.Headers.Contains("X-Hexalith-Scope").ShouldBeFalse();
++        request.Headers.Authorization.Scheme.ShouldBe("Bearer");
++        request.Headers.Authorization.Parameter.ShouldBe(bearer);
++        request.Headers.GetValues("X-Correlation-Id").ShouldBe(new[] { "original-correlation" });
++        request.Headers.GetValues("Idempotency-Key").ShouldBe(new[] { "original-key" });
++        request.Method.ShouldBe(HttpMethod.Post);
++        request.RequestUri!.OriginalString.ShouldBe("/api/v1/commands");
++        (await request.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken)).ShouldBe(before);
++        var after = (await request.Content.ReadFromJsonAsync<SubmitCommandRequest>(TestContext.Current.CancellationToken)).ShouldNotBeNull();
++        after.Tenant.ShouldBe(scope);
++        after.MessageId.ShouldBe("original-message");
++        after.CorrelationId.ShouldBe("original-correlation");
++        after.Extensions!["taskId"].ShouldBe("original-task");
++        after.IdempotencyKey.ShouldBe("original-key");
++    }
++
++    /// <summary>Omitting the redundant header does not admit reserved, unknown or noncanonical command scopes.</summary>
++    [Theory]
++    [InlineData("system")]
++    [InlineData("System")]
++    [InlineData("platform:folders")]
++    [InlineData("")]
++    [InlineData("tenant_a")]
++    [InlineData("Tenant-A")]
++    public void InvalidHumanCommandScopeStillRefusesBeforeAddingHeaders(string scope)
++    {
++        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands");
++        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.ApplyHumanCommand(request, scope));
++        request.Headers.ShouldBeEmpty();
++    }
++
++    /// <summary>A caller-supplied duplicate scope is refused without being stripped or relabeled.</summary>
++    [Theory]
++    [InlineData("X-Hexalith-Tenant", "tenant-a")]
++    [InlineData("X-Hexalith-Scope", TenantPlatformScopes.Tenants)]
++    public void MixedHumanCommandHeadersRemainAnExplicitRefusal(string header, string value)
++    {
++        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands");
++        request.Headers.Add(header, value);
++        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.ApplyHumanCommand(request, "tenant-a"));
++        request.Headers.GetValues(header).ShouldBe(new[] { value });
++        request.Headers.Count().ShouldBe(1);
++    }
++
+     [Theory]
+     [InlineData(TenantPlatformScopes.Tenants)]
+     [InlineData(TenantPlatformScopes.GlobalAdministrators)]
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -2319,12 +2319,12 @@
+ validated bearer. Command-status GETs independently require the explicit tenant/platform header.
+ Both attempts retain exact source/runtime receipts, failed results and all-zero owned cleanup.
+ 
+-- [ ] In tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs and
++- [x] In tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs and
+   FolderDurabilityAcceptanceFixture.cs, use the supported human-command scope shape for SubmitAsync:
+   preserve the original canonical body tenant, human bearer, bytes, tracing and task/idempotency
+   identities; omit only the redundant ordinary tenant header. Preserve explicit platform command
+   scope, status GET headers, native source request proofs and invalid/mixed-scope refusal.
+-- [ ] Add meaningful command/status shape and preservation controls in
++- [x] Add meaningful command/status shape and preservation controls in
+   FolderDurabilityGatewayScopeTests.cs; execute focused fixture and existing SDK command/status
+   owner controls serially. Refresh pending inventory only where its existing denominator changes.
+   Preserve the approved d29 strict body, companion/capacity bodies and every production policy,
+@@ -2334,3 +2334,26 @@
+ production policy or authorization change. No repeated startup retry or budget change is authorized
+ by these observations. Story/sprint and independent Release/package/PD10, SM4 and review gates remain
+ open; the revised foreign-folder and unsupported-absence probes have not yet executed live.
++
++### Human-command fixture compatibility focused handoff — 2026-11-04
++
++The fixture now constructs ordinary human command POSTs with their unchanged canonical body tenant
++and bearer, omitting the redundant X-Hexalith-Tenant header rejected by the current SDK. Explicit
++platform command namespaces remain intact. Status GETs keep their original explicit tenant/platform
++headers; native source requests keep their existing bound proof. Invalid or mixed scopes still refuse.
++The approved strict body remains d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82;
++companion/capacity bodies, production policy, identities, grants and every deadline are unchanged.
++
++Debug/source AppHost and SDK Server test builds pass with zero warnings/errors in66.05s and11.80s.
++Serial focused execution passes141fixture/HTTP/shared-rebuild controls in5.375s, including11new exact
++command-byte/identity/header preservation and invalid/mixed-scope refusal cases, then97unchanged SDK
++command/status/platform/validation owner controls in3.694s. Both selections have zero failures,
++errors or skips. The affected AppHost compile inputs are outside the existing pending PD10
++denominator; pending and historical inventory files are unchanged. No further live pass is claimed.
++
++The two failed live runs, scheduler startup limitation and exact current-SDK400 provenance remain
++preserved. New phase before/after files, patch, guard/output hashes and focused receipts are retained
++under `/tmp/story12-2-foreign-scope-20261104-s76ae741` as `scope-compatibility-handoff.json` and
++`scope-compatibility-phase.patch`. Parent owns current source/PDB/producer/assets audit and any further
++strict live run after source/output release. Independent Release/package, PD10, SM4 and review gates
++remain open until separately qualified.

@@ -1,0 +1,270 @@
+--- a/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs
+@@ -361,8 +361,23 @@
+         {
+             using HttpResponseMessage missing = await client.GetAsync($"/api/v1/tasks/{task}/status", TestContext.Current.CancellationToken).ConfigureAwait(true);
+             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(missing, HttpStatusCode.ServiceUnavailable, "Missing task folder scope").ConfigureAwait(true);
+-            using HttpResponseMessage foreign = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId=absent-folder", TestContext.Current.CancellationToken).ConfigureAwait(true);
++            // Qualify a genuinely different authorized folder, independently of unsupported physical absence.
++            string foreignFolderKey = FolderDurabilityAcceptanceFixture.NewId();
++            string foreignTaskFolder = fixture.CreatedFolderId(foreignFolderKey);
++            using (HttpResponseMessage createdForeign = await fixture.MutateAsync("/api/v1/folders",
++                new { requestSchemaVersion = "v1", folderMetadata = new { displayName = "Foreign task scope" } },
++                foreignFolderKey).ConfigureAwait(true))
++                await FolderDurabilityAcceptanceFixture.RequireStatusAsync(createdForeign, HttpStatusCode.Accepted,
++                    "Real foreign task folder creation").ConfigureAwait(true);
++            await fixture.WaitForCurrentFolderEvidenceAsync(foreignTaskFolder, "foreign task folder scope").ConfigureAwait(true);
++            using HttpResponseMessage foreign = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId={foreignTaskFolder}", TestContext.Current.CancellationToken).ConfigureAwait(true);
+             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(foreign, HttpStatusCode.NotFound, "Foreign task folder scope").ConfigureAwait(true);
++            (await foreign.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotContain(folder);
++            using HttpResponseMessage unobserved = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId=absent-folder", TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(unobserved, HttpStatusCode.ServiceUnavailable,
++                "Unsupported physical source absence").ConfigureAwait(true);
++            JsonElement unavailable = await unobserved.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            unavailable.GetProperty("code").GetString().ShouldBe("read_model_unavailable");
+         }
+         output.WriteLine("PASS real-provider task pipeline: supported Forgejo TLS, private credential resolution, bound/prepared/locked/clean release, six metadata concerns, restart, equivalent replay, closed-binding denial and scoped task reads");
+     }
+--- a/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs
++++ b/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs
+@@ -324,12 +324,34 @@
+         var source = OperationalStatusTestData.Sources(OperationalStatusFixture.SuccessfulLifecycle());
+         (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "delivery", source,
+             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+-        var reader = new EventStoreOperationalStatusReadModel(new(store, store), new OperationalStatusClock(), new OperationalStatusSequenceReader { Head = 0 });
++        var foreignSource = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b") with { TaskId = "foreign-create-task" }]);
++        (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-b", "foreign-create", foreignSource,
++            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
++        var foreignCheckpoint = store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName,
++            OperationalStatusKeys.Checkpoint("tenant-a", "folder-b"))!;
++        foreignCheckpoint.Sequence.ShouldBe(1);
++        foreignCheckpoint.TaskEvidence.ShouldBeEmpty();
++        string originalTaskKey = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
++        string originalTask = JsonSerializer.Serialize(store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey));
++        List<string> readKeys = [];
++        OperationalStatusReadObserver observed = new(store, key => { readKeys.Add(key); return Task.CompletedTask; });
++        var reader = new EventStoreOperationalStatusReadModel(new(observed, store), new OperationalStatusClock(),
++            new OperationalStatusSequenceReader { Head = foreignSource.Length });
+         var request = new TaskStatusReadModelRequest("tenant-a", "task-a", "reader-b", "read_task_status", null, "eventually_consistent")
+         { AuthorizedFolderId = "folder-b", AuthorizationWatermark = "folder-b-authority" };
+-        (await reader.GetAsync(request, TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
+-        store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName,
+-            OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a"))!.TerminalState.ShouldBe("committed");
++        TaskStatusReadModelResult result = await reader.GetAsync(request, TestContext.Current.CancellationToken);
++        result.Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
++        result.Snapshot.ShouldBeNull();
++        string foreignTaskKey = OperationalStatusKeys.Task("tenant-a", "folder-b", "task-a");
++        string[] selected = [foreignTaskKey, OperationalStatusKeys.Checkpoint("tenant-a", "folder-b"), OperationalStatusKeys.Evidence(foreignTaskKey)];
++        foreach (string key in selected) readKeys.ShouldContain(store.PhysicalKey(key));
++        foreach (string key in new[] { originalTaskKey, OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), OperationalStatusKeys.Evidence(originalTaskKey) })
++            readKeys.ShouldNotContain(store.PhysicalKey(key));
++        // The other reads belong to the SDK epoch/selection protocol, never another task's row.
++        readKeys.Where(key => key.StartsWith("shared-generation:", StringComparison.Ordinal))
++            .ShouldAllBe(key => selected.Select(store.PhysicalKey).Contains(key, StringComparer.Ordinal));
++        JsonSerializer.Serialize(store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey)).ShouldBe(originalTask);
++        store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey)!.TerminalState.ShouldBe("committed");
+     }
+ 
+     [Fact]
+--- a/tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs
+@@ -1,3 +1,4 @@
++using Hexalith.EventStore.Testing.Fakes;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.TenantAccess;
+ using Hexalith.Folders.Queries.Folders;
+@@ -92,6 +93,40 @@
+             Query() with { FolderId = null }, TestContext.Current.CancellationToken);
+         result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
+         readModel.Requests.ShouldBe(0);
++    }
++
++    /// <summary>Unsupported native absence cannot supply folder authority or expose a protected task.</summary>
++    [Fact]
++    public async Task UnsupportedNativeFolderAbsenceNeverBecomesZeroOrReachesTaskStorage()
++    {
++        var clock = new FixedUtcClock(Now);
++        CountingTenantAccessProjectionStore tenant = new(FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        var metadata = new UnsupportedTaskScopeMetadataReader();
++        var sequence = new GatewayOrganizationStreamSequenceReader(metadata);
++        var store = new InMemoryReadModelStore();
++        var organization = new EventStoreOrganizationEffectivePermissionsReadModel(store, clock, sequence);
++        var permissions = new EventStoreFolderEffectivePermissionsReadModel(store, clock, sequence, organization);
++        var unavailable = await permissions.GetAsync(new EffectivePermissionsReadModelRequest("tenant-a", "absent-folder",
++            [EffectivePermissionPrincipal.User("user-a")], "task-a", null, "read_your_writes"), TestContext.Current.CancellationToken);
++        unavailable.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
++        unavailable.Freshness.ReasonCode.ShouldBe("folder_stream_unavailable");
++        CountingTaskStatusReadModel tasks = new(TaskStatusReadModelResult.Available(Snapshot()));
++        var validator = new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        var authorizer = new TenantAccessAuthorizer(tenant, clock, new TenantAccessOptions());
++        var handler = new TaskStatusQueryHandler(authorizer, tasks, clock, folderAuthorization: new LayeredFolderAuthorizationService(
++            authorizer, new EffectivePermissionsFolderPermissionEvidenceProvider(permissions, clock), validator,
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")), clock));
++
++        TaskStatusQueryResult result = await handler.HandleAsync(Query() with { FolderId = "absent-folder" }, TestContext.Current.CancellationToken);
++
++        result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
++        result.FolderAuthorizationDenial!.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.FolderAcl);
++        result.TaskId.ShouldBeNull();
++        result.TerminalState.ShouldBeNull();
++        tasks.Requests.ShouldBe(0);
++        validator.Requests.ShouldBeEmpty();
++        metadata.Requests.Count.ShouldBe(2);
++        metadata.Requests.ShouldAllBe(identity => identity.TenantId == "tenant-a" && identity.Domain == "folders" && identity.AggregateId == "absent-folder");
+     }
+ 
+     [Fact]
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs
+@@ -0,0 +1,21 @@
++using Hexalith.EventStore.Client.Streams;
++using Hexalith.EventStore.Contracts.Identity;
++using Hexalith.EventStore.Contracts.Streams;
++
++namespace Hexalith.Folders.Tests.Queries.Folders;
++
++/// <summary>Records native metadata requests whose source cannot provide a supported proof.</summary>
++internal sealed class UnsupportedTaskScopeMetadataReader : INativeSourceMetadataReader
++{
++    /// <summary>Gets exact observed source identities without fabricating empty-stream authority.</summary>
++    internal List<AggregateIdentity> Requests { get; } = [];
++
++    /// <inheritdoc/>
++    public Task<NativeSourceObservation?> ReadAsync(AggregateIdentity identity, CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(identity);
++        cancellationToken.ThrowIfCancellationRequested();
++        Requests.Add(identity);
++        return Task.FromResult<NativeSourceObservation?>(null);
++    }
++}
+--- a/scripts/pd10-v2-story-owned-paths.txt
++++ b/scripts/pd10-v2-story-owned-paths.txt
+@@ -1461,6 +1461,7 @@
+ tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusDiagnosticLogger.cs
+ tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs
+ tests/Hexalith.Folders.Tests/Queries/Folders/ThrowingLifecycleStatusReadModel.cs
++tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs
+ tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceCleanupStatusQueryHandlerTests.cs
+ tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLifecycleProjectionDeterminismTests.cs
+ tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLockStatusProjectionTests.cs
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,8 +16,8 @@
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 0cce9de609131496622dadda423477f7630aa1428596a8d75c089657ed73e5b7
+-artifact_count: 1522
++candidate_set_sha256: 0b148e8ec243f89ea1aac13e0165b27151a1eb779a1c623ff6dd8e7f7b8d4504
++artifact_count: 1523
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+     kind: file
+@@ -113,8 +113,8 @@
+     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+   - path: "scripts/pd10-v2-story-owned-paths.txt"
+     kind: file
+-    bytes: 108975
+-    sha256: 6210415d740d7042085d15084f6329c7eb1798fbb2517740516261b4b1f58a99
++    bytes: 109058
++    sha256: a5a1440c53d6627bdbe9c4f5219963aa3314f06e2e149c99ca775e9312a0358c
+   - path: "scripts/prepare-ci-topology-projects.sh"
+     kind: file
+     bytes: 8110
+@@ -5605,8 +5605,8 @@
+     sha256: 5bfc40f14f3f7675ca96eeeea8dd66e931a66a4de976a6e6bc838f278d09a81a
+   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs"
+     kind: file
+-    bytes: 34788
+-    sha256: 1965c56aeee1c10cd08c66d0165b4ebf930bea08235bc97193b4c7aedc4b35ae
++    bytes: 36933
++    sha256: 41b3756f8b1cf59a4ff261f6dbecb5e0a1f53447889d8457d15a1571cc241eca
+   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs"
+     kind: file
+     bytes: 11817
+@@ -5865,12 +5865,16 @@
+     sha256: 92cdfabf85b0f20609a6102bfb9ffad0ee79e406fd32f28ddf7f3ddc9145543a
+   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs"
+     kind: file
+-    bytes: 26556
+-    sha256: 1df8dc6b199f9b4be0e2bef09f174f080ed442b459e3ffd6a2098abcaed0cb92
++    bytes: 29257
++    sha256: 345e8ce8dff5a2e8e684d98b622b073fffc238ee866e1360af6a2d398150872a
+   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/ThrowingLifecycleStatusReadModel.cs"
+     kind: file
+     bytes: 579
+     sha256: 65ca0c151afc87d3bac510ae0697bef25fd58672498a583d99ac480af03c63e5
++  - path: "tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs"
++    kind: file
++    bytes: 918
++    sha256: 96f08d4625cb5620372d04693b2497306d623fa702de597bf0e3d865f25313c0
+   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceCleanupStatusQueryHandlerTests.cs"
+     kind: file
+     bytes: 17910
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -2243,19 +2243,19 @@
+ other story work; no Git mutation is authorized. Prior sealed packets stay immutable. The workflow
+ continues step03 from its existing rendered snapshot; do not rerender or replace baseline_commit.
+ 
+-- [ ] Apply the exact approved patch to `tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs`.
++- [x] Apply the exact approved patch to `tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs`.
+   Use the existing ordinary authenticated v1 creation, fresh key/default task header and normal
+   current source/Workers barrier. Retain404 on the original task under the different real folder,
+   no original-folder disclosure; separately assert503/read_model_unavailable for literal absent-folder.
+   Keep all timing samples identifiable, original budgets and all remaining checks.
+-- [ ] Extend meaningful reader/handler/counting-store controls beside
++- [x] Extend meaningful reader/handler/counting-store controls beside
+   `tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs`
+   and/or `tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs` to prove the
+   different authorized folder's task/checkpoint/evidence keys only; original folder task key never
+   observed; unsupported native absence never becomes zero or triggers task lookup before current
+   folder authority. Reuse existing controls where they already prove a requirement. No production
+   behavior change; if actual behavior disagrees, return the finding before widening this scope.
+-- [ ] Build/run appropriate focused Domain/AppHost controls serially, both source flags, Debug,
++- [x] Build/run appropriate focused Domain/AppHost controls serially, both source flags, Debug,
+   individual built xUnit assemblies. Refresh only pending inventory paths/hashes for changed/new
+   compile inputs; preserve dated immutable PD10. Parent owns full coherent runtime+Memories rebuild,
+   current source/PDB/producer/asset audit, further strict live and exact cleanup. Hand off exact
+@@ -2265,3 +2265,40 @@
+ or live run. Fresh private handoff/evidence workspace: `/tmp/story12-2-foreign-scope-20261104-s76ae741`. Parent retains the approved body-hash
+ transition in new audit tooling; no old receipt/verifier is edited. Story/sprint remain in-progress;
+ package, governance, SM4 and whole-story review gates stay separate until actually satisfied.
++
++
++### Real foreign task scope focused handoff — 2026-11-04
++
++The exact owner-approved patch is applied. The strict source hash transitions from
++f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90 to
++d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82, exactly as approved.
++The final probe creates a genuine different folder with the existing authenticated v1 helper and
++normal current source/Workers barrier, retains404 for the original task under that folder, and
++checks that its response omits the original folder. The separate unchanged absent-folder literal
++requires503/read_model_unavailable. Other strict/capacity bodies, frozen intent, production guards,
++grants, source protocols and all deadlines remain unchanged. No live execution is claimed here.
++
++The persistent-reader control now writes a real create-only second-folder projection through the
++existing SDK writer, verifies its current checkpoint has no task evidence, and records selected
++physical reads. Only that folder's task/checkpoint/evidence values are selected; the original
++folder's corresponding keys are never observed and its original terminal row is unchanged. The
++new handler control uses the actual gateway source adapter and actual folder permission reader
++with unsupported native metadata. It remains unavailable rather than zero, produces the existing
++FolderAcl denial, and observes neither the counted task model nor the downstream validator.
++Existing current-authority, task scope and stale/denial controls remain intact.
++
++Current Debug/project-reference Domain and AppHost builds pass with zero warnings/errors in8.11s
++and81.93s. Serial focused execution passes103Domain cases in1.425s,130fixture/HTTP/shared-rebuild
++cases in5.412s, and18pending-inventory controls in4.403s, zero failures/errors/skips. The Domain
++selection includes the upgraded persistent-reader case, one new unsupported-native handler case,
++and existing current-authority/layered/task-scope controls. The first new-test build's CS1061 on an
++incorrect decision-property reference is retained; it was corrected before successful qualification.
++Only the pending compile-input allowlist/inventory was refreshed for the new test helper and changed
++test hashes. Dated immutable PD10 evidence is unchanged; no full-suite or live pass is inferred.
++
++Exact before/after files, approved patch/body/guard hashes, commands, build/test receipts and output
++identities are retained under `/tmp/story12-2-foreign-scope-20261104-s76ae741`. Source/outputs are
++released with no active build/test/topology. Parent owns the coherent full runtime/Memories rebuild,
++current source/PDB/asset/producer audit, revised strict live qualification and exact cleanup. Original
++failed runs and sealed packets remain immutable. Story/sprint and independent package/governance,
++capacity-identity, SM4 and whole-story review gates remain in-progress or retain their prior outcomes.

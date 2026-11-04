@@ -1,0 +1,26 @@
+BOOTSTRAP_VERIFIED accepted=202 terminal=Completed originalSource=1 humanAttributed=true catalogGenerationBound=true
+PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source
+PASS tenant maintenance: Completed; original TenantUpdated matched; Workers sequence/timestamp matched; authority unchanged.
+PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately
+PASS persisted retention: ordinary writes; selected view TTL=34559993s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559993s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559992s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559985s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559985s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559984s; configured=34560000s
+PASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata
+PASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged
+PASS ordinary-write processes: proof-a=1723439; proof-b=1723380
+PASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source
+PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source
+PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately
+PASS persisted retention: ordinary writes; selected view TTL=34559993s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559993s; configured=34560000s
+PASS persisted retention: ordinary writes; selected view TTL=34559992s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559985s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559985s; configured=34560000s
+PASS persisted retention: complete-source rebuild; selected view TTL=34559984s; configured=34560000s
+PASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata
+PASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged
+PASS ordinary-write processes: proof-a=1723439; proof-b=1723380
+PASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source

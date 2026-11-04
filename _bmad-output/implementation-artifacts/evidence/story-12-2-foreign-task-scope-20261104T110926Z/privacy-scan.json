@@ -1,0 +1,12 @@
+{
+  "files_scanned": 245,
+  "bytes_scanned": 43448384,
+  "recognizable_secret_findings": [],
+  "raw_logs_and_xml_excluded": true,
+  "command_parameter_display_payloads_removed": true,
+  "recognizable_secret_patterns": [
+    "jwt",
+    "private_key"
+  ],
+  "scope": "Exported static test identifiers, hashes, source paths, module/process/cleanup metadata and structured closed diagnoses. Private raw traces/XML remain outside the packet."
+}

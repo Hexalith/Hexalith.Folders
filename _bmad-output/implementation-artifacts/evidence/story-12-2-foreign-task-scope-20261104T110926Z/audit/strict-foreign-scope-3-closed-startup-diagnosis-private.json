@@ -1,0 +1,215 @@
+{
+  "phase": "Closed strict-foreign-scope-3 Sentry startup diagnosis",
+  "closed_utc": "2026-11-04T10:15:13.588973+00:00",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "249.119"
+  },
+  "execution": {
+    "start": "2026-11-04T10:07:14.689100+00:00",
+    "end": "2026-11-04T10:11:26.022910+00:00",
+    "exit_code": 1,
+    "boundary": "Fixture InitializeAsync -> StartAsync line1142 -> DistributedApplicationFactory.StartAsync canceled before bootstrap/test body.",
+    "bootstrap_verified": false,
+    "human_scope_fix_exercised_live": false,
+    "revised_strict_probes_executed": false
+  },
+  "attribution": {
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": [],
+    "runtime_module_observations": 156,
+    "fixture_module_observations": 1
+  },
+  "composition_source": {
+    "path": "references/Hexalith.Platform/DaprSelfHostedMtls.cs",
+    "saved_before_sha256": "3fa9ccf46cd70cdc2253dda51ad06b3bcf5f7f696b3b74a95ca1b86913489a7c",
+    "observed_source_matches_saved_before": true,
+    "listen_address": "0.0.0.0",
+    "health_listen_address": "0.0.0.0",
+    "health_target_port": 8080,
+    "health_path": "/healthz",
+    "grpc_target_port": 50001,
+    "health_uses_aspire_proxy": true
+  },
+  "owned_resource": {
+    "name": "/dapr-sentry-abeaacjf",
+    "state_at_capture": "running",
+    "owned_run_directory_mount_matches": true,
+    "published_ports": {
+      "50001/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "12162"
+        }
+      ],
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "53108"
+        }
+      ]
+    }
+  },
+  "sentry_lifecycle": {
+    "events": [
+      {
+        "line": 15,
+        "utc": "2026-11-04T10:07:21.316744026Z",
+        "event": "health_listening_8080"
+      },
+      {
+        "line": 17,
+        "utc": "2026-11-04T10:07:21.317049801Z",
+        "event": "grpc_running_50001"
+      },
+      {
+        "line": 18,
+        "utc": "2026-11-04T10:07:23.321585549Z",
+        "event": "issuer_reload"
+      },
+      {
+        "line": 19,
+        "utc": "2026-11-04T10:07:23.321721128Z",
+        "event": "health_shutdown"
+      },
+      {
+        "line": 20,
+        "utc": "2026-11-04T10:07:23.321754663Z",
+        "event": "grpc_shutdown"
+      },
+      {
+        "line": 28,
+        "utc": "2026-11-04T10:07:23.322484472Z",
+        "event": "health_listening_8080"
+      },
+      {
+        "line": 32,
+        "utc": "2026-11-04T10:07:23.322795918Z",
+        "event": "grpc_running_50001"
+      },
+      {
+        "line": 33,
+        "utc": "2026-11-04T10:07:25.322651867Z",
+        "event": "issuer_reload"
+      },
+      {
+        "line": 34,
+        "utc": "2026-11-04T10:07:25.322746621Z",
+        "event": "health_shutdown"
+      },
+      {
+        "line": 35,
+        "utc": "2026-11-04T10:07:25.322784314Z",
+        "event": "grpc_shutdown"
+      },
+      {
+        "line": 42,
+        "utc": "2026-11-04T10:07:25.326430405Z",
+        "event": "health_listening_8080"
+      },
+      {
+        "line": 47,
+        "utc": "2026-11-04T10:07:25.329282286Z",
+        "event": "grpc_running_50001"
+      },
+      {
+        "line": 48,
+        "utc": "2026-11-04T10:07:27.327722536Z",
+        "event": "issuer_reload"
+      },
+      {
+        "line": 49,
+        "utc": "2026-11-04T10:07:27.327883379Z",
+        "event": "health_shutdown"
+      },
+      {
+        "line": 50,
+        "utc": "2026-11-04T10:07:27.327899093Z",
+        "event": "grpc_shutdown"
+      },
+      {
+        "line": 57,
+        "utc": "2026-11-04T10:07:27.328650325Z",
+        "event": "health_listening_8080"
+      },
+      {
+        "line": 62,
+        "utc": "2026-11-04T10:07:27.329217197Z",
+        "event": "grpc_running_50001"
+      }
+    ],
+    "issuer_reloads": 3,
+    "health_starts": 4,
+    "grpc_starts": 4,
+    "error_fatal_panic_log_records": 0,
+    "last_retained_event_utc": "2026-11-04T10:07:27.329217197Z",
+    "limitation": "Retained container log ends with startup and does not prove later socket state."
+  },
+  "reachability": {
+    "single_comparisons": [
+      {
+        "utc": "2026-11-04T10:09:06.182055+00:00",
+        "url": "http://127.0.0.1:53108/healthz",
+        "kind": "backend",
+        "status": null,
+        "error_type": "URLError",
+        "elapsed_ms": 4.515
+      },
+      {
+        "utc": "2026-11-04T10:09:08.184651+00:00",
+        "url": "http://localhost:38271/healthz",
+        "kind": "observed_host_probe",
+        "status": null,
+        "error_type": "TimeoutError",
+        "elapsed_ms": 2002.596
+      }
+    ],
+    "backend_probe_seconds_after_last_retained_health_start": 98.853,
+    "aspire_sentry_timed_out_records": 16,
+    "limits": [
+      "Container /proc/net reads both exited127 because cat is unavailable.",
+      "Docker-reported PID is not visible in workspace PID namespace; both host /proc reads failed FileNotFoundError.",
+      "Empty arrays from failed listener observations do not establish listener absence.",
+      "The [::]:8080 message alone does not establish IPv6-only behavior.",
+      "Three reloads ending at10:07:27 do not explain a refused backend99seconds later without actual later listener observations."
+    ]
+  },
+  "assessment": {
+    "permanent_configuration_mismatch_established": false,
+    "supported_source_correction_demonstrated": false,
+    "positive_boundary": "Owned published health endpoint refused at captured one-shot observation; its Aspire proxy timed out. Configured target port and observed Docker target agree.",
+    "same_code_comparison": "Run2 passed the same startup composition and genuine bootstrap before the proven human command-header failure.",
+    "next_discriminating_observation": "If further startup qualification is authorized, observe actual Sentry listener and published forwarding route from the Docker daemon network namespace contemporaneously with owned health failure. No extra retry/probe was executed.",
+    "no_authority_or_durability_conclusion": "No bootstrap/native metadata/task/revised probe execution reached.",
+    "no_speculative_remedy": "No deadline, health policy, port, certificate or source change is supported by the retained evidence."
+  },
+  "cleanup": {
+    "owned_process_remainders": 0,
+    "owned_container_remainders": 0,
+    "owned_dapr_directory_exists_count": 0,
+    "unattributed_new_container_count": 0,
+    "unattributed_new_directory_count": 0,
+    "action_on_unattributed_resources": "None"
+  },
+  "artifacts": {
+    "strict-foreign-scope-3-receipt.json": "6a4c414a1135319ffa064ded0d9fa7b131470078b03d483b75226f1603edd0e8",
+    "strict-foreign-scope-3-private.xml": "6e098a9be669e90df5134cd9e5716b320f72a4a729539936fb954aea546b0e82",
+    "strict-foreign-scope-3-private.log": "cd2cb7af9423ab430c31bac092c252f491b414c652e066834f2eff0da8f9c15f",
+    "strict-foreign-scope-3-before.json": "53dd6a4460a8caeae6a1c77fe240756d597c0a3ae10073ea1aacc0d4914e8d1e",
+    "strict-foreign-scope-3-after.json": "9ec54371786825353cfd834a7a6472f72ae600e761f01449b260b5b9aeeac243",
+    "strict-foreign-scope-3-runtime.json": "39b067e06945a4180b348062335dbfa5fc4a223ffb596a2bd1f27d3e60ab4624",
+    "strict-foreign-scope-3-owned-cleanup-audit.json": "bb46ac8171bbbbb01af4f4ea8a3e13644a819d0de411190fa6312f4243ab143d",
+    "strict-foreign-scope-3-startup-owned-bindings-private.json": "1a34242da695d59a9c67e05fb9e6070a85e7a935536ddde30ef70c68a0a0ba71",
+    "strict-foreign-scope-3-sentry-container-log-private.log": "c2f77f6b9ec18a84b27d4b93dfaaf0c35238fde39dbaf41b5d351a7239b92075",
+    "strict-foreign-scope-3-startup-single-comparison-private.json": "6f12e893b60e591f6ea2f2c74b48453d28c9fff675109659793c239abd67e0bb",
+    "strict-foreign-scope-3-sentry-owned-namespace-listeners-private.json": "bcf96f7b2c64ab87a28b36bee33da0bc841eaed8c204855dc8964f4f0882dfc9",
+    "strict-foreign-scope-3-sentry-network-listeners-private.json": "bbc23143ab31e25224b2f468cb115be5a44d05f0441f8d7836f9b44cc7016304"
+  },
+  "agent_actions": "Read retained files and matching saved-source composition; wrote this immutable private closed diagnosis. No source/output/build/test/probe/lifecycle action.",
+  "metadata_generation_note": "Initial unwritten receipt construction treated an integer observation count as an array. Corrected metadata typing without changing evidence or source."
+}

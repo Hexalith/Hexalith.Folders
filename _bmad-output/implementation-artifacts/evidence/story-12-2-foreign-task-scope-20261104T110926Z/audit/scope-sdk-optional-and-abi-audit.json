@@ -1,0 +1,14 @@
+{
+  "phase": "scope-sdk-server-broad",
+  "current_optional_skip_cases": 25,
+  "historical_optional_skip_cases": 25,
+  "current_skips_match_historical_exactly": true,
+  "new_optional_skips": 0,
+  "removed_optional_skips": 0,
+  "published_abi_cases": 3,
+  "published_abi_all_pass": true,
+  "official_archive_sha256": "e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc",
+  "expected_archive_hash_or_shared_cache_changed": false,
+  "prior_receipt_sha256": "e4e6e45526d5987b62c662ac08e171aefbe68ace1ee5b371a9b130fdbab075fb",
+  "current_private_receipt_sha256": "21be236115b00a24248dbfa841be6f955189c816f16c5d616d83e35d42342f38"
+}

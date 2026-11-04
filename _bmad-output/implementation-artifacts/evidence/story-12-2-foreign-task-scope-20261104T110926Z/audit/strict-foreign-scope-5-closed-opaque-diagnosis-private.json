@@ -1,0 +1,272 @@
+{
+  "phase": "Closed strict-foreign-scope-5 opaque correlation and lifecycle qualification",
+  "closed_utc": "2026-11-04T11:07:05.872621+00:00",
+  "result": {
+    "total": "1",
+    "passed": "1",
+    "failed": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "396.332"
+  },
+  "body_result": [
+    {
+      "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+      "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+      "result": "Pass",
+      "time": "344.2"
+    }
+  ],
+  "run_start": "2026-11-04T10:57:15.563453+00:00",
+  "run_end": "2026-11-04T11:03:56.519411+00:00",
+  "exit_code": 0,
+  "source_and_runtime_attribution": {
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": [],
+    "approved_strict_body_saved_before_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "approved_strict_body_saved_after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "runtime_module_observations": 174,
+    "fixture_module_observations": 279,
+    "parent_actual_observer_audit": "Parent98-module observer/source/PDB/SDK/assets audit retained separately and hashed below; this assessment does not infer loaded module identity from current disk."
+  },
+  "runtime_opaque_emission": {
+    "phase_counts": {
+      "host_configuration": 4,
+      "observer_registered": 4,
+      "host_start": 4,
+      "existing_hosted_services": 4,
+      "request_start": 3342,
+      "request_activity_start": 3342,
+      "request_activity_end": 3342,
+      "request_end": 3342,
+      "application_stopping": 4,
+      "host_stop": 4,
+      "stopping_snapshot": 6,
+      "application_stopped": 4
+    },
+    "late_activity_status_counts": {
+      "tracked": 2994,
+      "matched": 2987,
+      "unavailable": 703
+    },
+    "late_activity_reason_counts": {
+      "request_start": 2994,
+      "trace_span": 2987,
+      "observation_busy": 703
+    },
+    "exact_retained_start_end_pairs": 2987,
+    "matched_end_without_retained_start": 0,
+    "unended_retained_starts_not_proof_of_live_requests": 7,
+    "unavailability_limit": "703 observation_busy records explicitly degraded identity tracking. Starts whose ends were unavailable must not be treated as still active. Final raw counters and bounded active snapshots are authoritative diagnostic observations.",
+    "actual_fixture_emission_proven": true,
+    "no_synthetic_join": true
+  },
+  "eventstore_lifecycles": [
+    {
+      "pid": 2286010,
+      "stop_concurrently": false,
+      "host_shutdown_timeout_ms": 30000,
+      "application_stopping_utc": "2026-11-04T11:01:26.4860135+00:00",
+      "application_stopped_utc": "2026-11-04T11:01:27.9454147+00:00",
+      "host_stop_utc": "2026-11-04T11:01:26.4983452+00:00",
+      "stopping_to_stopped_seconds": 1.459401,
+      "inflight_at_stopping": 1,
+      "inflight_at_stopped": 0,
+      "active_id_inventory_at_stopping": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "active_id_inventory_at_stopped": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "late_observation_at_stopped": {
+        "status": "available",
+        "reason": "fixed_late_notifications",
+        "subscribedListeners": 1,
+        "subscriptionFailures": 0,
+        "listenerCapacity": 8
+      },
+      "stopping_snapshots": 1,
+      "dropped_records": 0,
+      "sink_failed": false,
+      "origin_limit": "Lifecycle events alone do not distinguish explicit test stops from final fixture disposal."
+    },
+    {
+      "pid": 2355119,
+      "stop_concurrently": false,
+      "host_shutdown_timeout_ms": 30000,
+      "application_stopping_utc": "2026-11-04T11:02:03.8040433+00:00",
+      "application_stopped_utc": "2026-11-04T11:02:06.1112079+00:00",
+      "host_stop_utc": "2026-11-04T11:02:03.8546965+00:00",
+      "stopping_to_stopped_seconds": 2.307164,
+      "inflight_at_stopping": 1,
+      "inflight_at_stopped": 0,
+      "active_id_inventory_at_stopping": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": [
+          {
+            "requestOrdinal": 92,
+            "traceId": "60fa00d5f2dce4bd8efc82e69f778bd0",
+            "spanId": "5f2198ae2e2c3b9f",
+            "frameworkActivityId": null,
+            "relatedActivityId": null,
+            "elapsedMilliseconds": 24.479
+          }
+        ]
+      },
+      "active_id_inventory_at_stopped": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "late_observation_at_stopped": {
+        "status": "available",
+        "reason": "fixed_late_notifications",
+        "subscribedListeners": 1,
+        "subscriptionFailures": 0,
+        "listenerCapacity": 8
+      },
+      "stopping_snapshots": 2,
+      "dropped_records": 0,
+      "sink_failed": false,
+      "origin_limit": "Lifecycle events alone do not distinguish explicit test stops from final fixture disposal."
+    },
+    {
+      "pid": 2362894,
+      "stop_concurrently": false,
+      "host_shutdown_timeout_ms": 30000,
+      "application_stopping_utc": "2026-11-04T11:03:02.6569107+00:00",
+      "application_stopped_utc": "2026-11-04T11:03:04.7623803+00:00",
+      "host_stop_utc": "2026-11-04T11:03:02.6677478+00:00",
+      "stopping_to_stopped_seconds": 2.10547,
+      "inflight_at_stopping": 0,
+      "inflight_at_stopped": 0,
+      "active_id_inventory_at_stopping": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "active_id_inventory_at_stopped": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "late_observation_at_stopped": {
+        "status": "available",
+        "reason": "fixed_late_notifications",
+        "subscribedListeners": 1,
+        "subscriptionFailures": 0,
+        "listenerCapacity": 8
+      },
+      "stopping_snapshots": 2,
+      "dropped_records": 0,
+      "sink_failed": false,
+      "origin_limit": "Lifecycle events alone do not distinguish explicit test stops from final fixture disposal."
+    },
+    {
+      "pid": 2380214,
+      "stop_concurrently": false,
+      "host_shutdown_timeout_ms": 30000,
+      "application_stopping_utc": "2026-11-04T11:03:45.3544711+00:00",
+      "application_stopped_utc": "2026-11-04T11:03:47.2773444+00:00",
+      "host_stop_utc": "2026-11-04T11:03:45.3642012+00:00",
+      "stopping_to_stopped_seconds": 1.922873,
+      "inflight_at_stopping": 0,
+      "inflight_at_stopped": 0,
+      "active_id_inventory_at_stopping": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "active_id_inventory_at_stopped": {
+        "status": "available",
+        "reason": "observed_ids_only",
+        "capacity": 64,
+        "unavailableStarts": 0,
+        "unmatchedEnds": 0,
+        "activeRequests": []
+      },
+      "late_observation_at_stopped": {
+        "status": "available",
+        "reason": "fixed_late_notifications",
+        "subscribedListeners": 1,
+        "subscriptionFailures": 0,
+        "listenerCapacity": 8
+      },
+      "stopping_snapshots": 1,
+      "dropped_records": 0,
+      "sink_failed": false,
+      "origin_limit": "Lifecycle events alone do not distinguish explicit test stops from final fixture disposal."
+    }
+  ],
+  "dcp_process_stop_timeout_records": 0,
+  "closed_pass_marker_categories": {
+    "genuine_bootstrap_verified": 1,
+    "tenant_maintenance": 2
+  },
+  "acceptance_scope": {
+    "unchanged_approved_d29_class_passed": true,
+    "main_restart_and_revised_probes": "Full passing class completion establishes its unchanged assertions executed successfully. No separate replacement assertion is used.",
+    "independent_story_gates": "Package/Release/PD10/governance/SM4/whole-story-review disposition belongs to their own receipts; this pass alone does not close every story gate."
+  },
+  "stop_cause_assessment": {
+    "failed_stop_in_this_run": false,
+    "native_request_blocker_identified": false,
+    "actual_pending_native_join_needed": false,
+    "all_observed_eventstore_stops_completed": true,
+    "all_final_eventstore_inflight_counts_zero": true,
+    "all_final_active_id_inventories_empty": true,
+    "interpretation": "This run confirms real opaque correlation emission and successful graceful lifecycle completion. It does not retrospectively identify or repair strict4 stop failure.",
+    "no_causal_correction_claim": "Observer changes are advisory diagnostics, not an established native or generic shutdown fix."
+  },
+  "cleanup": {
+    "owned_process_remainders": 0,
+    "owned_container_remainders": 0,
+    "owned_dapr_directory_exists_count": 0,
+    "unattributed_new_container_count": 0,
+    "unattributed_new_directories_count": 0,
+    "action_on_unattributed_resources": "None"
+  },
+  "artifacts": {
+    "strict-foreign-scope-5-receipt.json": "6a3c35c56503d81daccf9d4e60a41da8f22f908320cb44e37b33546921ef466e",
+    "strict-foreign-scope-5-private.xml": "a1b38451562d137545ade3ff5bdaad0bc171f5a6f4b3609764e2f2c88132b21c",
+    "strict-foreign-scope-5-private.log": "1ffdccdda6619bebc171ed6a621fe952e50f7e362dd0f86368e862b55f17b6da",
+    "strict-foreign-scope-5-lifecycle-private.jsonl": "328c5091ac9ccbb8e3fb927587b55c1aa529fb7c623174dfbb5474748bab7c5f",
+    "strict-foreign-scope-5-before.json": "a691e29c5791d356f13f2fd57134d2885982dd6633b8bf631a492ec3da709eba",
+    "strict-foreign-scope-5-after.json": "7b66d781621f3c8838edece6737509d68c07de95882520ff7a3e5b2ad6b1a72d",
+    "strict-foreign-scope-5-runtime.json": "2617c1c636a3fdbc76aac3996b666d2499e25d82553aadacaa87bac4aa557055",
+    "strict-foreign-scope-5-owned-cleanup-audit.json": "2598615439cff80c7ee2ad8cb672576d81449c5c6140b1194e543ce1b24acb11",
+    "stop-correlation-parent-runtime-assets-audit.json": "58cb4a76972260d1cdd20fb8cadb62dcbcac9fefe70c166aa3b3ce3d00c7b73d",
+    "stop-correlation-parent-runtime-audit-summary.json": "aa8199c856a0fcc924aa770053b26c295d8b85632ec013b0e670d37853105277",
+    "stop-correlation-parent-runtime-selected-modules.json": "c2b8746e9adb5f00f5761e34857fddf88738026ad6087d072497f8d3ba66b208",
+    "stop-correlation-parent-runtime-pdb-audit.json": "5908b5ee117d082023946aaf84e6063bda210a09ca8eb091bdd937a9eb6d887f"
+  },
+  "agent_actions": "Retained-file read-only monitoring at intervals greater than45seconds and new private closed metadata only. No source/output/build/test/probe/lifecycle action.",
+  "prior_evidence_preservation": "All prior failed run receipts and diagnoses remain unchanged."
+}

@@ -1,0 +1,12 @@
+{
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0",
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a",
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs": "4a235d19c8987c6ec73017db647f28b0ce017871e322123b3c09fba298612800",
+  "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+  "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+  "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+  "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "38bf6365510ff2c8dc5b88e570fb513eb5e1c17970adeeb1eb843f189ec345db",
+  "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+  "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+}

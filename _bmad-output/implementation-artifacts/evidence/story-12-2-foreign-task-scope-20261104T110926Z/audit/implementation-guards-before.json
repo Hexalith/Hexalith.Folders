@@ -1,0 +1,8 @@
+{
+  "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+  "tests/Hexalith.Folders.AppHost.Tests/WorkspaceContentDurabilityAcceptanceTests.cs": "de8331a03143d0ed61d1cbe118d7bf8969034ce832357b5253e153a75884b81d",
+  "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+  "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+  "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+  "frozen_spec_block": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422"
+}

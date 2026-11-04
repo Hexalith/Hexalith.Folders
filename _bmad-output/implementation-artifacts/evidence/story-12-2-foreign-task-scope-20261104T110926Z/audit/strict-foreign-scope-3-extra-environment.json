@@ -1,0 +1,10 @@
+{
+  "requested_parent_environment": {
+    "FOLDERS_TASK36_SHUTDOWN_LOG": "/tmp/story12-2-foreign-scope-20261104-s76ae741/strict-foreign-scope-3-lifecycle-private.jsonl",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogAuthority": "Debug",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.RouteCatalogInvocationHandler": "Debug",
+    "Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.Routing.TechnicalHttpRouteCatalogReceiver": "Debug",
+    "Logging__LogLevel__Microsoft.AspNetCore.Hosting.Diagnostics": "Information"
+  },
+  "approval": "2026-11-04 exact foreign-task scope patch; all production proof and deadline checks retained"
+}

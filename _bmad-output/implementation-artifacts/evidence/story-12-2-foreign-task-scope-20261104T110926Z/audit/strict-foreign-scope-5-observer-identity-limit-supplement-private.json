@@ -1,0 +1,75 @@
+{
+  "phase": "Strict5 observer identity coverage supplement",
+  "closed_utc": "2026-11-04T11:08:38.047314+00:00",
+  "supplements": {
+    "closed_diagnosis": "strict-foreign-scope-5-closed-opaque-diagnosis-private.json",
+    "sha256": "ee489fdab7681185a699b77142720b1e4b2d46093f43720e401d4a1ac2cf54a9"
+  },
+  "qualified_selected_candidate_not_loaded_module_attestation": {
+    "path": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+    "sha256": "03053DC9AF3CC4ACB60FC05D8C62B3DDFB6A8E3CD3DB1F73E70FF62E26DD84C6",
+    "assemblyName": "Task36FoldObserver",
+    "mvid": "11826b89-3e45-4c28-9ec5-81a7da697a25",
+    "pdbPath": "/home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.pdb",
+    "pdbSha256": "058156a9e1a9468f1f2a365eb1a8c4f647a5ec785d83c000836fdabf07752bd2",
+    "pdbGuidMatches": true,
+    "mismatches": [],
+    "missingOrdinarySource": []
+  },
+  "candidate_source_checksum_count": 13,
+  "actual_runtime_observations": {
+    "hosted_service_assembly_simple_name_and_type": [
+      {
+        "pid": 2286010,
+        "utc": "2026-11-04T10:57:39.3846732+00:00",
+        "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+        "assembly_simple_name": "Task36FoldObserver"
+      },
+      {
+        "pid": 2355119,
+        "utc": "2026-11-04T11:01:41.8232093+00:00",
+        "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+        "assembly_simple_name": "Task36FoldObserver"
+      },
+      {
+        "pid": 2362894,
+        "utc": "2026-11-04T11:02:08.3316235+00:00",
+        "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+        "assembly_simple_name": "Task36FoldObserver"
+      },
+      {
+        "pid": 2380214,
+        "utc": "2026-11-04T11:03:09.4134216+00:00",
+        "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+        "assembly_simple_name": "Task36FoldObserver"
+      }
+    ],
+    "new_late_activity_start_end_and_snapshot_behavior_emitted": true,
+    "exact_loaded_observer_location_recorded": false,
+    "exact_loaded_observer_mvid_recorded": false,
+    "exact_loaded_observer_sha256_recorded": false,
+    "observer_module_in_poll_or_filtered_fixture_inventory": false,
+    "startup_fold_records": "StartupHook emits no identity. Fold/lifecycle code observes service assembly simple name and opaque behavior, not Location/ModuleVersionId/assembly bytes."
+  },
+  "selected_path_evidence": {
+    "fixture_path_source": "FolderDurabilityAcceptanceFixture.cs resolves tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll by default and configures the startup hook/hosting startup.",
+    "classification": "Qualified selected path and observed new behavior provide composition/behavior evidence; they are not a retained actual-module MVID/SHA observation.",
+    "no_idle_disk_inference": true
+  },
+  "disposition": {
+    "sdk_mismatch": false,
+    "known_byte_or_mvid_mismatch": false,
+    "missing_visibility": "Actual Tool module path/MVID/SHA are not separately captured for these owned PIDs. This is a mapping coverage limit, distinct from the passing candidate source/PDB qualification and actual SDK observations.",
+    "no_retry_for_wording": true,
+    "future_instrumentation_prerequisite_if_required": "A separate allowed closed module identity emission or actual mapped-module capture would be required to assert the loaded Tool MVID/SHA. No new source, build or live run was performed."
+  },
+  "artifact_hashes": {
+    "stop-correlation-parent-runtime-pdb-audit.json": "5908b5ee117d082023946aaf84e6063bda210a09ca8eb091bdd937a9eb6d887f",
+    "stop-correlation-parent-runtime-audit-summary.json": "aa8199c856a0fcc924aa770053b26c295d8b85632ec013b0e670d37853105277",
+    "stop-correlation-parent-runtime-selected-modules.json": "c2b8746e9adb5f00f5761e34857fddf88738026ad6087d072497f8d3ba66b208",
+    "stop-correlation-parent-runtime-assets-audit.json": "58cb4a76972260d1cdd20fb8cadb62dcbcac9fefe70c166aa3b3ce3d00c7b73d",
+    "strict-foreign-scope-5-runtime.json": "2617c1c636a3fdbc76aac3996b666d2499e25d82553aadacaa87bac4aa557055",
+    "strict-foreign-scope-5-lifecycle-private.jsonl": "328c5091ac9ccbb8e3fb927587b55c1aa529fb7c623174dfbb5474748bab7c5f"
+  },
+  "actions": "Read retained audit/source/runtime records and wrote this immutable supplement only."
+}

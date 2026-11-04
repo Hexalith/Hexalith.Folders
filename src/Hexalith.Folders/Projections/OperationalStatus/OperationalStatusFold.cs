@@ -20,7 +20,7 @@ public static class OperationalStatusFold
             throw new InvalidOperationException("Malformed operational checkpoint.");
         }
         FolderState state = current?.State ?? FolderState.Empty;
-        bounded |= current?.SchemaVersion == 2;
+        bounded |= current?.SchemaVersion is 2 or 3;
         long sequence = current?.Sequence ?? 0;
         string digest = current?.SourceDigest ?? OperationalStatusKeys.Digest(tenantId, folderId);
         DateTimeOffset observed = current?.ObservedAt ?? DateTimeOffset.UnixEpoch;
@@ -56,7 +56,7 @@ public static class OperationalStatusFold
                     throw new InvalidOperationException("Foreign operational source event.");
                 }
                 ValidateWorkspaceEvent(state, value);
-                state = state.Apply([value], stream);
+                state = OperationalStatusStateFold.Apply(state, value, stream);
                 if (!ValidState(state)) throw new InvalidOperationException("Malformed operational state.");
                 foreach (string binding in state.TaskClosures.Keys)
                     closedSequences.TryAdd(binding, item.Sequence);
@@ -116,7 +116,7 @@ public static class OperationalStatusFold
     /// <summary>Checks the stored checkpoint identity and required source evidence.</summary>
     public static bool Valid(OperationalStatusCheckpoint value, string tenantId, string folderId)
     {
-        if (value?.SchemaVersion == 2)
+        if (value?.SchemaVersion is 2 or 3)
             return value.ManagedTenantId == tenantId && value.FolderId == folderId && value.Sequence > 0
                 && value.SourceDigest is { Length: 64 } && value.ObservedAt != default
                 && value.State is not null && (value.State.IsCreated
@@ -184,6 +184,7 @@ public static class OperationalStatusFold
             || value is WorkspaceLockReleased released && (released.WorkspaceLifecycleEvent != FolderWorkspaceLifecycleEvent.WorkspaceLockReleased
                 || released.HolderTaskId != released.TaskId || released.LockId != state.WorkspaceLockId
                 || released.HolderTaskId != state.WorkspaceLockHolderTaskId)
+            || value is WorkspaceNativeTaskChanged native && !ValidNativeLease(native)
             || value is WorkspaceFileMutationAccepted mutation && mutation.WorkspaceLifecycleEvent != FolderWorkspaceLifecycleEvent.FileMutated
             || value is WorkspaceCommitSucceeded succeeded && (succeeded.WorkspaceLifecycleEvent != FolderWorkspaceLifecycleEvent.CommitSucceeded
                 || string.IsNullOrWhiteSpace(succeeded.CommitReference))
@@ -193,6 +194,20 @@ public static class OperationalStatusFold
             throw new InvalidOperationException("Malformed operational workspace evidence.");
         }
     }
+
+    private static bool ValidNativeLease(WorkspaceNativeTaskChanged value)
+        => !string.IsNullOrWhiteSpace(value.LockId) && !string.IsNullOrWhiteSpace(value.TaskId)
+            && value.LockFence > 0 && value.LeaseSeconds is > 0 and <= 3600
+            && value.EffectiveAt != default && value.ExpiresAt >= value.EffectiveAt
+            && (value.Operation switch
+            {
+                "acquire" or "renew" => value.ExpiresAt - value.EffectiveAt == TimeSpan.FromSeconds(value.LeaseSeconds),
+                "release" => value.ExpiresAt == value.EffectiveAt
+                    || value.ExpiresAt - value.EffectiveAt == TimeSpan.FromSeconds(value.LeaseSeconds),
+                "complete" => !string.IsNullOrWhiteSpace(value.PublicationCommandId)
+                    && value.ExpiresAt - value.EffectiveAt == TimeSpan.FromSeconds(value.LeaseSeconds),
+                _ => false,
+            });
 
     private static FolderLifecycleFreshness Freshness(long sequence, DateTimeOffset observed, string consistency = "read_your_writes")
         => new(consistency, observed, sequence.ToString(CultureInfo.InvariantCulture), false, null);

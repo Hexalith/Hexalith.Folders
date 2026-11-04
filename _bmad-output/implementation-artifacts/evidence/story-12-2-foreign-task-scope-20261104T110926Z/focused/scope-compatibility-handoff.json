@@ -1,0 +1,200 @@
+{
+  "phase": "Current SDK human-command fixture compatibility \u2014 2026-11-04",
+  "closed_utc": "2026-11-04T10:06:55.418535+00:00",
+  "heads": {
+    "root": "9198d9213f6ea54c629148322f05e7ded994822d",
+    "sdk": "aeec5012fa3e1e07426a8fdd145709bce93f619a"
+  },
+  "changed_paths": [
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md"
+  ],
+  "before_hashes": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs": "4a235d19c8987c6ec73017db647f28b0ce017871e322123b3c09fba298612800",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "38bf6365510ff2c8dc5b88e570fb513eb5e1c17970adeeb1eb843f189ec345db",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+  },
+  "after_hashes": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs": "26d436362251c49b990927e52c8c207b86867e5321f14fb973978bb8343f2ad7",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "4e11b7d543ba075bf22298b70e585aaf2397a97c5651fc5d499fc41d180503ec",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScopeTests.cs": "6d84bdee6f215f55cf6fc71fcb6e0f9ef2a671800c6601b566a7be7b2e41fd38",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "941095d63ae4bd04ada575f4246147b3c9c593dcb8994e4f892921e738fafe98",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+  },
+  "phase_patch": {
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/scope-compatibility-phase.patch",
+    "sha256": "762b14d47a2b6f1ca7e99c63a4bbc4a80157cea3b248d390cc79a34bc60d6dbb"
+  },
+  "guards": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+      "before": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "after": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "before": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "after": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": {
+      "before": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+      "after": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": {
+      "before": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "after": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": {
+      "before": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+      "after": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+      "unchanged": true
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "before": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "after": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "unchanged": true
+    }
+  },
+  "frozen_block": {
+    "before": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "after": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "unchanged": true
+  },
+  "fixture_diff_is_exact_single_call_replacement": true,
+  "sdk_owner_sources_unchanged_from_current_HEAD": {
+    "tests/Hexalith.EventStore.Server.Tests/Controllers/CommandsControllerTenantTests.cs": "ef76800056dfdd6ba4a69cd24d56d38c989b51b3a71f88638636959468c13b4b",
+    "tests/Hexalith.EventStore.Server.Tests/Commands/CommandStatusControllerTests.cs": "2c9a08501b3193aad8ab3fc67f4802f3e529fdbeaf615bf01a520101f41deed6",
+    "tests/Hexalith.EventStore.Server.Tests/Routing/PlatformCommandModelValidationTests.cs": "8215c6780c63375db63be90db7a6233f40a38a0b7ed50e0f44c7f1a729d9635f",
+    "tests/Hexalith.EventStore.Server.Tests/Controllers/CommandValidationControllerTests.cs": "a9ac5350837ce42455e98897914dc333d14e71cc34e28b5abb1f7c9cd5de846a",
+    "src/Hexalith.EventStore/Controllers/CommandsController.cs": "894f5b858e7f4b2ffdd2fbef1637088d16395fd228d7e7d1c52e543af38148f7",
+    "src/Hexalith.EventStore/Controllers/CommandStatusController.cs": "c829792e9665f934ad51a9efe20c0d9a6a6107362d6edf4789125d79faf87842"
+  },
+  "receipts": {
+    "apphost": {
+      "test_exit_code": 0,
+      "build_exit_code": 0,
+      "classes": [
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests"
+      ],
+      "summary": {
+        "total": "141",
+        "passed": "141",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "5.375"
+      },
+      "class_case_counts": {
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests": 47,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests": 28,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests": 13,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests": 22,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests": 2,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests": 18,
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests": 11
+      },
+      "artifacts": {
+        "scope-compatibility-apphost-tests-1-private.xml": "41c9ea7b2cd8d70496c68e3de08298435ed39a2d512344c778aa142ca1614429",
+        "scope-compatibility-apphost-tests-1-private.log": "8c62614eaf829a0b2d62eec23b4595223fc2a38fe1b2dcb1bc6ce85c2c89f0d1",
+        "scope-compatibility-apphost-build-1-private.log": "813b1fcb845e10ccf06ef9f4d544aefbeb2d90c144991133b64b201ad1a49c80"
+      },
+      "build_elapsed": "00:01:06.05"
+    },
+    "sdk-owner": {
+      "test_exit_code": 0,
+      "build_exit_code": 0,
+      "classes": [
+        "Hexalith.EventStore.Server.Tests.Controllers.CommandsControllerTenantTests",
+        "Hexalith.EventStore.Server.Tests.Commands.CommandStatusControllerTests",
+        "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests",
+        "Hexalith.EventStore.Server.Tests.Controllers.CommandValidationControllerTests"
+      ],
+      "summary": {
+        "total": "97",
+        "passed": "97",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "not-run": "0",
+        "time": "3.694"
+      },
+      "class_case_counts": {
+        "Hexalith.EventStore.Server.Tests.Controllers.CommandsControllerTenantTests": 17,
+        "Hexalith.EventStore.Server.Tests.Commands.CommandStatusControllerTests": 43,
+        "Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests": 10,
+        "Hexalith.EventStore.Server.Tests.Controllers.CommandValidationControllerTests": 27
+      },
+      "artifacts": {
+        "scope-compatibility-sdk-owner-tests-1-private.xml": "b06b1b98537726fe671088d9874e8b335fe9f9da87b1809092a717ec445154ce",
+        "scope-compatibility-sdk-owner-tests-1-private.log": "64e14c2df9d4bb7520b66900723dd1860a45099afa3a32534d30e1b1b4d1f72b",
+        "scope-compatibility-sdk-owner-build-1-private.log": "e15f303d98ed1543c721b55e3a24dbffcc074c9f092a0557f61ee8f5ac5f6c41"
+      },
+      "build_elapsed": "00:00:11.80"
+    }
+  },
+  "commands": {
+    "apphost_build": {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet"
+    },
+    "apphost_tests": {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests -result-xml /tmp/story12-2-foreign-scope-20261104-s76ae741/scope-compatibility-apphost-tests-1-private.xml"
+    },
+    "sdk-owner_build": {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet"
+    },
+    "sdk-owner_tests": {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "command": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Controllers.CommandsControllerTenantTests -class Hexalith.EventStore.Server.Tests.Commands.CommandStatusControllerTests -class Hexalith.EventStore.Server.Tests.Routing.PlatformCommandModelValidationTests -class Hexalith.EventStore.Server.Tests.Controllers.CommandValidationControllerTests -result-xml /tmp/story12-2-foreign-scope-20261104-s76ae741/scope-compatibility-sdk-owner-tests-1-private.xml"
+    }
+  },
+  "output_hashes": {
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/scope-compatibility-output-hashes.json",
+    "sha256": "5b4b35dddcd85da47d35597ab7642bfd1ee17fc59b6dec00e8e3914ad28f65eb",
+    "count": 78
+  },
+  "pending_inventory": {
+    "changed": false,
+    "reason": "None of the three affected AppHost compile inputs are in its existing denominator; historical inventory also unchanged."
+  },
+  "diagnosis": {
+    "retry_2_path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/strict-foreign-scope-2-closed-diagnosis-private.json",
+    "sha256": "4952d82e63ba154747774637677e57f590ad4b5070734aa30f96ae15cc768218",
+    "boundary": "Current SDK human POST rejects additional X-Hexalith-Tenant before dispatch. Status GET independently requires explicit scope."
+  },
+  "metadata_generation_note": "An initial receipt generator used the wrong controller source directory and exited before writing this handoff. Corrected receipt paths; no product/build/test failure. Previously written exact phase patch/after snapshots/output hashes were verified without overwrite.",
+  "limits": [
+    "No live qualification performed in this phase.",
+    "Revised foreign-folder and unsupported-absence strict probes have not yet executed live.",
+    "No production source/policy/grant/proof/deadline changes.",
+    "Parent owns full runtime/source/PDB/producer/assets audit and further strict live.",
+    "Independent Release/package/PD10/SM4/review gates retain their prior open disposition."
+  ],
+  "source_outputs_released": true,
+  "active_build_test_topology_commands": []
+}

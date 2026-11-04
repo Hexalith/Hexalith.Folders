@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-11-04T09:16:42.312868+00:00",
+  "approval_user_reply": "approve",
+  "approved_proposal": "proposal-12-2-foreign-task-scope-proof.md",
+  "approved_patch_sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+  "strict_before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+  "strict_approved_after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+  "root_head": "9198d9213f6ea54c629148322f05e7ded994822d",
+  "sdk_head": "aeec5012fa3e1e07426a8fdd145709bce93f619a",
+  "prior_packet": "_bmad-output/implementation-artifacts/evidence/story-12-2-tenant-maintenance-20261103T211501Z",
+  "scope": "Only approved real foreignfolder404 plus unsupported absence503; no production/permission/budget change."
+}

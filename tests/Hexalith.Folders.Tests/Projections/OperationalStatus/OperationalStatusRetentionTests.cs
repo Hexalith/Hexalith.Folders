@@ -19,10 +19,12 @@ public sealed class OperationalStatusRetentionTests
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
         OperationalStatusProjectionWriter writer = new(store, store, store, clock);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken);
-        operations.Where(item => item.Key != OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))
+        operations.Where(item => item.Key != OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")
+            && item.Key != OperationalStatusKeys.TaskCompletion("tenant-a", "folder-a", "task-a"))
             .ShouldAllBe(item => item.TimeToLive == null
                 && item.ExpiresAtUtc == OperationalStatusTestData.Now + OperationalStatusKeys.Retention);
         operations.Single(item => item.Key == OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")).TimeToLive.ShouldBeNull();
+        operations.Single(item => item.Key == OperationalStatusKeys.TaskCompletion("tenant-a", "folder-a", "task-a")).ExpiresAtUtc.ShouldBeNull();
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         var reader = Reader(store, clock, sources.Length);
         clock.UtcNow = OperationalStatusTestData.Now + OperationalStatusKeys.Retention - TimeSpan.FromTicks(1);
@@ -35,7 +37,8 @@ public sealed class OperationalStatusRetentionTests
             .Status.ShouldBe(ReadModelBatchStatus.AlreadyCompleted);
         store.Count.ShouldBe(before);
         (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken))
-            .ShouldHaveSingleItem().Key.ShouldBe(OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"));
+            .Select(item => item.Key).Order().ShouldBe(new[] { OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"),
+                OperationalStatusKeys.TaskCompletion("tenant-a", "folder-a", "task-a") }.Order());
     }
 
     [Fact]

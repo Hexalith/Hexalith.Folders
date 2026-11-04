@@ -1,10 +1,12 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
+using System.Text.Json;
 
 using Dapr.Client;
 
 using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Tenants.Contracts.Identity;
@@ -17,6 +19,72 @@ namespace Hexalith.Folders.AppHost.Tests;
 /// <summary>Checks actual fixture request construction against supported explicit scopes and native proof APIs.</summary>
 public sealed class FolderDurabilityGatewayScopeTests
 {
+    /// <summary>Tenant commands use their original body/bearer while platform commands retain their namespace.</summary>
+    [Theory]
+    [InlineData("tenant-a")]
+    [InlineData(TenantPlatformScopes.Tenants)]
+    [InlineData(TenantPlatformScopes.GlobalAdministrators)]
+    public async Task HumanCommandPreservesExactBodyIdentityAndTracingWithoutAnAdditionalTenantHeader(string scope)
+    {
+        ArgumentNullException.ThrowIfNull(scope);
+        var command = new SubmitCommandRequest("original-message", scope, "folders", "original-aggregate", "OriginalCommand",
+            JsonSerializer.SerializeToElement(new { original = "payload" }), CorrelationId: "original-correlation",
+            Extensions: new Dictionary<string, string> { ["taskId"] = "original-task" }, IdempotencyKey: "original-key");
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands") { Content = JsonContent.Create(command) };
+        string bearer = Convert.ToHexString(RandomNumberGenerator.GetBytes(24));
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
+        request.Headers.Add("X-Correlation-Id", "original-correlation");
+        request.Headers.Add("Idempotency-Key", "original-key");
+        byte[] before = await request.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
+
+        FolderDurabilityGatewayScope.ApplyHumanCommand(request, scope);
+
+        request.Headers.Contains("X-Hexalith-Tenant").ShouldBeFalse();
+        if (scope.StartsWith("platform:", StringComparison.Ordinal)) request.Headers.GetValues("X-Hexalith-Scope").ShouldBe(new[] { scope });
+        else request.Headers.Contains("X-Hexalith-Scope").ShouldBeFalse();
+        request.Headers.Authorization.Scheme.ShouldBe("Bearer");
+        request.Headers.Authorization.Parameter.ShouldBe(bearer);
+        request.Headers.GetValues("X-Correlation-Id").ShouldBe(new[] { "original-correlation" });
+        request.Headers.GetValues("Idempotency-Key").ShouldBe(new[] { "original-key" });
+        request.Method.ShouldBe(HttpMethod.Post);
+        request.RequestUri!.OriginalString.ShouldBe("/api/v1/commands");
+        (await request.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken)).ShouldBe(before);
+        var after = (await request.Content.ReadFromJsonAsync<SubmitCommandRequest>(TestContext.Current.CancellationToken)).ShouldNotBeNull();
+        after.Tenant.ShouldBe(scope);
+        after.MessageId.ShouldBe("original-message");
+        after.CorrelationId.ShouldBe("original-correlation");
+        after.Extensions!["taskId"].ShouldBe("original-task");
+        after.IdempotencyKey.ShouldBe("original-key");
+    }
+
+    /// <summary>Omitting the redundant header does not admit reserved, unknown or noncanonical command scopes.</summary>
+    [Theory]
+    [InlineData("system")]
+    [InlineData("System")]
+    [InlineData("platform:folders")]
+    [InlineData("")]
+    [InlineData("tenant_a")]
+    [InlineData("Tenant-A")]
+    public void InvalidHumanCommandScopeStillRefusesBeforeAddingHeaders(string scope)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands");
+        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.ApplyHumanCommand(request, scope));
+        request.Headers.ShouldBeEmpty();
+    }
+
+    /// <summary>A caller-supplied duplicate scope is refused without being stripped or relabeled.</summary>
+    [Theory]
+    [InlineData("X-Hexalith-Tenant", "tenant-a")]
+    [InlineData("X-Hexalith-Scope", TenantPlatformScopes.Tenants)]
+    public void MixedHumanCommandHeadersRemainAnExplicitRefusal(string header, string value)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/commands");
+        request.Headers.Add(header, value);
+        Should.Throw<InvalidOperationException>(() => FolderDurabilityGatewayScope.ApplyHumanCommand(request, "tenant-a"));
+        request.Headers.GetValues(header).ShouldBe(new[] { value });
+        request.Headers.Count().ShouldBe(1);
+    }
+
     [Theory]
     [InlineData(TenantPlatformScopes.Tenants)]
     [InlineData(TenantPlatformScopes.GlobalAdministrators)]

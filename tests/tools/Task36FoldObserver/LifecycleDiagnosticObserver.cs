@@ -16,6 +16,9 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
     { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     private readonly long _started = Stopwatch.GetTimestamp();
     private readonly IServiceCollection _services;
+    private readonly LifecycleRequestCorrelation _requests = new();
+    private readonly LifecycleRequestCorrelation _requestActivities = new();
+    private LifecycleActivityObservation? _activityObservation;
     private readonly string _path;
     private IServiceProvider? _provider;
     private ExistingHostedServiceObservation? _existingServices;
@@ -30,6 +33,7 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
     private int _hostStopped;
     private int _applicationStopped;
     private long _inFlight;
+    private long _activeRequestActivities;
     private long _dropped;
     private int _sinkFailed;
 
@@ -63,6 +67,7 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
         try
         {
             if (Interlocked.Exchange(ref _active, 1) != 0) return Task.CompletedTask;
+            _activityObservation = new LifecycleActivityObservation(ObserveRequestActivity);
             RecordConfiguration();
             Record("observer_registered");
             if (_lifetime is not null)
@@ -108,11 +113,11 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
     protected override void OnEventWritten(EventWrittenEventArgs eventData)
     {
         // Deliberately never read Payload, PayloadNames, Message or any request object.
-        ObserveEvent(eventData.EventId);
+        ObserveEvent(eventData.EventId, eventData.ActivityId, eventData.RelatedActivityId);
     }
 
     /// <summary>Consumes only the four admitted primitive event IDs.</summary>
-    internal void ObserveEvent(int eventId)
+    internal void ObserveEvent(int eventId, Guid activityId = default, Guid relatedActivityId = default)
     {
         try
         {
@@ -124,8 +129,12 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
                     Volatile.Write(ref _hostStopped, 1);
                     Record("host_stop");
                     break;
-                case 3: Interlocked.Increment(ref _inFlight); break;
-                case 4: Interlocked.Decrement(ref _inFlight); break;
+                case 3:
+                    RecordRequest("request_start", _requests.Observe(true, Interlocked.Increment(ref _inFlight), activityId, relatedActivityId));
+                    break;
+                case 4:
+                    RecordRequest("request_end", _requests.Observe(false, Interlocked.Decrement(ref _inFlight), activityId, relatedActivityId));
+                    break;
             }
         }
         catch { /* No event or sink failure may affect framework execution. */ }
@@ -191,9 +200,26 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
                 applicationStoppedSeen = Volatile.Read(ref _applicationStopped) != 0,
                 droppedRecords = Interlocked.Read(ref _dropped), sinkFailed = Volatile.Read(ref _sinkFailed) != 0,
                 hostedServiceStates = _existingServices?.States(),
+                requestCorrelation = _requests.Snapshot(),
+                requestActivityCorrelation = _requestActivities.Snapshot(),
+                requestActivityObservation = _activityObservation?.Snapshot(),
             }));
         }
         catch { /* Serialization and queue failures are advisory. */ }
+    }
+
+    private void RecordRequest(string phase, object correlation) => Enqueue(JsonSerializer.Serialize(new
+    {
+        phase, processId = Environment.ProcessId, utc = DateTimeOffset.UtcNow,
+        inFlightRequests = Interlocked.Read(ref _inFlight), correlation,
+    }));
+
+    private void ObserveRequestActivity(bool started)
+    {
+        if (Volatile.Read(ref _active) == 0) return;
+        long active = started ? Interlocked.Increment(ref _activeRequestActivities) : Interlocked.Decrement(ref _activeRequestActivities);
+        RecordRequest(started ? "request_activity_start" : "request_activity_end",
+            _requestActivities.Observe(started, active, Guid.Empty, Guid.Empty));
     }
 
     private void Enqueue(string value)
@@ -224,6 +250,7 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
         try
         {
             Volatile.Write(ref _active, 0);
+            _activityObservation?.Dispose();
             _startedRegistration.Unregister();
             _stoppingRegistration.Unregister();
             _stoppedRegistration.Unregister();

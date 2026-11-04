@@ -1,0 +1,102 @@
+{
+  "created_utc": "2026-11-04T09:59:47.321975+00:00",
+  "run": "strict-foreign-scope-2",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "62.605"
+  },
+  "failure": {
+    "type": "System.InvalidOperationException",
+    "operation": "InitializeOrganizationAclBaseline",
+    "expected": 202,
+    "observed": 400,
+    "fallback_code": "unavailable",
+    "strict_line": 42,
+    "boundary": "SubmitAsync1457/OrganizationCommandAsync211; first organization prelude before provider/task/revised probes"
+  },
+  "scheduler": {
+    "prior_unhealthy_boundary_recurred": false,
+    "saved_inspect": {
+      "file": "strict-foreign-scope-2-dapr-scheduler-mtls-ncgyhnxy-inspect-private.json",
+      "sha256": "56280bd93ca7e8980fd705eb67d206b3533f136766aeb22c3a5baa5b2b163aa6"
+    },
+    "actual_health_mapping": "8080/tcp\u2192127.0.0.1:50763",
+    "actual_grpc_mapping": "50006/tcp\u2192127.0.0.1:12779",
+    "bootstrap_verified": true
+  },
+  "actual_400_origin": {
+    "utc": "2026-11-04T09:53:25.2360000Z",
+    "mvc_action_result": "BadRequestObjectResult",
+    "result_type": "System.String",
+    "action_elapsed_ms": 0.0636,
+    "response_body_limit": "Raw string response was not retained by the fixture fallback code parser; exact returned text is not separately claimed.",
+    "source_predicate": "CommandsController.SubmitCoreAsync135\u2013139 rejects X-Hexalith-Tenant on every human command (!workloadOnly).",
+    "actual_fixture_construction": "SubmitAsync1455 calls FolderDurabilityGatewayScope.Apply; ordinary canonical tenant branch adds X-Hexalith-Tenant. Body+human bearer is otherwise the supported tenant command path.",
+    "classification": "Deterministic fixture/current-public-SDK command scope incompatibility before domain admission, matching the retained fast manual400 String result; no model-state or source transport correction is indicated.",
+    "status_read_is_different": "CommandStatusController.TryResolveExplicitStatusScope requires exactly one explicit tenant/platform header. Removing it globally would break supported status reads.",
+    "unrelated_400s": "Earlier workload issuer400s precede this action and include the existing unhosted sample metadata path; no semantic link to organization command rejection is asserted."
+  },
+  "supported_correction": "Fixture-only ApplyHumanCommand omits ordinary tenant header while preserving canonical body/bearer and explicit platform scope. Only SubmitAsync POST changes; existing Apply remains for status/platform source/bootstrap. Preserve production guards and strict d29 body.",
+  "acceptance": {
+    "body_entered": true,
+    "first_organization_command_accepted": false,
+    "provider_task_revised_probes_executed": false,
+    "SM4_qualified": false
+  },
+  "attribution": {
+    "source_head_drift": [],
+    "runtime_file_drift": [],
+    "saved_source_bindings": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "saved_sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs",
+        "saved_sha256": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+        "saved_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "aeec5012fa3e1e07426a8fdd145709bce93f619a",
+        "path": "src/Hexalith.EventStore/Controllers/CommandStatusController.cs",
+        "saved_sha256": "c829792e9665f934ad51a9efe20c0d9a6a6107362d6edf4789125d79faf87842"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+        "head": "aeec5012fa3e1e07426a8fdd145709bce93f619a",
+        "path": "src/Hexalith.EventStore/Controllers/CommandsController.cs",
+        "saved_sha256": "894f5b858e7f4b2ffdd2fbef1637088d16395fd228d7e7d1c52e543af38148f7"
+      }
+    ],
+    "poll_observations": 172,
+    "fixture_module_bindings": 46,
+    "input_hashes": {
+      "strict-foreign-scope-2-private.log": "2e877ad38ddcdeba61858474e32f4e4efe81d14d5d5ec3977fd0eb3cba17fddc",
+      "strict-foreign-scope-2-private.xml": "b78d81ec74301e2be803c93e31b48bdfe25f1d3f3906dae233e46b35c6bdb41d",
+      "strict-foreign-scope-2-receipt.json": "6ec5a312eaa896c6c93fe51058a4cac1df13748fe30e1d8085d5d5f9eaa0238b",
+      "strict-foreign-scope-2-before.json": "cfffa682316e9c479d5a0471a087afb860daa72371037abe3f3e0a3eadc2a323",
+      "strict-foreign-scope-2-runtime.json": "4eefe2a8af507da5af0f6db6a2bb34577cb3068f9016f31256514cbe7bba9c11"
+    }
+  },
+  "cleanup_counts": {
+    "remaining_observed_descendants": 0,
+    "remaining_owned_containers": 0,
+    "remaining_unattributed_containers": 0,
+    "remaining_observed_directories": 0
+  },
+  "actions": "Read-only diagnosis. Source correction follows a separately recorded bounded compatibility task; this failed run remains immutable."
+}

@@ -18,6 +18,13 @@ internal static class FolderDurabilityGatewayScope
 {
     /// <summary>Binds one exact supported scope without accepting the reserved storage tenant.</summary>
     internal static void Apply(HttpRequestMessage request, string scope)
+        => ApplyCore(request, scope, includeTenantHeader: true);
+
+    /// <summary>Preserves body/bearer tenant binding for human commands and explicit platform namespaces.</summary>
+    internal static void ApplyHumanCommand(HttpRequestMessage request, string scope)
+        => ApplyCore(request, scope, includeTenantHeader: false);
+
+    private static void ApplyCore(HttpRequestMessage request, string scope, bool includeTenantHeader)
     {
         ArgumentNullException.ThrowIfNull(request);
         if (request.Headers.Contains("X-Hexalith-Scope") || request.Headers.Contains("X-Hexalith-Tenant"))
@@ -25,7 +32,9 @@ internal static class FolderDurabilityGatewayScope
         if (scope is TenantPlatformScopes.Tenants or TenantPlatformScopes.GlobalAdministrators)
             request.Headers.Add("X-Hexalith-Scope", scope);
         else if (TenantCanonicalizer.TryCanonicalize(scope, out string canonical) && scope == canonical)
-            request.Headers.Add("X-Hexalith-Tenant", canonical);
+        {
+            if (includeTenantHeader) request.Headers.Add("X-Hexalith-Tenant", canonical);
+        }
         else throw new InvalidOperationException("A durability request requires its exact canonical public scope.");
     }
 

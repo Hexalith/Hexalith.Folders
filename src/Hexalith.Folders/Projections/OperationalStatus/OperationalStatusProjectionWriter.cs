@@ -50,6 +50,7 @@ public sealed class OperationalStatusProjectionWriter
         SharedProjectionScope scope = OperationalStatusGeneration.Scope(tenantId);
         foreach (OperationalStatusEvent item in events)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             ProjectionEventDto source = item.Source ?? throw new InvalidOperationException("Original operational source metadata is missing.");
             OperationalStatusEvent verified = OperationalStatusEventReader.ReadStored(source);
             if (verified.Digest != item.Digest || verified.MessageId != item.MessageId || verified.Sequence != item.Sequence)
@@ -136,6 +137,8 @@ public sealed class OperationalStatusProjectionWriter
             await RequireCurrentViewsAsync(scope, generation, current!, receipt.RequiredViews, cancellationToken).ConfigureAwait(false);
             return [];
         }
+        if (current is { SchemaVersion: < 3 })
+            throw new OperationalStatusUnavailableException(); // Old compacted anchors have no complete retained closure inventory; rebuild from source.
         if (receipt is not null || message is not null) throw new InvalidOperationException("Operational message identity is reused.");
         if (source.Event is null && current is not null)
             await RequireCurrentViewsAsync(scope, generation, current, null, cancellationToken).ConfigureAwait(false);
@@ -148,9 +151,28 @@ public sealed class OperationalStatusProjectionWriter
                 workspace.SourceDigest, workspace.Workspace.Freshness.ObservedAt, operations);
         foreach ((string taskId, TaskStatusReadModelSnapshot proposed) in next.Tasks)
         {
-            if (Expired(proposed.Freshness.ObservedAt)) continue;
+            cancellationToken.ThrowIfCancellationRequested();
             string key = OperationalStatusKeys.Task(tenantId, folderId, taskId);
             TaskStatusReadModelSnapshot task = proposed;
+            string completionKey = OperationalStatusKeys.TaskCompletion(tenantId, folderId, taskId);
+            OperationalStatusTaskCompletion? completion = (await ReadAsync<OperationalStatusTaskCompletion>(scope, generation,
+                completionKey, cancellationToken).ConfigureAwait(false)).Value;
+            if (completion is not null && !completion.Valid(tenantId, folderId, taskId, next.Checkpoint.Sequence))
+                throw new OperationalStatusUnavailableException();
+            var closed = next.Checkpoint.State.TaskClosures.Values.Where(value => value.TaskId == taskId)
+                .OrderBy(value => next.Checkpoint.TaskClosedSequences[Hexalith.Folders.Aggregates.Folder.FolderState.TaskBindingKey(value.WorkspaceId, taskId)])
+                .FirstOrDefault();
+            if (closed is not null)
+            {
+                long closedSequence = next.Checkpoint.TaskClosedSequences[Hexalith.Folders.Aggregates.Folder.FolderState.TaskBindingKey(closed.WorkspaceId, taskId)];
+                if (completion is null || closedSequence < completion.Sequence)
+                {
+                    completion = OperationalStatusTaskCompletion.Create(tenantId, folderId, closed, closedSequence, next.Checkpoint.SourceDigest);
+                    operations.Add(Write(completionKey, completion));
+                }
+            }
+            if (completion is not null) task = completion.Restore(task);
+            if (Expired(task.Freshness.ObservedAt)) continue;
             OperationalStatusViewEvidence? evidence = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation,
                 OperationalStatusKeys.Evidence(key), cancellationToken).ConfigureAwait(false)).Value;
             TaskStatusReadModelSnapshot? prior = (await ReadAsync<TaskStatusReadModelSnapshot>(scope, generation, key, cancellationToken).ConfigureAwait(false)).Value;
@@ -158,7 +180,7 @@ public sealed class OperationalStatusProjectionWriter
                 throw new InvalidOperationException("Operational task requires source repair.");
             if (prior?.TerminalState is "ready" or "committed") task = prior;
             long position = long.Parse(task.Freshness.ProjectionWatermark!, CultureInfo.InvariantCulture);
-            string prefix = position == source.Sequence ? next.Checkpoint.SourceDigest : evidence!.SourceDigest;
+            string prefix = completion?.SourceDigest ?? (position == source.Sequence ? next.Checkpoint.SourceDigest : evidence!.SourceDigest);
             AddView(key, task, position, prefix, task.Freshness.ObservedAt, operations);
         }
         OperationalStatusReceipt original = OperationalStatusReceipt.Create(source.Sequence, source.MessageId, source.Digest, next.Checkpoint.SourceDigest,
@@ -211,7 +233,10 @@ public sealed class OperationalStatusProjectionWriter
     public async Task<IReadOnlyList<ReadModelBatchOperation>> PrepareRebuildAsync(string tenantId, string folderId,
         IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken cancellationToken = default)
     {
-        OperationalStatusFoldResult next = OperationalStatusFold.Apply(tenantId, folderId, null, events);
+        ArgumentNullException.ThrowIfNull(events);
+        IEnumerable<OperationalStatusEvent> source = ObserveCancellation(events, cancellationToken);
+        OperationalStatusFoldResult next = OperationalStatusFold.Apply(tenantId, folderId, null, source);
+        cancellationToken.ThrowIfCancellationRequested();
         if (sourceHead != next.Checkpoint.Sequence) throw new InvalidOperationException("Incomplete operational rebuild source.");
         SharedProjectionScope scope = OperationalStatusGeneration.Scope(tenantId);
         SharedProjectionEpochStatus? status = null;
@@ -228,7 +253,7 @@ public sealed class OperationalStatusProjectionWriter
         { }
         catch (JsonException) { } // Complete source can replace unreadable derived checkpoint bytes.
         string retainedPrefix = OperationalStatusKeys.Digest(tenantId, folderId);
-        foreach (OperationalStatusEvent item in events.DistinctBy(static item => item.Sequence).TakeWhile(item => item.Sequence <= current?.Sequence))
+        foreach (OperationalStatusEvent item in source.DistinctBy(static item => item.Sequence).TakeWhile(item => item.Sequence <= current?.Sequence))
             retainedPrefix = OperationalStatusKeys.Digest(retainedPrefix, item.Digest);
         // Corrupt derived checkpoints have no authority. Only valid source anchors constrain repair.
         if (current is not null && OperationalStatusFold.Valid(current, tenantId, folderId)
@@ -239,12 +264,15 @@ public sealed class OperationalStatusProjectionWriter
         if (next.Lifecycle is not null) AddView(OperationalStatusKeys.Lifecycle(tenantId, folderId),
             next.Lifecycle, next.Checkpoint.Sequence, next.Checkpoint.SourceDigest, next.Lifecycle.Freshness.ObservedAt, operations);
         foreach ((string id, OperationalWorkspaceStatus value) in next.Workspaces.OrderBy(static item => item.Key, StringComparer.Ordinal))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             AddView(OperationalStatusKeys.Workspace(tenantId, folderId, id), value, value.Sequence, value.SourceDigest,
                 value.Workspace.Freshness.ObservedAt, operations);
+        }
         Dictionary<long, string> prefixes = [];
         string prefix = OperationalStatusKeys.Digest(tenantId, folderId);
         DateTimeOffset observed = DateTimeOffset.UnixEpoch;
-        foreach (OperationalStatusEvent item in events.DistinctBy(static item => item.Sequence))
+        foreach (OperationalStatusEvent item in source.DistinctBy(static item => item.Sequence))
         {
             observed = item.Timestamp > observed ? item.Timestamp : observed;
             prefix = OperationalStatusKeys.Digest(prefix, item.Digest);
@@ -255,19 +283,42 @@ public sealed class OperationalStatusProjectionWriter
         }
         foreach ((string id, TaskStatusReadModelSnapshot task) in next.Tasks.OrderBy(static item => item.Key, StringComparer.Ordinal))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             long position = long.Parse(task.Freshness.ProjectionWatermark!, CultureInfo.InvariantCulture);
             AddView(OperationalStatusKeys.Task(tenantId, folderId, id), task, position, prefixes[position],
                 task.Freshness.ObservedAt, operations);
         }
+        foreach (var closed in next.Checkpoint.State.TaskClosures.Values
+            .OrderBy(value => next.Checkpoint.TaskClosedSequences[Hexalith.Folders.Aggregates.Folder.FolderState.TaskBindingKey(value.WorkspaceId, value.TaskId)])
+            .DistinctBy(static value => value.TaskId))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            long position = next.Checkpoint.TaskClosedSequences[Hexalith.Folders.Aggregates.Folder.FolderState.TaskBindingKey(closed.WorkspaceId, closed.TaskId)];
+            operations.Add(Write(OperationalStatusKeys.TaskCompletion(tenantId, folderId, closed.TaskId),
+                OperationalStatusTaskCompletion.Create(tenantId, folderId, closed, position, prefixes[position])));
+        }
+        cancellationToken.ThrowIfCancellationRequested();
         operations.Add(Write(OperationalStatusKeys.Checkpoint(tenantId, folderId), OperationalStatusCompaction.Compact(next.Checkpoint)));
         return operations;
+    }
+
+    private static IEnumerable<OperationalStatusEvent> ObserveCancellation(IEnumerable<OperationalStatusEvent> events, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        foreach (OperationalStatusEvent item in events)
+        {
+            token.ThrowIfCancellationRequested();
+            yield return item;
+        }
+        token.ThrowIfCancellationRequested();
     }
 
     private async Task<ReadModelEntry<T>> ReadAsync<T>(SharedProjectionScope scope, long generation, string key,
         CancellationToken cancellationToken) where T : class
     {
         try { return await _coordinator.ReadGenerationAsync<T>(scope, generation, key, cancellationToken).ConfigureAwait(false); }
-        catch (SharedProjectionReadUnavailableException exception) when (IsMissingValue(exception) && !key.Contains(":checkpoint:", StringComparison.Ordinal))
+        catch (SharedProjectionReadUnavailableException exception) when (IsMissingValue(exception)
+            && !key.Contains(":checkpoint:", StringComparison.Ordinal) && !key.Contains(":task-completion:", StringComparison.Ordinal))
         {
             return new(null, null);
         }

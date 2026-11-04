@@ -1,0 +1,363 @@
+{
+  "created_utc": "2026-11-04T09:35:49.750168+00:00",
+  "ownership": "released; no active implementation build/test/live process",
+  "heads": {
+    "root": "9198d9213f6ea54c629148322f05e7ded994822d",
+    "sdk": "aeec5012fa3e1e07426a8fdd145709bce93f619a"
+  },
+  "complete_spec_and_all_frontmatter_context_loaded": true,
+  "context_files_sha256": {
+    "_bmad-output/implementation-artifacts/epic-12-context.md": "8143470c995803b6be2c1dcc5cff24c0a8ac7f88db68170dab5b6a5f77886c5d",
+    "docs/exit-criteria/c3-retention.md": "16518dc5f7215a454b5642fcf57a2f6995492326c890233c6cfc1b412d1c9a3d",
+    "_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md": "29426d91e34509ba1b9f4029671cff85161b34c072f3ce66c1a58cd2208d563e",
+    "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+    "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-security-enrollment.md": "5838a2d97ab01bdaf82a52be98e6e462ca63ebf828a0b68b9c7b30b0dfb784ed",
+    "_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md": "f4938bc9c07649a135ff0d6cd67d760b66615b457b6aabe560e5d2d5b74632ec",
+    "_bmad-output/implementation-artifacts/proposal-12-2-mutation-evidence-deadline.md": "aec735df930fe8ff874619cbae97973d465224f439a7efa66af0651a76b106c9",
+    "_bmad-output/implementation-artifacts/proposal-12-2-live-tenant-freshness-prerequisite.md": "59513fcc5cc82880d1256e4c7e3dbb5d78a8ac159407cc3ebb1bab6f436b34a3",
+    "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.md": "0c35797caa027ac7eb430fff1d51e3e50e33e8909ca8ff08e266e424c5fdabea"
+  },
+  "changed_files": [
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs",
+      "before_sha256": "1965c56aeee1c10cd08c66d0165b4ebf930bea08235bc97193b4c7aedc4b35ae",
+      "after_sha256": "41b3756f8b1cf59a4ff261f6dbecb5e0a1f53447889d8457d15a1571cc241eca"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs",
+      "before_sha256": "1df8dc6b199f9b4be0e2bef09f174f080ed442b459e3ffd6a2098abcaed0cb92",
+      "after_sha256": "345e8ce8dff5a2e8e684d98b622b073fffc238ee866e1360af6a2d398150872a"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs",
+      "before_sha256": null,
+      "after_sha256": "96f08d4625cb5620372d04693b2497306d623fa702de597bf0e3d865f25313c0"
+    },
+    {
+      "path": "scripts/pd10-v2-story-owned-paths.txt",
+      "before_sha256": "6210415d740d7042085d15084f6329c7eb1798fbb2517740516261b4b1f58a99",
+      "after_sha256": "a5a1440c53d6627bdbe9c4f5219963aa3314f06e2e149c99ca775e9312a0358c"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+      "before_sha256": "0f6ffed5c05f5f75f63f12eb95f65d46a7e2b86a9bc646a73006f3e1acc2cdef",
+      "after_sha256": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+      "before_sha256": "430be682e5bd1bf77178a789a3e5b034a832306d2be2384ad7f9a774f15c20ef",
+      "after_sha256": "5592a35d9cc1667a4b163910c1f244e05d5dd3bbabdbb23e9038086572d53c16"
+    }
+  ],
+  "phase_patch_sha256": "fc7a1c43046e860618ab60e962b2b3e61d66f48f98bc3b606b15b08daabcbb46",
+  "approved_body_exception": {
+    "before": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "after": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "approved_patch_sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+    "generated_strict_diff_byte_identical_to_approved_patch": true
+  },
+  "unchanged_guards": {
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.patch": {
+      "sha256": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+      "unchanged": true
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": {
+      "sha256": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/WorkspaceContentDurabilityAcceptanceTests.cs": {
+      "sha256": "de8331a03143d0ed61d1cbe118d7bf8969034ce832357b5253e153a75884b81d",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": {
+      "sha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml": {
+      "sha256": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "unchanged": true
+    },
+    "frozen_spec_block": {
+      "sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+      "unchanged": true
+    }
+  },
+  "production_source_diffs": [],
+  "sdk_working_tree_status": [],
+  "commands": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "initial_exit": 1,
+      "initial_error": "CS1061 incorrect new-test decision member",
+      "final_exit": 0,
+      "elapsed": "00:00:08.11"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit": 0,
+      "elapsed": "00:01:21.93"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+        "-class",
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+        "-class",
+        "Hexalith.Folders.Tests.Authorization.EffectivePermissionsTaskScopeTests",
+        "-class",
+        "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+        "-result-xml",
+        "/tmp/story12-2-foreign-scope-20261104-s76ae741/domain-tests-1-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+        "-result-xml",
+        "/tmp/story12-2-foreign-scope-20261104-s76ae741/apphost-tests-1-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-result-xml",
+        "/tmp/story12-2-foreign-scope-20261104-s76ae741/inventory-tests-1-private.xml"
+      ],
+      "exit": 0
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "argv": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "focused_results": [
+    {
+      "label": "domain-tests-1",
+      "xml_sha256": "531a5a97a621505986c11784f5a9545376d9b17dacaf671d57d46b196b7d990f",
+      "log_sha256": "3d5c118594ddcf157e83a7d503f14131ff0fffba55fc8328a10c862cdea9ce86",
+      "total": "103",
+      "passed": "103",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.425",
+      "classes": [
+        {
+          "type": "Hexalith.Folders.Tests.Authorization.LayeredFolderAuthorizationServiceTests",
+          "total": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+          "total": "42",
+          "passed": "42",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+          "total": "23",
+          "passed": "23",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.Tests.Authorization.EffectivePermissionsTaskScopeTests",
+          "total": "12",
+          "passed": "12",
+          "failed": "0"
+        }
+      ]
+    },
+    {
+      "label": "apphost-tests-1",
+      "xml_sha256": "fadb0bac34bd0f646ca6a8b52658382f2746bb0d5af72d379fc2e0f505ef9b9e",
+      "log_sha256": "10724e563956996a40fee0732bdf11cca9305d6c7051963d9c43f7117338fec6",
+      "total": "130",
+      "passed": "130",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.412",
+      "classes": [
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+          "total": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests",
+          "total": "47",
+          "passed": "47",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+          "total": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapEvidenceTests",
+          "total": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+          "total": "18",
+          "passed": "18",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+          "total": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        {
+          "type": "Hexalith.Folders.AppHost.Tests.FolderDurabilityBootstrapProjectionTests",
+          "total": "13",
+          "passed": "13",
+          "failed": "0"
+        }
+      ]
+    },
+    {
+      "label": "inventory-tests-1",
+      "xml_sha256": "16dd7c71797686b3f2d5b51ba57c04bfb31c41ec96c4e3f1eae44c5a33e4e67c",
+      "log_sha256": "eec48ecca9774b1eb05d07de09a21b57f8f78c352aa85c76964903d60b213bce",
+      "total": "18",
+      "passed": "18",
+      "failed": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.403",
+      "classes": [
+        {
+          "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+          "total": "18",
+          "passed": "18",
+          "failed": "0"
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "Hexalith.Folders.Tests": {
+      "dll_sha256": "39db6b9b29c4f90a5b3c7dad26b12be26008cf41dfd23af5d0e21d89ad640cfd",
+      "pdb_sha256": "f09b37240e7dccfc40d1776db660eae5ffd901e0ceaf126edac35202fb8a9c22"
+    },
+    "Hexalith.Folders.AppHost.Tests": {
+      "dll_sha256": "b725662750fdcdd6975d52b7515679056641251d5e1bad60b6f2ff4b1daaee2d",
+      "pdb_sha256": "fd301adeb55cb85d8f0f889072d062dac368bc375dbc44200716c4fd81c5b4cb"
+    },
+    "Hexalith.Folders.Contracts.Tests": {
+      "dll_sha256": "fb15d4fe9fadf8293f4baa46dd7b3a63492fb31b192635fc5661620f28bd828a",
+      "pdb_sha256": "a830f03c900eff36d2b9e5ba731eb895a23dd259b5b4dd8a7c17b8c4c815d2b0"
+    }
+  },
+  "pending_inventory_delta": {
+    "tests/Hexalith.Folders.Tests/Queries/Folders/UnsupportedTaskScopeMetadataReader.cs": {
+      "before": null,
+      "after": "96f08d4625cb5620372d04693b2497306d623fa702de597bf0e3d865f25313c0"
+    },
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs": {
+      "before": "1965c56aeee1c10cd08c66d0165b4ebf930bea08235bc97193b4c7aedc4b35ae",
+      "after": "41b3756f8b1cf59a4ff261f6dbecb5e0a1f53447889d8457d15a1571cc241eca"
+    },
+    "scripts/pd10-v2-story-owned-paths.txt": {
+      "before": "6210415d740d7042085d15084f6329c7eb1798fbb2517740516261b4b1f58a99",
+      "after": "a5a1440c53d6627bdbe9c4f5219963aa3314f06e2e149c99ca775e9312a0358c"
+    },
+    "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs": {
+      "before": "1df8dc6b199f9b4be0e2bef09f174f080ed442b459e3ffd6a2098abcaed0cb92",
+      "after": "345e8ce8dff5a2e8e684d98b622b073fffc238ee866e1360af6a2d398150872a"
+    }
+  },
+  "preparation_finding": "Initial metadata check incorrectly expected the AppHost strict file in the PD10 pending denominator. It is intentionally absent; the actual expected four-input delta passes. No source/inventory/test correction or rerun was required.",
+  "log_hashes": {
+    "domain-build-1-private.log": "dcea90155356ff36b0421f7c9644ab81f1cbb6b3307081fd9de1e1cda48acf94",
+    "domain-build-2-private.log": "ff52cf67fcf1b4807c44fa62aefb8ae73b9f6c1370778c87a4e04ac4bbf5ee7c",
+    "pending-inventory-private.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "apphost-tests-1-private.log": "10724e563956996a40fee0732bdf11cca9305d6c7051963d9c43f7117338fec6",
+    "apphost-build-1-private.log": "326c6743061c519825354eb0b0fce1897dcc853c7cc12f8c4485ae54afdd2ed2",
+    "inventory-tests-1-private.log": "eec48ecca9774b1eb05d07de09a21b57f8f78c352aa85c76964903d60b213bce",
+    "domain-tests-1-private.log": "3d5c118594ddcf157e83a7d503f14131ff0fffba55fc8328a10c862cdea9ce86"
+  },
+  "limits": [
+    "No live/revised strict class executed here. Parent owns full coherent runtime/Memories rebuild, source/PDB/producer/assets audit, isolated strict run and cleanup.",
+    "Contracts inventory uses the already-built unchanged owner assembly and reads current source/inventory.",
+    "The component native metadata is explicit unsupported/null evidence through the actual SDK-facing Folders adapter, not live source authority; zero is never synthesized.",
+    "Prior failed runs, sealed packets and independent broad/package/governance/SM4/whole-story gates retain separate dispositions."
+  ]
+}

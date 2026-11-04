@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "dotnet",
+    "restore",
+    "Hexalith.Folders.slnx",
+    "-p:UseHexalithProjectReferences=true",
+    "-p:UseNuGetDeps=false",
+    "-m:1",
+    "-nr:false",
+    "-v:quiet"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "utc_start": "2026-11-04T09:36:42.678424+00:00",
+  "utc_end": "2026-11-04T09:36:48.567471+00:00",
+  "exit_code": 0,
+  "environment_selection": {},
+  "private_log": {
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/scope-runtime-restore-private.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "private_xml": null,
+  "summary": null,
+  "source_or_head_drift": [],
+  "working_tree_status_changes": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "remaining_observed_descendants": [],
+    "remaining_owned_containers": [],
+    "remaining_observed_directories": [],
+    "remaining_unattributed_container_count": 0
+  },
+  "runtime_module_observations": 0,
+  "fixture_module_observations": 0,
+  "original_private_receipt_sha256": "0cf8343697a9900b2f44a040b6ccadb38f092f335bb88ad53019a5e261a131b2"
+}

@@ -1,0 +1,16 @@
+{
+  "phase": "scope-release-contract-spine-gate",
+  "exit_code": 1,
+  "error_codes_and_messages": [
+    {
+      "code": "CS1061",
+      "message": "'IServiceCollection' does not contain a definition for 'AddEventStoreGatewayNativeSourceMetadataReader' and no accessible extension method 'AddEventStoreGatewayNativeSourceMetadataReader' accepting a first argument of type 'IServiceCollection' could be found (are you missing a using directive or an assembly reference?) [/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj]"
+    },
+    {
+      "code": "CS1061",
+      "message": "'IServiceCollection' does not contain a definition for 'AddEventStoreGatewayNativeSourceMetadataReader' and no accessible extension method 'AddEventStoreGatewayNativeSourceMetadataReader' accepting a first argument of type 'IServiceCollection' could be found (are you missing a using directive or an assembly reference?) [/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj]"
+    }
+  ],
+  "source_lane_is_separate": true,
+  "package_pin_or_publication_changed": false
+}

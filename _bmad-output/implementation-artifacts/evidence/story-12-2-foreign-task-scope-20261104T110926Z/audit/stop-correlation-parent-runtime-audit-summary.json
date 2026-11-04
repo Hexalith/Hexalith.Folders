@@ -1,0 +1,24 @@
+{
+  "modules": 98,
+  "source_or_pdb_issues": [],
+  "sdk_variant_failures": {},
+  "asset_failures": [],
+  "bodies_match_approved_expectations": {
+    "OperationalStatusDurabilityAcceptanceTests.cs": true,
+    "FolderDurabilityAcceptanceTests.cs": true,
+    "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+  },
+  "approved_strict_body_transition": {
+    "owner_reply": "approve",
+    "date": "2026-11-04",
+    "before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+    "approved_after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "actual_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+  },
+  "companion_bodies_unchanged": {
+    "FolderDurabilityAcceptanceTests.cs": true,
+    "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+  },
+  "frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+  "frozen_unchanged": true
+}

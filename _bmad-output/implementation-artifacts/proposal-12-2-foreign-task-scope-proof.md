@@ -1,13 +1,19 @@
 ---
 title: 'Story 12.2 foreign task scope and unsupported absence reconciliation'
-status: 'proposed-owner-decision-required'
+status: 'approved-implemented'
 created: '2026-11-03'
 parent_spec: 'spec-12-2-durable-projections-and-task-completion-pipeline.md'
 ---
 
+## Owner approval — 2026-11-04
+
+The user replied **approve** to the prepared two-probe correction. This authorizes only the exact
+strict-body exception and focused source/authorization controls below. The patch was not applied
+before approval. Prior sealed pending-decision snapshots remain immutable.
+
 ## Exact decision
 
-Approve the [prepared, unapplied test patch](proposal-12-2-foreign-task-scope-proof.patch) as an explicit
+The owner approved the [prepared test patch](proposal-12-2-foreign-task-scope-proof.patch) as an explicit
 exception to the earlier prohibition on changing the original strict body. Change only its final
 foreign-folder probe setup/input and add a distinct unsupported-absence probe. Keep the foreign task
 scope **404 assertion** and require a real independently authorized different folder. The original
@@ -87,13 +93,26 @@ original folder's protected task row. A create-only different folder has no task
 
 ## Reviewable bytes and remaining alternative
 
-The current strict file is still unchanged:
+The strict file before approval was:
 `f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90`.
-The unapplied patch SHA256 is
+The approved patch SHA256 is
 `c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856`;
-its proposed resulting strict file SHA256 is
+its implemented strict file SHA256 is
 `d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82`.
-These are proposal bytes, not an executed revised-test result.
+The implemented diff matches these exact approved bytes. The revised strict class passes1/1,
+zero failures/errors/skips, in396.332s on the qualified current source producer. It executes both
+the real different-folder404/no-disclosure probe and unchanged physical-absence503/code probe,
+then completes the remaining restart/rebuild/replay/denial/storage-failure assertions. See the
+[current qualification packet](evidence/story-12-2-foreign-task-scope-20261104T110926Z/README.md).
+The four preceding failed attempts remain independent evidence. A fixture-only human-command
+scope compatibility correction and opaque lifecycle diagnostics preserve all production policies,
+source proof and deadlines; neither fabricates stop success or changes the approved strict bytes.
+
+Current consumer selections pass5630cases with2existing optional skips; SDK Server broad passes7684
+with25exact prior skips and three successful published ABI controls. The separate Release gate fails
+CS1061 because packaged SDK4.0.4 lacks the required native metadata registration API. Actual strict
+SM4 command/status p95 measurements remain over budget. This proposal's implementation and live
+qualification do not close package/PD10, SM4, independent-review or whole-story acceptance gates.
 
 Keeping the strict physical-absence404 expectation unchanged instead requires a separately approved
 SDK authoritative-absence capability. No supported read-only seam presently establishes that fact;

@@ -1,0 +1,68 @@
+{
+  "phase": "strict-foreign-scope-2",
+  "result": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-11-04",
+      "run-time": "09:52:30",
+      "errors": "0",
+      "failed": "1",
+      "passed": "0",
+      "skipped": "0",
+      "time": "62.605",
+      "total": "1"
+    }
+  ],
+  "bootstrap_verified": true,
+  "revised_probes_executed": false,
+  "boundary": "First organization ACL command returned HTTP400 rather than required202 at strict line42; fixture RequireStatusAsync failed.",
+  "actual_response_shape": "MVC reports BadRequestObjectResult containing System.String after valid model binding; the fixture did not parse a canonical JSON code.",
+  "source_cause": {
+    "controller": "CommandsController.SubmitCoreAsync135\u2013139 rejects any X-Hexalith-Tenant on human command requests before side effects.",
+    "fixture": "SubmitAsync supplied this tenant header through FolderDurabilityGatewayScope.Apply. Body tenant and validated human bearer already establish command scope.",
+    "other_plain_badrequest_branches": "Only taskId extension and ordinary ULID IDs are supplied; neither reserved gateway identity extensions nor wrk- identifiers are used.",
+    "status_is_separate": "CommandStatusController.TryResolveExplicitStatusScope requires exactly one explicit tenant/platform header; status calls must retain it."
+  },
+  "saved_source_bindings": [
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs",
+      "sha256": "07c5ffa71acc3decc395a9a080c3f51ceffb9490acce584968893b06535f07b0"
+    },
+    {
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "head": "aeec5012fa3e1e07426a8fdd145709bce93f619a",
+      "path": "src/Hexalith.EventStore/Controllers/CommandsController.cs",
+      "sha256": "894f5b858e7f4b2ffdd2fbef1637088d16395fd228d7e7d1c52e543af38148f7"
+    }
+  ],
+  "private_inputs_sha256": {
+    "strict-foreign-scope-2-receipt.json": "6ec5a312eaa896c6c93fe51058a4cac1df13748fe30e1d8085d5d5f9eaa0238b",
+    "strict-foreign-scope-2-private.log": "2e877ad38ddcdeba61858474e32f4e4efe81d14d5d5ec3977fd0eb3cba17fddc",
+    "strict-foreign-scope-2-private.xml": "b78d81ec74301e2be803c93e31b48bdfe25f1d3f3906dae233e46b35c6bdb41d",
+    "strict-foreign-scope-2-runtime.json": "4eefe2a8af507da5af0f6db6a2bb34577cb3068f9016f31256514cbe7bba9c11"
+  },
+  "source_or_head_drift": [],
+  "runtime_file_drift": [],
+  "cleanup": {
+    "runtimeOwnedProcessRemainders": [],
+    "ownedContainerRemainders": [],
+    "ownedDaprDirectories": [
+      {
+        "path": "/tmp/hexalith-dapr/4b7a36e69f984bab9ec2de1c4e99000d",
+        "exists": false
+      }
+    ],
+    "unattributedNewContainerCount": 0,
+    "unattributedNewDirectories": [],
+    "actionOnUnattributedResources": "None"
+  },
+  "disposition": "Small fixture-only human-command scope compatibility correction is within approved current SDK enrollment. No production guard, body tenant, validated principal, source proof or deadline change; no further same-code retry of this deterministic boundary."
+}

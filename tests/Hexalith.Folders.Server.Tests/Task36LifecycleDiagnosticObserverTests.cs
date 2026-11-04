@@ -65,7 +65,9 @@ public sealed class Task36LifecycleDiagnosticObserverTests
             {
                 row.GetProperty("processId").GetInt32().ShouldBe(Environment.ProcessId);
                 row.GetProperty("utc").GetDateTimeOffset().ShouldBeGreaterThan(DateTimeOffset.MinValue);
-                if (row.TryGetProperty("inFlightRequests", out JsonElement count)) count.GetInt64().ShouldBe(0);
+                if (row.TryGetProperty("inFlightRequests", out JsonElement count)
+                    && !row.GetProperty("phase").GetString()!.StartsWith("request_activity_", StringComparison.Ordinal))
+                    count.GetInt64().ShouldBe(row.GetProperty("phase").GetString() == "request_start" ? 1 : 0);
             }
             File.ReadAllText(path).ShouldNotContain("private-");
             if (!OperatingSystem.IsWindows())
@@ -147,7 +149,7 @@ public sealed class Task36LifecycleDiagnosticObserverTests
             {
                 string text = File.ReadAllText(path);
                 text.ShouldNotContain("private-provider-message");
-                Rows(path).ShouldAllBe(row => new[] { "setup_unavailable", "host_configuration", "observer_registered", "host_stop" }
+                Rows(path).ShouldAllBe(row => new[] { "setup_unavailable", "host_configuration", "observer_registered", "host_stop", "request_start", "request_end" }
                     .Contains(row.GetProperty("phase").GetString()));
                 Rows(path).ShouldContain(row => row.GetProperty("phase").GetString() == "setup_unavailable");
             }

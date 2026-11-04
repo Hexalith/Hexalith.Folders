@@ -1,3 +1,4 @@
+using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
@@ -92,6 +93,40 @@ public sealed class TaskStatusQueryHandlerTests
             Query() with { FolderId = null }, TestContext.Current.CancellationToken);
         result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
         readModel.Requests.ShouldBe(0);
+    }
+
+    /// <summary>Unsupported native absence cannot supply folder authority or expose a protected task.</summary>
+    [Fact]
+    public async Task UnsupportedNativeFolderAbsenceNeverBecomesZeroOrReachesTaskStorage()
+    {
+        var clock = new FixedUtcClock(Now);
+        CountingTenantAccessProjectionStore tenant = new(FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        var metadata = new UnsupportedTaskScopeMetadataReader();
+        var sequence = new GatewayOrganizationStreamSequenceReader(metadata);
+        var store = new InMemoryReadModelStore();
+        var organization = new EventStoreOrganizationEffectivePermissionsReadModel(store, clock, sequence);
+        var permissions = new EventStoreFolderEffectivePermissionsReadModel(store, clock, sequence, organization);
+        var unavailable = await permissions.GetAsync(new EffectivePermissionsReadModelRequest("tenant-a", "absent-folder",
+            [EffectivePermissionPrincipal.User("user-a")], "task-a", null, "read_your_writes"), TestContext.Current.CancellationToken);
+        unavailable.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+        unavailable.Freshness.ReasonCode.ShouldBe("folder_stream_unavailable");
+        CountingTaskStatusReadModel tasks = new(TaskStatusReadModelResult.Available(Snapshot()));
+        var validator = new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
+        var authorizer = new TenantAccessAuthorizer(tenant, clock, new TenantAccessOptions());
+        var handler = new TaskStatusQueryHandler(authorizer, tasks, clock, folderAuthorization: new LayeredFolderAuthorizationService(
+            authorizer, new EffectivePermissionsFolderPermissionEvidenceProvider(permissions, clock), validator,
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")), clock));
+
+        TaskStatusQueryResult result = await handler.HandleAsync(Query() with { FolderId = "absent-folder" }, TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
+        result.FolderAuthorizationDenial!.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.FolderAcl);
+        result.TaskId.ShouldBeNull();
+        result.TerminalState.ShouldBeNull();
+        tasks.Requests.ShouldBe(0);
+        validator.Requests.ShouldBeEmpty();
+        metadata.Requests.Count.ShouldBe(2);
+        metadata.Requests.ShouldAllBe(identity => identity.TenantId == "tenant-a" && identity.Domain == "folders" && identity.AggregateId == "absent-folder");
     }
 
     [Fact]

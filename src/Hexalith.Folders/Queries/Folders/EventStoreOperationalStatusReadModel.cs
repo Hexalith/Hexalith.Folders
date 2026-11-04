@@ -268,6 +268,12 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
             if (evidence is not null || requireView && checkpoint.State.IsCreated
                 && clock.UtcNow - checkpoint.ObservedAt < OperationalStatusKeys.Retention)
                 throw new InvalidOperationException("Known operational view is missing.");
+            if (head > checkpoint.Sequence)
+            {
+                if (requireView && clock.UtcNow - checkpoint.ObservedAt >= OperationalStatusKeys.Retention)
+                    return (null, absent, "missing");
+                return (null, absent with { Stale = true, ReasonCode = "projection_stale" }, "stale");
+            }
             return (null, absent, "missing");
         }
         FolderLifecycleFreshness freshness = sourceFreshness(row);

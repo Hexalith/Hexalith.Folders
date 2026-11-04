@@ -1,0 +1,29 @@
+{
+  "phases": [
+    "scope-client-generation",
+    "scope-contracts-broad",
+    "scope-domain-broad",
+    "scope-fixture-tests",
+    "scope-gateway-broad",
+    "scope-integration-broad",
+    "scope-memories-build",
+    "scope-official-abi-materialization",
+    "scope-post-package-debug-restore",
+    "scope-reader-tests",
+    "scope-release-contract-spine-gate",
+    "scope-runtime-build",
+    "scope-runtime-restore",
+    "scope-sdk-server-broad",
+    "scope-server-broad",
+    "scope-workers-broad",
+    "stop-correlation-secret-controls",
+    "strict-foreign-scope-1",
+    "strict-foreign-scope-2",
+    "strict-foreign-scope-3",
+    "strict-foreign-scope-4",
+    "strict-foreign-scope-5"
+  ],
+  "raw_logs_exported": false,
+  "raw_xml_exported": false,
+  "scope": "Exact approved foreign-task scope correction, current runtime qualification and separately retained startup/compatibility outcomes."
+}

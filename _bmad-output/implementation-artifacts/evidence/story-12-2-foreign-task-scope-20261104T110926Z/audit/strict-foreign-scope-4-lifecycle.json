@@ -1,0 +1,2246 @@
+{
+  "original_private_sha256": "c923f94c1a467daba7e8ef3444671215b431dfdff3015df43632b9e643eab73b",
+  "records": [
+    {
+      "phase": "host_configuration",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:23:47.0126058+00:00",
+      "stopConcurrently": false,
+      "shutdownTimeoutMilliseconds": 30000,
+      "serviceRegistrationOrder": [
+        "other",
+        "opaque_factory",
+        "telemetry_shutdown",
+        "other",
+        "other",
+        "other",
+        "other",
+        "opaque_factory",
+        "rate_limit_sync",
+        "opaque_factory",
+        "opaque_factory",
+        "snapshot_qualification",
+        "projection_discovery",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "web_server"
+      ],
+      "serviceRegistrationCount": 18,
+      "serviceOrderTruncated": false,
+      "serverRegisteredLast": true,
+      "factoryRegistrationCount": 8,
+      "nonSingletonRegistrationCount": 0,
+      "knownLifecycleRegistrationCount": 1
+    },
+    {
+      "phase": "observer_registered",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:23:47.0185557+00:00",
+      "elapsedMilliseconds": 145.2299,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": null
+    },
+    {
+      "phase": "host_start",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:23:47.5191704+00:00",
+      "elapsedMilliseconds": 645.8446,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": null
+    },
+    {
+      "phase": "existing_hosted_services",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:23:47.5682709+00:00",
+      "capture": {
+        "status": "available",
+        "reason": "existing_singletons",
+        "services": [
+          {
+            "ordinal": 0,
+            "type": "OpenTelemetry.Extensions.Hosting.Implementation.TelemetryHostedService",
+            "assembly": "OpenTelemetry.Extensions.Hosting",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 1,
+            "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+            "assembly": "Task36FoldObserver",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 2,
+            "type": "Hexalith.EventStore.ServiceDefaults.BoundedTelemetryShutdownService",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 3,
+            "type": "Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckPublisherHostedService",
+            "assembly": "Microsoft.Extensions.Diagnostics.HealthChecks",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 4,
+            "type": "Microsoft.AspNetCore.DataProtection.Internal.DataProtectionHostedService",
+            "assembly": "Microsoft.AspNetCore.DataProtection",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 5,
+            "type": "Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityStartupValidator",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": false,
+            "hostedLifecycleService": true
+          },
+          {
+            "ordinal": 6,
+            "type": "Hexalith.EventStore.Authorization.EventStoreAuthorizationStartupValidator",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 7,
+            "type": "Hexalith.EventStore.Indexes.AdminOperationalIndexHostedService",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 8,
+            "type": "Hexalith.EventStore.Configuration.DaprRateLimitConfigSync",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 9,
+            "type": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 10,
+            "type": "Hexalith.EventStore.Server.Configuration.NoOpHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 11,
+            "type": "Hexalith.EventStore.Server.Configuration.FoldedSnapshotQualificationHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 12,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionDiscoveryHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 13,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionDeliveryRetryWorker",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 14,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionActivationWorker",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 15,
+            "type": "Hexalith.EventStore.Server.Projections.ActiveRebuildIndexCleanupService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 16,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionPollerService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 17,
+            "type": "Microsoft.AspNetCore.Hosting.GenericWebHostService",
+            "assembly": "Microsoft.AspNetCore.Hosting",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          }
+        ]
+      }
+    },
+    {
+      "phase": "application_stopping",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:27:37.7111916+00:00",
+      "elapsedMilliseconds": 230847.9997,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "host_stop",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:27:37.7216436+00:00",
+      "elapsedMilliseconds": 230858.4514,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:27:38.7145088+00:00",
+      "elapsedMilliseconds": 231851.3169,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:27:39.7156095+00:00",
+      "elapsedMilliseconds": 232852.4175,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "application_stopped",
+      "processId": 1728410,
+      "utc": "2026-11-04T10:27:39.7605349+00:00",
+      "elapsedMilliseconds": 232897.3429,
+      "inFlightRequests": 0,
+      "hostStopSeen": true,
+      "applicationStoppedSeen": true,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 6,
+          "completed": true,
+          "canceled": true,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "host_configuration",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:27:57.3255636+00:00",
+      "stopConcurrently": false,
+      "shutdownTimeoutMilliseconds": 30000,
+      "serviceRegistrationOrder": [
+        "other",
+        "opaque_factory",
+        "telemetry_shutdown",
+        "other",
+        "other",
+        "other",
+        "other",
+        "opaque_factory",
+        "rate_limit_sync",
+        "opaque_factory",
+        "opaque_factory",
+        "snapshot_qualification",
+        "projection_discovery",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "opaque_factory",
+        "web_server"
+      ],
+      "serviceRegistrationCount": 18,
+      "serviceOrderTruncated": false,
+      "serverRegisteredLast": true,
+      "factoryRegistrationCount": 8,
+      "nonSingletonRegistrationCount": 0,
+      "knownLifecycleRegistrationCount": 1
+    },
+    {
+      "phase": "observer_registered",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:27:57.3318087+00:00",
+      "elapsedMilliseconds": 118.5538,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": null
+    },
+    {
+      "phase": "host_start",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:27:57.5547235+00:00",
+      "elapsedMilliseconds": 341.4682,
+      "inFlightRequests": 0,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": null
+    },
+    {
+      "phase": "existing_hosted_services",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:27:57.6011534+00:00",
+      "capture": {
+        "status": "available",
+        "reason": "existing_singletons",
+        "services": [
+          {
+            "ordinal": 0,
+            "type": "OpenTelemetry.Extensions.Hosting.Implementation.TelemetryHostedService",
+            "assembly": "OpenTelemetry.Extensions.Hosting",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 1,
+            "type": "Task36FoldObserver.LifecycleDiagnosticObserver",
+            "assembly": "Task36FoldObserver",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 2,
+            "type": "Hexalith.EventStore.ServiceDefaults.BoundedTelemetryShutdownService",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 3,
+            "type": "Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckPublisherHostedService",
+            "assembly": "Microsoft.Extensions.Diagnostics.HealthChecks",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 4,
+            "type": "Microsoft.AspNetCore.DataProtection.Internal.DataProtectionHostedService",
+            "assembly": "Microsoft.AspNetCore.DataProtection",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 5,
+            "type": "Hexalith.EventStore.ServiceDefaults.Authentication.EventStoreHttpHostSecurityStartupValidator",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": false,
+            "hostedLifecycleService": true
+          },
+          {
+            "ordinal": 6,
+            "type": "Hexalith.EventStore.Authorization.EventStoreAuthorizationStartupValidator",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 7,
+            "type": "Hexalith.EventStore.Indexes.AdminOperationalIndexHostedService",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 8,
+            "type": "Hexalith.EventStore.Configuration.DaprRateLimitConfigSync",
+            "assembly": "Hexalith.EventStore.Gateway",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 9,
+            "type": "Hexalith.EventStore.ServiceDefaults.Routing.DevelopmentRouteCatalogBootstrapWorker",
+            "assembly": "Hexalith.EventStore.ServiceDefaults",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 10,
+            "type": "Hexalith.EventStore.Server.Configuration.NoOpHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 11,
+            "type": "Hexalith.EventStore.Server.Configuration.FoldedSnapshotQualificationHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 12,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionDiscoveryHostedService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 13,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionDeliveryRetryWorker",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 14,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionActivationWorker",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 15,
+            "type": "Hexalith.EventStore.Server.Projections.ActiveRebuildIndexCleanupService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 16,
+            "type": "Hexalith.EventStore.Server.Projections.ProjectionPollerService",
+            "assembly": "Hexalith.EventStore.Server",
+            "backgroundService": true,
+            "hostedLifecycleService": false
+          },
+          {
+            "ordinal": 17,
+            "type": "Microsoft.AspNetCore.Hosting.GenericWebHostService",
+            "assembly": "Microsoft.AspNetCore.Hosting",
+            "backgroundService": false,
+            "hostedLifecycleService": false
+          }
+        ]
+      }
+    },
+    {
+      "phase": "application_stopping",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:18.6328561+00:00",
+      "elapsedMilliseconds": 21420.7391,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:19.6367293+00:00",
+      "elapsedMilliseconds": 22424.6127,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:20.6362005+00:00",
+      "elapsedMilliseconds": 23424.0839,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:21.6362764+00:00",
+      "elapsedMilliseconds": 24424.1597,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:22.6363295+00:00",
+      "elapsedMilliseconds": 25424.2127,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:23.636223+00:00",
+      "elapsedMilliseconds": 26424.1064,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:24.636128+00:00",
+      "elapsedMilliseconds": 27424.0111,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:25.6362623+00:00",
+      "elapsedMilliseconds": 28424.1458,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:26.6366737+00:00",
+      "elapsedMilliseconds": 29424.5567,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:27.6368224+00:00",
+      "elapsedMilliseconds": 30424.7061,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:28.6366385+00:00",
+      "elapsedMilliseconds": 31424.5219,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    },
+    {
+      "phase": "stopping_snapshot",
+      "processId": 1801241,
+      "utc": "2026-11-04T10:28:29.6363648+00:00",
+      "elapsedMilliseconds": 32424.2483,
+      "inFlightRequests": 1,
+      "hostStopSeen": false,
+      "applicationStoppedSeen": false,
+      "droppedRecords": 0,
+      "sinkFailed": false,
+      "hostedServiceStates": [
+        {
+          "ordinal": 0,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 1,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 2,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 3,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 4,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 5,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 6,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 7,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 8,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 9,
+          "state": "observed",
+          "taskStatus": 5,
+          "completed": true,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 10,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 11,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 12,
+          "state": "not_background"
+        },
+        {
+          "ordinal": 13,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 14,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 15,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 16,
+          "state": "observed",
+          "taskStatus": 1,
+          "completed": false,
+          "canceled": false,
+          "faulted": false
+        },
+        {
+          "ordinal": 17,
+          "state": "not_background"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "phase": "Bounded stop-correlation diagnostic continuation \u2014 2026-11-04",
+  "closed_utc": "2026-11-04T10:55:42.999584+00:00",
+  "heads": {
+    "root": "9198d9213f6ea54c629148322f05e7ded994822d",
+    "sdk": "aeec5012fa3e1e07426a8fdd145709bce93f619a"
+  },
+  "changed_paths": [
+    "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs",
+    "scripts/pd10-v2-story-owned-paths.txt",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs",
+    "tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs"
+  ],
+  "before_hashes": {
+    "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs": "e6e17bc7929230d73b3ec5b5f8785326ede03b90d1ebd12860c565b064bcab6e",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs": "5f0ad8f632034e302efd2a444eaafa7046a116fc43adc88c63b36232843ca9b4",
+    "scripts/pd10-v2-story-owned-paths.txt": "a5a1440c53d6627bdbe9c4f5219963aa3314f06e2e149c99ca775e9312a0358c",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "6f7c8bceeda868bb4e11999a1399fe765f006776da8786429af6b1a7a76dadd1",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "8c5107c7b227cf3ed09e36f5b5f9f1130091b9a9328f735d6cb88b97f6d70b5d",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+  },
+  "after_hashes": {
+    "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs": "ffd147212a495eaa545a47a16a4cf0518481907d15a13a3d6e42ca42054792c1",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs": "335806f2707c0a6fba9cc4ebc23848ccb484aadb995c527605b0d9023227c0f7",
+    "scripts/pd10-v2-story-owned-paths.txt": "3d1baaf0bd9084cf0dbd6f8b9f23491a226b03ae83c4fccd0c6b3f18cb7a8775",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "9928d12faee7cc53d799a2bc3d8d016607c20eb0ade223e8211528291fe122df",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "924a53f127d59c27cc20faea43740b71c99a03417aa44ebf16f8490a1c0755aa",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs": "cafaf5e5e08e392b0a127c8c87da0d2e4950f740a29dbcde8f54653c08fe461b",
+    "tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs": "baabb70cc21ec8f999b91c1fbe1cc171ec51dc157645fef0fdb8543e55ef5501",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs": "bc62a26a5d1ec45464809441f7d5ffeabec194474cf9314c5a389d413be9ec98"
+  },
+  "new_paths": [
+    "tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs",
+    "tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs",
+    "tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs"
+  ],
+  "phase_patch": {
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/stop-correlation-phase.patch",
+    "sha256": "978d8b27cb28f4849e9c6131a4fdc5c67ca3bd94724ac969198584e596caf641"
+  },
+  "guard_files": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+      "before": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "after": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "before": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "after": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": {
+      "before": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+      "after": "ffaf165ba3aa3a4ea4cd675706e18cdd9d50ac12bb383884aa2a73b607ca11a4",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": {
+      "before": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "after": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "unchanged": true
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "before": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "after": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "unchanged": true
+    }
+  },
+  "frozen_block": {
+    "before": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "after": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "unchanged": true
+  },
+  "preserved_observer_limits": {
+    "sink_records": 64,
+    "snapshot_interval_ms": 1000,
+    "host_stop_method": "Immediate completed task; unchanged.",
+    "existing_request_counts": "Original EventSource IDs3/4 increment/decrement unchanged.",
+    "activity_creation": "No Activity is started or enabled by the observer.",
+    "active_identity_limit": 64,
+    "hosting_listener_limit": 8,
+    "contention_overflow_behavior": "Explicit unavailable correlation; no waiting or invented join."
+  },
+  "actual_framework_evidence": [
+    "PASS framework request Activity remains absent with opaque observation installed and independent creation disabled.",
+    "PASS framework existing request Activity: trace=75aa85bbf00a800ed0e4c5994c6d2000; span=22d05e139fb9b71a; matched_start_snapshot_end=True; drained=True; private_sentinels_absent=True."
+  ],
+  "primary_source_assessment": {
+    "url": "https://raw.githubusercontent.com/dotnet/aspnetcore/v10.0.14/src/Hosting/Hosting/src/Internal/HostingApplicationDiagnostics.cs",
+    "early_seam": "RequestStart event precedes Activity creation, demonstrated by focused-tests-1 failure and matching source.",
+    "creation_guard": "DiagnosticListener.IsEnabled of the unsuffixed activity name can participate in creation. IsEnabled explicitly returns false for that name.",
+    "late_seam": "Only fixed HttpRequestIn.Start/Stop notifications are subscribed. Their values are ignored. They observe an already-created Activity around its normal lifetime.",
+    "executed_controls": "Independent ActivitySource listener enables the positive real-Kestrel case. A separate actual host with independent creation/logging disabled stays without an Activity while observer installed.",
+    "privacy": "No Payload/PayloadNames/Message, notification Value, requests/contexts, URLs/query/routes, headers/bodies, tags/baggage/tracestate are read by observer/helpers."
+  },
+  "receipts": {
+    "focused-tests-1": {
+      "counts": {
+        "total": "19",
+        "passed": "18",
+        "failed": "1",
+        "errors": "0",
+        "skipped": "0",
+        "time": "3.384"
+      },
+      "exit_code": 1,
+      "class_case_counts": {
+        "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests": 5,
+        "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests": 9,
+        "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests": 5
+      },
+      "artifacts": {
+        "stop-correlation-focused-tests-1-private.xml": "549a4cf81431a3ab47e7d43d0d049d205d757dda9c4463bfd333da9aa35bb4a7",
+        "stop-correlation-focused-tests-1-private.log": "f9f3054f22f6ee285174f35b0e2932c723afa2f4cf942fe2419c444a715c80a7"
+      }
+    },
+    "focused-tests-2": {
+      "counts": {
+        "total": "24",
+        "passed": "24",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "3.459"
+      },
+      "exit_code": 0,
+      "class_case_counts": {
+        "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests": 10,
+        "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests": 9,
+        "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests": 5
+      },
+      "artifacts": {
+        "stop-correlation-focused-tests-2-private.xml": "0b06d02cf0096a8aad0fb7fe4d6c0fd099ced232a9424d44f2a13b03da24a76e",
+        "stop-correlation-focused-tests-2-private.log": "4d8a27491cc990750cf265b598ce5b66c99ca43ed809f2d27ee33f1581a94746"
+      }
+    },
+    "focused-tests-3": {
+      "counts": {
+        "total": "28",
+        "passed": "28",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "5.611"
+      },
+      "exit_code": 0,
+      "class_case_counts": {
+        "Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests": 12,
+        "Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests": 9,
+        "Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests": 2,
+        "Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests": 5
+      },
+      "artifacts": {
+        "stop-correlation-focused-tests-3-private.xml": "dbaf430b0d6fdbf679371a6f6dfb15d00d5e65841418afd37a015d25782709bc",
+        "stop-correlation-focused-tests-3-private.log": "c90ab81aa21d448bcae79a341b5ab37206625fbcafe07212e4c135e93531ecd5"
+      }
+    },
+    "inventory-tests-1": {
+      "counts": {
+        "total": "18",
+        "passed": "18",
+        "failed": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "4.035"
+      },
+      "exit_code": 0,
+      "class_case_counts": {
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests": 18
+      },
+      "artifacts": {
+        "stop-correlation-inventory-tests-1-private.xml": "3c22387c8f78902b8111341fcbb1a3bfad8351c7268e6287f7f633e35b23c16a",
+        "stop-correlation-inventory-tests-1-private.log": "77060122a6017c531c2df53016bec349ffbc6b60be7aa536a19c989cb635fd2e"
+      }
+    },
+    "server-build-1": {
+      "exit_code": 1,
+      "elapsed": "00:00:10.55",
+      "sha256": "6e90d002f980c3264705c96eea4bcb841657fc6eb7460349198f306092dea96e",
+      "limitation": "Two CA2007 test-helper findings; corrected before build2."
+    },
+    "server-build-2": {
+      "exit_code": 0,
+      "elapsed": "00:00:09.89",
+      "sha256": "d1738a26895c06388d9245214b0ed9a97b93498b42af5405bd9347b840ecf2f0",
+      "limitation": null
+    },
+    "server-build-3": {
+      "exit_code": 0,
+      "elapsed": "00:00:08.82",
+      "sha256": "6d6e2b35b0555a407aff9ad081fe64bc1aa1c54124d8666ffabe21cac65bd11e",
+      "limitation": null
+    },
+    "server-build-4": {
+      "exit_code": 0,
+      "elapsed": "00:00:10.76",
+      "sha256": "22b6c0c23beb7a15db769b87a325ce5e7547fbdabf5c6f7904bc0b240d4342f3",
+      "limitation": null
+    }
+  },
+  "commands": {
+    "cwd": "/home/administrator/projects/hexalith/folders",
+    "server_build": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false -v:quiet",
+    "focused_final": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.Task36LifecycleDiagnosticObserverTests -class Hexalith.Folders.Server.Tests.Task36LifecycleRequestCorrelationTests -class Hexalith.Folders.Server.Tests.Task36ExistingHostedServiceObservationTests -class Hexalith.Folders.Server.Tests.Task36FoldDiagnosticObserverTests -result-xml /tmp/story12-2-foreign-scope-20261104-s76ae741/stop-correlation-focused-tests-3-private.xml",
+    "inventory": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests -result-xml /tmp/story12-2-foreign-scope-20261104-s76ae741/stop-correlation-inventory-tests-1-private.xml",
+    "pending_generator": "python3 scripts/generate-pd10-v2-conformance-set.py"
+  },
+  "selected_observer": {
+    "dll": "tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll",
+    "pdb": "tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.pdb",
+    "selected_by": "Fixture direct default path; AppHost test ProjectReference ReferenceOutputAssembly=false. No new AppHost compile inputs; no redundant AppHost build performed.",
+    "build": "Server project transitively builds the actual selected tool project."
+  },
+  "output_hashes": {
+    "path": "/tmp/story12-2-foreign-scope-20261104-s76ae741/stop-correlation-output-hashes.json",
+    "sha256": "18ae221b7cea6297a7316141295d15ad28bfd686935228820b807d450d7ca2c3",
+    "count": 58
+  },
+  "pending_inventory": "Only affected observer/test compile inputs and their allowlist were refreshed;18controls pass. Historical dated PD10 unchanged.",
+  "limitations": [
+    "No live AppHost qualification or stop correction performed.",
+    "No production SDK/pipeline/authority/grant/deadline changes.",
+    "Main restart and revised scope probes remain unqualified.",
+    "Raw EventSource correlation and late Activity correlation are separate; no missing identity is backfilled.",
+    "Subscription/identity loss is explicitly unavailable; no correlation may be inferred from timing alone.",
+    "Parent owns actual selected observer/runtime/PDB/assets audit and unchanged d29 strict live.",
+    "Independent Release/package/PD10/SM4/review gates remain open."
+  ],
+  "source_outputs_released": true,
+  "active_build_test_topology_commands": []
+}

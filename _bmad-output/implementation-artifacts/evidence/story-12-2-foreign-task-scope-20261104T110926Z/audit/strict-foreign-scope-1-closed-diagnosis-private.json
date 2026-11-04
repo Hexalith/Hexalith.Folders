@@ -1,0 +1,178 @@
+{
+  "created_utc": "2026-11-04T09:51:46.367959+00:00",
+  "run": "strict-foreign-scope-1",
+  "phase": "failed during distributed fixture startup, before bootstrap/test body",
+  "result": {
+    "total": "1",
+    "passed": "0",
+    "failed": "1",
+    "errors": "0",
+    "skipped": "0",
+    "time": "249.385"
+  },
+  "failure": {
+    "outer_type": "Xunit.Sdk.TestPipelineException",
+    "boundary": "DistributedApplicationFactory.StartAsync canceled at fixture StartAsync1142; InitializeAsync133/139",
+    "stack_closed": [
+      "at Aspire.Hosting.Testing.DistributedApplicationFactory.StartAsync(CancellationToken cancellationToken) in /_/src/Aspire.Hosting.Testing/DistributedApplicationFactory.cs:line 73",
+      "at Aspire.Hosting.Testing.DistributedApplicationTestingBuilder.SuspendingDistributedApplicationFactory.DelegatedHost.StartAsync(CancellationToken cancellationToken) in /_/src/Aspire.Hosting.Testing/DistributedApplicationTestingBuilder.cs:line 599",
+      "at Aspire.Hosting.Testing.DistributedApplicationTestingBuilder.SuspendingDistributedApplicationFactory.DelegatedDistributedApplication.StartAsync(CancellationToken cancellationToken) in /_/src/Aspire.Hosting.Testing/DistributedApplicationTestingBuilder.cs:line 574",
+      "at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.StartAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 1142",
+      "at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 133",
+      "at Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceFixture.InitializeAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs:line 139"
+    ]
+  },
+  "startup_settings": {
+    "fixture_whole_startup_minutes": 4,
+    "health_http_timeout_seconds": 10,
+    "scheduler_health_target_container_port": 8080,
+    "scheduler_health_path": "/healthz",
+    "scheduler_health_listen_address": "0.0.0.0",
+    "scheduler_grpc_target_port": 50006,
+    "scheduler_grpc_is_proxied": false,
+    "scheduler_health_is_proxied": "default public WithHttpEndpoint behavior; unlike explicit unproxied grpc",
+    "health_probe_observed_url": "http://localhost:38601/healthz",
+    "application_waits_for_scheduler": true,
+    "changes_to_settings": false
+  },
+  "observed_startup": {
+    "scheduler_positive_closed_events": [
+      {
+        "timestamp": "2026-11-04T09:40:27.9853367Z",
+        "kind": "scheduler_health_listener_8080"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:29.9926541Z",
+        "kind": "scheduler_health_listener_8080"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:29.5645140Z",
+        "kind": "scheduler_health_listener_8080"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:29.6097330Z",
+        "kind": "scheduler_health_listener_8080"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:29.6217578Z",
+        "kind": "scheduler_service_50006"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:29.6218723Z",
+        "kind": "scheduler_service_50006"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:31.9934259Z",
+        "kind": "scheduler_health_listener_8080"
+      },
+      {
+        "timestamp": "2026-11-04T09:40:33.9954333Z",
+        "kind": "scheduler_health_listener_8080"
+      }
+    ],
+    "parent_crosscheck": "Parent separately extracted scheduler/etcd/cron ready around09:40:30 and healthz listener8080; placement became healthy.",
+    "parent_probe_count": {
+      "unhealthy_approximately10seconds": 16,
+      "final_canceled": 1
+    },
+    "probe_error_classes": "Recorded HttpRequestException/IOException, SocketException and TaskCanceledException mentions; exact free-form messages/arguments remain private.",
+    "known_permanent_error_patterns_in_observed_prefix": {
+      "ENOSPC": 0,
+      "address_already_in_use": 0,
+      "hosting_failed_to_start": 0
+    },
+    "owned_scheduler_containers": [
+      {
+        "image": "daprio/dapr:1.18.7",
+        "image_id": "sha256:0ac4fadf0016be85065cdebab952a8350e468cf9283d26777b0307a14a10aecc",
+        "status_class": "running"
+      }
+    ]
+  },
+  "binding_assessment": {
+    "permanent_endpoint_or_configuration_mismatch_established": false,
+    "supported_model_matches_listener": "Owning Platform helper targets scheduler HTTP8080/healthz, matching reported listener. GRPC50006 is a distinct endpoint. Placement uses the same health pattern and became healthy.",
+    "retained_binding_fields": [
+      "ID",
+      "Names",
+      "Image",
+      "Status",
+      "image_id"
+    ],
+    "missing_discriminating_evidence": [
+      "Docker NetworkSettings.Ports/published backend mapping",
+      "DCP health frontend\u2192allocated backend endpoint mapping at failing instant",
+      "same-instant direct backend health versus proxied health result"
+    ],
+    "limit": "Container presence/image/status and process listener logs do not prove the host health proxy can reach its backend. No mTLS/auth/source/catalog or permanent Docker/proxy defect is inferred.",
+    "discarded_intermediate_field": "scheduler-binding-scalars-private.json published_port_pairs is an unvalidated colon-number regex matching timestamps, not evidence of Docker/DCP port bindings; it is excluded from every conclusion."
+  },
+  "next_bounded_action": {
+    "source_correction_justified": false,
+    "same_code_retry": "Parent authorized one fresh same-code isolated retry on36035; preserve all health/startup deadlines and source/runtime.",
+    "if_health_boundary_recurs": "Capture actual Docker mapped health backend and DCP endpoint mapping, with safe same-instant host/backend /healthz outcomes, to distinguish listener readiness from proxy/backend reachability before proposing any configuration change. No force/ignore/probe-bypass or timer change."
+  },
+  "acceptance": {
+    "bootstrap_verified": false,
+    "strict_PASS_marker_count": 0,
+    "two_probe_milestones_executed": false,
+    "new_SM4_samples": false,
+    "body_status": "Approved d29 body is compiled/audited by parent but unexecuted in this attempt; no task/source/durability acceptance result."
+  },
+  "attribution": {
+    "input_hashes": {
+      "strict-foreign-scope-1-private.log": "6c859f31236a6f7a22afa5c5fedbd2a076e893e8a5de6e953c86ce8cb869bc95",
+      "strict-foreign-scope-1-private.xml": "97e372cf01ee14ceee5ec45d6d1a3a11afc09d35ff6df260403d1702a2530006",
+      "strict-foreign-scope-1-receipt.json": "ebfacb139f5f8c24eb36761d9be0790c690d1ca1d0c2aa0952a58dad8c0d5ade",
+      "strict-foreign-scope-1-before.json": "770d6b8a50bbe5d15c5e656ec6642902a9ec03f99994b73405e0cfb86670e25c",
+      "strict-foreign-scope-1-after.json": "4733f49fc3e352b039aa5594ae0eefdf39e1c6a0cf2efe033b930c846dc01aea",
+      "strict-foreign-scope-1-runtime.json": "c36e01a863cd5d88efa925388458c7d42c2f606159f7559f2ad374959fcde317"
+    },
+    "saved_source_bindings": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "saved_source_sha256": "bdabaa4d11222a5b4e6eb9bbe35b75937c3fbec87edaca1a203be83eef8a8576"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+        "saved_source_sha256": "f57f907a1edd0edd8c254b047b4da2845ab1aa6c7ddc7aa1fead01023e9c9d4a"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "9198d9213f6ea54c629148322f05e7ded994822d",
+        "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+        "saved_source_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+        "head": "ed1560a57f4d4cb55b6b03f485cbfa01316837a7",
+        "path": "DaprSelfHostedMtls.cs",
+        "saved_source_sha256": "3fa9ccf46cd70cdc2253dda51ad06b3bcf5f7f696b3b74a95ca1b86913489a7c"
+      },
+      {
+        "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+        "head": "ed1560a57f4d4cb55b6b03f485cbfa01316837a7",
+        "path": "DaprSelfHostedMtlsSubscriber.cs",
+        "saved_source_sha256": "35e5f5b4418814e8df7fc5f73b3d25ea2531215978723b8dcf49060cd2cd7e24"
+      }
+    ],
+    "source_head_drift": [],
+    "runtime_file_drift": [],
+    "poll_observations": 156,
+    "fixture_module_bindings": 0,
+    "observed_hexalith_names": 18,
+    "sha_variant_conflicts": {},
+    "limit": "Saved actual observations only; no idle disk/runtime comparison after build."
+  },
+  "cleanup_counts": {
+    "remaining_observed_descendants": 0,
+    "remaining_owned_containers": 0,
+    "remaining_unattributed_containers": 0,
+    "remaining_observed_directories": 0
+  },
+  "actions": "Read-only log/source assessment and private diagnosis only; no source/output/build/test/topology/lifecycle mutation."
+}

@@ -90,6 +90,24 @@ public sealed class OperationalStatusProjectionHandlerTests
     }
 
     [Fact]
+    public async Task CancellationInsideAnAdmittedPartitionStopsRemainingMaterializedOperationsAsync()
+    {
+        OperationalStatusTestStore store = new();
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
+        var request = OperationalStatusTestData.Projection(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
+        var identity = new DomainSharedProjectionRebuildIdentity("tenant-a", "folders", OperationalStatusKeys.ProjectionType,
+            "cancel-stream", "catalog");
+        var chunks = await handler.PreparePartitionChunksAsync(identity, request, TestContext.Current.CancellationToken);
+        using CancellationTokenSource cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        await using var stream = handler.StreamFinalizedOperationsAsync(identity, new OperationalStatusPartitionCursor(chunks), cancellation.Token)
+            .GetAsyncEnumerator(cancellation.Token);
+        (await stream.MoveNextAsync()).ShouldBeTrue();
+        cancellation.Cancel();
+        await Should.ThrowAsync<OperationCanceledException>(() => stream.MoveNextAsync().AsTask());
+        store.Count.ShouldBe(0);
+    }
+
+    [Fact]
     public void ProductionHostRegistersDurableStatusAndKeepsLegacyResponseShape()
     {
         WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();

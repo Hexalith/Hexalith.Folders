@@ -116,6 +116,20 @@ resolution. Do not erase SDK metadata or force the epoch open. This local source
 authorize a deployment, package publication or dependency pin change; the supported Redis profile
 remains resumable. Consumer qualification is recorded in the Story 12.2 evidence.
 
+Operational checkpoint schema 3 separates current lifecycle/lease metadata from primary content,
+File, publication, erasure and released-fence histories. Bounded SDK logical records retain each
+task's original earliest closure position, time and source prefix after its status and evidence
+expire. They are closure/expiry evidence only: they do not extend the 400-day status lifetime or
+authorize commands. Primary source-folded task guards remain authoritative for writes.
+
+Before resuming live writes from an older schema 2 checkpoint, run the existing authorized named
+`/project/rebuild/shared/v1` complete-source rebuild. Older compacted checkpoints cannot prove the
+complete historical closure inventory, so new delivery fails unavailable without acknowledgment
+until that rebuild succeeds. Intact old source-bound rows remain readable under the existing
+freshness/retention checks. Repair validates old valid source anchors and publishes schema 3 and
+closure evidence through the same SDK generation protocol. Do not delete or edit checkpoint/SDK
+storage manually, seed source events, or add privileges to bypass this requirement.
+
 
 ## Authoritative workspace bodies — owner decision 2026-10-22
 

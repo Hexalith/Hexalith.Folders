@@ -19,7 +19,9 @@ public sealed class Task36HostingStartup : IHostingStartup
         builder.ConfigureServices(services =>
         {
             string? shutdownPath = Environment.GetEnvironmentVariable("FOLDERS_TASK36_SHUTDOWN_LOG");
-            if (!string.IsNullOrWhiteSpace(shutdownPath))
+            if (!string.IsNullOrWhiteSpace(shutdownPath)
+                && !string.Equals(Environment.GetEnvironmentVariable("FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED"),
+                    "true", StringComparison.Ordinal))
                 services.AddHostedService(provider => LifecycleDiagnosticObserver.Create(provider, services, shutdownPath));
             if (Environment.GetEnvironmentVariable("FOLDERS_CONTENT_QUALIFICATION_CLOCK") is { Length: > 0 } clockPath)
                 services.AddScoped<IAuthoritativeContentStore>(provider => new DaprAuthoritativeContentStore(

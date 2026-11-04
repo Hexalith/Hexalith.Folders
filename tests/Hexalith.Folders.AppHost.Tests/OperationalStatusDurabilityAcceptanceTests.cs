@@ -361,8 +361,23 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
         {
             using HttpResponseMessage missing = await client.GetAsync($"/api/v1/tasks/{task}/status", TestContext.Current.CancellationToken).ConfigureAwait(true);
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(missing, HttpStatusCode.ServiceUnavailable, "Missing task folder scope").ConfigureAwait(true);
-            using HttpResponseMessage foreign = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId=absent-folder", TestContext.Current.CancellationToken).ConfigureAwait(true);
+            // Qualify a genuinely different authorized folder, independently of unsupported physical absence.
+            string foreignFolderKey = FolderDurabilityAcceptanceFixture.NewId();
+            string foreignTaskFolder = fixture.CreatedFolderId(foreignFolderKey);
+            using (HttpResponseMessage createdForeign = await fixture.MutateAsync("/api/v1/folders",
+                new { requestSchemaVersion = "v1", folderMetadata = new { displayName = "Foreign task scope" } },
+                foreignFolderKey).ConfigureAwait(true))
+                await FolderDurabilityAcceptanceFixture.RequireStatusAsync(createdForeign, HttpStatusCode.Accepted,
+                    "Real foreign task folder creation").ConfigureAwait(true);
+            await fixture.WaitForCurrentFolderEvidenceAsync(foreignTaskFolder, "foreign task folder scope").ConfigureAwait(true);
+            using HttpResponseMessage foreign = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId={foreignTaskFolder}", TestContext.Current.CancellationToken).ConfigureAwait(true);
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(foreign, HttpStatusCode.NotFound, "Foreign task folder scope").ConfigureAwait(true);
+            (await foreign.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotContain(folder);
+            using HttpResponseMessage unobserved = await client.GetAsync($"/api/v1/tasks/{task}/status?folderId=absent-folder", TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(unobserved, HttpStatusCode.ServiceUnavailable,
+                "Unsupported physical source absence").ConfigureAwait(true);
+            JsonElement unavailable = await unobserved.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            unavailable.GetProperty("code").GetString().ShouldBe("read_model_unavailable");
         }
         output.WriteLine("PASS real-provider task pipeline: supported Forgejo TLS, private credential resolution, bound/prepared/locked/clean release, six metadata concerns, restart, equivalent replay, closed-binding denial and scoped task reads");
     }

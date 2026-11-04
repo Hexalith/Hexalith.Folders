@@ -324,12 +324,34 @@ public sealed class OperationalStatusPersistenceTests
         var source = OperationalStatusTestData.Sources(OperationalStatusFixture.SuccessfulLifecycle());
         (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "delivery", source,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
-        var reader = new EventStoreOperationalStatusReadModel(new(store, store), new OperationalStatusClock(), new OperationalStatusSequenceReader { Head = 0 });
+        var foreignSource = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b") with { TaskId = "foreign-create-task" }]);
+        (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-b", "foreign-create", foreignSource,
+            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        var foreignCheckpoint = store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-b"))!;
+        foreignCheckpoint.Sequence.ShouldBe(1);
+        foreignCheckpoint.TaskEvidence.ShouldBeEmpty();
+        string originalTaskKey = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
+        string originalTask = JsonSerializer.Serialize(store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey));
+        List<string> readKeys = [];
+        OperationalStatusReadObserver observed = new(store, key => { readKeys.Add(key); return Task.CompletedTask; });
+        var reader = new EventStoreOperationalStatusReadModel(new(observed, store), new OperationalStatusClock(),
+            new OperationalStatusSequenceReader { Head = foreignSource.Length });
         var request = new TaskStatusReadModelRequest("tenant-a", "task-a", "reader-b", "read_task_status", null, "eventually_consistent")
         { AuthorizedFolderId = "folder-b", AuthorizationWatermark = "folder-b-authority" };
-        (await reader.GetAsync(request, TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
-        store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName,
-            OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a"))!.TerminalState.ShouldBe("committed");
+        TaskStatusReadModelResult result = await reader.GetAsync(request, TestContext.Current.CancellationToken);
+        result.Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
+        result.Snapshot.ShouldBeNull();
+        string foreignTaskKey = OperationalStatusKeys.Task("tenant-a", "folder-b", "task-a");
+        string[] selected = [foreignTaskKey, OperationalStatusKeys.Checkpoint("tenant-a", "folder-b"), OperationalStatusKeys.Evidence(foreignTaskKey)];
+        foreach (string key in selected) readKeys.ShouldContain(store.PhysicalKey(key));
+        foreach (string key in new[] { originalTaskKey, OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), OperationalStatusKeys.Evidence(originalTaskKey) })
+            readKeys.ShouldNotContain(store.PhysicalKey(key));
+        // The other reads belong to the SDK epoch/selection protocol, never another task's row.
+        readKeys.Where(key => key.StartsWith("shared-generation:", StringComparison.Ordinal))
+            .ShouldAllBe(key => selected.Select(store.PhysicalKey).Contains(key, StringComparer.Ordinal));
+        JsonSerializer.Serialize(store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey)).ShouldBe(originalTask);
+        store.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, originalTaskKey)!.TerminalState.ShouldBe("committed");
     }
 
     [Fact]

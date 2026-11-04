@@ -1,0 +1,758 @@
+--- a/tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs
++++ b/tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs
+@@ -16,6 +16,9 @@
+     { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
+     private readonly long _started = Stopwatch.GetTimestamp();
+     private readonly IServiceCollection _services;
++    private readonly LifecycleRequestCorrelation _requests = new();
++    private readonly LifecycleRequestCorrelation _requestActivities = new();
++    private LifecycleActivityObservation? _activityObservation;
+     private readonly string _path;
+     private IServiceProvider? _provider;
+     private ExistingHostedServiceObservation? _existingServices;
+@@ -30,6 +33,7 @@
+     private int _hostStopped;
+     private int _applicationStopped;
+     private long _inFlight;
++    private long _activeRequestActivities;
+     private long _dropped;
+     private int _sinkFailed;
+ 
+@@ -63,6 +67,7 @@
+         try
+         {
+             if (Interlocked.Exchange(ref _active, 1) != 0) return Task.CompletedTask;
++            _activityObservation = new LifecycleActivityObservation(ObserveRequestActivity);
+             RecordConfiguration();
+             Record("observer_registered");
+             if (_lifetime is not null)
+@@ -108,11 +113,11 @@
+     protected override void OnEventWritten(EventWrittenEventArgs eventData)
+     {
+         // Deliberately never read Payload, PayloadNames, Message or any request object.
+-        ObserveEvent(eventData.EventId);
++        ObserveEvent(eventData.EventId, eventData.ActivityId, eventData.RelatedActivityId);
+     }
+ 
+     /// <summary>Consumes only the four admitted primitive event IDs.</summary>
+-    internal void ObserveEvent(int eventId)
++    internal void ObserveEvent(int eventId, Guid activityId = default, Guid relatedActivityId = default)
+     {
+         try
+         {
+@@ -124,8 +129,12 @@
+                     Volatile.Write(ref _hostStopped, 1);
+                     Record("host_stop");
+                     break;
+-                case 3: Interlocked.Increment(ref _inFlight); break;
+-                case 4: Interlocked.Decrement(ref _inFlight); break;
++                case 3:
++                    RecordRequest("request_start", _requests.Observe(true, Interlocked.Increment(ref _inFlight), activityId, relatedActivityId));
++                    break;
++                case 4:
++                    RecordRequest("request_end", _requests.Observe(false, Interlocked.Decrement(ref _inFlight), activityId, relatedActivityId));
++                    break;
+             }
+         }
+         catch { /* No event or sink failure may affect framework execution. */ }
+@@ -191,9 +200,26 @@
+                 applicationStoppedSeen = Volatile.Read(ref _applicationStopped) != 0,
+                 droppedRecords = Interlocked.Read(ref _dropped), sinkFailed = Volatile.Read(ref _sinkFailed) != 0,
+                 hostedServiceStates = _existingServices?.States(),
++                requestCorrelation = _requests.Snapshot(),
++                requestActivityCorrelation = _requestActivities.Snapshot(),
++                requestActivityObservation = _activityObservation?.Snapshot(),
+             }));
+         }
+         catch { /* Serialization and queue failures are advisory. */ }
++    }
++
++    private void RecordRequest(string phase, object correlation) => Enqueue(JsonSerializer.Serialize(new
++    {
++        phase, processId = Environment.ProcessId, utc = DateTimeOffset.UtcNow,
++        inFlightRequests = Interlocked.Read(ref _inFlight), correlation,
++    }));
++
++    private void ObserveRequestActivity(bool started)
++    {
++        if (Volatile.Read(ref _active) == 0) return;
++        long active = started ? Interlocked.Increment(ref _activeRequestActivities) : Interlocked.Decrement(ref _activeRequestActivities);
++        RecordRequest(started ? "request_activity_start" : "request_activity_end",
++            _requestActivities.Observe(started, active, Guid.Empty, Guid.Empty));
+     }
+ 
+     private void Enqueue(string value)
+@@ -224,6 +250,7 @@
+         try
+         {
+             Volatile.Write(ref _active, 0);
++            _activityObservation?.Dispose();
+             _startedRegistration.Unregister();
+             _stoppingRegistration.Unregister();
+             _stoppedRegistration.Unregister();
+--- a/tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs
+@@ -65,7 +65,9 @@
+             {
+                 row.GetProperty("processId").GetInt32().ShouldBe(Environment.ProcessId);
+                 row.GetProperty("utc").GetDateTimeOffset().ShouldBeGreaterThan(DateTimeOffset.MinValue);
+-                if (row.TryGetProperty("inFlightRequests", out JsonElement count)) count.GetInt64().ShouldBe(0);
++                if (row.TryGetProperty("inFlightRequests", out JsonElement count)
++                    && !row.GetProperty("phase").GetString()!.StartsWith("request_activity_", StringComparison.Ordinal))
++                    count.GetInt64().ShouldBe(row.GetProperty("phase").GetString() == "request_start" ? 1 : 0);
+             }
+             File.ReadAllText(path).ShouldNotContain("private-");
+             if (!OperatingSystem.IsWindows())
+@@ -147,7 +149,7 @@
+             {
+                 string text = File.ReadAllText(path);
+                 text.ShouldNotContain("private-provider-message");
+-                Rows(path).ShouldAllBe(row => new[] { "setup_unavailable", "host_configuration", "observer_registered", "host_stop" }
++                Rows(path).ShouldAllBe(row => new[] { "setup_unavailable", "host_configuration", "observer_registered", "host_stop", "request_start", "request_end" }
+                     .Contains(row.GetProperty("phase").GetString()));
+                 Rows(path).ShouldContain(row => row.GetProperty("phase").GetString() == "setup_unavailable");
+             }
+--- a/scripts/pd10-v2-story-owned-paths.txt
++++ b/scripts/pd10-v2-story-owned-paths.txt
+@@ -1267,6 +1267,7 @@
+ tests/Hexalith.Folders.Server.Tests/Task36FoldDiagnosticObserverTests.cs
+ tests/Hexalith.Folders.Server.Tests/Task36FoldObservationCollection.cs
+ tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs
++tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs
+ tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs
+ tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs
+ tests/Hexalith.Folders.Server.Tests/WorkspaceCleanupStatusEndpointTests.cs
+@@ -1506,7 +1507,9 @@
+ tests/tools/Task36FoldObserver/FoldDiagnosticEventObserver.cs
+ tests/tools/Task36FoldObserver/FoldDiagnosticObserver.cs
+ tests/tools/Task36FoldObserver/FoldObservationSink.cs
++tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs
+ tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs
++tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs
+ tests/tools/Task36FoldObserver/StartupHook.cs
+ tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
+ tests/tools/Task36FoldObserver/Task36HostingStartup.cs
+--- a/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
++++ b/_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml
+@@ -16,8 +16,8 @@
+ governance_status: candidate-awaiting-a6b
+ production_routed: false
+ hash_algorithm: SHA-256
+-candidate_set_sha256: 0b148e8ec243f89ea1aac13e0165b27151a1eb779a1c623ff6dd8e7f7b8d4504
+-artifact_count: 1523
++candidate_set_sha256: f20743fe48222585a6b98153ee8e57e89fd0eca40b30e65b205a9fdc7cf737d2
++artifact_count: 1526
+ artifacts:
+   - path: ".github/workflows/ci.yml"
+     kind: file
+@@ -113,8 +113,8 @@
+     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+   - path: "scripts/pd10-v2-story-owned-paths.txt"
+     kind: file
+-    bytes: 109058
+-    sha256: a5a1440c53d6627bdbe9c4f5219963aa3314f06e2e149c99ca775e9312a0358c
++    bytes: 109261
++    sha256: 3d1baaf0bd9084cf0dbd6f8b9f23491a226b03ae83c4fccd0c6b3f18cb7a8775
+   - path: "scripts/prepare-ci-topology-projects.sh"
+     kind: file
+     bytes: 8110
+@@ -5093,8 +5093,12 @@
+     sha256: b3094a64b093cdb5bd9a01d7b7e3b7e684552547df00c0a1c510e5bc196ccbfa
+   - path: "tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs"
+     kind: file
+-    bytes: 9252
+-    sha256: 5f0ad8f632034e302efd2a444eaafa7046a116fc43adc88c63b36232843ca9b4
++    bytes: 9486
++    sha256: 335806f2707c0a6fba9cc4ebc23848ccb484aadb995c527605b0d9023227c0f7
++  - path: "tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs"
++    kind: file
++    bytes: 16205
++    sha256: bc62a26a5d1ec45464809441f7d5ffeabec194474cf9314c5a389d413be9ec98
+   - path: "tests/Hexalith.Folders.Server.Tests/TransportParityConformanceTests.cs"
+     kind: file
+     bytes: 37946
+@@ -6051,10 +6055,18 @@
+     kind: file
+     bytes: 521
+     sha256: 0c4c69e6980bd21b94dae9f23897e576a4954bab6d07b27c344c794e4f9a367f
++  - path: "tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs"
++    kind: file
++    bytes: 4013
++    sha256: baabb70cc21ec8f999b91c1fbe1cc171ec51dc157645fef0fdb8543e55ef5501
+   - path: "tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs"
+     kind: file
+-    bytes: 10672
+-    sha256: e6e17bc7929230d73b3ec5b5f8785326ede03b90d1ebd12860c565b064bcab6e
++    bytes: 12340
++    sha256: ffd147212a495eaa545a47a16a4cf0518481907d15a13a3d6e42ca42054792c1
++  - path: "tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs"
++    kind: file
++    bytes: 6296
++    sha256: cafaf5e5e08e392b0a127c8c87da0d2e4950f740a29dbcde8f54653c08fe461b
+   - path: "tests/tools/Task36FoldObserver/StartupHook.cs"
+     kind: file
+     bytes: 286
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -2374,7 +2374,7 @@
+ outstanding request or establish a hosted-service/native-authority cause. Source/head/runtime drift
+ and owned cleanup remainders are zero. All four failed attempts remain independent exact evidence.
+ 
+-- [ ] Extend only tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs and adjacent
++- [x] Extend only tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs and adjacent
+   single-type helpers to correlate existing framework request-start/end IDs with already-existing
+   opaque Activity trace/span IDs and primitive framework activity IDs. Preserve original counts,
+   lifecycle observations, bounded sink/drop reporting and advisory/nonblocking behavior. Do not
+@@ -2382,13 +2382,13 @@
+   headers, bodies, identities, tags, baggage or trace-state. Bound active identity tracking; report
+   unavailable/unmatched correlation explicitly rather than inventing a join. Keep the SDK's raw
+   request-log privacy floor intact. No production source, pipeline, behavior or timing change.
+-- [ ] In tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs and/or
++- [x] In tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs and/or
+   adjacent tests, verify actual framework request activity correlation with a controlled in-flight
+   request, lifecycle matching/drain, bounded/unavailable cases and absence of dynamic payload/tag
+   sentinels. Retain existing lifecycle/hosted-service/privacy controls. Build/run affected individual
+   Debug/source projects with both flags; refresh only affected pending inventory inputs. Preserve
+   strict d29, companion/capacity/frozen hashes and every timeout/retry/shutdown limit.
+-- [ ] Hand off exact patch, source/output/guard hashes and focused results with selected outputs
++- [x] Hand off exact patch, source/output/guard hashes and focused results with selected outputs
+   released. Parent audits the observer plus coherent selected runtime, then runs the unchanged d29
+   class with the new opaque diagnostic and retains exact loaded identities, failures and cleanup.
+   Attribute a remaining stop blocker only if the actual correlation joins; otherwise retain the
+@@ -2397,3 +2397,35 @@
+ This continues the existing fixture-only payload-free diagnostics within the authorized acceptance
+ work. It adds no route-family observation, source authority, publication or approval exception.
+ Strict live/probe/SM4, package/PD10 and independent review gates remain open until actually satisfied.
++
++### Opaque stop-correlation focused handoff — 2026-11-04
++
++The actual framework control exposed that the early EventSource RequestStart precedes request
++Activity creation. Its failed18/19selection is retained. Matching .NET10.0.14 hosting source supports
++the later fixed DiagnosticListener HttpRequestIn.Start/Stop pair around an existing Activity. The
++observer now subscribes only to those two keys, explicitly refusing the unsuffixed HttpRequestIn
++predicate that participates in creation. It never reads notification Value or EventSource payload,
++request/context data, activity tags/baggage/trace-state, routes or credentials. No Activity is started.
++Raw framework counts/opaque IDs and later Activity correlation remain separate; unavailable or
++unmatched observations are explicit. Active identity tracking is bounded at64 and listener tracking
++at8; overflow/contention degrades correlation without waiting or changing request/host behavior.
++The existing64-record advisory queue, one-second snapshots and all host/shutdown limits remain intact.
++
++The in-process real Kestrel control independently enables framework Activities, holds a request
++across actual stopping, matches its existing trace/span in start/snapshot/end records, then releases
++and verifies drain and private-sentinel absence. A second real Kestrel control disables independent
++creation and proves observation does not create an Activity. Focused controls also retain existing
++hosted-service gates and verify invalid/ambiguous/unavailable/capacity cases, ignored notification
++values, callback failure and disposal. Final Debug/source Server build (including the observer)
++passes with zero warnings/errors in10.76s;28focused cases pass in5.611s and18pending-inventory cases
++pass in4.035s, zero failures/errors/skips. The initial two CA2007 test-helper build errors are retained
++and corrected. Only affected pending compile inputs/hashes were refreshed; dated PD10 is unchanged.
++
++The fixture selects the observer directly from tests/tools/Task36FoldObserver/bin/Debug/net10.0;
++its AppHost ProjectReference has ReferenceOutputAssembly=false. No AppHost source changed in this
++phase and the source-mode Server build produced the selected observer output. Exact phase patch,
++source/output/guard hashes, primary-source assessment and all focused receipts are retained in
++`/tmp/story12-2-foreign-scope-20261104-s76ae741` as `stop-correlation-handoff.json` and
++`stop-correlation-phase.patch`. Parent audits the actual observer plus current runtime and owns any
++further unchanged d29 strict run. This diagnostic establishes no stop-cause correction, main restart,
++revised task-scope probe or full acceptance pass. All independent open gates retain their disposition.
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs
+@@ -0,0 +1,124 @@
++using System.Diagnostics;
++
++namespace Task36FoldObserver;
++
++/// <summary>Tracks only opaque existing request activities with a bounded, non-waiting advisory inventory.</summary>
++internal sealed class LifecycleRequestCorrelation
++{
++    /// <summary>Bounds retained request identities independently of the existing sink capacity.</summary>
++    internal const int MaximumTrackedRequests = 64;
++
++    private readonly object _gate = new();
++    private readonly Dictionary<long, (string? Trace, string? Span, Guid Framework, Guid Related, long Started)> _active = [];
++    private long _sequence;
++    private long _unavailableStarts;
++    private long _unmatchedEnds;
++    private int _gap;
++
++    /// <summary>Copies existing trace/span and framework IDs only; never retains or inspects application objects.</summary>
++    internal object Observe(bool started, long inFlight, Guid frameworkActivityId, Guid relatedActivityId)
++    {
++        if (!Monitor.TryEnter(_gate))
++        {
++            Volatile.Write(ref _gap, 1);
++            return new { status = "unavailable", reason = "observation_busy" };
++        }
++        try
++        {
++            Activity? current = Activity.Current;
++            string? trace = current is not null && current.TraceId != default ? current.TraceId.ToHexString() : null;
++            string? span = current is not null && current.SpanId != default ? current.SpanId.ToHexString() : null;
++            if (Volatile.Read(ref _gap) != 0)
++            {
++                string reason = GapReason();
++                _active.Clear();
++                if (inFlight == 0) Volatile.Write(ref _gap, 0);
++                return Metadata("unavailable", reason, null, trace, span, frameworkActivityId, relatedActivityId);
++            }
++            if ((trace is null || span is null) && frameworkActivityId == Guid.Empty)
++            {
++                if (started) _unavailableStarts++; else _unmatchedEnds++;
++                return Metadata("unavailable", "identity_unavailable", null, trace, span, frameworkActivityId, relatedActivityId);
++            }
++            if (started)
++            {
++                if (_active.Count == MaximumTrackedRequests)
++                {
++                    _active.Clear();
++                    Volatile.Write(ref _gap, 2);
++                    return Metadata("unavailable", "tracking_capacity", null, trace, span, frameworkActivityId, relatedActivityId);
++                }
++                long ordinal = ++_sequence;
++                _active.Add(ordinal, (trace, span, frameworkActivityId, relatedActivityId, Stopwatch.GetTimestamp()));
++                if (Volatile.Read(ref _gap) != 0)
++                    return Metadata("unavailable", GapReason(), null, trace, span, frameworkActivityId, relatedActivityId);
++                return Metadata("tracked", "request_start", ordinal, trace, span, frameworkActivityId, relatedActivityId);
++            }
++
++            // A trace alone, related ID alone, or conflicting available trace/span pair never establishes a join.
++            long[] matches = _active.Where(entry => trace is not null && span is not null
++                    && entry.Value.Trace is not null && entry.Value.Span is not null
++                ? entry.Value.Trace == trace && entry.Value.Span == span
++                : frameworkActivityId != Guid.Empty && entry.Value.Framework == frameworkActivityId)
++                .Select(entry => entry.Key).ToArray();
++            if (matches.Length != 1)
++            {
++                _unmatchedEnds++;
++                if (matches.Length > 1)
++                {
++                    _active.Clear();
++                    Volatile.Write(ref _gap, 3);
++                    if (inFlight == 0) Volatile.Write(ref _gap, 0);
++                }
++                return Metadata("unmatched", matches.Length == 0 ? "start_not_observed" : "ambiguous_identity",
++                    null, trace, span, frameworkActivityId, relatedActivityId);
++            }
++            long matched = matches[0];
++            bool traceMatched = trace is not null && span is not null
++                && _active[matched].Trace is not null && _active[matched].Span is not null;
++            if (Volatile.Read(ref _gap) != 0)
++                return Metadata("unavailable", GapReason(), null, trace, span, frameworkActivityId, relatedActivityId);
++            _active.Remove(matched);
++            return Metadata("matched", traceMatched ? "trace_span" : "framework_activity",
++                matched, trace, span, frameworkActivityId, relatedActivityId);
++        }
++        finally { Monitor.Exit(_gate); }
++    }
++
++    /// <summary>Snapshots bounded primitive identities, explicitly reporting unavailable correlation.</summary>
++    internal object Snapshot()
++    {
++        if (!Monitor.TryEnter(_gate)) return new { status = "unavailable", reason = "observation_busy" };
++        try
++        {
++            int gap = Volatile.Read(ref _gap);
++            object[] active = gap == 0 ? _active.Select(entry => (object)new
++            {
++                requestOrdinal = entry.Key, traceId = entry.Value.Trace, spanId = entry.Value.Span,
++                frameworkActivityId = Id(entry.Value.Framework), relatedActivityId = Id(entry.Value.Related),
++                elapsedMilliseconds = Stopwatch.GetElapsedTime(entry.Value.Started).TotalMilliseconds,
++            }).ToArray() : [];
++            return new
++            {
++                status = gap == 0 ? "available" : "unavailable", reason = gap == 0 ? "observed_ids_only" : GapReason(),
++                capacity = MaximumTrackedRequests, unavailableStarts = _unavailableStarts, unmatchedEnds = _unmatchedEnds,
++                activeRequests = active,
++            };
++        }
++        finally { Monitor.Exit(_gate); }
++    }
++
++    private string GapReason() => Volatile.Read(ref _gap) switch
++    {
++        2 => "tracking_capacity", 3 => "ambiguous_identity", _ => "observation_busy",
++    };
++
++    private static object Metadata(string status, string reason, long? ordinal, string? trace, string? span,
++        Guid framework, Guid related) => new
++    {
++        status, reason, requestOrdinal = ordinal, traceId = trace, spanId = span,
++        frameworkActivityId = Id(framework), relatedActivityId = Id(related),
++    };
++
++    private static string? Id(Guid value) => value == Guid.Empty ? null : value.ToString("D");
++}
+--- /dev/null
++++ b/tests/tools/Task36FoldObserver/LifecycleActivityObservation.cs
+@@ -0,0 +1,97 @@
++using System.Diagnostics;
++
++namespace Task36FoldObserver;
++
++/// <summary>Observes fixed late hosting notifications without enabling activity creation or reading event values.</summary>
++internal sealed class LifecycleActivityObservation : IObserver<DiagnosticListener>, IObserver<KeyValuePair<string, object?>>, IDisposable
++{
++    private const string Start = "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start";
++    private const string Stop = "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop";
++    private readonly object _gate = new();
++    private readonly List<IDisposable> _subscriptions = [];
++    private readonly Action<bool> _observe;
++    private readonly IDisposable _listeners;
++    private int _disposed;
++    private long _subscriptionFailures;
++
++    /// <summary>Subscribes only to an existing hosting listener; every callback remains advisory.</summary>
++    internal LifecycleActivityObservation(Action<bool> observe)
++    {
++        _observe = observe;
++        _listeners = DiagnosticListener.AllListeners.Subscribe(this);
++    }
++
++    /// <summary>Refuses the unsuffixed creation predicate and every notification except the fixed late pair.</summary>
++    internal static bool IsEnabled(string name) => name is Start or Stop;
++
++    /// <inheritdoc/>
++    public void OnNext(DiagnosticListener listener)
++    {
++        if (Volatile.Read(ref _disposed) != 0 || listener is null || listener.Name != "Microsoft.AspNetCore") return;
++        if (!Monitor.TryEnter(_gate)) { Interlocked.Increment(ref _subscriptionFailures); return; }
++        try
++        {
++            if (_disposed == 0 && _subscriptions.Count < 8)
++                _subscriptions.Add(listener.Subscribe(this, IsEnabled));
++            else if (_disposed == 0) Interlocked.Increment(ref _subscriptionFailures);
++        }
++        catch { Interlocked.Increment(ref _subscriptionFailures); }
++        finally
++        {
++            if (Volatile.Read(ref _disposed) != 0) DisposeSubscriptions();
++            Monitor.Exit(_gate);
++        }
++    }
++
++    /// <inheritdoc/>
++    public void OnNext(KeyValuePair<string, object?> notification)
++    {
++        // Never read Value: hosting notifications carry request/context objects.
++        if (Volatile.Read(ref _disposed) != 0 || !IsEnabled(notification.Key)) return;
++        try { _observe(notification.Key == Start); }
++        catch { /* Correlation must not affect the existing request or activity. */ }
++    }
++
++    /// <inheritdoc/>
++    public void OnCompleted() { }
++
++    /// <inheritdoc/>
++    public void OnError(Exception error) { }
++
++    /// <summary>Reports incomplete subscription explicitly without resolving application objects.</summary>
++    internal object Snapshot()
++    {
++        if (!Monitor.TryEnter(_gate)) return new { status = "unavailable", reason = "observation_busy" };
++        try
++        {
++            long failures = Interlocked.Read(ref _subscriptionFailures);
++            return new
++            {
++                status = failures == 0 && _subscriptions.Count > 0 ? "available" : "unavailable",
++                reason = failures > 0 ? "subscription_incomplete" : _subscriptions.Count == 0 ? "listener_not_observed" : "fixed_late_notifications",
++                subscribedListeners = _subscriptions.Count, subscriptionFailures = failures, listenerCapacity = 8,
++            };
++        }
++        finally { Monitor.Exit(_gate); }
++    }
++
++    /// <summary>Unsubscribes without waiting on hosting, requests or the private file sink.</summary>
++    public void Dispose()
++    {
++        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
++        try { _listeners.Dispose(); } catch { /* Advisory cleanup. */ }
++        if (!Monitor.TryEnter(_gate)) return;
++        try
++        {
++            DisposeSubscriptions();
++        }
++        finally { Monitor.Exit(_gate); }
++    }
++
++    private void DisposeSubscriptions()
++    {
++        foreach (IDisposable subscription in _subscriptions)
++            try { subscription.Dispose(); } catch { /* Advisory cleanup. */ }
++        _subscriptions.Clear();
++    }
++}
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs
+@@ -0,0 +1,271 @@
++using System.Diagnostics;
++using System.Text.Json;
++
++using Microsoft.AspNetCore.Builder;
++using Microsoft.AspNetCore.Hosting;
++using Microsoft.AspNetCore.Http;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.Hosting;
++using Microsoft.Extensions.Logging;
++
++using Shouldly;
++using Task36FoldObserver;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++/// <summary>Qualifies actual framework opaque request correlation and bounded refusal without request data.</summary>
++[Collection("Task36 fold observation")]
++public sealed class Task36LifecycleRequestCorrelationTests
++{
++    [Fact]
++    public async Task RealHeldFrameworkRequestShouldKeepTheSameOpaqueIdentityThroughStoppingAndDrain()
++    {
++        string directory = Directory.CreateTempSubdirectory("lifecycle-correlation-").FullName;
++        string path = Path.Combine(directory, "private.jsonl");
++        string sentinel = "private-" + Guid.NewGuid().ToString("N");
++        using ActivityListener listener = new()
++        {
++            ShouldListenTo = source => source.Name == "Microsoft.AspNetCore",
++            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
++        };
++        ActivitySource.AddActivityListener(listener);
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
++        builder.WebHost.UseKestrel().UseUrls("http://127.0.0.1:0");
++        builder.Services.AddSingleton(provider => LifecycleDiagnosticObserver.Create(provider, builder.Services, path));
++        builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<LifecycleDiagnosticObserver>());
++        WebApplication app = builder.Build();
++        LifecycleDiagnosticObserver observer = app.Services.GetRequiredService<LifecycleDiagnosticObserver>();
++        TaskCompletionSource<(string Trace, string Span)> entered = new(TaskCreationOptions.RunContinuationsAsynchronously);
++        TaskCompletionSource release = new(TaskCreationOptions.RunContinuationsAsynchronously);
++        try
++        {
++            app.MapPost("/{**path}", async () =>
++            {
++                Activity activity = Activity.Current.ShouldNotBeNull();
++                activity.SetTag(sentinel, sentinel);
++                activity.AddBaggage(sentinel, sentinel);
++                activity.TraceStateString = "private=" + sentinel;
++                entered.TrySetResult((activity.TraceId.ToHexString(), activity.SpanId.ToHexString()));
++                await release.Task.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
++                return Results.NoContent();
++            });
++            await app.StartAsync(TestContext.Current.CancellationToken);
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.Single()) };
++            client.DefaultRequestHeaders.Add("X-Private", sentinel);
++            using StringContent body = new(sentinel);
++            Task<HttpResponseMessage> request = client.PostAsync("/" + sentinel + "?private=" + sentinel, body, TestContext.Current.CancellationToken);
++            (string trace, string span) = await entered.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            Task stop = app.StopAsync(TestContext.Current.CancellationToken);
++            JsonElement snapshot = await WaitForPhaseAsync(path, "stopping_snapshot");
++            stop.IsCompleted.ShouldBeFalse();
++            snapshot.GetProperty("inFlightRequests").GetInt64().ShouldBe(1);
++            snapshot.GetProperty("hostStopSeen").GetBoolean().ShouldBeFalse();
++            JsonElement active = snapshot.GetProperty("requestActivityCorrelation").GetProperty("activeRequests").EnumerateArray().ShouldHaveSingleItem();
++            active.GetProperty("traceId").GetString().ShouldBe(trace);
++            active.GetProperty("spanId").GetString().ShouldBe(span);
++            active.GetProperty("elapsedMilliseconds").GetDouble().ShouldBeGreaterThan(0);
++
++            release.SetResult();
++            using HttpResponseMessage response = await request.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            response.IsSuccessStatusCode.ShouldBeTrue();
++            await stop.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            await app.DisposeAsync();
++            await observer.Completion.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            JsonElement[] rows = Rows(path);
++            JsonElement started = rows.Single(row => row.GetProperty("phase").GetString() == "request_activity_start").GetProperty("correlation");
++            JsonElement ended = rows.Single(row => row.GetProperty("phase").GetString() == "request_activity_end").GetProperty("correlation");
++            started.GetProperty("status").GetString().ShouldBe("tracked");
++            ended.GetProperty("status").GetString().ShouldBe("matched");
++            ended.GetProperty("reason").GetString().ShouldBe("trace_span");
++            foreach (JsonElement correlation in new[] { started, active, ended })
++            {
++                correlation.GetProperty("traceId").GetString().ShouldBe(trace);
++                correlation.GetProperty("spanId").GetString().ShouldBe(span);
++                correlation.GetProperty("requestOrdinal").GetInt64().ShouldBe(started.GetProperty("requestOrdinal").GetInt64());
++                foreach (string key in new[] { "frameworkActivityId", "relatedActivityId" })
++                    if (correlation.GetProperty(key).ValueKind != JsonValueKind.Null)
++                        Guid.TryParse(correlation.GetProperty(key).GetString(), out _).ShouldBeTrue();
++            }
++            JsonElement stopped = rows.Single(row => row.GetProperty("phase").GetString() == "application_stopped");
++            stopped.GetProperty("inFlightRequests").GetInt64().ShouldBe(0);
++            stopped.GetProperty("requestActivityCorrelation").GetProperty("activeRequests").EnumerateArray().ShouldBeEmpty();
++            stopped.GetProperty("droppedRecords").GetInt64().ShouldBe(0);
++            File.ReadAllText(path).ShouldNotContain(sentinel);
++            File.ReadAllText(path).ShouldNotContain("tracestate", Case.Insensitive);
++            Console.WriteLine($"PASS framework existing request Activity: trace={trace}; span={span}; matched_start_snapshot_end=True; drained=True; private_sentinels_absent=True.");
++        }
++        finally
++        {
++            release.TrySetResult();
++            await app.DisposeAsync();
++            await observer.Completion.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            Directory.Delete(directory, recursive: true);
++        }
++    }
++
++    [Fact]
++    public async Task ObservationMustNotCreateARequestActivityWhenExistingCreationIsDisabled()
++    {
++        string directory = Directory.CreateTempSubdirectory("lifecycle-no-activity-").FullName;
++        string path = Path.Combine(directory, "private.jsonl");
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
++        builder.Logging.ClearProviders();
++        builder.Logging.SetMinimumLevel(LogLevel.None);
++        builder.WebHost.UseKestrel().UseUrls("http://127.0.0.1:0");
++        builder.Services.AddSingleton(provider => LifecycleDiagnosticObserver.Create(provider, builder.Services, path));
++        builder.Services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<LifecycleDiagnosticObserver>());
++        WebApplication app = builder.Build();
++        LifecycleDiagnosticObserver observer = app.Services.GetRequiredService<LifecycleDiagnosticObserver>();
++        try
++        {
++            app.MapGet("/", () =>
++            {
++                Activity.Current.ShouldBeNull();
++                return Results.NoContent();
++            });
++            await app.StartAsync(TestContext.Current.CancellationToken);
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.Single()) };
++            using HttpResponseMessage response = await client.GetAsync("/", TestContext.Current.CancellationToken);
++            response.IsSuccessStatusCode.ShouldBeTrue();
++            await app.StopAsync(TestContext.Current.CancellationToken);
++            await app.DisposeAsync();
++            await observer.Completion.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            JsonElement[] rows = Rows(path);
++            rows.Count(row => row.GetProperty("phase").GetString() == "request_start").ShouldBe(1);
++            rows.Count(row => row.GetProperty("phase").GetString() == "request_end").ShouldBe(1);
++            rows.ShouldNotContain(row => row.GetProperty("phase").GetString()!.StartsWith("request_activity_", StringComparison.Ordinal));
++            rows.Single(row => row.GetProperty("phase").GetString() == "application_stopped")
++                .GetProperty("inFlightRequests").GetInt64().ShouldBe(0);
++            Console.WriteLine("PASS framework request Activity remains absent with opaque observation installed and independent creation disabled.");
++        }
++        finally
++        {
++            await app.DisposeAsync();
++            await observer.Completion.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
++            Directory.Delete(directory, recursive: true);
++        }
++    }
++
++    [Theory]
++    [InlineData("Microsoft.AspNetCore.Hosting.HttpRequestIn", false)]
++    [InlineData("Microsoft.AspNetCore.Hosting.HttpRequestIn.Start", true)]
++    [InlineData("Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop", true)]
++    [InlineData("Microsoft.AspNetCore.Hosting.BeginRequest", false)]
++    public void LateNotificationPredicateMustNotEnableActivityCreation(string name, bool enabled)
++        => LifecycleActivityObservation.IsEnabled(name).ShouldBe(enabled);
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public void LateNotificationsMustIgnoreValuesAndIsolateCallbackFailureAndDisposal(bool throwFromCallback)
++    {
++        int calls = 0;
++        Activity? before = Activity.Current;
++        using DiagnosticListener listener = new("Microsoft.AspNetCore");
++        using LifecycleActivityObservation observation = new(_ =>
++        {
++            calls++;
++            if (throwFromCallback) throw new InvalidOperationException("private-" + Guid.NewGuid().ToString("N"));
++        });
++        listener.IsEnabled("Microsoft.AspNetCore.Hosting.HttpRequestIn").ShouldBeFalse();
++        listener.IsEnabled("Microsoft.AspNetCore.Hosting.HttpRequestIn.Start").ShouldBeTrue();
++        listener.Write("Microsoft.AspNetCore.Hosting.HttpRequestIn.Start", new object());
++        calls.ShouldBe(1);
++        Activity.Current.ShouldBeSameAs(before);
++        observation.Dispose();
++        listener.IsEnabled("Microsoft.AspNetCore.Hosting.HttpRequestIn.Start").ShouldBeFalse();
++        listener.Write("Microsoft.AspNetCore.Hosting.HttpRequestIn.Start", new object());
++        calls.ShouldBe(1);
++    }
++
++    [Fact]
++    public void MissingAndRelatedOnlyIdsShouldStayUnavailableWhileAnExactFrameworkIdCanMatch()
++    {
++        Activity? previous = Activity.Current;
++        Activity.Current = null;
++        try
++        {
++            LifecycleRequestCorrelation tracker = new();
++            Element(tracker.Observe(true, 1, Guid.Empty, Guid.NewGuid())).GetProperty("reason").GetString().ShouldBe("identity_unavailable");
++            Element(tracker.Observe(false, 0, Guid.NewGuid(), Guid.Empty)).GetProperty("status").GetString().ShouldBe("unmatched");
++            Guid id = Guid.NewGuid();
++            JsonElement start = Element(tracker.Observe(true, 1, id, Guid.NewGuid()));
++            JsonElement end = Element(tracker.Observe(false, 0, id, Guid.Empty));
++            end.GetProperty("status").GetString().ShouldBe("matched");
++            end.GetProperty("reason").GetString().ShouldBe("framework_activity");
++            end.GetProperty("requestOrdinal").GetInt64().ShouldBe(start.GetProperty("requestOrdinal").GetInt64());
++            Element(tracker.Snapshot()).GetProperty("activeRequests").EnumerateArray().ShouldBeEmpty();
++        }
++        finally { Activity.Current = previous; }
++    }
++
++    [Fact]
++    public void ConflictingExistingSpansMustNeverJoinThroughAnOtherwiseEqualFrameworkId()
++    {
++        LifecycleRequestCorrelation tracker = new();
++        Guid id = Guid.NewGuid();
++        using Activity first = new Activity("first").SetIdFormat(ActivityIdFormat.W3C).Start();
++        JsonElement start = Element(tracker.Observe(true, 1, id, Guid.Empty));
++        using (Activity second = new Activity("second").SetIdFormat(ActivityIdFormat.W3C).Start())
++            Element(tracker.Observe(false, 1, id, Guid.Empty)).GetProperty("status").GetString().ShouldBe("unmatched");
++        JsonElement end = Element(tracker.Observe(false, 0, id, Guid.Empty));
++        end.GetProperty("status").GetString().ShouldBe("matched");
++        end.GetProperty("requestOrdinal").GetInt64().ShouldBe(start.GetProperty("requestOrdinal").GetInt64());
++    }
++
++    [Fact]
++    public void OverflowShouldBoundIdentitiesAndRefuseJoinsUntilTheObservedRequestsDrain()
++    {
++        Activity? previous = Activity.Current;
++        Activity.Current = null;
++        try
++        {
++            LifecycleRequestCorrelation tracker = new();
++            Guid[] ids = Enumerable.Range(0, LifecycleRequestCorrelation.MaximumTrackedRequests + 1).Select(_ => Guid.NewGuid()).ToArray();
++            for (int index = 0; index < ids.Length - 1; index++)
++                Element(tracker.Observe(true, index + 1, ids[index], Guid.Empty)).GetProperty("status").GetString().ShouldBe("tracked");
++            Element(tracker.Snapshot()).GetProperty("activeRequests").GetArrayLength().ShouldBe(LifecycleRequestCorrelation.MaximumTrackedRequests);
++            Element(tracker.Observe(true, ids.Length, ids[^1], Guid.Empty)).GetProperty("reason").GetString().ShouldBe("tracking_capacity");
++            Element(tracker.Snapshot()).GetProperty("activeRequests").EnumerateArray().ShouldBeEmpty();
++            for (int index = ids.Length - 1; index >= 0; index--)
++                Element(tracker.Observe(false, index, ids[index], Guid.Empty)).GetProperty("status").GetString().ShouldBe("unavailable");
++            Guid next = Guid.NewGuid();
++            Element(tracker.Observe(true, 1, next, Guid.Empty)).GetProperty("status").GetString().ShouldBe("tracked");
++            Element(tracker.Observe(false, 0, next, Guid.Empty)).GetProperty("status").GetString().ShouldBe("matched");
++        }
++        finally { Activity.Current = previous; }
++    }
++
++    [Fact]
++    public void DuplicateIdentityShouldReportAmbiguityInsteadOfChoosingARequest()
++    {
++        LifecycleRequestCorrelation tracker = new();
++        Guid id = Guid.NewGuid();
++        tracker.Observe(true, 1, id, Guid.Empty);
++        tracker.Observe(true, 2, id, Guid.Empty);
++        JsonElement end = Element(tracker.Observe(false, 1, id, Guid.Empty));
++        end.GetProperty("status").GetString().ShouldBe("unmatched");
++        end.GetProperty("reason").GetString().ShouldBe("ambiguous_identity");
++        Element(tracker.Snapshot()).GetProperty("status").GetString().ShouldBe("unavailable");
++        Element(tracker.Snapshot()).GetProperty("activeRequests").EnumerateArray().ShouldBeEmpty();
++    }
++
++    private static JsonElement Element(object value) => JsonSerializer.SerializeToElement(value);
++
++    private static async Task<JsonElement> WaitForPhaseAsync(string path, string phase)
++    {
++        using CancellationTokenSource inspection = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
++        inspection.CancelAfter(TimeSpan.FromSeconds(5));
++        while (!File.Exists(path) || !Rows(path).Any(row => row.GetProperty("phase").GetString() == phase))
++            await Task.Delay(20, inspection.Token).ConfigureAwait(false);
++        return Rows(path).Last(row => row.GetProperty("phase").GetString() == phase);
++    }
++
++    private static JsonElement[] Rows(string path)
++    {
++        string text = File.ReadAllText(path);
++        return text[..(text.LastIndexOf('\n') + 1)].Split('\n', StringSplitOptions.RemoveEmptyEntries)
++            .Select(line => JsonSerializer.Deserialize<JsonElement>(line)).ToArray();
++    }
++}

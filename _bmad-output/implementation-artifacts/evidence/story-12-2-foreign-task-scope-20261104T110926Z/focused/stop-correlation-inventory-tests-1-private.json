@@ -1,0 +1,161 @@
+{
+  "assemblies": [
+    {
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "run-date": "2026-11-04",
+      "run-time": "10:53:24",
+      "errors": "0",
+      "failed": "0",
+      "passed": "18",
+      "skipped": "0",
+      "time": "4.035",
+      "total": "18"
+    }
+  ],
+  "tests": [
+    {
+      "result": "Pass",
+      "time": "0.221",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageIncludesIndependentRuntimeDependencyClosure",
+      "case_ordinal": 1,
+      "display_name_sha256": "d92d07021bcb7c9e75103efccf9260ab54b0ddf41a814f1d49d9adc352355895"
+    },
+    {
+      "result": "Pass",
+      "time": "0.112",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "GeneratorRejectsOutputThatAliasesARequiredCandidateInput",
+      "case_ordinal": 2,
+      "display_name_sha256": "1cd3eb021d6295fa86b5019fbdbe90048c64c2d97ed34a8d422805dfb66fc7f5"
+    },
+    {
+      "result": "Pass",
+      "time": "0.317",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 3,
+      "display_name_sha256": "05052a7b4f98da7bcd44454e5b39fd0cd3fde69d6f2aa98e8b3458bafb061b71"
+    },
+    {
+      "result": "Pass",
+      "time": "0.364",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 4,
+      "display_name_sha256": "d0077b99ab1eb3b5e744fffa0ea3bd89c466b0689b101fc456db7c401dac0755"
+    },
+    {
+      "result": "Pass",
+      "time": "0.277",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 5,
+      "display_name_sha256": "2006321f2688956ebe9ff11fb0477c381f3b50ae57f89d0e1dc90d1fe8efbfcf"
+    },
+    {
+      "result": "Pass",
+      "time": "0.312",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 6,
+      "display_name_sha256": "b52de80eb298de184b324fecef109d149b77c969fdf64bace9f2b36ebe5b3e54"
+    },
+    {
+      "result": "Pass",
+      "time": "0.252",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 7,
+      "display_name_sha256": "57fed9f049676c7fbf7b399aa3123073f52f2739ed78c16dbba49cc598485e58"
+    },
+    {
+      "result": "Pass",
+      "time": "0.249",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 8,
+      "display_name_sha256": "a3737323a02f092efdb68e19f40e3059e32e4628535b4f4eae3c4736e1902e9c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.284",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 9,
+      "display_name_sha256": "c6b6e097ae5879b9caecde954f398f33f92b836b6d2d9ac562ba175c93330156"
+    },
+    {
+      "result": "Pass",
+      "time": "0.258",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 10,
+      "display_name_sha256": "78c470104d0590dc1b88ff699117bc7f71b1ec8151c9f85acef8fcf1ec3ec30d"
+    },
+    {
+      "result": "Pass",
+      "time": "0.255",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 11,
+      "display_name_sha256": "15b75bd9ce080810e455da5990a4c6f42511f1ea44c74c4a472abb31d660d032"
+    },
+    {
+      "result": "Pass",
+      "time": "0.274",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 12,
+      "display_name_sha256": "c517d02ed75e8dd9de258c8be835bb8949533071707969f2d86ef3b335f2c3d1"
+    },
+    {
+      "result": "Pass",
+      "time": "0.232",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 13,
+      "display_name_sha256": "c9b1ebde939ca3b787503ebf0c94788aa69adb4a4b7fb82fbaf13a6ef32564a7"
+    },
+    {
+      "result": "Pass",
+      "time": "0.234",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CandidateCoverageRejectsAnOmittedExtractedOrTransitiveDependency",
+      "case_ordinal": 14,
+      "display_name_sha256": "542c5cdbb11201d4a9251d0b828921ec6d7e1d31f7d38eea2cc7cad3b7d47afe"
+    },
+    {
+      "result": "Pass",
+      "time": "0.167",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "GeneratorReproducesTheCommittedManifestByteForByte",
+      "case_ordinal": 15,
+      "display_name_sha256": "be2c21076f5572890bb69af8af1b0ce40c182cf5d46ae4cdc10a40da2085044e"
+    },
+    {
+      "result": "Pass",
+      "time": "0.007",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "InventoryCoversEveryRuntimeAndTestCompileInputIncludingExtractedHelpers",
+      "case_ordinal": 16,
+      "display_name_sha256": "36cac0baa2fab42c365ac37876e970345e7bea02ce4bffdaa6493280e55c2242"
+    },
+    {
+      "result": "Pass",
+      "time": "0.09",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+      "case_ordinal": 17,
+      "display_name_sha256": "5254338b8745459e00a2c7ada0e8e189a3e8659b4200c9dc0d5525c8f617857c"
+    },
+    {
+      "result": "Pass",
+      "time": "0.032",
+      "type": "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+      "method": "CurrentSourceInventoryPreservesHistoricalEvidenceAndRequiresRequalification",
+      "case_ordinal": 18,
+      "display_name_sha256": "760587e59aeefafdd9ccb07c07851ec77a4ee00120f280d0961a6ccca8b4f7de"
+    }
+  ]
+}

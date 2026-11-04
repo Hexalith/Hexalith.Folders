@@ -5,7 +5,7 @@ created: '2026-10-18'
 status: 'in-progress'
 baseline_commit: 'c22b13137202f7bf8c60b80c095a69748435bd6e'
 route: 'dispatch'
-review_loop_iteration: 4
+review_loop_iteration: 5
 enrollment_baseline_commit: '91c0b89801a114962433f6dc6efd54d308d9a548'
 context:
   - '_bmad-output/implementation-artifacts/epic-12-context.md'
@@ -16,6 +16,8 @@ context:
   - '_bmad-output/implementation-artifacts/proposal-12-2-current-sdk-source-head-transport.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-mutation-evidence-deadline.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-live-tenant-freshness-prerequisite.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.md'
+  - '_bmad-output/implementation-artifacts/review-12-2-round5-keep.md'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -166,7 +168,60 @@ The first five rows are complete on the current source graph, with broad contrac
 - [x] Approved current SDK enrollment: build isolated Debug/all-project-reference runtime with consistent assembly identities; execute affected Server, Workers, Integration, Contracts, health/observability and operational histories individually. Requalify affected 10,001/32,769 production-handler histories when source/runtime changes prevent exact reuse. If SDK public registration changes, run affected owner registration/security regressions. Record broad failures separately rather than weakening assertions or substituting test-only production bypasses.
 - [x] Current-source live composition correction: `src/Hexalith.Folders.EventStore/Program.cs` and `tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostCompositionTests.cs`: consume the current SDK gateway's supported HTTP host enrollment, framework channel conventions/actor callback metadata, projection-notification convention and explicit human documentation/hub policies. Mirror the owning SDK host composition; retain Folders idempotency adapters, safe denials, commands and receipt/admission semantics. Prove empty public inventories and real host startup/credential separation. No internal registration or bypass.
 - [x] Current-source live composition correction: `src/Hexalith.Folders.AppHost/Program.cs` and affected topology/composition tests: bind the already-composed Tenants project and its own sidecar to one SDK-generated per-run app-channel token, as the current public Tenants helper requires. Use the existing public token API; preserve resource/store isolation, real workload/human authentication and strict live assertions/deadlines. Never retain generated tokens in evidence.
-- [ ] Approved current SDK enrollment: run the unchanged strict authenticated real-provider durability acceptance on final audited runtime; retain commands/results, source/runtime identities, failed attempts, SM4 measurements and exact owned-resource cleanup in a new evidence packet. Preserve all prior packets and distinguish this migration's completion from whole-story SDK broad-regression, Release/package/PD10, SM4 and independent-review gates.
+- [x] Approved current SDK enrollment: run the owner-approved strict authenticated real-provider durability acceptance on final audited runtime; retain commands/results, source/runtime identities, failed attempts, SM4 measurements and exact owned-resource cleanup in a new evidence packet. Preserve all prior packets and distinguish this migration's completion from whole-story SDK broad-regression, Release/package/PD10, SM4 and independent-review gates. The only strict-body exception is the exact approved two-probe patch qualified on2026-11-04.
+
+**Review-five correction tasks (current):**
+
+- [x] `src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusCompaction.cs`,
+  `OperationalStatusFold.cs` and adjacent projection-only helpers: make persisted current fold state
+  bounded for valid native lease and content/file histories as well as legacy/rejection histories.
+  Do not retain unbounded primary content/publication/file/erasure/commit/released-fence dictionaries
+  in the checkpoint. Preserve necessary current operational state and lawful subsequent native/file
+  delivery; simply clearing data needed by the next primary Apply is not a correction. Keep primary
+  FolderState/command authority, source events, native release/complete distinctions and SDK limits.
+  Qualify at least4000native acquire/release cycles and distinct file/publication history, continued
+  live delivery, complete rebuild and actual mutation/value bounds through the existing SDK path.
+- [x] `OperationalStatusCompaction.cs`, `OperationalStatusFold.cs`,
+  `OperationalStatusProjectionWriter.cs` and persistence/retention tests: preserve original task
+  closure/expiry authority across compaction and physical C3 row/evidence expiry. A later unrelated
+  valid event must not recreate an expired terminal task as fresh/nonterminal. Live catch-up and
+  complete-source rebuild must agree for legacy and native completion, earliest closure and reused
+  task/binding histories. Use existing SDK logical evidence/selection/batch facilities and bounded
+  domain metadata; no local platform protocol, retained-byte replacement, status TTL extension,
+  dropped history, new product cap or primary source-guard change. Add the demonstrated401-day
+  clean-release→paired expiry→FolderAccessGranted regression and boundary/replay/growth controls.
+- [x] `OperationalStatusFold.cs:ValidateWorkspaceEvent` and adjacent validation helpers: validate
+  supported native acquisition metadata before folding/persistence, including nonblank lock/task
+  identities, positive consistent lease and ordered effective/expiry values. Follow actual lawful
+  native acquire/renew/release/complete producer semantics; do not blindly impose legacy-only field
+  equalities on another operation. Malformed source must neither publish views nor advance a
+  checkpoint/acknowledgment. Qualify direct writer, named intake and valid native continuation.
+- [x] `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs` and reader/query
+  tests: positive source-head lag must precede an unproved missing-task/workspace conclusion.
+  Checkpoint8/head9 plus an absent new task must be canonical stale/unavailable, not404. Preserve
+  frozen safe absence for positively expired views and paired absent rows at a current checkpoint;
+  surviving evidence without its view remains unavailable. Keep authorization before protected
+  observation, exact folder keys, source proof/zero distinctions and all existing canonical outcomes.
+- [x] `OperationalStatusProjectionWriter.cs`,
+  `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs` and existing rebuild tests:
+  observe the already-supplied cancellation while enumerating source/materialized operations and
+  serializing chunks, without a new public signature or changing uncanceled canonical output.
+  Demonstrate cancellation arriving during admitted large-history work stops that work without
+  false completion or weakened SDK Abort/recovery/continuity/CAS behavior.
+- [x] `tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs` and
+  `tests/Hexalith.Folders.Server.Tests/Task36LifecycleRequestCorrelationTests.cs`: reconcile an
+  unidentified/unmatched end at a confirmed drain, so available snapshots contain no phantom active
+  requests. Incomplete/contended observations must stay explicitly unavailable until drain, then
+  later observations can recover. Add deterministic actual contention/non-waiting, poisoned snapshot,
+  drain/recovery and unmatched/unavailable end tests. Preserve existing framework Activity controls,
+  opaque-only privacy, advisory/nonblocking behavior, bounds and all lifecycle/shutdown limits.
+- [x] Run affected focused Domain/Server/Workers/observer/source-scanner and pending-inventory checks
+  serially with both source flags and Debug assets. Refresh only changed/new compile inputs in the
+  pending inventory; preserve dated PD10 and every sealed packet. Hand off exact phase patches,
+  guards/results and released outputs. Parent owns final runtime/Memories/source/PDB/assets audit,
+  current consumer/matrix/capacity checks and unchanged d29 real-provider qualification. Preserve the
+  prior396.332s pass as exact old-source evidence, not a pass for modified source. Package/SM4 and
+  independent review remain separate; no publication/pin/deployment/Git operation is authorized.
 
 **Acceptance Criteria:**
 - Given authorized source events, when delivery, duplicates, restart and empty-checkpoint rebuild run, then all six status concerns converge with truthful freshness and unchanged retained hashes.
@@ -213,6 +268,24 @@ The first five rows are complete on the current source graph, with broad contrac
 - Stage six records the final Debug/source build (zero warnings/errors), 4,193 component passes with the two existing optional Domain skips, and the final opted-in real-provider acceptance pass (1/1, zero failures/skips, 299.439 seconds). All prior five evidence stages remain canonically unchanged. Final command acknowledgement p50/p95 was 251.065/31,330.090 ms (9 successful requests, including request retries), so SM4 acknowledgement latency remains an open finding against 1,000 ms. Workers callback p50/p95 was 119.751/452.781 ms (26 samples, 1,000 ms diagnostic budget); public status read was 30.082/45.861 ms (12 samples, 500 ms budget). The earlier diagnostic live pass was under budget; the final over-budget observation is retained without redesign. Full acceptance remains open for Task 36, source-deadline expiry through delayed SDK recovery, retained scratch-batch retry/Abort recovery, SM4 acknowledgement latency, package consumption and independent review.
 
 ## Spec Change Log
+
+- 2026-11-04 review-five loopback (`review_loop_iteration: 5`): every final finding from the three
+  independent layers is recorded separately in Review Triage Log. Reproduced native history makes
+  a306073-byte checkpoint exceed the existing256KiB SDK value bound; malformed native acquisition
+  advances/persists; parent probing confirms compacted closure loss recreates an expired task as
+  fresh/nonterminal after an unrelated grant. Missing-view lag precedence is also made explicit.
+  These are bad nonfrozen implementation instructions, not new intent. Added seven actionable
+  correction/qualification tasks for projection-specific bounded state, closure/expiry preservation,
+  native source-shape checks, freshness ordering and surviving cancellation/observer/test patches.
+  KEEP is [recorded separately](review-12-2-round5-keep.md), with source copies/hash inventory under
+  `/tmp/story12-2-foreign-scope-20261104-s76ae741/round5-keep`. Affected production paths are already
+  unchanged from preserved current HEAD, so there is no uncommitted production implementation to
+  revert; re-derive the affected portions in place without reverting committed/user work or restoring
+  old planning/evidence. Preserve the exact d29 strict body, captured intent/frozen block, all
+  deadlines/guards, correct native release/complete semantics, SDK protocols/limits and sealed pass.
+  Modified code requires fresh source/runtime and live qualification. Lower non-patch entries remain
+  moot on this loopback; the two unverified performance claims are not silently promoted to defects.
+  No publication, pin, deployment, commit, push or additional capability approval is recorded.
 
 - 2026-10-18: Jerome explicitly approved [the bounded acceptance prerequisites](proposal-12-2-acceptance-prerequisites.md): production provider binding/readiness, an additive folder hint for the existing v1 task-status route, and qualification/consumption of the minimal selective SDK projection mapping capability. These three exceptions extend the original boundary; public v2, provider commit execution, content storage, idempotency admission, confidentiality and destructive cleanup remain excluded. No deployment, dependency publication, commit or push was authorized.
 
@@ -357,6 +430,36 @@ The first five rows are complete on the current source graph, with broad contrac
 | 4 / edge-33 GitHub preparation | false | reject | Production OctokitGitHubApiClient.GetReadinessAsync throws NotImplementedException (OctokitGitHubApiClient.cs:49-62), so no Supported preparation row exists in production. |
 | 4 / edge-34 head reader | false | reject | DaprOrganizationStreamSequenceReader is unchanged since baseline and was already registered; no SDK sequence reader exists. |
 | 4 / edge-35 metadata identity mismatch | false | reject | EventStore sends AppId=registration.AppId and ServiceVersion "v1" (AdminOperationalIndexHostedService.cs:162-167), matching the Folders defaults. |
+
+### Review five verdicts — 2026-11-04
+
+Coverage: the mandated baseline diff contains10,249sections/13.1million lines, including unrelated
+history and generated evidence. All three lenses indexed it and traced selected behavioral source,
+tests and callers; none claims exhaustive review of every historical artifact. Every final finding
+is classified below before grouping. Temporary probes use existing Debug assemblies only.
+
+| Round / finding | Verdict | Route | Verified evidence |
+| --- | --- | --- | --- |
+| 5 / blind-1 missing view before lag | medium | bad_spec | ReadAsync returns missing at266–271 before the positive head>checkpoint guard at285. A checkpoint8/head9 with a never-materialized task cannot establish absence for the complete current prefix; this is distinct from a positively expired row or paired absence at a current checkpoint. Specify stale-before-unproved-absence while preserving the frozen expired-view outcome. |
+| 5 / blind-2 expired task resurrection | medium | bad_spec | Parent probe first persists the clean-release prefix, removes its expired task/evidence pair and advances401days, then delivers a lawful FolderAccessGranted. Live delivery completes and persists task-a with TerminalState=null and a fresh2027-11-23timestamp; complete-source fold retains ready at2026-10-18 and omits it as expired. Clearing closure authority from compacted state permits this new result. |
+| 5 / blind-3 native checkpoint growth | high | bad_spec | Compact clears TaskClosures but retains native content/file/erasure/commit/release dictionaries. The reviewed valid4000native acquire/release history yields306073checkpoint bytes and actual SDK PartitionMutations rejects the value. This violates the per-value bounded contract below supported source-count limits; separate projection state from unrelated primary-history collections. |
+| 5 / blind-4 rebuild peak memory | maybe-false | defer (potential medium, unverified) | PreparePartitionChunksAsync retains a full plan plus serialized chunk list, so allocations scale with owner output. The SDK API itself returns IReadOnlyList chunks, and current10001/32769qualification passes; no supported distinct-view history, measured peak/limit or failure threshold was supplied. A realistic maximum-history/distinct-view memory benchmark plus a supported budget would settle impact. |
+| 5 / blind-5 provider history growth | maybe-false | defer (potential medium, unverified) | Messages append, but lawful accepted bindings are write-once, so repeated accepted Configurations are not established by this caller. Rejected-position history can grow; the direct single-value store path does not use the cited shared-mutation cap. Repeated lawful rejection/configuration history measured against actual transport/store limits is needed to establish user impact. |
+| 5 / blind-6 dead known-view plumbing | low | reject (carried) | carried4/edge-11: the same unused callbacks/compacted maps remain, and the logged low/reject verdict and route are retained. No duplicate patch or defer is introduced. |
+| 5 / blind-7 cancellation during rebuild | medium | patch (survives loopback) | The existing cancellation argument is not observed by synchronous source folding/materialization/serialization loops before the next awaited store call. Large admitted histories continue CPU/allocation after cancellation. Observe the existing token while enumerating source/operations without adding a public signature, changing canonical bytes or weakening recovery. |
+| 5 / blind-8 phantom drained request | medium | patch (survives loopback) | Parent probe observes a valid start then an unmatched end with inFlight=0; Snapshot reports available with one active request. Reconcile confirmed drain and mark incomplete observation explicitly instead of retaining a phantom identity. No request/context or behavior change is needed. |
+| 5 / blind-9 denied-safe response assertions | false | reject | A foreign-folder missing result takes TaskStatusQueryHandler.SafeResult, which explicitly nulls task/terminal/operation/failure fields. Only the authorized different folder's keys are read; the executed counting-store control proves the original folder keys are never observed. The proposed extra assertion does not demonstrate an untested reachable disclosure. |
+| 5 / blind-10 reader diagnostics | low | reject | Canonical unavailable intentionally withholds internal error detail; the claim supplies no failed ordinary-user outcome beyond optional operator diagnosis of corruption/faults. Adding classified production logging requires extra plumbing, and captured intent assigns general diagnostics to Epics4/6/10. Keep the safe public refusal; no complex low-impact enhancement here. |
+| 5 / edge-1 native checkpoint cap | high | bad_spec (group with blind-3) | Reviewed executable probe confirms4000released native lease fences remain after compaction and exceed the SDK256KiB single-mutation cap. This is the same retained-primary-history defect, not another limit to raise. |
+| 5 / edge-2 native acquisition validation | medium | bad_spec | ValidateWorkspaceEvent validates lease/lock bounds only for WorkspaceLockAcquired. WorkspaceNativeTaskChanged acquire passes through the owner-admitted apply path with blank lock, lease=-1 and expiry before effective time; the probe confirms sequence9 and successful SDK writer persistence. Apply source-shape checks to supported native metadata as well, preserving lawful native operation semantics. |
+| 5 / verification-1 contention coverage | medium | patch (survives loopback) | Pre-verified gap: no current test forces Monitor.TryEnter failure and proves incomplete inventory remains unavailable until drain. Removing the gap poison leaves checked serial/held-request cases passing. Add deterministic non-waiting contention, stopping-snapshot and recovery coverage; trust the filed searches/evidence. |
+
+Surviving root causes: missing-view freshness precedence; expired-task closure loss; retained primary
+native history in bounded checkpoints (blind3+edge1); native acquisition source-shape validation.
+These are nonfrozen implementation/spec gaps; captured intent already requires truthful source,
+bounded metadata and no resurrection. No intent decision or frozen amendment is needed. Cancellation,
+phantom-drain correction and contention-test patches survive re-derivation. Two unverified performance
+entries remain separate potential-medium defers. Other findings are rejected as recorded.
 
 ## Design Notes
 
@@ -1444,7 +1547,7 @@ Implement this continuation over the preserved working tree; do not redo histori
 - [x] If that first gate succeeds, implement the smallest independent read-only public SDK composition in references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Streams/, ...Client/Registration/NativeSourceMetadataServiceCollectionExtensions.cs and/or ...DomainService/EventStoreGatewayWorkloadTransportExtensions.cs. Reuse supported authenticated metadata/proof protocols, preserve the default human-command client, and add focused registration/credential/catalog/proof/result controls. No domain-local platform protocol or internal SDK registration.
 - [x] Inventory reachable Server/Workers source-head consumers, then wire the authorized actual Folders caller's own issuer identity/signing material and least-privilege metadata grant through supported host/catalog configuration. Update src/Hexalith.Folders.AppHost/ and the disposable fixture only as required; do not enroll both hosts by default or borrow another host's identity.
 - [x] Migrate src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs and its Server/Workers registrations through the approved SDK seam. Preserve exact own-actor shortcuts, different-aggregate freshness, existing canonical missing/stale/unavailable outcomes, cancellation and the three-/five-/forty-second ceilings. Add production-path positive and denial controls without relaxing the original strict/capacity assertions.
-- [ ] Sequentially build current Debug project-reference runtime, run affected owner/consumer checks individually, and execute unchanged strict real-provider acceptance with audited identities and exact owned cleanup. Diagnose ResponseEnded independently if it recurs. Refresh only the pending source inventory for new compile inputs; preserve historical evidence and disabled v2. Retain all failed attempts and separate SDK broad, Release/package, live capacity, SM4 and independent-review gates.
+- [x] Sequentially build current Debug project-reference runtime, run affected owner/consumer checks individually, and execute owner-approved strict real-provider acceptance with audited identities and exact owned cleanup. Diagnose ResponseEnded independently if it recurs. Refresh only the pending source inventory for new compile inputs; preserve historical evidence and disabled v2. Retain all failed attempts and separate SDK broad, Release/package, live capacity, SM4 and independent-review gates. Completed with the exact approved two-probe exception on2026-11-04; historical failed runs remain unchanged.
 
 The implementation agent owns source changes and focused checks, then returns selected outputs free of active builds/tests. The parent owns final runtime rebuild/audit, broader checks, unchanged strict live execution and a new evidence packet. No simultaneous builds may mutate selected outputs.
 
@@ -2224,3 +2327,350 @@ patch are ready; the user decision is pending. No revised body is built or execu
 absence is converted into native zero. All owned live resources were removed; unrelated resources
 were preserved. Step03/story/sprint stay in-progress; full strict, package/governance, SM4 and whole-
 story review are not marked complete. Prior sealed packets still verify unchanged.
+
+
+### Approved real foreign task scope qualification — 2026-11-04
+
+The user replied **approve** to [the exact two-probe proposal](proposal-12-2-foreign-task-scope-proof.md).
+Apply only that explicit original-body exception: genuine different authorized folder404, separate
+never-created unsupported-source503 and canonical code. The approved patch SHA256 is
+c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856. The strict body is still
+f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90 at approval; the exact proposed
+after hash is d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82. This is the sole
+new body exception; other strict/capacity bodies, frozen intent and every production deadline/guard
+remain unchanged. No SDK absence capability, source seed, proof conversion or permission expansion.
+
+External sessions committed the prior work and advanced Root to9198d9213f6ea54c629148322f05e7ded994822d
+and SDK to aeec5012fa3e1e07426a8fdd145709bce93f619a. Preserve this current clean tracked cohort and all
+other story work; no Git mutation is authorized. Prior sealed packets stay immutable. The workflow
+continues step03 from its existing rendered snapshot; do not rerender or replace baseline_commit.
+
+- [x] Apply the exact approved patch to `tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs`.
+  Use the existing ordinary authenticated v1 creation, fresh key/default task header and normal
+  current source/Workers barrier. Retain404 on the original task under the different real folder,
+  no original-folder disclosure; separately assert503/read_model_unavailable for literal absent-folder.
+  Keep all timing samples identifiable, original budgets and all remaining checks.
+- [x] Extend meaningful reader/handler/counting-store controls beside
+  `tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs`
+  and/or `tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs` to prove the
+  different authorized folder's task/checkpoint/evidence keys only; original folder task key never
+  observed; unsupported native absence never becomes zero or triggers task lookup before current
+  folder authority. Reuse existing controls where they already prove a requirement. No production
+  behavior change; if actual behavior disagrees, return the finding before widening this scope.
+- [x] Build/run appropriate focused Domain/AppHost controls serially, both source flags, Debug,
+  individual built xUnit assemblies. Refresh only pending inventory paths/hashes for changed/new
+  compile inputs; preserve dated immutable PD10. Parent owns full coherent runtime+Memories rebuild,
+  current source/PDB/producer/asset audit, further strict live and exact cleanup. Hand off exact
+  patch/guard hashes/results with no active source/output commands.
+
+Implementation agent owns source/outputs until explicit release; parent performs no competing build
+or live run. Fresh private handoff/evidence workspace: `/tmp/story12-2-foreign-scope-20261104-s76ae741`. Parent retains the approved body-hash
+transition in new audit tooling; no old receipt/verifier is edited. Story/sprint remain in-progress;
+package, governance, SM4 and whole-story review gates stay separate until actually satisfied.
+
+
+### Real foreign task scope focused handoff — 2026-11-04
+
+The exact owner-approved patch is applied. The strict source hash transitions from
+f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90 to
+d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82, exactly as approved.
+The final probe creates a genuine different folder with the existing authenticated v1 helper and
+normal current source/Workers barrier, retains404 for the original task under that folder, and
+checks that its response omits the original folder. The separate unchanged absent-folder literal
+requires503/read_model_unavailable. Other strict/capacity bodies, frozen intent, production guards,
+grants, source protocols and all deadlines remain unchanged. No live execution is claimed here.
+
+The persistent-reader control now writes a real create-only second-folder projection through the
+existing SDK writer, verifies its current checkpoint has no task evidence, and records selected
+physical reads. Only that folder's task/checkpoint/evidence values are selected; the original
+folder's corresponding keys are never observed and its original terminal row is unchanged. The
+new handler control uses the actual gateway source adapter and actual folder permission reader
+with unsupported native metadata. It remains unavailable rather than zero, produces the existing
+FolderAcl denial, and observes neither the counted task model nor the downstream validator.
+Existing current-authority, task scope and stale/denial controls remain intact.
+
+Current Debug/project-reference Domain and AppHost builds pass with zero warnings/errors in8.11s
+and81.93s. Serial focused execution passes103Domain cases in1.425s,130fixture/HTTP/shared-rebuild
+cases in5.412s, and18pending-inventory controls in4.403s, zero failures/errors/skips. The Domain
+selection includes the upgraded persistent-reader case, one new unsupported-native handler case,
+and existing current-authority/layered/task-scope controls. The first new-test build's CS1061 on an
+incorrect decision-property reference is retained; it was corrected before successful qualification.
+Only the pending compile-input allowlist/inventory was refreshed for the new test helper and changed
+test hashes. Dated immutable PD10 evidence is unchanged; no full-suite or live pass is inferred.
+
+Exact before/after files, approved patch/body/guard hashes, commands, build/test receipts and output
+identities are retained under `/tmp/story12-2-foreign-scope-20261104-s76ae741`. Source/outputs are
+released with no active build/test/topology. Parent owns the coherent full runtime/Memories rebuild,
+current source/PDB/asset/producer audit, revised strict live qualification and exact cleanup. Original
+failed runs and sealed packets remain immutable. Story/sprint and independent package/governance,
+capacity-identity, SM4 and whole-story review gates remain in-progress or retain their prior outcomes.
+
+### Current SDK human-command fixture compatibility — 2026-11-04
+
+Parent full Debug/source runtime and Memories builds pass; the92-module source/PDB/producer/assets
+audit matches the approved d29 body and unchanged companion/frozen hashes. Fresh Domain broad
+execution passes2385cases with2existing optional skips; Server broad passes1395, zero failures/errors.
+All five frozen matrix rows and both10001/32769 production-handler component histories pass.
+These are separate from full live qualification.
+
+The first fresh strict attempt stopped during scheduler health startup before bootstrap in249.385s.
+No permanent endpoint mismatch was established; the same-code isolated retry passed that boundary
+and genuine bootstrap, then failed the first InitializeOrganizationAclBaseline with HTTP400 in62.605s.
+The current SDK CommandsController rejects X-Hexalith-Tenant on human command POSTs, while the
+fixture SubmitAsync supplies it. Human commands already bind their canonical tenant in the body and
+validated bearer. Command-status GETs independently require the explicit tenant/platform header.
+Both attempts retain exact source/runtime receipts, failed results and all-zero owned cleanup.
+
+- [x] In tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityGatewayScope.cs and
+  FolderDurabilityAcceptanceFixture.cs, use the supported human-command scope shape for SubmitAsync:
+  preserve the original canonical body tenant, human bearer, bytes, tracing and task/idempotency
+  identities; omit only the redundant ordinary tenant header. Preserve explicit platform command
+  scope, status GET headers, native source request proofs and invalid/mixed-scope refusal.
+- [x] Add meaningful command/status shape and preservation controls in
+  FolderDurabilityGatewayScopeTests.cs; execute focused fixture and existing SDK command/status
+  owner controls serially. Refresh pending inventory only where its existing denominator changes.
+  Preserve the approved d29 strict body, companion/capacity bodies and every production policy,
+  source proof, deadline and assertion. Hand off changes/results before parent rebuild/audit/live.
+
+This is a fixture compatibility correction within the approved current SDK enrollment, with no
+production policy or authorization change. No repeated startup retry or budget change is authorized
+by these observations. Story/sprint and independent Release/package/PD10, SM4 and review gates remain
+open; the revised foreign-folder and unsupported-absence probes have not yet executed live.
+
+### Human-command fixture compatibility focused handoff — 2026-11-04
+
+The fixture now constructs ordinary human command POSTs with their unchanged canonical body tenant
+and bearer, omitting the redundant X-Hexalith-Tenant header rejected by the current SDK. Explicit
+platform command namespaces remain intact. Status GETs keep their original explicit tenant/platform
+headers; native source requests keep their existing bound proof. Invalid or mixed scopes still refuse.
+The approved strict body remains d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82;
+companion/capacity bodies, production policy, identities, grants and every deadline are unchanged.
+
+Debug/source AppHost and SDK Server test builds pass with zero warnings/errors in66.05s and11.80s.
+Serial focused execution passes141fixture/HTTP/shared-rebuild controls in5.375s, including11new exact
+command-byte/identity/header preservation and invalid/mixed-scope refusal cases, then97unchanged SDK
+command/status/platform/validation owner controls in3.694s. Both selections have zero failures,
+errors or skips. The affected AppHost compile inputs are outside the existing pending PD10
+denominator; pending and historical inventory files are unchanged. No further live pass is claimed.
+
+The two failed live runs, scheduler startup limitation and exact current-SDK400 provenance remain
+preserved. New phase before/after files, patch, guard/output hashes and focused receipts are retained
+under `/tmp/story12-2-foreign-scope-20261104-s76ae741` as `scope-compatibility-handoff.json` and
+`scope-compatibility-phase.patch`. Parent owns current source/PDB/producer/assets audit and any further
+strict live run after source/output release. Independent Release/package, PD10, SM4 and review gates
+remain open until separately qualified.
+
+### Bounded stop-correlation diagnostic continuation — 2026-11-04
+
+Current consumer selections pass5630cases with2existing optional skips. Current SDK Server broad
+passes7684cases with25exactly unchanged optional skips; its three published ABI controls pass with
+the unchanged official fixture hash. The current Release gate independently failsCS1061 because
+published SDK4.0.4 lacks AddEventStoreGatewayNativeSourceMetadataReader. Debug/source assets were
+restored and the92-module producer/source/PDB/assets audit passes. Package changes remain excluded.
+
+Strict4 passes genuine bootstrap, provider configuration/rebuild, tenant maintenance, actual target
+denial, six-concern integrity/rebuild/retention, interrupted-generation recovery and concurrent real
+Workers. It fails319.939s at the supported EventStore stop command before main restart/revised probes.
+DCP reports process-stop timeout11.996s after replacement PID1801241 began stopping, with one observed
+in-flight request. Original PID1728410 stopped cleanly in2.049s. Counts alone cannot identify the
+outstanding request or establish a hosted-service/native-authority cause. Source/head/runtime drift
+and owned cleanup remainders are zero. All four failed attempts remain independent exact evidence.
+
+- [x] Extend only tests/tools/Task36FoldObserver/LifecycleDiagnosticObserver.cs and adjacent
+  single-type helpers to correlate existing framework request-start/end IDs with already-existing
+  opaque Activity trace/span IDs and primitive framework activity IDs. Preserve original counts,
+  lifecycle observations, bounded sink/drop reporting and advisory/nonblocking behavior. Do not
+  start activities, read Payload/PayloadNames/Message, request/context objects, routes/URLs/query,
+  headers, bodies, identities, tags, baggage or trace-state. Bound active identity tracking; report
+  unavailable/unmatched correlation explicitly rather than inventing a join. Keep the SDK's raw
+  request-log privacy floor intact. No production source, pipeline, behavior or timing change.
+- [x] In tests/Hexalith.Folders.Server.Tests/Task36LifecycleDiagnosticObserverTests.cs and/or
+  adjacent tests, verify actual framework request activity correlation with a controlled in-flight
+  request, lifecycle matching/drain, bounded/unavailable cases and absence of dynamic payload/tag
+  sentinels. Retain existing lifecycle/hosted-service/privacy controls. Build/run affected individual
+  Debug/source projects with both flags; refresh only affected pending inventory inputs. Preserve
+  strict d29, companion/capacity/frozen hashes and every timeout/retry/shutdown limit.
+- [x] Hand off exact patch, source/output/guard hashes and focused results with selected outputs
+  released. Parent audits the observer plus coherent selected runtime, then runs the unchanged d29
+  class with the new opaque diagnostic and retains exact loaded identities, failures and cleanup.
+  Attribute a remaining stop blocker only if the actual correlation joins; otherwise retain the
+  uncertainty. No force stop, ignored command result, fabricated quiescence or speculative fix.
+
+This continues the existing fixture-only payload-free diagnostics within the authorized acceptance
+work. It adds no route-family observation, source authority, publication or approval exception.
+Strict live/probe/SM4, package/PD10 and independent review gates remain open until actually satisfied.
+
+### Opaque stop-correlation focused handoff — 2026-11-04
+
+The actual framework control exposed that the early EventSource RequestStart precedes request
+Activity creation. Its failed18/19selection is retained. Matching .NET10.0.14 hosting source supports
+the later fixed DiagnosticListener HttpRequestIn.Start/Stop pair around an existing Activity. The
+observer now subscribes only to those two keys, explicitly refusing the unsuffixed HttpRequestIn
+predicate that participates in creation. It never reads notification Value or EventSource payload,
+request/context data, activity tags/baggage/trace-state, routes or credentials. No Activity is started.
+Raw framework counts/opaque IDs and later Activity correlation remain separate; unavailable or
+unmatched observations are explicit. Active identity tracking is bounded at64 and listener tracking
+at8; overflow/contention degrades correlation without waiting or changing request/host behavior.
+The existing64-record advisory queue, one-second snapshots and all host/shutdown limits remain intact.
+
+The in-process real Kestrel control independently enables framework Activities, holds a request
+across actual stopping, matches its existing trace/span in start/snapshot/end records, then releases
+and verifies drain and private-sentinel absence. A second real Kestrel control disables independent
+creation and proves observation does not create an Activity. Focused controls also retain existing
+hosted-service gates and verify invalid/ambiguous/unavailable/capacity cases, ignored notification
+values, callback failure and disposal. Final Debug/source Server build (including the observer)
+passes with zero warnings/errors in10.76s;28focused cases pass in5.611s and18pending-inventory cases
+pass in4.035s, zero failures/errors/skips. The initial two CA2007 test-helper build errors are retained
+and corrected. Only affected pending compile inputs/hashes were refreshed; dated PD10 is unchanged.
+
+The fixture selects the observer directly from tests/tools/Task36FoldObserver/bin/Debug/net10.0;
+its AppHost ProjectReference has ReferenceOutputAssembly=false. No AppHost source changed in this
+phase and the source-mode Server build produced the selected observer output. Exact phase patch,
+source/output/guard hashes, primary-source assessment and all focused receipts are retained in
+`/tmp/story12-2-foreign-scope-20261104-s76ae741` as `stop-correlation-handoff.json` and
+`stop-correlation-phase.patch`. Parent audits the actual observer plus current runtime and owns any
+further unchanged d29 strict run. This diagnostic establishes no stop-cause correction, main restart,
+revised task-scope probe or full acceptance pass. All independent open gates retain their disposition.
+
+### Parent approved strict qualification — 2026-11-04
+
+The owner-approved d29 strict class passes1/1, zero failures/errors/skips, in396.332s on root
+9198d9213f6ea54c629148322f05e7ded994822d and SDKaeec5012fa3e1e07426a8fdd145709bce93f619a.
+It creates a genuine independently authorized different folder through ordinary v1 creation, observes
+normal current source/Workers evidence, and receives404 for the original task with no original-folder
+disclosure. The separate unchanged never-created absent-folder probe returns503/read_model_unavailable;
+missing-hint503 remains. The full remaining real-provider pipeline, changed-PID restarts, exact retained
+prefix/replay, closed-binding denial, all six concerns, rebuild/recovery, concurrency, retention and
+safe storage failures also pass. No earlier failed run is reclassified.
+
+Initial consumer selections pass5630cases with2existing optional Domain skips; current SDK Server broad
+passes7684with25exactly unchanged optional skips and all3published ABI controls. Final observer controls
+pass28, pending inventory18, and unchanged source secret-scanner controls274, all zero failures/errors/
+skips. Focused selections overlap broad suites and are not added. All five frozen matrix rows and
+10001/32769 production-handler component histories have executed passing coverage. The original full
+runtime/Memories Debug/source build and the final98-module observer/runtime/source/PDB/assets audit
+pass, with one SDK hash/MVID per assembly and project-only selected Hexalith edges. Guards, frozen
+intent, dated PD10, companion/capacity bodies, native proof, authorization and every deadline remain.
+
+Five strict attempts are retained: scheduler startup failure, deterministic human-command header
+mismatch (fixture corrected), Sentry startup failure, DCP process-stop timeout, then the full pass.
+Opaque diagnostics actually emit2987exact Activity pairs;703observation_busy records remain explicit.
+All four observed EventStore lifecycles in the final run reach ApplicationStopped with in-flight0.
+This successful execution supplies no failed-stop cause or shutdown-fix claim. Selected observer
+DLL/PDB/source are qualified and actual new behavior is recorded on all four PIDs; its loaded module
+MVID/SHA was not separately captured, so that visibility limit is preserved. The253actual saved SDK
+observations match the audited producer. All parent commands have zero source/head/runtime drift;
+all owned processes, containers and exact Dapr directories are gone, with no unrelated-resource action.
+
+Final measured SM4 p50/p95 milliseconds: command acknowledgement6802.849/8626.066(count10,budget1000),
+Workers delivery108.189/266.760(count27,diagnostic budget1000), status read817.379/1085.010(count12,
+budget500). Command and status p95 remain open findings; no sample/budget change or general performance
+redesign is made. Fresh exact Release contract-spine gate still failsCS1061 at Server67/Workers87:
+published SDK4.0.4 lacks AddEventStoreGatewayNativeSourceMetadataReader. Debug/source assets were
+restored and audited afterward. Package publication/pin changes are outside this continuation.
+
+The [new qualification packet](evidence/story-12-2-foreign-task-scope-20261104T110926Z/README.md) retains
+exact approval/body transitions, phase patches, commands, source/module checksums, all failed attempts,
+closed diagnoses, safe test summaries, cleanup and privacy/seal verification. All three prior sealed
+packets remain unchanged and independently verify. Raw logs/XML and parameter display payloads stay
+private. The bounded approved implementation and current strict source qualification are complete;
+whole-story/sprint stay in-progress for Release/package, PD10/governance, SM4 and independent review.
+
+
+### Review-five implementation focused handoff — 2026-11-04
+
+Projection checkpoint schema3 now retains current operational state without primary content, File,
+publication, erasure, committed-reference or native released-fence dictionaries. Projection-specific
+file folding preserves lifecycle/provider-work semantics and source-local binding consistency;
+historical File/version/erasure authority remains in the unchanged primary fold. A source-lawful
+4000native acquire/release history plus256distinct native publications passes the production named
+SDK rebuild, bounded mutation/checkpoint assertions, subsequent live older-incarnation version2
+change/renew/complete, grown rebuild and original-source duplicate checks. Native release remains
+nonterminal; native completion retains its original terminal result.
+
+Bounded SDK logical completion records retain each task's earliest original closure position, time
+and source prefix independently of C3 status/evidence expiry. Legacy and native401-day paired-expiry
+then FolderAccessGranted controls preserve safe absence, original closure and complete-source parity;
+reused tasks in later workspace bindings retain the same earliest result. Missing physical completion
+values retain the SDK pointer and fail unavailable through its existing selected-value guarantee;
+corrupt completion also refuses without checkpoint advance. Named complete-source repair restores
+the original evidence and valid delivery resumes without recreating an expired task.
+
+Older schema2 compacted checkpoints cannot establish complete closure coverage: new live delivery
+refuses without acknowledgment until the existing protected named complete-source rebuild publishes
+schema3. Intact source-bound old rows remain readable under existing freshness/retention policy.
+The migration control validates the old source anchor, refused direct/named delivery, named repair,
+resumed delivery and exact source digest. Operator guidance uses that existing transport and requires
+no manual storage mutation or new privilege.
+
+Native acquisition metadata now validates supported lock/task/lease/interval shape before persistence,
+while actual acquire/renew/release/complete semantics, including zero-interval expiry recovery release,
+remain lawful. Eighteen malformed publication-binding cases additionally preserve source-local scope,
+command/item key, file/operation/kind/path/content/fence/version/policy/removal consistency. Absent
+new task/workspace rows at checkpoint8/head9 are stale; current paired absence and positively expired
+rows retain their safe outcomes. Existing tokens stop source folding, operation materialization,
+chunk serialization and final-operation enumeration. Opaque diagnostic tracking reconciles unmatched
+or unidentified confirmed drain; real non-waiting contention poisons snapshots until drain, then
+subsequent matching recovers. Existing real framework Activity/privacy controls remain passing.
+
+Final serial Debug/source project builds pass with zero warnings/errors. Executed individual-assembly
+selections pass163Domain operational/task-query cases in56.470s (including10001/32769production-handler
+histories),32Server/observer cases in2.861s,162Workers cases in4.346s,26pending-inventory/retention-doc
+cases in4.444s and274unchanged source-scanner cases in5.488s; zero failures/errors/skips. Earlier
+overlapping selections remain separate. The initial null-guard analyzer build failure and six new-test
+record/dictionary reference-comparison failures are retained; exact serialized comparisons corrected
+those assertions before qualification. Only six new compile inputs and changed pending-input hashes
+were refreshed; dated immutable PD10, strictd29, companion/capacity and frozen hashes remain unchanged.
+
+Exact before/after files, phase-only patch, commands, all intermediate/final receipts, source/output
+identities and guard audit are retained in `/tmp/story12-2-round5-implementation-20261104` as
+`handoff.json` and `round5-phase.patch`. Source/outputs are released with no active build/test/topology.
+Parent owns coherent runtime/Memories/source/PDB/assets audit, remaining current consumer/matrix/
+capacity qualification and unchanged d29 real-provider execution. The prior396.332s pass remains
+exact old-source evidence. Story/sprint remain in-progress for current live qualification and separate
+Release/package, PD10/governance, SM4 and independent review gates; no whole-story pass is inferred.
+
+
+### Fixture-only lifecycle observer control — 2026-11-04
+
+Current parent qualification passes5681consumer tests with2existing optional skips, all five frozen
+matrix rows and10001/32769production-handler histories. Coherent runtime/Memories builds and98-module
+source/PDB/assets audits pass. Four current strict attempts fail actual supported EventStore stop
+commands (315.760s,274.703s,274.922s diagnostic,270.423s); none is a current-source full pass. All own
+cleanup/source/head/runtime/status remainders are zero. Actual opaque request joins and subsequent
+snapshots prove requests drain before the deadline, while ApplicationStopped is absent. A method-only
+stack capture identifies no specific async shutdown await; its background OTLP retry is not proved
+causal. Normal SDK logging verbosity also reproduces the failure. SDK source/guards/deadlines remain
+unchanged. Prior396.332s old-source pass and all sealed packets remain immutable.
+
+The fixture always injects a nonempty lifecycle path. Task36HostingStartup also selects the folder
+fold observer when that path is empty, so clearing it is not a valid observer-only comparison.
+Implement the following bounded qualification control over the preserved completed review-five work;
+no production implementation, SDK, strict body, shutdown ordering/timeout/retry, authorization, source
+proof, telemetry policy, service replacement or public route change is authorized by this task.
+
+- [ ] In `tests/tools/Task36FoldObserver/Task36HostingStartup.cs` and
+  `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs`, add an explicit opt-out
+  for the optional EventStore lifecycle diagnostic only, using an exact per-resource environment
+  flag such as `FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED=true`. Default/invalid/missing values
+  preserve existing observation. Forward the flag only to the fixture-owned EventStore resource.
+  Disabling must omit only LifecycleDiagnosticObserver registration; retain the nonempty shutdown
+  path's existing fold-registration semantics, the actual production services and Folders' mandatory
+  fold evidence. No dummy sink, private handler, service proxy or forced Activity is permitted.
+- [ ] Add meaningful focused control(s) in existing Tool/Server/AppHost test locations proving
+  default-on and explicit-off service registration/behavior, invalid-value default, retained
+  Folders fold observation and absence of extra fold observer on EventStore. Build/run affected
+  individual Debug/source projects serially with both flags; refresh only affected pending compile
+  inventory hashes/paths and run its controls plus unchanged source privacy scanner as appropriate.
+  Preserve strictd29, companion/capacity, mutation2s, datedPD10 and frozen497c hashes.
+- [ ] Hand off a new exact phase patch, before/after/guard/output hashes, commands and all results
+  under `/tmp/story12-2-observer-control-20261104`; never overwrite prior handoffs. Release all
+  selected outputs with no active build/test/topology. Parent owns coherent runtime/Memories audit,
+  any affected requalification and one unchanged strict class with the supported observer opt-out.
+  Treat that comparison separately; one outcome alone does not prove causality or fix prior stops.
+
+This is a fixture diagnostic control for required acceptance qualification, within the existing
+payload-free advisory diagnostic work. It does not authorize generic SDK shutdown/performance repair
+or policy changes. Story/sprint remain in-progress; current strict, package, PD10/governance, SM4 and
+independent review gates stay open. Parent performs no competing build/test/live while delegated
+implementation owns selected source/outputs. Existing rendered workflow/baseline are preserved.

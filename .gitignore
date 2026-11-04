@@ -122,6 +122,7 @@ StyleCopReport.xml
 *.log
 !_bmad-output/implementation-artifacts/evidence/story-1-17-platform-hosted-graph-qualification-2026-11-02/*.log
 !_bmad-output/implementation-artifacts/evidence/story-1-17-committed-candidate-2026-11-02/*.log
+!_bmad-output/implementation-artifacts/evidence/story-12-2-foreign-task-scope-20261104T110926Z/*-observations.log
 *.tlog
 *.vspscc
 *.vssscc

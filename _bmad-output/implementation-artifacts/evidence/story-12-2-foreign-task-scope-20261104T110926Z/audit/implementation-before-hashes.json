@@ -1,0 +1,11 @@
+{
+  "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+  "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+  "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs": "1965c56aeee1c10cd08c66d0165b4ebf930bea08235bc97193b4c7aedc4b35ae",
+  "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusQueryHandlerTests.cs": "1df8dc6b199f9b4be0e2bef09f174f080ed442b459e3ffd6a2098abcaed0cb92",
+  "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "430be682e5bd1bf77178a789a3e5b034a832306d2be2384ad7f9a774f15c20ef",
+  "_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.patch": "c832f58f6c1b05516c1b62f97e2bc8a820d6ed2b4a51f6006952db28a16d7856",
+  "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "0f6ffed5c05f5f75f63f12eb95f65d46a7e2b86a9bc646a73006f3e1acc2cdef",
+  "scripts/pd10-v2-story-owned-paths.txt": "6210415d740d7042085d15084f6329c7eb1798fbb2517740516261b4b1f58a99",
+  "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+}

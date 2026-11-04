@@ -21,6 +21,8 @@ public static class OperationalStatusKeys
     public static string Workspace(string tenantId, string folderId, string workspaceId) => Key("workspace", tenantId, folderId, workspaceId);
     /// <summary>Gets the task key.</summary>
     public static string Task(string tenantId, string folderId, string taskId) => Key("task", tenantId, folderId, taskId);
+    /// <summary>Gets source-derived original closure authority, independent of C3 status expiry.</summary>
+    public static string TaskCompletion(string tenantId, string folderId, string taskId) => Key("task-completion", tenantId, folderId, taskId);
     /// <summary>Gets bounded source evidence for one original position.</summary>
     public static string Receipt(string tenantId, string folderId, long sequence) => Key("receipt", tenantId, folderId, sequence.ToString(System.Globalization.CultureInfo.InvariantCulture));
     /// <summary>Gets the unique original position for one message identity.</summary>
