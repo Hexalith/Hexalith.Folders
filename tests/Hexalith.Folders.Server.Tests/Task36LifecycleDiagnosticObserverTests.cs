@@ -46,6 +46,13 @@ public sealed class Task36LifecycleDiagnosticObserverTests
             client.DefaultRequestHeaders.Add("X-Private", "private-header-sentinel");
             using HttpResponseMessage response = await client.GetAsync("/private-path-sentinel", TestContext.Current.CancellationToken);
             response.IsSuccessStatusCode.ShouldBeTrue();
+            using (CancellationTokenSource requestCompleted = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken))
+            {
+                requestCompleted.CancelAfter(TimeSpan.FromSeconds(5));
+                while (!File.Exists(path) || !Rows(path).Any(row => row.GetProperty("phase").GetString() == "request_end"
+                    && row.GetProperty("inFlightRequests").GetInt64() == 0))
+                    await Task.Delay(10, requestCompleted.Token);
+            }
             await app.StopAsync(TestContext.Current.CancellationToken);
             await app.DisposeAsync();
             await observer.Completion.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);

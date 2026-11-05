@@ -1,4 +1,5 @@
 using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.Folders.Authorization;
 
@@ -23,6 +24,7 @@ internal static class FoldersDevelopmentOwnerMetadata
         if (registrations.Length != 1 || registrations[0].IsKeyedService
             || registrations[0].Lifetime != ServiceLifetime.Transient || registrations[0].ImplementationFactory is not { } factory)
             throw new InvalidOperationException("Private owner metadata requires the existing public SDK reader factory.");
+        builder.Services.AddEventStoreGatewayAuthoritativeEventStreamReader("folders");
         builder.Services.Replace(ServiceDescriptor.Describe(typeof(INativeSourceMetadataReader), provider =>
         {
             if (factory(provider) is not GatewayNativeSourceMetadataReader reader)
