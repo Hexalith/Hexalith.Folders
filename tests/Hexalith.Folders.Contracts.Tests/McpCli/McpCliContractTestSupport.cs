@@ -81,7 +81,7 @@ internal static class McpCliContractTestSupport
         .ToArray();
 
     /// <summary>Gets all operation types, excluding undecorated helper records and enums.</summary>
-    internal static Type[] DecoratedTypes() => ContractsAssembly.GetExportedTypes()
+    internal static Type[] DecoratedTypes() => ContractsAssembly.GetTypes()
         .Where(type => type.IsDefined(typeof(HexalithCommandAttribute)) || type.IsDefined(typeof(HexalithQueryAttribute)))
         .ToArray();
 
@@ -110,27 +110,47 @@ internal static class McpCliContractTestSupport
     /// <param name="modifier">An optional metadata mutation used by drift-gate self-tests.</param>
     internal static JsonSerializerOptions CreateCanonicalPayloadOptions(Action<JsonTypeInfo>? modifier = null)
     {
-        DefaultJsonTypeInfoResolver resolver = CreateResolver();
-        if (modifier is not null)
+        if (modifier is null)
         {
-            resolver.Modifiers.Add(modifier);
+            return CreatePayload(null);
         }
 
+        DefaultJsonTypeInfoResolver resolver = CreateResolver();
+        resolver.Modifiers.Add(modifier);
+        var options = new JsonSerializerOptions(CreatePayload(null))
+        {
+            TypeInfoResolver = resolver,
+        };
+        options.MakeReadOnly();
+        return options;
+    }
+
+    // These methods intentionally mirror McpCliJson. The drift tests compare both
+    // method bodies against the root-declared McpCli source; Contracts needs no Core dependency.
+    private static JsonSerializerOptions CreatePayload(JsonSerializerOptions? provider)
+    {
         var options = new JsonSerializerOptions
         {
             PropertyNamingPolicy = null,
             PropertyNameCaseInsensitive = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
-            TypeInfoResolver = resolver,
+            TypeInfoResolver = CreateResolver(),
         };
+
+        if (provider is not null)
+        {
+            foreach (JsonConverter converter in provider.Converters)
+            {
+                options.Converters.Add(converter);
+            }
+        }
+
         options.Converters.Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
         options.MakeReadOnly();
         return options;
     }
 
-    // This method intentionally mirrors McpCliJson.CreateResolver. The drift tests compare both
-    // method bodies against the root-declared McpCli source; Contracts needs no Core dependency.
     private static DefaultJsonTypeInfoResolver CreateResolver()
     {
         var resolver = new DefaultJsonTypeInfoResolver();

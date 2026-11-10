@@ -26,13 +26,4 @@ public sealed record RevokeFolderAccess(
     [property: HexalithIdentifier, JsonPropertyName("aclEntryId"), Description("Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values."), JsonRequired, Required, StringLength(128, MinimumLength = 16), RegularExpression("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$")]
     string AclEntryId,
     [property: HexalithIdentifier, JsonPropertyName("idempotencyKey"), Description("Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values."), JsonRequired, Required, StringLength(128, MinimumLength = 16), RegularExpression("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$")]
-    string IdempotencyKey)
-{
-    /// <summary>The fixed ACL effect selected by this operation.</summary>
-    [JsonInclude, JsonPropertyName("effect"), Description("The fixed revoke ACL effect."), Required]
-    public string Effect
-    {
-        get;
-        private init => field = "revoke";
-    } = "revoke";
-}
+    string IdempotencyKey);

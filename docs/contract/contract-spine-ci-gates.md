@@ -10,13 +10,14 @@ Run the workflow-equivalent lane from the repository root:
 dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
 dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
 .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
+dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli
 ```
 
-The script runs the focused OpenAPI gate tests and generated-client consistency tests. It is validation-mode only and must leave tracked generated output unchanged.
+The script runs the focused OpenAPI gate tests and generated-client consistency tests. The McpCli namespace selector runs separately in the workflow and in the command above, covering decorated-operation eligibility, routing, spine drift, identifiers and packed closure independently of the PD10-red OpenAPI set. It is validation-mode only and must leave tracked generated output unchanged.
 
 ## CI Job
 
-`.github/workflows/contract-spine.yml` defines the `contract-generated-artifact-gates` job. It uses `actions/checkout@v6` with `submodules: false`, `actions/setup-dotnet@v5` with `global-json-file: global.json`, then runs restore, build, and the local gate script from the repository root. NuGet caching is deferred until lock-file support is introduced.
+`.github/workflows/contract-spine.yml` defines the `contract-generated-artifact-gates` job. It uses `actions/checkout@v7` with `submodules: false`, `actions/setup-dotnet@v6` with `global-json-file: global.json`, then runs restore, build, the local gate script, and a separate `Run McpCli contract gates` step from the repository root. The separate step uses `!cancelled()` so it still reports its own exit status after the OpenAPI gate fails; it rejects a selector that executes zero tests. NuGet caching is deferred until lock-file support is introduced.
 
 The job does not publish packages, sign artifacts, run live provider drift checks, initialize nested submodules, upload raw diffs, upload generated client bodies, or emit release evidence.
 
@@ -24,10 +25,12 @@ The job does not publish packages, sign artifacts, run live provider drift check
 
 | Gate | Input | Current status | Validation behavior |
 |---|---|---|---|
-| Contract Spine parse and drift | `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` | Present | OpenAPI tests parse the spine, resolve references, and assert metadata required by downstream generation. |
+| Contract Spine parse and drift | `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml` | Present | OpenAPI tests parse the spine, resolve references, and assert metadata required by downstream generation. |
 | Server OpenAPI emission | `src/Hexalith.Folders.Server` repository-local OpenAPI output | Reference-pending | Source discovery reports `prerequisite-drift` until exactly one non-self offline server OpenAPI source exists. |
 | Previous-spine baseline | `tests/fixtures/previous-spine.yaml` | Captured baseline | The baseline must cover every current operation identity; approved removals require metadata-only deprecation evidence. |
 | Generated SDK client | `src/Hexalith.Folders.Client/Generated/` and `src/Hexalith.Folders.Client/nswag.json` | Present | Client tests verify NSwag configuration, generated provenance, and stale-output detection. |
+| McpCli inventory and declarations | `references/Hexalith.McpCli/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md`, decorated Contracts and the owner decision record | Present; root McpCli submodule required | The independent McpCli selector pins exact eligibility, CLR/wire/spine/routing/exemption/freshness columns and the spine digest. |
+| McpCli canonical payload options mirror | `references/Hexalith.McpCli/src/Hexalith.McpCli.Core/Serialization/McpCliJson.cs` | Present; read-only source | Compare `CreatePayload` and `CreateResolver` with the local test mirror and check canonical omission and unknown-member rejection. |
 | C13 parity oracle | `tests/fixtures/parity-contract.yaml` and `tests/fixtures/parity-contract.schema.json` | Present | Parity tests validate row schema, operation coverage, deterministic output, and generator fail-closed behavior. |
 
 ## Failure Categories

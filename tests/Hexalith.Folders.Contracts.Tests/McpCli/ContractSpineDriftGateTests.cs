@@ -19,10 +19,18 @@ public sealed class ContractSpineDriftGateTests
     {
         ["*/requestSchemaVersion"] = "The v2 discriminator is supplied by admission in Story 5.13, including nested requests.",
         ["C06/folderId"] = "CreateFolder requires caller-supplied routing identity equal to envelope.AggregateId.",
-        ["C08/effect"] = "UpdateFolderAclEntry has a fixed grant effect for GrantFolderAccess (V08).",
-        ["C13/effect"] = "UpdateFolderAclEntry has a fixed revoke effect for RevokeFolderAccess (V08).",
+        ["C08/effect"] = "Grant is derived from operation identity, not a payload member (V08); Story 5.13 supplies it during translation.",
+        ["C13/effect"] = "Revoke is derived from operation identity, not a payload member (V08); Story 5.13 supplies it during translation.",
         ["C10/$request"] = "MutateFiles maps to the canonical MutateFilesRequest component, using AddFile path scope.",
         ["C05/$aggregate"] = "ProviderBindingRef routes the command; reserved actor derivation and tenant separation belong to Story 5.13.",
+        ["C01/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C02/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C04/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C05/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C06/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C07/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C08/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
+        ["C13/X-Hexalith-Task-Id"] = "Carried by McpCli extensions[\"taskId\"]; Story 5.13/G3.",
     };
 
     [Fact]
@@ -66,7 +74,7 @@ public sealed class ContractSpineDriftGateTests
     }
 
     [Fact]
-    public void AclOperationsAlwaysSerializeTheirPinnedEffectAndIgnoreCallerOverrides()
+    public void AclOperationsDeriveEffectFromIdentityAndRejectCallerSuppliedEffect()
     {
         JsonObject spine = McpCliContractTestSupport.LoadSpine();
         foreach ((string id, string effect) in new[] { ("C08", "grant"), ("C13", "revoke") })
@@ -80,19 +88,84 @@ public sealed class ContractSpineDriftGateTests
                 ["idempotencyKey"] = "01ARZ3NDEKTSV4RRFFQ69G5FAV", ["effect"] = effect == "grant" ? "revoke" : "grant",
             };
             JsonSerializerOptions options = McpCliContractTestSupport.CreateCanonicalPayloadOptions();
-            JsonPropertyInfo binding = options.GetTypeInfo(row.Type).Properties.Single(property => property.Name == "effect");
-            binding.Get.ShouldNotBeNull();
-            binding.Set.ShouldNotBeNull();
-            row.Type.GetProperty("Effect")!.SetMethod!.IsPublic.ShouldBeFalse();
-            object instance = JsonSerializer.Deserialize(payload, row.Type, options)!;
-            JsonSerializer.SerializeToNode(instance, row.Type, options)!["effect"]!.GetValue<string>().ShouldBe(effect);
+            options.GetTypeInfo(row.Type).Properties.ShouldNotContain(property => property.Name == "effect");
+            row.Type.GetProperty("Effect").ShouldBeNull();
+            foreach (string supplied in new[] { effect, effect == "grant" ? "revoke" : "grant" })
+            {
+                payload["effect"] = supplied;
+                Should.Throw<JsonException>(() => JsonSerializer.Deserialize(payload, row.Type, options)).Message.ShouldContain("effect");
+            }
+
             payload.Remove("effect");
             object omitted = JsonSerializer.Deserialize(payload, row.Type, options)!;
-            JsonSerializer.SerializeToNode(omitted, row.Type, options)!["effect"]!.GetValue<string>().ShouldBe(effect);
+            JsonSerializer.SerializeToNode(omitted, row.Type, options)!.AsObject().ContainsKey("effect").ShouldBeFalse();
             JsonObject operation = McpCliContractTestSupport.FindOperation(spine, "UpdateFolderAclEntry");
             JsonObject body = RequestSchema(spine, operation);
             body["properties"]!["effect"]!["enum"]!.AsArray().Select(value => value!.GetValue<string>()).ShouldBe(["grant", "revoke"]);
         }
+    }
+
+    [Theory]
+    [InlineData("C09", "Idempotency-Key", "required")]
+    [InlineData("C09", "Idempotency-Key", "bound")]
+    [InlineData("C09", "X-Hexalith-Task-Id", "required")]
+    [InlineData("C09", "X-Hexalith-Task-Id", "bound")]
+    [InlineData("C01", "X-Hexalith-Task-Id", "required")]
+    [InlineData("C01", "X-Hexalith-Task-Id", "bound")]
+    [InlineData("C03", "taskId", "body-bound")]
+    [InlineData("C03", "taskId", "body-required")]
+    [InlineData("C03", "taskId", "body-dropped")]
+    public void CommandHeaderAndDuplicateBodyDriftCannotBeHidden(string id, string name, string mutation)
+    {
+        JsonObject spine = McpCliContractTestSupport.LoadSpine();
+        OperationDeclaration row = McpCliContractTestSupport.Operations.Single(item => item.Id == id);
+        if (mutation is "body-bound" or "body-required" or "body-dropped")
+        {
+            JsonObject body = spine["components"]!["schemas"]!["CommitWorkspaceRequest"]!.AsObject();
+            if (mutation == "body-dropped")
+            {
+                body["properties"]!.AsObject().Remove("taskId");
+            }
+            else if (mutation == "body-required")
+            {
+                JsonArray required = body["required"]!.AsArray();
+                required.Remove(required.Single(value => value!.GetValue<string>() == "taskId"));
+            }
+            else
+            {
+                JsonObject task = McpCliContractTestSupport.Resolve(spine, body["properties"]!["taskId"]!.AsObject());
+                task["maxLength"] = 127;
+                body["properties"]!["taskId"] = task;
+            }
+        }
+        else
+        {
+            JsonArray parameters = McpCliContractTestSupport.FindOperation(spine, row.SpineOperation)["parameters"]!.AsArray();
+            int index = Enumerable.Range(0, parameters.Count).Single(candidate =>
+                McpCliContractTestSupport.Resolve(spine, parameters[candidate]!.AsObject())["name"]!.GetValue<string>() == name);
+            JsonObject parameter = McpCliContractTestSupport.Resolve(spine, parameters[index]!.AsObject());
+            parameters[index] = parameter;
+            if (mutation == "required")
+            {
+                parameter["required"] = !(parameter["required"]?.GetValue<bool>() ?? false);
+            }
+            else
+            {
+                JsonObject schema = McpCliContractTestSupport.Resolve(spine, parameter["schema"]!.AsObject());
+                schema["maxLength"] = 127;
+                parameter["schema"] = schema;
+            }
+        }
+
+        // Required task flags and duplicate body/header mismatches fail during extraction;
+        // represented header members fail during the normal reflected-shape comparison.
+        Exception? failure = Record.Exception(() =>
+        {
+            var differences = new List<string>();
+            CompareObject(spine, row.Type, ExpectedFields(spine, row), row.Id + "/" + row.Type.Name, differences, row.Id);
+            differences.ShouldBeEmpty(string.Join(Environment.NewLine, differences));
+        });
+        failure.ShouldNotBeNull(id + " " + name + " " + mutation);
     }
 
     [Fact]
@@ -113,13 +186,19 @@ public sealed class ContractSpineDriftGateTests
             "references/Hexalith.McpCli/src/Hexalith.McpCli.Core/Serialization/McpCliJson.cs"));
         string mirror = File.ReadAllText(Path.Combine(McpCliContractTestSupport.RepositoryRoot,
             "tests/Hexalith.Folders.Contracts.Tests/McpCli/McpCliContractTestSupport.cs"));
-        const string method = @"private static DefaultJsonTypeInfoResolver CreateResolver\(\)([\s\S]*?return resolver;\s*})";
-        Match canonical = Regex.Match(source, method);
-        Match copied = Regex.Match(mirror, method);
-        canonical.Success.ShouldBeTrue();
-        copied.Success.ShouldBeTrue();
-        Regex.Replace(copied.Value, @"//[^\r\n]*|\s+", string.Empty)
-            .ShouldBe(Regex.Replace(canonical.Value, @"//[^\r\n]*|\s+", string.Empty));
+        foreach (string method in new[]
+        {
+            @"private static DefaultJsonTypeInfoResolver CreateResolver\(\)([\s\S]*?return resolver;\s*})",
+            @"private static JsonSerializerOptions CreatePayload\(JsonSerializerOptions\? provider\)([\s\S]*?return options;\s*})",
+        })
+        {
+            Match canonical = Regex.Match(source, method);
+            Match copied = Regex.Match(mirror, method);
+            canonical.Success.ShouldBeTrue(method);
+            copied.Success.ShouldBeTrue(method);
+            Regex.Replace(copied.Value, @"//[^\r\n]*|\s+", string.Empty)
+                .ShouldBe(Regex.Replace(canonical.Value, @"//[^\r\n]*|\s+", string.Empty), method);
+        }
     }
 
     [Fact]
@@ -127,6 +206,10 @@ public sealed class ContractSpineDriftGateTests
     {
         JsonObject spine = McpCliContractTestSupport.LoadSpine();
         OperationDeclaration row = McpCliContractTestSupport.Operations.Single(item => item.Id == "C06");
+        var instance = new Contracts.Commands.CreateFolder(new FolderMetadata("Example", SensitiveMetadataTier.TenantSensitive),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV", "opaque_FolderAbC0123456789");
+        JsonSerializer.SerializeToNode(instance, McpCliContractTestSupport.CreateCanonicalPayloadOptions())!
+            .AsObject().ContainsKey("parentFolderId").ShouldBeFalse("default optional members are omitted by canonical payload serialization");
         Dictionary<string, JsonObject> fields = ExpectedFields(spine, row);
         fields["parentFolderId"]["nullable"] = true;
         var differences = new List<string>();
@@ -161,6 +244,26 @@ public sealed class ContractSpineDriftGateTests
         differences.ShouldContain(message => message.Contains("LockWorkspace.requestedLeaseSeconds: maximum", StringComparison.Ordinal));
         request["allOf"] = JsonNode.Parse("""[{"oneOf":[{"type":"string"},{"type":"integer"}]}]""");
         Should.Throw<NotSupportedException>(() => ExpectedFields(spine, row)).Message.ShouldContain("oneOf");
+    }
+
+    [Theory]
+    [InlineData("""[{"properties":{"addedScope":{"type":"string"}},"required":["addedScope"]}]""", "addedScope", "spine field is missing")]
+    [InlineData("""[{"properties":{"changes":{"maxItems":99}}}]""", "changes", "maxItems")]
+    public void CanonicalBatchRootAllOfFieldsAndBoundsCannotBypassTheDriftGate(string intersections, string field, string difference)
+    {
+        JsonObject spine = McpCliContractTestSupport.LoadSpine();
+        spine["components"]!["schemas"]!["MutateFilesRequest"]!["allOf"] = JsonNode.Parse(intersections);
+        OperationDeclaration row = McpCliContractTestSupport.Operations.Single(item => item.Id == "C10");
+        Dictionary<string, JsonObject> fields = ExpectedFields(spine, row);
+        if (field == "addedScope")
+        {
+            fields.ShouldContainKey(field);
+            fields[field]["x-required"]!.GetValue<bool>().ShouldBeTrue();
+        }
+
+        var differences = new List<string>();
+        CompareObject(spine, row.Type, fields, "C10/MutateFiles", differences, row.Id);
+        differences.ShouldContain(message => message.Contains("MutateFiles." + field + ": " + difference, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -214,7 +317,7 @@ public sealed class ContractSpineDriftGateTests
     {
         JsonObject operation = McpCliContractTestSupport.FindOperation(spine, row.Id == "C10" ? "AddFile" : row.SpineOperation);
         JsonObject body = row.Id == "C10"
-            ? spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject()
+            ? McpCliContractTestSupport.Resolve(spine, spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject())
             : RequestSchema(spine, operation);
         if (row.Id == "C10")
         {
@@ -222,9 +325,10 @@ public sealed class ContractSpineDriftGateTests
         }
 
         Dictionary<string, JsonObject> fields = ObjectFields(spine, body);
-        foreach (JsonObject raw in operation["parameters"]!.AsArray().OfType<JsonObject>())
+        JsonObject[] parameters = operation["parameters"]!.AsArray().OfType<JsonObject>()
+            .Select(raw => McpCliContractTestSupport.Resolve(spine, raw)).ToArray();
+        foreach (JsonObject parameter in parameters)
         {
-            JsonObject parameter = McpCliContractTestSupport.Resolve(spine, raw);
             string name = parameter["name"]!.GetValue<string>();
             string location = parameter["in"]!.GetValue<string>();
             if (location is not ("path" or "query") && !(row.Id.StartsWith('Q') && name == "X-Hexalith-Task-Id"))
@@ -240,19 +344,38 @@ public sealed class ContractSpineDriftGateTests
 
         if (row.Id.StartsWith('C'))
         {
-            JsonObject identifier = spine["components"]!["schemas"]!["OpaqueIdentifier"]!.AsObject();
-            fields["idempotencyKey"] = identifier.DeepClone().AsObject();
-            fields["idempotencyKey"]["x-required"] = true;
+            JsonObject key = HeaderField(spine, parameters, "Idempotency-Key");
+            fields.Add("idempotencyKey", key);
+            JsonObject task = HeaderField(spine, parameters, "X-Hexalith-Task-Id");
+            task["x-required"]!.GetValue<bool>().ShouldBe(row.TaskScoped, row.Id + " task-header required flag");
             if (row.TaskScoped)
             {
-                fields["taskId"] = identifier.DeepClone().AsObject();
-                fields["taskId"]["x-required"] = true;
+                if (row.Id == "C03")
+                {
+                    fields.ShouldContainKey("taskId", "C03/CommitWorkspace.taskId: the duplicate body input must remain declared");
+                }
+
+                if (fields.TryGetValue("taskId", out JsonObject? bodyTask))
+                {
+                    JsonNode.DeepEquals(bodyTask, task).ShouldBeTrue(row.Id + "/taskId: body and header schema/required flag must match");
+                }
+                else
+                {
+                    fields.Add("taskId", task);
+                }
+            }
+            else
+            {
+                Exemptions.ShouldContainKey(row.Id + "/X-Hexalith-Task-Id");
+                JsonObject identifier = McpCliContractTestSupport.Resolve(spine, spine["components"]!["schemas"]!["OpaqueIdentifier"]!.AsObject());
+                task.Remove("x-required");
+                JsonNode.DeepEquals(task, identifier).ShouldBeTrue(row.Id + "/X-Hexalith-Task-Id: optional extension schema must preserve the opaque identifier bounds");
             }
 
             if (row.Id == "C06")
             {
                 Exemptions.ShouldContainKey("C06/folderId");
-                fields["folderId"] = identifier.DeepClone().AsObject();
+                fields["folderId"] = McpCliContractTestSupport.Resolve(spine, spine["components"]!["schemas"]!["OpaqueIdentifier"]!.AsObject());
                 fields["folderId"]["x-required"] = true;
             }
         }
@@ -263,7 +386,44 @@ public sealed class ContractSpineDriftGateTests
             row.AggregateIdProperty.ShouldBe("ProviderBindingRef");
         }
 
+        if (Exemptions.ContainsKey(row.Id + "/effect"))
+        {
+            fields.Remove("effect").ShouldBeTrue(row.Id + "/effect: the spine field is derived from operation identity");
+        }
+
         return fields;
+    }
+
+    private static JsonObject HeaderField(JsonObject spine, JsonObject[] parameters, string name)
+    {
+        JsonObject parameter = parameters.Single(item => item["in"]!.GetValue<string>() == "header"
+            && item["name"]!.GetValue<string>() == name);
+        JsonObject field = McpCliContractTestSupport.Resolve(spine, parameter["schema"]!.AsObject());
+        field["x-required"] = parameter["required"]?.GetValue<bool>() ?? false;
+        return field;
+    }
+
+    /// <summary>Gets the decision-record labels corresponding to this operation's checked exemptions.</summary>
+    internal static string DecisionExemptionCodes(JsonObject spine, OperationDeclaration row)
+    {
+        JsonObject operation = McpCliContractTestSupport.FindOperation(spine, row.Id == "C10" ? "AddFile" : row.SpineOperation);
+        JsonObject body = row.Id == "C10" ? spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject() : RequestSchema(spine, operation);
+        var codes = new List<string>();
+        if (body["properties"]?.AsObject().ContainsKey("requestSchemaVersion") == true)
+        {
+            Exemptions.ShouldContainKey("*/requestSchemaVersion");
+            codes.Add("E1");
+        }
+
+        foreach ((string key, string code) in new[] { ("effect", "E2"), ("$request", "E3"), ("folderId", "E4"), ("$aggregate", "E5"), ("X-Hexalith-Task-Id", "E6") })
+        {
+            if (Exemptions.ContainsKey(row.Id + "/" + key))
+            {
+                codes.Add(code);
+            }
+        }
+
+        return codes.Count == 0 ? "—" : string.Join(", ", codes);
     }
 
     private static JsonObject RequestSchema(JsonObject spine, JsonObject operation) => operation["requestBody"]?["content"]?["application/json"]?["schema"] is JsonObject schema
@@ -316,14 +476,6 @@ public sealed class ContractSpineDriftGateTests
             bool effective = bindings.TryGetValue(field, out JsonPropertyInfo? binding)
                 && binding.AttributeProvider is PropertyInfo bound && bound.Name == property.Name;
             Check(effective, path, "effective JSON binding", differences);
-            if (field == "effect" && Exemptions.ContainsKey(operationId + "/effect"))
-            {
-                property.PropertyType.ShouldBe(typeof(string), path);
-                property.SetMethod.ShouldNotBeNull(path);
-                property.SetMethod!.IsPublic.ShouldBeFalse(path);
-                continue;
-            }
-
             bool required = schema["x-required"]?.GetValue<bool>() ?? false;
             Check(property.IsDefined(typeof(JsonRequiredAttribute)) == required, path, "required flag", differences);
             Check(property.IsDefined(typeof(RequiredAttribute)) == required, path, "DataAnnotations required flag", differences);

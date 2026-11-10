@@ -36,7 +36,16 @@ public sealed class ContractSpineCiGateTests
 
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
         script.ShouldContain("tests/Hexalith.Folders.Client.Tests/bin/Release/net10.0/Hexalith.Folders.Client.Tests.dll");
-        script.ShouldContain("Selector = @('-namespace', 'Hexalith.Folders.Contracts.Tests.McpCli')");
+        script.ShouldNotContain("Hexalith.Folders.Contracts.Tests.McpCli");
+        YamlMappingNode mcpCliStep = RequiredSequence(RequiredMapping(RequiredMapping(LoadYamlMapping(WorkflowPath), "jobs"), "contract-generated-artifact-gates"), "steps")
+            .Children.OfType<YamlMappingNode>().Single(step => RequiredScalar(step, "name") == "Run McpCli contract gates");
+        RequiredScalar(mcpCliStep, "if").ShouldBe("${{ !cancelled() }}");
+        RequiredScalar(mcpCliStep, "shell").ShouldBe("pwsh");
+        string mcpCliRun = RequiredScalar(mcpCliStep, "run");
+        mcpCliRun.ShouldContain("dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli");
+        mcpCliRun.ShouldContain("$exitCode = $LASTEXITCODE");
+        mcpCliRun.ShouldContain("McpCli selector executed zero tests");
+        mcpCliRun.ShouldContain("exit $exitCode");
         workflow.ShouldContain("references/Hexalith.McpCli");
         script.ShouldContain("selector executed zero tests");
         script.ShouldContain("$LASTEXITCODE");

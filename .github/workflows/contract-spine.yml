@@ -44,6 +44,19 @@ jobs:
         shell: pwsh
         run: ./tests/tools/run-contract-spine-gates.ps1 -NoRestore
 
+      - name: Run McpCli contract gates
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: |
+          $output = & dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli 2>&1
+          $exitCode = $LASTEXITCODE
+          $output | ForEach-Object { Write-Host $_ }
+          if ($exitCode -eq 0 -and -not (($output -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
+              Write-Host 'CONTRACT-SPINE-PREREQUISITE-DRIFT: McpCli selector executed zero tests'
+              $exitCode = 1
+          }
+          exit $exitCode
+
       - name: Run safety invariant gates
         if: ${{ !cancelled() }}
         shell: pwsh

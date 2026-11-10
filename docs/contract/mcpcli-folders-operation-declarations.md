@@ -37,55 +37,56 @@ Exemptions used by the drift gate:
 
 - **E1:** `requestSchemaVersion` is implied by v2 admission, including nested
   request objects (Story 5.13).
-- **E2:** C08 and C13 map to `UpdateFolderAclEntry`, with an immutable serialized
-  `effect` of `grant` and `revoke`, respectively (V08). Each publicly read-only
-  property has a private JSON initializer that preserves its fixed value under
-  McpCli's canonical resolver. McpCli forwards caller JSON without constructing
-  these records: Story 5.13 must derive/enforce the fixed effect from the operation
-  identity before domain execution. A typed initializer does not validate that
-  forwarded JSON, including omitted or conflicting effect values.
+- **E2:** C08 and C13 map to `UpdateFolderAclEntry`; `effect` is derived
+  from operation identity, not a payload member (V08). Canonical deserialization
+  rejects any caller-supplied `effect`. Story 5.13 supplies `grant` or `revoke`
+  from the wire type when translating to `UpdateFolderAclEntry` and the domain
+  ACL payload; the domain already selects intent from that command type.
 - **E3:** C10 maps to the `MutateFilesRequest` component and uses AddFile's path
   and task scope, preserving the canonical batch shape.
 - **E4:** C06 adds caller-supplied `FolderId`; the domain requires
   `payload.FolderId == envelope.AggregateId`.
 - **E5:** C05 routes on `ProviderBindingRef`. Story 5.13 must derive the reserved
   `ProviderBindingActorId` and reject an actor equal to the tenant before lookup.
+- **E6:** The optional `X-Hexalith-Task-Id` on C01, C02, C04, C05, C06,
+  C07, C08 and C13 is carried by McpCli `extensions["taskId"]`, not a payload
+  member. Story 5.13/G3 owns the extension allowlist, validation and task association.
 
 | ID | Owner eligibility | CLR type | Explicit wire name | Spine operation/component | Aggregate source | Exemptions | Fixed freshness |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| C01 | eligible | `Hexalith.Folders.Contracts.Commands.ArchiveFolder` | `Hexalith.Folders.Commands.ArchiveFolder` | `ArchiveFolder` | `FolderId` | E1 | — |
-| C02 | eligible | `Hexalith.Folders.Contracts.Commands.BindRepository` | `Hexalith.Folders.Commands.BindRepository` | `BindRepository` | `FolderId` | E1 | — |
+| C01 | eligible | `Hexalith.Folders.Contracts.Commands.ArchiveFolder` | `Hexalith.Folders.Commands.ArchiveFolder` | `ArchiveFolder` | `FolderId` | E1, E6 | — |
+| C02 | eligible | `Hexalith.Folders.Contracts.Commands.BindRepository` | `Hexalith.Folders.Commands.BindRepository` | `BindRepository` | `FolderId` | E1, E6 | — |
 | C03 | eligible | `Hexalith.Folders.Contracts.Commands.CommitWorkspace` | `Hexalith.Folders.Commands.CommitWorkspace` | `CommitWorkspace` | `FolderId` | E1 | — |
-| C04 | eligible | `Hexalith.Folders.Contracts.Commands.ConfigureBranchRefPolicy` | `Hexalith.Folders.Commands.ConfigureBranchRefPolicy` | `ConfigureBranchRefPolicy` | `FolderId` | E1 | — |
-| C05 | eligible | `Hexalith.Folders.Contracts.Commands.ConfigureProviderBinding` | `Hexalith.Folders.Commands.ConfigureProviderBinding` | `ConfigureProviderBinding` | `ProviderBindingRef` | E1, E5 | — |
-| C06 | eligible | `Hexalith.Folders.Contracts.Commands.CreateFolder` | `Hexalith.Folders.Commands.CreateFolder` | `CreateFolder` | `FolderId` | E1, E4 | — |
-| C07 | eligible | `Hexalith.Folders.Contracts.Commands.CreateRepositoryBackedFolder` | `Hexalith.Folders.Commands.CreateRepositoryBackedFolder` | `CreateRepositoryBackedFolder` | `FolderId` | E1 | — |
-| C08 | eligible | `Hexalith.Folders.Contracts.Commands.GrantFolderAccess` | `Hexalith.Folders.Commands.GrantFolderAccess` | `UpdateFolderAclEntry` | `FolderId` | E1, E2 | — |
+| C04 | eligible | `Hexalith.Folders.Contracts.Commands.ConfigureBranchRefPolicy` | `Hexalith.Folders.Commands.ConfigureBranchRefPolicy` | `ConfigureBranchRefPolicy` | `FolderId` | E1, E6 | — |
+| C05 | eligible | `Hexalith.Folders.Contracts.Commands.ConfigureProviderBinding` | `Hexalith.Folders.Commands.ConfigureProviderBinding` | `ConfigureProviderBinding` | `ProviderBindingRef` | E1, E5, E6 | — |
+| C06 | eligible | `Hexalith.Folders.Contracts.Commands.CreateFolder` | `Hexalith.Folders.Commands.CreateFolder` | `CreateFolder` | `FolderId` | E1, E4, E6 | — |
+| C07 | eligible | `Hexalith.Folders.Contracts.Commands.CreateRepositoryBackedFolder` | `Hexalith.Folders.Commands.CreateRepositoryBackedFolder` | `CreateRepositoryBackedFolder` | `FolderId` | E1, E6 | — |
+| C08 | eligible | `Hexalith.Folders.Contracts.Commands.GrantFolderAccess` | `Hexalith.Folders.Commands.GrantFolderAccess` | `UpdateFolderAclEntry` | `FolderId` | E1, E2, E6 | — |
 | C09 | eligible | `Hexalith.Folders.Contracts.Commands.LockWorkspace` | `Hexalith.Folders.Commands.LockWorkspace` | `LockWorkspace` | `FolderId` | E1 | — |
 | C10 | eligible | `Hexalith.Folders.Contracts.Commands.MutateFiles` | `Hexalith.Folders.Commands.MutateFiles` | `MutateFilesRequest` | `FolderId` | E1, E3 | — |
 | C11 | eligible | `Hexalith.Folders.Contracts.Commands.PrepareWorkspace` | `Hexalith.Folders.Commands.PrepareWorkspace` | `PrepareWorkspace` | `FolderId` | E1 | — |
 | C12 | eligible | `Hexalith.Folders.Contracts.Commands.ReleaseWorkspaceLock` | `Hexalith.Folders.Commands.ReleaseWorkspaceLock` | `ReleaseWorkspaceLock` | `FolderId` | E1 | — |
-| C13 | eligible | `Hexalith.Folders.Contracts.Commands.RevokeFolderAccess` | `Hexalith.Folders.Commands.RevokeFolderAccess` | `UpdateFolderAclEntry` | `FolderId` | E1, E2 | — |
+| C13 | eligible | `Hexalith.Folders.Contracts.Commands.RevokeFolderAccess` | `Hexalith.Folders.Commands.RevokeFolderAccess` | `UpdateFolderAclEntry` | `FolderId` | E1, E2, E6 | — |
 | Q01 | eligible | `Hexalith.Folders.Contracts.Queries.GetAuditRecord` | `Hexalith.Folders.Queries.GetAuditRecord` | `GetAuditRecord` | `FolderId` | — | eventually_consistent |
 | Q02 | eligible | `Hexalith.Folders.Contracts.Queries.GetBranchRefPolicy` | `Hexalith.Folders.Queries.GetBranchRefPolicy` | `GetBranchRefPolicy` | `FolderId` | — | eventually_consistent |
 | Q03 | eligible | `Hexalith.Folders.Contracts.Queries.GetCommitEvidence` | `Hexalith.Folders.Queries.GetCommitEvidence` | `GetCommitEvidence` | `FolderId` | — | eventually_consistent |
-| Q04 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetDirtyStateDiagnostics` | — (undecorated) | `GetDirtyStateDiagnostics` | `none` | — | eventually_consistent |
+| Q04 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetDirtyStateDiagnostics` | — (undecorated) | `GetDirtyStateDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q05 | eligible | `Hexalith.Folders.Contracts.Queries.GetEffectivePermissions` | `Hexalith.Folders.Queries.GetEffectivePermissions` | `GetEffectivePermissions` | `FolderId` | — | read_your_writes |
-| Q06 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetFailedOperationDiagnostics` | — (undecorated) | `GetFailedOperationDiagnostics` | `none` | — | eventually_consistent |
+| Q06 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetFailedOperationDiagnostics` | — (undecorated) | `GetFailedOperationDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q07 | eligible | `Hexalith.Folders.Contracts.Queries.GetFolderFileMetadata` | `Hexalith.Folders.Queries.GetFolderFileMetadata` | `GetFolderFileMetadata` | `FolderId` | E1 | snapshot_per_task |
 | Q08 | eligible | `Hexalith.Folders.Contracts.Queries.GetFolderIndexingStatus` | `Hexalith.Folders.Queries.GetFolderIndexingStatus` | `GetFolderIndexingStatus` | `FolderId` | — | eventually_consistent |
 | Q09 | eligible | `Hexalith.Folders.Contracts.Queries.GetFolderLifecycleStatus` | `Hexalith.Folders.Queries.GetFolderLifecycleStatus` | `GetFolderLifecycleStatus` | `FolderId` | — | eventually_consistent |
-| Q10 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetLockDiagnostics` | — (undecorated) | `GetLockDiagnostics` | `none` | — | eventually_consistent |
+| Q10 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetLockDiagnostics` | — (undecorated) | `GetLockDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q11 | eligible | `Hexalith.Folders.Contracts.Queries.GetOperationTimelineEntry` | `Hexalith.Folders.Queries.GetOperationTimelineEntry` | `GetOperationTimelineEntry` | `FolderId` | — | eventually_consistent |
-| Q12 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetProjectionFreshness` | — (undecorated) | `GetProjectionFreshness` | `none` | — | eventually_consistent |
+| Q12 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetProjectionFreshness` | — (undecorated) | `GetProjectionFreshness` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q13 | eligible | `Hexalith.Folders.Contracts.Queries.GetProviderBinding` | `Hexalith.Folders.Queries.GetProviderBinding` | `GetProviderBinding` | `ProviderBindingRef` | — | eventually_consistent |
 | Q14 | eligible | `Hexalith.Folders.Contracts.Queries.GetProviderOutcome` | `Hexalith.Folders.Queries.GetProviderOutcome` | `GetProviderOutcome` | `FolderId` | — | eventually_consistent |
-| Q15 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetProviderStatusDiagnostics` | — (undecorated) | `GetProviderStatusDiagnostics` | `none` | — | eventually_consistent |
+| Q15 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetProviderStatusDiagnostics` | — (undecorated) | `GetProviderStatusDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q16 | eligible | `Hexalith.Folders.Contracts.Queries.GetProviderSupportEvidence` | `Hexalith.Folders.Queries.GetProviderSupportEvidence` | `GetProviderSupportEvidence` | `none` | — | eventually_consistent |
-| Q17 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetReadinessDiagnostics` | — (undecorated) | `GetReadinessDiagnostics` | `none` | — | eventually_consistent |
+| Q17 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetReadinessDiagnostics` | — (undecorated) | `GetReadinessDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q18 | eligible | `Hexalith.Folders.Contracts.Queries.GetReconciliationStatus` | `Hexalith.Folders.Queries.GetReconciliationStatus` | `GetReconciliationStatus` | `FolderId` | — | eventually_consistent |
 | Q19 | eligible | `Hexalith.Folders.Contracts.Queries.GetRepositoryBinding` | `Hexalith.Folders.Queries.GetRepositoryBinding` | `GetRepositoryBinding` | `FolderId` | — | eventually_consistent |
-| Q20 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetSyncStatusDiagnostics` | — (undecorated) | `GetSyncStatusDiagnostics` | `none` | — | eventually_consistent |
+| Q20 | excluded / defer: seed-backed operations_console_projection diagnostic | `Hexalith.Folders.Contracts.Queries.GetSyncStatusDiagnostics` | — (undecorated) | `GetSyncStatusDiagnostics` | `folderId` (spine scope; undecorated) | — | eventually_consistent |
 | Q21 | eligible | `Hexalith.Folders.Contracts.Queries.GetTaskStatus` | `Hexalith.Folders.Queries.GetTaskStatus` | `GetTaskStatus` | `FolderId` | — | eventually_consistent |
 | Q22 | eligible | `Hexalith.Folders.Contracts.Queries.GetWorkspaceCleanupStatus` | `Hexalith.Folders.Queries.GetWorkspaceCleanupStatus` | `GetWorkspaceCleanupStatus` | `FolderId` | — | read_your_writes |
 | Q23 | eligible | `Hexalith.Folders.Contracts.Queries.GetWorkspaceLock` | `Hexalith.Folders.Queries.GetWorkspaceLock` | `GetWorkspaceLock` | `FolderId` | — | read_your_writes |
@@ -108,6 +109,29 @@ is fixed per operation and is omitted from the payload (V01). Cursor, limit and
 filter remain typed payload fields (V02). Command task scope is required on C03,
 C09, C10, C11 and C12 as declared by `FoldersCommandCatalog`; every Command
 requires a caller-supplied idempotency key independently of message identity.
+The drift gate derives both command headers' schema and required flags from the
+spine, checks duplicate body/header task inputs agree, and records optional task
+association through envelope extensions (E6). This preserves optional association
+rather than accepting its loss.
+
+## V02 typed paging approval
+
+The owner retains typed payload paging for V02; Story 5.14 defines the authoritative
+payload/envelope precedence and rejects conflicting inputs. McpCli's
+`DescriptionLinter` therefore has these eight expected `payload_paging_member`
+findings. Each exact operation/code/property tuple has the following owner approval
+reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
+
+| Operation | Code | Property | approvalReference |
+| --- | --- | --- | --- |
+| `folders.get-provider-support-evidence` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.glob-folder-files` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.list-audit-trail` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.list-folder-acl-entries` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.list-folder-files` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.list-operation-timeline` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.search-folder-files` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
+| `folders.search-folder-indexed-files` | `payload_paging_member` | `/properties/cursor` | `docs/contract/mcpcli-folders-operation-declarations.md#v02-typed-paging-approval` |
 
 ## Accepted behavior losses
 
@@ -126,19 +150,54 @@ requires a caller-supplied idempotency key independently of message identity.
   Legacy lowercase envelope requirements must accept McpCli's uppercase ULIDs
   without lowercasing opaque payload IDs. Request-schema version is admission
   state. Conditional file transport/add/change/remove combinations, duplicate
-  detection and cross-field byte limits remain admission rules.
-- **provider-binding-reserved-actor — Story 5.13:** C05 must derive the reserved
-  binding actor from its public reference and reject tenant/namespace aliasing
-  before any state access (E5).
+  detection and cross-field byte limits remain admission rules. The spine's
+  `CommitWorkspaceRequest.auditMetadataKeys` has `uniqueItems: true`; rejecting
+  duplicate audit keys belongs to 5.13 and is not expressible in these declarations.
+- **command-payload-translation — Story 5.13:** the decorated v2 request shapes
+  cannot be forwarded unchanged to the existing domain payload records under the
+  same wire names. Admission must translate every Command listed below, supply
+  `requestSchemaVersion: v2` at each required root/nested location, keep caller
+  idempotency and task context distinct from generated message identity, and
+  validate or resolve the domain evidence before execution. No handler change is
+  made by 5.12.
+- **provider-binding-reserved-actor — Stories 5.13 and 5.14:** C05 admission
+  (5.13), Q13 `GetProviderBinding` and Q35 `ValidateProviderReadiness` handlers
+  (5.14) must derive the reserved `ProviderBindingActorId` from the public
+  `ProviderBindingRef`, admit only its reserved namespace and reject an actor
+  equal to the tenant or any tenant/namespace alias before state access (E5).
 - **G4/G5 — Story 5.14:** durable Gateway query handlers, fixed freshness,
   explicit payload/envelope paging precedence with rejection of conflicts,
   task context, metadata-only results and safe errors. `/project` is not a
   query dispatcher. These types do not prove handler registration or execution.
+  **read-file-range-window:** Q32 requires `endOffset >= startOffset` and
+  `endOffset - startOffset <= 262144`; Story 5.14 enforces these derived rules
+  with the spine's 400/422 outcomes before observation. Static member ranges
+  cannot reject a reversed or oversized window.
 - **G6 — Story 5.10:** provider credentials by reference, authorized egress,
   readiness, failure and reconciliation evidence.
 - **staged-content-above-inline — McpCli 5.2:** larger content remains deferred;
   retaining the typed spine stream descriptor does not approve a transport or
   demonstrate a configured live content store.
+
+The command translation gap covers all thirteen Commands; the payload names are
+from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only evidence).
+
+| Candidate and declared command | Existing domain payload and translation requirement (Story 5.13) |
+| --- | --- |
+| C01 ArchiveFolder | `ArchiveFolderPayload`: supply its required schema discriminator and project archive intent, separating routing/key members. |
+| C02 BindRepository | `BindRepositoryPayload`: translate the root and nested `BranchRefPolicyPayload`, including both schema discriminators. |
+| C03 CommitWorkspace | `CommitWorkspacePayload`: supply the discriminator, reconcile body/header task identity and validate unique audit metadata keys. |
+| C04 ConfigureBranchRefPolicy | `BranchRefPolicyPayload`: supply its discriminator and project the policy fields independently of routing/key members. |
+| C05 ConfigureProviderBinding | `ConfigureProviderBindingPayload`: supply the discriminator and derive the reserved binding actor before projecting credential-reference metadata. |
+| C06 CreateFolder | `CreateFolderPayload`: supply the discriminator and preserve caller FolderId equality with the envelope aggregate. |
+| C07 CreateRepositoryBackedFolder | `CreateRepositoryBackedFolderPayload`: resolve required root `RepositoryBindingId` and `CredentialScopeClass`, and supply root/nested discriminators from authorized state and request evidence. |
+| C08 GrantFolderAccess | `FolderAccessMutationPayload`: derive grant from the wire type (E2) and translate ACL entry/subject/permission inputs to authorized `operations[{principalKind,principalId,action}]`. |
+| C09 LockWorkspace | `LockWorkspacePayload`: supply the discriminator and reconcile required task/lease intent with envelope context. |
+| C10 MutateFiles | `FileMutationPayload` has a single-file root, while the declaration is a batch: translate the batch intent and per-file path/content/transport evidence without forwarding the batch unchanged. |
+| C11 PrepareWorkspace | `PrepareWorkspacePayload`: supply the discriminator and reconcile task, workspace, repository and policy scope. |
+| C12 ReleaseWorkspaceLock | `ReleaseWorkspaceLockPayload`: supply the discriminator and reconcile task/lock ownership proof and release intent. |
+| C13 RevokeFolderAccess | `FolderAccessMutationPayload`: derive revoke from the wire type (E2) and translate to authorized `operations[{principalKind,principalId,action}]`. |
+
 - **identifier-aggregate-grammar:** String payload values round-trip unchanged,
   including legacy values. McpCli aggregate routing accepts 1–256 ASCII
   letters/digits/dot/underscore/hyphen and requires alphanumeric first/last
@@ -152,6 +211,9 @@ requires a caller-supplied idempotency key independently of message identity.
 | legacy-leading-dot | `.legacy-folder-01` | legacy lowercase identifier |
 | legacy-leading-underscore | `_legacy-workspace-01` | legacy lowercase identifier |
 | legacy-leading-hyphen | `-legacy-provider-01` | legacy lowercase identifier |
+| legacy-trailing-dot | `legacy-folder-01.` | legacy lowercase identifier |
+| legacy-trailing-underscore | `legacy-workspace-01_` | legacy lowercase identifier |
+| legacy-trailing-hyphen | `legacy-provider-01-` | legacy lowercase identifier |
 
 ## Local conformance evidence and limits
 
@@ -178,6 +240,12 @@ restored closure, assembly references and framework references. Per-operation
 wire/routing tests and opaque/legacy identifier round trips are Folders-owned;
 McpCli enrollment owns catalog execution and live vectors.
 
-Only the PD10 story-owned path list is extended. The conformance manifest is
-intentionally unregenerated under D4. Existing stale rows and new paths leave
-PD10 gates red until Stories 12.2/1.17 reseal and qualify the changed set.
+The PD10 story-owned path list includes the new declarations and tests. The
+conformance manifest is intentionally unregenerated under D4. Resealing by
+Stories 12.2/1.17 must include the changed SHA-bound rows
+`.github/workflows/contract-spine.yml`, `tests/tools/run-contract-spine-gates.ps1`
+and `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs`,
+as well as changed Contracts/test rows and the new paths. PD10 remains red:
+the five failing test names match the pre-existing baseline, but their byte-bound
+mismatch evidence changes as these rows change. The McpCli selector runs as an
+independent CI step so those PD10 failures cannot mask its pass/fail result.

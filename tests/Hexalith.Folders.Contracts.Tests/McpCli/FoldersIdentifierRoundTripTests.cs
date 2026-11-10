@@ -25,6 +25,9 @@ public sealed class FoldersIdentifierRoundTripTests
     [InlineData(".legacy-folder-01")]
     [InlineData("_legacy-workspace-01")]
     [InlineData("-legacy-provider-01")]
+    [InlineData("legacy-folder-01.")]
+    [InlineData("legacy-workspace-01_")]
+    [InlineData("legacy-provider-01-")]
     public void AllIdentifierMembersPreserveExactBytesAndCase(string identifier)
     {
         JsonSerializerOptions options = McpCliContractTestSupport.CreateCanonicalPayloadOptions();
@@ -173,6 +176,9 @@ public sealed class FoldersIdentifierRoundTripTests
             [".legacy-folder-01"] = "legacy-leading-dot",
             ["_legacy-workspace-01"] = "legacy-leading-underscore",
             ["-legacy-provider-01"] = "legacy-leading-hyphen",
+            ["legacy-folder-01."] = "legacy-trailing-dot",
+            ["legacy-workspace-01_"] = "legacy-trailing-underscore",
+            ["legacy-provider-01-"] = "legacy-trailing-hyphen",
         };
         string decision = File.ReadAllText(Path.Combine(McpCliContractTestSupport.RepositoryRoot,
             "docs/contract/mcpcli-folders-operation-declarations.md"));

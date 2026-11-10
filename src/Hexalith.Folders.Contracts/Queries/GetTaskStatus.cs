@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Hexalith.McpCli.Abstractions;
-using Hexalith.Folders.Contracts.Queries.Models;
 
 namespace Hexalith.Folders.Contracts.Queries;
 

@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
@@ -17,23 +19,68 @@ public sealed class McpCliCatalogConformanceTests
     {
         string[][] inventory = McpCliContractTestSupport.InventoryRows();
         inventory.Length.ShouldBe(48);
+        Type[] decorated = McpCliContractTestSupport.DecoratedTypes();
+        decorated.ShouldAllBe(type => type.IsPublic, "every visibility is inspected, matching CatalogBuilder.GetTypes()");
         string[] eligible = inventory.Where(row => !McpCliContractTestSupport.ExcludedIds.Contains(row[1]))
             .Select(row => row[3]).Order(StringComparer.Ordinal).ToArray();
-        eligible.ShouldBe(McpCliContractTestSupport.DecoratedTypes().Select(type => type.FullName!).Order(StringComparer.Ordinal));
+        eligible.ShouldBe(decorated.Select(type => type.FullName!).Order(StringComparer.Ordinal));
         eligible.ShouldBe(McpCliContractTestSupport.Operations.Select(row => row.Type.FullName!).Order(StringComparer.Ordinal));
         string decision = File.ReadAllText(Path.Combine(McpCliContractTestSupport.RepositoryRoot,
             "docs/contract/mcpcli-folders-operation-declarations.md"));
-        string[] rows = decision.Split('\n').Where(line => Regex.IsMatch(line, @"^\| [CQ][0-9]{2} \|")).ToArray();
+        string[][] rows = decision.Split('\n').Where(line => Regex.IsMatch(line, @"^\| [CQ][0-9]{2} \|"))
+            .Select(line => line.Split('|', StringSplitOptions.TrimEntries)
+                .Select(cell => cell.Replace("`", string.Empty, StringComparison.Ordinal)).ToArray()).ToArray();
         rows.Length.ShouldBe(48);
+        JsonObject spine = McpCliContractTestSupport.LoadSpine();
+        Match digest = Regex.Match(decision, @"oracle `contract_spine_sha256`\s*`(?<digest>[a-f0-9]{64})`");
+        digest.Success.ShouldBeTrue("the handoff must identify its exact Contract Spine bytes");
+        string spinePath = Path.Combine(McpCliContractTestSupport.RepositoryRoot, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml");
+        digest.Groups["digest"].Value.ShouldBe(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(spinePath))).ToLowerInvariant());
         foreach (string[] row in inventory)
         {
-            string declaration = rows.Single(line => line.StartsWith("| " + row[1] + " |", StringComparison.Ordinal));
-            declaration.ShouldContain(McpCliContractTestSupport.ExcludedIds.Contains(row[1]) ? "excluded / defer" : "eligible");
-            declaration.ShouldContain(row[3]);
+            string[] columns = rows.Single(cells => cells[1] == row[1]);
+            columns.Length.ShouldBe(10, row[1]);
+            columns[3].ShouldBe(row[3], row[1] + " exact CLR type");
+            if (McpCliContractTestSupport.ExcludedIds.Contains(row[1]))
+            {
+                columns[2].ShouldBe("excluded / defer: seed-backed operations_console_projection diagnostic", row[1]);
+                columns[4].ShouldBe("— (undecorated)", row[1]);
+                columns[5].ShouldBe(row[3].Split('.').Last(), row[1]);
+                columns[6].ShouldBe("folderId (spine scope; undecorated)", row[1]);
+                columns[7].ShouldBe("—", row[1]);
+                JsonObject operation = McpCliContractTestSupport.FindOperation(spine, columns[5]);
+                operation["parameters"]!.AsArray().OfType<JsonObject>()
+                    .Select(parameter => McpCliContractTestSupport.Resolve(spine, parameter))
+                    .ShouldContain(parameter => parameter["in"]!.GetValue<string>() == "path"
+                        && parameter["name"]!.GetValue<string>() == "folderId" && parameter["required"]!.GetValue<bool>(), row[1]);
+            }
+            else
+            {
+                OperationDeclaration declaration = McpCliContractTestSupport.Operations.Single(item => item.Id == row[1]);
+                columns[2].ShouldBe("eligible", row[1] + " exact owner consent");
+                HexalithCommandAttribute? command = declaration.Type.GetCustomAttribute<HexalithCommandAttribute>();
+                HexalithQueryAttribute? query = declaration.Type.GetCustomAttribute<HexalithQueryAttribute>();
+                columns[4].ShouldBe(command?.WireType ?? query!.WireType, row[1] + " wire name");
+                columns[5].ShouldBe(declaration.SpineOperation, row[1] + " spine mapping");
+                columns[6].ShouldBe(command?.AggregateIdProperty ?? query?.AggregateIdProperty ?? "none", row[1] + " aggregate source");
+                columns[7].ShouldBe(ContractSpineDriftGateTests.DecisionExemptionCodes(spine, declaration), row[1] + " exemptions");
+                if (row[1] == "C10")
+                {
+                    spine["components"]!["schemas"]!.AsObject().ShouldContainKey(columns[5]);
+                }
+                else
+                {
+                    McpCliContractTestSupport.FindOperation(spine, columns[5]).ShouldNotBeNull(row[1]);
+                }
+            }
+
             if (row[1].StartsWith('Q'))
             {
-                string[] columns = declaration.Split('|', StringSplitOptions.TrimEntries);
-                columns[8].Trim('`').ShouldBe(row[4], row[1] + " fixed freshness");
+                columns[8].ShouldBe(row[4], row[1] + " fixed freshness");
+            }
+            else
+            {
+                columns[8].ShouldBe("—", row[1]);
             }
         }
     }

@@ -9,7 +9,7 @@ namespace Hexalith.Folders.Contracts.Queries;
 /// <summary>Glob authorized file metadata without content previews.</summary>
 /// <param name="QueryFamily">The queryFamily value.</param>
 /// <param name="GlobPattern">Glob pattern is request payload only and must not appear in audit examples or cross-tenant diagnostics.</param>
-/// <param name="Limit">TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed.</param>
+/// <param name="Limit">Maximum number of matching file metadata results, from 1 through 500.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="WorkspaceId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="RequestedPaths">The requestedPaths value.</param>
@@ -24,7 +24,7 @@ public sealed record GlobFolderFiles(
     GlobFolderFilesQueryFamily QueryFamily,
     [property: JsonPropertyName("globPattern"), Description("Glob pattern is request payload only and must not appear in audit examples or cross-tenant diagnostics."), JsonRequired, Required, StringLength(256, MinimumLength = 1)]
     string GlobPattern,
-    [property: JsonPropertyName("limit"), Description("TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."), JsonRequired, Required, Range(1, 500)]
+    [property: JsonPropertyName("limit"), Description("Maximum number of matching file metadata results, from 1 through 500."), JsonRequired, Required, Range(1, 500)]
     int Limit,
     [property: HexalithIdentifier, JsonPropertyName("folderId"), Description("Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values."), JsonRequired, Required, StringLength(128, MinimumLength = 16), RegularExpression("^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$")]
     string FolderId,
