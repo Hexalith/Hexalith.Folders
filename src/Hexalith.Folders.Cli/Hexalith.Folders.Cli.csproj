@@ -7,7 +7,7 @@
     <IsPublishable>true</IsPublishable>
     <RootNamespace>Hexalith.Folders.Cli</RootNamespace>
     <AssemblyName>Hexalith.Folders.Cli</AssemblyName>
-    <Description>Hexalith Folders command-line adapter scaffold.</Description>
+    <Description>Compatibility binary, not retired; see "Legacy compatibility surfaces" in the repository README for its removal gate. Hexalith Folders command-line adapter scaffold.</Description>
     <PackageTags>folders;dapr;eventsourcing;dotnet;cli</PackageTags>
   </PropertyGroup>
   <ItemGroup>
