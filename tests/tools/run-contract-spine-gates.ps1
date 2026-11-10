@@ -35,6 +35,10 @@ try {
             Selector = @('-namespace', 'Hexalith.Folders.Contracts.Tests.OpenApi')
         },
         @{
+            Path = 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+            Selector = @('-namespace', 'Hexalith.Folders.Contracts.Tests.McpCli')
+        },
+        @{
             Path = 'tests/Hexalith.Folders.Client.Tests/bin/Release/net10.0/Hexalith.Folders.Client.Tests.dll'
             Selector = @('-class', 'Hexalith.Folders.Client.Tests.ClientGenerationTests')
         }

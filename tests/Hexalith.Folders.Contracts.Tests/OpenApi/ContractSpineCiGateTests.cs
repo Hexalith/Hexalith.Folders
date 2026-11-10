@@ -36,6 +36,8 @@ public sealed class ContractSpineCiGateTests
 
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
         script.ShouldContain("tests/Hexalith.Folders.Client.Tests/bin/Release/net10.0/Hexalith.Folders.Client.Tests.dll");
+        script.ShouldContain("Selector = @('-namespace', 'Hexalith.Folders.Contracts.Tests.McpCli')");
+        workflow.ShouldContain("references/Hexalith.McpCli");
         script.ShouldContain("selector executed zero tests");
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldNotContain("--filter", Case.Sensitive);

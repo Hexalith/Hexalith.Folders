@@ -2,10 +2,11 @@
 title: '5.12 Declare Folders operations in decorated McpCli Contracts'
 type: 'feature'
 created: '2026-11-10'
-status: 'ready-for-dev'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_revision: 'd873861677982a737d131180bcf79f06caee034d'
+baseline_commit: 'c5c8c19475188c6b8f8963a7b7051c34225867cf'
 context:
   - '{project-root}/_bmad-output/implementation-artifacts/epic-5-context.md'
   - '{project-root}/references/Hexalith.McpCli/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md'
@@ -78,16 +79,16 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` -- add the versionless Abstractions reference -- the A-12 sole dependency.
-- [ ] `src/Hexalith.Folders.Contracts/FoldersModule.cs` -- the assembly `HexalithModule` declaration -- module identity.
-- [ ] `src/Hexalith.Folders.Contracts/Commands/*.cs` and `Commands/Models/*.cs` -- one decorated record for each of C01–C13, plus nested types and enums -- G1 commands.
-- [ ] `src/Hexalith.Folders.Contracts/Queries/*.cs` and `Queries/Models/*.cs` -- one decorated record for each of the 28 eligible Q-candidates (D2); never decorate Q04, Q06, Q10, Q12, Q15, Q17 or Q20 -- G1 queries.
-- [ ] `tests/Hexalith.Folders.Contracts.Tests/McpCli/FoldersWireNameMappingTests.cs` -- pin every Command wire name against `FoldersCommandCatalog` and the inventory table -- AC wire mapping.
-- [ ] `tests/Hexalith.Folders.Contracts.Tests/McpCli/ContractSpineDriftGateTests.cs` -- compare fields, required flags, bounds and enum sets to the v2 spine, with one explicit exemption table -- AC drift gate.
-- [ ] `tests/Hexalith.Folders.Contracts.Tests/McpCli/FoldersIdentifierRoundTripTests.cs` and `McpCliCatalogConformanceTests.cs` -- the ID matrix rows and the catalog-shape rules. Pin each operation's routing strings (`Domain`, `WireType`, `ProjectionType` and aggregate source), and assert that the eligible set equals the decorated set exactly. Folders owns the per-operation routing-string and wire-type tests (McpCli Story 5.12) -- AC identifiers and AC eligibility.
-- [ ] `tests/Hexalith.Folders.Contracts.Tests/McpCli/PackedContractsClosureTests.cs` -- pack Contracts in Release; the nuspec's only dependency is `Hexalith.McpCli.Abstractions`, with no framework reference other than `Microsoft.NETCore.App` -- AD-15.
-- [ ] `docs/contract/mcpcli-folders-operation-declarations.md` -- one row per candidate for all 48 (eligibility per D2 with the exclusion reason, CLR type, wire name, spine operation, aggregate, exemptions), the D1 authorization, the D2 consent and live-vector chain, the D3 losses (rationale, replacement, affected rows), and the named gaps -- the input to McpCli Story 5.8.
-- [ ] `scripts/pd10-v2-story-owned-paths.txt` -- add every new `src/` and test path, sorted and unique; do not regenerate the manifest (D4) -- PD10 coverage.
+- [x] `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` -- add the versionless Abstractions reference -- the A-12 sole dependency.
+- [x] `src/Hexalith.Folders.Contracts/FoldersModule.cs` -- the assembly `HexalithModule` declaration -- module identity.
+- [x] `src/Hexalith.Folders.Contracts/Commands/*.cs` and `Commands/Models/*.cs` -- one decorated record for each of C01–C13, plus nested types and enums -- G1 commands.
+- [x] `src/Hexalith.Folders.Contracts/Queries/*.cs` and `Queries/Models/*.cs` -- one decorated record for each of the 28 eligible Q-candidates (D2); never decorate Q04, Q06, Q10, Q12, Q15, Q17 or Q20 -- G1 queries.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/McpCli/FoldersWireNameMappingTests.cs` -- pin every Command wire name against `FoldersCommandCatalog` and the inventory table -- AC wire mapping.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/McpCli/ContractSpineDriftGateTests.cs` -- compare fields, required flags, bounds and enum sets to the v2 spine, with one explicit exemption table -- AC drift gate.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/McpCli/FoldersIdentifierRoundTripTests.cs` and `McpCliCatalogConformanceTests.cs` -- the ID matrix rows and the catalog-shape rules. Pin each operation's routing strings (`Domain`, `WireType`, `ProjectionType` and aggregate source), and assert that the eligible set equals the decorated set exactly. Folders owns the per-operation routing-string and wire-type tests (McpCli Story 5.12) -- AC identifiers and AC eligibility.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/McpCli/PackedContractsClosureTests.cs` -- pack Contracts in Release; the nuspec's only dependency is `Hexalith.McpCli.Abstractions`, with no framework reference other than `Microsoft.NETCore.App` -- AD-15.
+- [x] `docs/contract/mcpcli-folders-operation-declarations.md` -- one row per candidate for all 48 (eligibility per D2 with the exclusion reason, CLR type, wire name, spine operation, aggregate, exemptions), the D1 authorization, the D2 consent and live-vector chain, the D3 losses (rationale, replacement, affected rows), and the named gaps -- the input to McpCli Story 5.8.
+- [x] `scripts/pd10-v2-story-owned-paths.txt` -- add every new `src/` and test path, sorted and unique; do not regenerate the manifest (D4) -- PD10 coverage.
 
 **Acceptance Criteria:**
 - Given a Release build with `TreatWarningsAsErrors`, when the solution builds, then MCPCLI001 reports nothing and every existing Contracts.Tests test outside the known pre-existing failures stays green.
@@ -122,6 +123,53 @@ public sealed record LockWorkspace(
 
 ## Implementation Notes
 
+Implemented 13 Commands, 28 Queries, seven nested request records and 17 enums. The 48-row owner decision record includes exclusions, accepted losses, routing exemptions and downstream gaps. No source outside Contracts, reference submodule, spine or PD10 manifest was changed. All 73 new C# paths are present in the sorted, unique PD10 story-owned list.
+
+Primitive branch-pattern arrays preserve JSON string arrays. Because standard DataAnnotations have no collection-element target, the drift gate compares their item schemas to the identical annotated `DefaultRef` primitive. Conditional `FileMutationRequest/allOf` rules are pinned as a complete schema tree; runtime admission remains Story 5.13 work.
+
+Verification (2026-11-10):
+
+- `dotnet build src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj --configuration Release -warnaserror`: passed, zero warnings/errors and no MCPCLI001.
+- `dotnet build Hexalith.Folders.slnx --configuration Release -warnaserror`: passed before and after review, zero warnings/errors. Final log: `/tmp/folders-5-12-final-solution-build.log`.
+- `dotnet build tests/Hexalith.Folders.Contracts.Tests --configuration Release`: passed, zero warnings/errors.
+- `tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests -namespace Hexalith.Folders.Contracts.Tests.McpCli`: 30/30 passed, no skipped or unrun tests. This includes a real Release pack that rebuilds Contracts and verifies the nuspec and restored/assembly/framework closure.
+- `dotnet test tests/Hexalith.Folders.Contracts.Tests --configuration Release`: exit 2, 661/666 passed, exactly the same five PD10 failures as the pre-change baseline (631/636 passed). No gate-script exit-134 failures occurred. Logs: `/tmp/folders-5-12-final-all-tests.log` and `/tmp/folders-5-12-baseline-tests.log`.
+- Built Client.Tests and invoked its Release executable with `-class Hexalith.Folders.Client.Tests.ClientGenerationTests`: 75/75 passed, including isolated Contracts restore/generation.
+- Dedicated `ContractSpineCiGateTests`: 1/1 passed; the McpCli namespace and root inventory dependency are wired into the spine lane. PowerShell parsing passed.
+- Real McpCli Core catalog probe: 41 operations, zero diagnostics; canonical serialization and exported schema retain the fixed ACL effect.
+- `dotnet format whitespace src/Hexalith.Folders.Contracts --verify-no-changes`: passed.
+- `git diff --check`: passed. PD10 story-owned path list is sorted and unique; manifest intentionally not regenerated (D4).
+
+Pre-existing, approved PD10 failures:
+
+1. `Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority`
+2. `Pd10ConformanceSetTests.GeneratorRejectsOutputThatAliasesARequiredCandidateInput`
+3. `Pd10ConformanceSetTests.InventoryCoversEveryRuntimeAndTestCompileInputIncludingExtractedHelpers`
+4. `Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest`
+5. `Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte`
+
+The baseline inventory omits `tests/Hexalith.Folders.Server.Tests/OwnerSourceCompositionAssertionIssuer.cs`; the committed manifest also has stale rows. New story-owned paths await the authorized 12.2/1.17 reseal.
+
+Matrix audit: wire-pin row is covered by `EveryCommandWireMatchesTheDomainCatalogAndImmutableInventory`; spine-drift row by `EveryDeclaredFieldRequiredFlagBoundAndEnumMatchesTheV2Spine` and the added/dropped/renamed/required/bound/type/enum mutation self-test; identifier row by all 13 round-trip theory cases, the independent distinct-identifier fixture covering 26 member names, and `AggregateGrammarGapsAreNamedAndRemainUnconverted`; catalog row by `EveryOperationPinsItsRoutingStringsAndHasAClosedSerializableShape` and the exact eligible/decorated-set test. Every covering test ran and passed. Post-review checks also cover canonical serialized bindings, optional omission versus wire-null permission, inline allOf intersections, unsupported composition, encoding/decoded limits, handoff freshness, and references read from the actual packed DLL.
+
 ## Spec Change Log
 
 ## Review Triage Log
+
+| Finding | Verdict | Evidence and route |
+| --- | --- | --- |
+| Blind 1: fixed ACL effects disappear from canonical metadata | medium | Confirmed `McpCliJson.CreateResolver` removes these getter-only properties, and the scratch catalog probe omits `effect`. Patch the existing records without adding public surface and cover the canonical resolver behavior. Raw Gateway admission remains 5.13, including enforcing the operation's fixed effect on directly forwarded JSON. |
+| Blind 2: optionality masks spine nullability changes | medium | The comparator treats every optional field as CLR-nullable, so toggling its spine nullable flag is invisible. Patch the gate to distinguish source nullability from optional omission and explicitly record the existing optional-null representation/admission boundary. |
+| Blind 3: branch-pattern item constraints borrowed from DefaultRef | false | The identical lexical constraints are intentionally compared for every item schema against the shared annotated primitive; item bound/pattern changes do fail. The decision record expressly states this representation and that runtime McpCli ignores DataAnnotations, so the claimed runtime enforcement is not made. |
+| Blind 4: inline allOf constraints skipped | medium | `Resolve` only visits reference intersections and overwrites object members; an inline required/property constraint can evade comparison. Patch to merge supported intersections or fail explicitly on unsupported composition, with a mutation regression. |
+| Blind 5: ignored properties still pass reflected-field gate | medium | Reflection retains a property after JsonIgnore removes its effective JSON binding; only aggregate binding is presently checked. Patch to require effective serialized membership for every declared field. |
+| Blind 6: inline encoding and decoded limit not pinned | medium | `contentEncoding` and `x-hexalith-decoded-byte-maximum` exist on PutFileInline.contentBytes but are not compared or pinned by the allOf snapshot. Patch their drift coverage and retain admission ownership of decoded-content validation. |
+| Blind 7: equal identifier values hide exchanged JSON names | medium | Confirmed equal samples and equal identifier schemas cannot distinguish FolderId/WorkspaceId annotation swaps. Patch independent JSON fixtures with distinct member identifiers and expected wire names. |
+| Blind 8: decision-record freshness column not checked | low | The current values match the inventory, but the handoff can diverge silently because freshness is intentionally absent from CLR input. Patch a direct inventory-to-decision-column assertion. |
+| Blind 9: dedicated spine lane omits new namespace | medium | The script selects OpenApi only, and its explicit checkout list lacks McpCli although the new tests read its immutable inventory. Patch the selector and the dedicated workflow's root-submodule list. |
+| Blind 10: package test inspects loaded assembly rather than packed DLL | low | A Debug runner loads Debug while the subprocess packs Release. Patch the assembly-reference check to inspect the DLL inside the actual nupkg; the nuspec already proves the package's sole declared dependency. |
+| Edge-case 1: canonical serializer omits fixed ACL effects | medium | Independently confirmed the same getter-only metadata removal as Blind 1. Group with the ACL serialization patch. |
+| Verification gap 1: identifier-to-wire mapping not independently pinned | medium | Pre-verified distinct-identity fixture gap; the existing checks are self-consistent under a folder/workspace annotation exchange. Group with Blind 7's fixture patch. |
+| Verification other 1: fixed ACL effects omitted and raw JSON forwarded | medium | Canonical omission is the same defect as Blind 1. Patch record serialization and its test; explicitly name downstream 5.13 enforcement because OperationExecutor forwards JSON without invoking record initializers. |
+
+Review resolution: all nine grouped patch entries were fixed and focused checks passed; one finding was rejected with the evidence above. No new deferred-work entries. Raw-JSON fixed-effect/null/conditional validation remains explicitly assigned to the existing Stories 5.13/5.14 handoff.

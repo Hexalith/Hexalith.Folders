@@ -37,7 +37,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-11-04'
+last_updated: '2026-11-10'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -166,7 +166,7 @@ development_status:
   5-9-enroll-file-context-commit-status-error-and-audit-operations: backlog
   5-10-enroll-tenant-folder-acl-provider-readiness-and-binding-op: backlog
   5-11-prove-four-surface-parity-and-mixed-surface-handoff-through: backlog
-  5-12-declare-folders-operations-in-decorated-mcpcli-contracts: backlog
+  5-12-declare-folders-operations-in-decorated-mcpcli-contracts: review
   5-13-admit-and-authorize-gateway-dispatched-folders-commands: backlog
   5-14-serve-folders-reads-through-gateway-query-handlers: backlog
   5-15-retire-hexalith-folders-cli-and-hexalith-folders-mcp: backlog

@@ -3,6 +3,9 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Hexalith.McpCli.Abstractions" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Contracts.Tests" />
   </ItemGroup>
 </Project>
