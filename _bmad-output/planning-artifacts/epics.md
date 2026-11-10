@@ -21,7 +21,7 @@ inputDocuments:
 
 # Hexalith.Folders - Epic Breakdown
 
-**Approved McpCli course correction (2026-09-27).** Stories 5.2–5.11, 7.13, 8.3, and 11.6 that name Folders CLI/MCP adapters now feed an owner-approved operation inventory, decorated Contracts, Gateway readiness, and parity tests for `Hexalith.McpCli` CLI/MCP heads. Preserve C13 lifecycle, authorization, idempotency, status, error, and audit behavior. Completed adapter stories remain historical compatibility evidence; McpCli Epic 5 owns cutover and package retirement.
+**Approved McpCli course correction (2026-09-27, extended 2026-11-10).** Stories 5.2–5.7, 7.13, and 8.3 that name Folders CLI/MCP adapters stay done as historical compatibility evidence. Story 11.6 is safety work on the frozen adapters. Stories 5.8–5.11 are re-scoped to McpCli enrollment slices, and Stories 5.12–5.15 are added (`sprint-change-proposal-2026-11-10.md`). Preserve C13 lifecycle, authorization, idempotency, status, error, and audit behavior. McpCli owns the generic heads, the Folders inventory re-disposition, and its own enrollment gates. Folders owns the decorated Contracts, domain-service enforcement, and retirement of its legacy binaries.
 
 
 ## Overview
@@ -105,8 +105,8 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 #### Cross-Surface Contract
 
 - FR47: API consumers can use the versioned REST transport for every current Contract Spine operation, with emitted schemas validated against the canonical OpenAPI 3.1 spine and every C13-required REST cell passing the shared authorization, idempotency, lifecycle, error, and audit scenarios.
-- FR48: CLI users can perform every C13-required CLI cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
-- FR49: MCP clients can perform every C13-required MCP cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR48: `Hexalith.McpCli` CLI users can perform every owner-approved, agent-eligible C13 CLI cell of the canonical repository-backed task lifecycle after Folders Contracts and Gateway enrollment. Shared operation-identity, authorization, idempotency, status, error, and audit scenarios must pass; unsupported legacy-only cells require an explicit replace, withdraw, or defer inventory decision before the Folders CLI retires.
+- FR49: `Hexalith.McpCli` MCP clients can perform every owner-approved, agent-eligible C13 MCP cell of the canonical repository-backed task lifecycle after Folders Contracts and Gateway enrollment. The same operation-identity, authorization, idempotency, status, error, and audit scenarios must pass; unsupported legacy-only tools and resources require an explicit replace, withdraw, or defer inventory decision before the Folders MCP server retires.
 - FR50: SDK consumers can perform every C13-required SDK cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
 - FR51: The system can expose cross-surface equivalence for authorization behavior, error categories, operation IDs, audit records, status transitions, and provider capability behavior; the C13 parity oracle reports zero material deltas across REST, SDK, CLI, and MCP for every supported cell, and any delta fails the release gate.
 
@@ -2043,6 +2043,14 @@ API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalen
 
 Parity is verified through generated oracle rows and shared conformance tests reused across surfaces, not by manual comparison of independently implemented behavior.
 
+**McpCli target (2026-11-10).** CLI and MCP users reach Folders through the `Hexalith.McpCli` heads.
+
+- **Stories 5.12–5.14** build the Folders side of enrollment: decorated Contracts, Gateway admission and authorization, and Gateway query handlers.
+- **Stories 5.8–5.11** prove the enrolled lifecycle through both McpCli heads.
+- **Story 5.15** retires `Hexalith.Folders.Cli` and `Hexalith.Folders.Mcp`.
+
+Evidence from the legacy binaries never satisfies a story in this epic after 2026-11-10.
+
 **FRs:** FR41–FR44, FR47–FR51
 
 ### Story 5.1: Ship SDK convenience helpers, samples, and quickstart
@@ -2152,69 +2160,184 @@ So that real integrations can hand off work without losing state or auditability
 **Then** task ID, correlation ID, operation IDs, audit records, and terminal state remain coherent
 **And** any surface-specific drift in idempotency replay or error category fails the scenario.
 
-### Story 5.8: CLI workspace preparation and lock lifecycle
+### Story 5.8: Enroll workspace preparation and lock lifecycle through McpCli
 
-**Requirements:** FR41–FR44, FR48, FR51
+**Requirements:** FR41–FR44, FR48, FR49, FR51
 
-As a CLI user,
-I want to prepare a workspace and inspect, acquire, and release its task-scoped lock,
-So that scripted work uses the same durable lifecycle and lock semantics as REST and SDK.
-
-**Acceptance Criteria:**
-
-**Given** Story 4.19's durable prepare/lock path is deployed and the caller has current tenant/folder authorization
-**When** CLI prepare and lock commands run
-**Then** inputs, operation identity, exact lock states, C6 lifecycle, idempotency, canonical results/errors, exit codes, and metadata-only output match the generated parity oracle
-**And** success, denial/wrong-tenant, equivalent/conflicting replay, lock collision/expiry, failure, timeout/unknown, and input boundaries are verified against real deployed composition
-**And** fake, seed-only, unavailable, safe-empty, or in-memory behavior alone cannot prove CLI completion.
-
-### Story 5.9: CLI file, context, commit, status, error, and audit behavior
-
-**Requirements:** FR41–FR44, FR48, FR51
-
-As a CLI user,
-I want to mutate files, query bounded context, commit, inspect status, and review safe audit evidence,
-So that the complete CLI workflow preserves canonical behavior and security.
+As a CLI user or AI agent using `Hexalith.McpCli`,
+I want to prepare a workspace and inspect, acquire, and release its task-scoped lock through either McpCli head,
+So that scripted and agent work uses the same durable lifecycle and lock semantics as REST and SDK.
 
 **Acceptance Criteria:**
 
-**Given** Stories 4.20, 4.21, and 12.6 production paths are available
-**When** CLI file/context/commit/status/audit commands execute
-**Then** C4 bounds, lock and all-mutation idempotency rules, canonical errors, terminal/recovery states, retry eligibility, output shaping, and parity-oracle semantics are preserved without exposing content or secrets outside authorized response rules
+**Given** Story 4.19's durable prepare/lock path is deployed, McpCli has enrolled the Folders Contracts (EXT-MCPCLI-FOLDERS-ENROLLMENT), and the caller has current tenant/folder authorization
+**When** `folders.prepare-workspace`, `folders.lock-workspace`, `folders.release-workspace-lock` and the workspace lock, status, retry-eligibility, transition-evidence and cleanup-status queries run through the McpCli CLI and MCP heads
+**Then** operation identity, exact lock states, C6 lifecycle, idempotency, canonical category/code/retryable/clientAction, and metadata-only output match the C13 oracle and the REST/SDK results for the same inputs
+**And** success, denial/wrong-tenant, equivalent/conflicting replay, lock collision/expiry, failure, timeout/unknown, and input boundaries are verified against real deployed composition with asserted state-store end-state
+**And** fake, seed-only, unavailable, safe-empty, in-memory, or legacy Folders CLI/MCP behavior cannot prove completion.
+
+### Story 5.9: Enroll file, context, commit, status, error, and audit operations through McpCli
+
+**Requirements:** FR41–FR44, FR48, FR49, FR51
+
+As a CLI user or AI agent using `Hexalith.McpCli`,
+I want to mutate files, query bounded context, commit, inspect status, and review safe audit evidence through either McpCli head,
+So that the complete agent workflow keeps canonical behavior and security without a Folders-specific tool.
+
+**Acceptance Criteria:**
+
+**Given** Stories 4.20, 4.21, and 12.6 production paths are available and McpCli has enrolled the Folders Contracts
+**When** `folders.mutate-files`, `folders.commit-workspace`, and the context, commit-evidence, provider-outcome, reconciliation, task-status and audit queries run through both McpCli heads
+**Then** C4 bounds, lock and all-mutation idempotency rules, canonical errors, terminal/recovery states, retry eligibility, metadata-only output, and parity-oracle semantics are preserved without exposing content or secrets outside authorized response rules
+**And** inline content up to the inclusive 262144-byte decoded boundary is proven. Larger content uses the staging contract approved by McpCli Story 5.2, or stays an inventory `defer` with a product-approved C13 declaration.
 **And** deployed success plus denial, conflict, provider failure, timeout/unknown reconciliation, cancellation/size/path boundaries, tenant isolation, and metadata-only audit are proven
-**And** NoOp, mock-only, seed, unavailable, safe-empty, or fake evidence cannot satisfy completion.
+**And** NoOp, mock-only, seed, unavailable, safe-empty, fake, or legacy Folders CLI/MCP evidence cannot satisfy completion.
 
-### Story 5.10: MCP workspace preparation and lock lifecycle
+### Story 5.10: Enroll tenant, folder, ACL, provider-readiness, and binding operations through McpCli
 
-**Requirements:** FR41–FR44, FR49, FR51
+**Requirements:** FR48, FR49, FR51
 
-As an MCP client,
-I want tools and resources for workspace preparation and task-scoped lock lifecycle,
-So that AI agents receive the same durable lifecycle semantics as other surfaces.
-
-**Acceptance Criteria:**
-
-**Given** Story 4.19's durable prepare/lock path is deployed and the actor is authorized
-**When** MCP preparation and lock operations run
-**Then** tool/resource schemas, operation identity, exact lock states, C6 lifecycle, idempotency, failure kind, retryability, client action, and eventual-acceptance wording match the parity oracle
-**And** success, wrong-tenant/authorization denial, equivalent/conflicting replay, collision/expiry, known failure, timeout/unknown, and schema/input boundaries are proven through deployed composition
-**And** fake, seed-only, unavailable, safe-empty, or in-memory behavior alone cannot prove completion.
-
-### Story 5.11: MCP file, context, commit, status, error, and audit behavior
-
-**Requirements:** FR41–FR44, FR49, FR51
-
-As an MCP client,
-I want tools and resources for file mutation, bounded context, commit, status, errors, and safe audit evidence,
-So that AI-agent workflows retain full cross-surface parity.
+As an operator or AI agent using `Hexalith.McpCli`,
+I want to create, bind, archive, and inspect folders, manage folder ACL entries, and configure and check provider bindings and branch policy through either McpCli head,
+So that setup work needs no Folders-specific tool.
 
 **Acceptance Criteria:**
 
-**Given** Stories 4.20, 4.21, and 12.6 production paths are available
-**When** MCP file/context/commit/status/audit operations execute
-**Then** schemas, C4 bounds, lock and all-mutation idempotency rules, terminal/recovery states, failure kinds, retryability, client action, and metadata-only output match the generated parity oracle
-**And** deployed success plus denial, conflict, provider failure, timeout/unknown reconciliation, cancellation/size/path boundaries, tenant isolation, and sensitive-data exclusion are proven
-**And** NoOp, mock-only, seed, unavailable, safe-empty, or fake evidence cannot satisfy completion.
+**Given** the durable folder repository (Story 12.1) is deployed and McpCli has enrolled the Folders Contracts
+**When** the create-folder, create-repository-backed-folder, bind-repository, archive-folder, grant/revoke-folder-access, configure-provider-binding and configure-branch-ref-policy operations and their read queries run through both McpCli heads
+**Then** results, canonical errors, idempotency, and metadata-only output match the C13 oracle and REST/SDK for the same inputs, and grant and revoke stay distinct operations (inventory V08)
+**And** provider binding accepts only credential references, never raw secrets. It preserves reserved `ProviderBindingActorId` routing and tenant/namespace separation, and authorizes before any provider egress (inventory G1/C05, G6).
+**And** cross-tenant, unauthorized, revoked, and replayed requests fail closed with zero mutation, proven by persisted state-store end-state.
+
+### Story 5.11: Prove four-surface parity and mixed-surface handoff through McpCli
+
+**Requirements:** FR47–FR51
+
+As a release owner,
+I want the C13 oracle to report zero material deltas across REST, SDK, and both McpCli heads, and a task handed between REST and McpCli to keep one identity,
+So that the four-surface MVP claim rests on McpCli evidence alone.
+
+**Acceptance Criteria:**
+
+**Given** Stories 5.8–5.10 are done
+**When** the C13 conformance suite and the SM1 calibration scenarios run for GitHub and Forgejo
+**Then** every core-lifecycle and tenant-administration cell passes on REST, SDK, McpCli CLI, and McpCli MCP, and every other cell carries an inventory `withdraw` or `defer` plus a product-approved C13 declaration
+**And** a task started through REST or SDK and continued through either McpCli head, or the reverse, keeps the same task identity, lock ownership, idempotency outcomes, and audit trail (UJ7)
+**And** the evidence binds the exact McpCli version, Folders Contracts package version, Catalog digest, environment, and vectors by hash. It passes the secret scan, and the Folders owner approves it as input to McpCli's Folders retirement gate.
+**And** legacy Folders CLI/MCP results are not counted.
+
+### Story 5.12: Declare Folders operations in decorated McpCli Contracts
+
+**Requirements:** FR48, FR49 (enabler); architecture A-12; McpCli Folders inventory G1
+
+As a Folders Contracts maintainer,
+I want each owner-approved Folders operation declared as a decorated public Command or Query type in `Hexalith.Folders.Contracts`,
+So that McpCli can discover and validate Folders operations without importing Folders code or adding an adapter.
+
+**Acceptance Criteria:**
+
+**Given** the McpCli Folders inventory 1.0.0 candidates C01–C13 and Q01–Q35 and the v2 Contract Spine (Story 1.17)
+**When** the Folders owner records agent eligibility for each candidate
+**Then** each eligible candidate has exactly one decorated public type, one type per file, under `Hexalith.Folders.Contracts.Commands` or `.Queries`. Each type has a nonblank description, `Domain = "folders"`, aggregate routing, and `[HexalithIdentifier]` properties.
+**And** the eligibility decisions and every accepted behavior loss are recorded as the Folders owner's input to McpCli Story 5.8. The losses to decide are V04 local-file input, V07 `--allow-auto-key`, V09 credential precedence, and the R01/R02 resources.
+
+**Given** `[assembly: HexalithModule("folders", …)]`
+**When** its identifier kind is chosen
+**Then** existing folder, workspace, task, and provider-binding identifiers are proven to round-trip under it with no silent conversion, and any format it cannot accept is a named gap.
+
+**Given** each decorated Command
+**When** its wire type is resolved
+**Then** it maps explicitly to the existing `Hexalith.Folders.Commands.*` wire name, never a derived `Contracts.Commands.*` name, and a test pins every mapping.
+
+**Given** a Release build with TreatWarningsAsErrors
+**When** the Contracts project builds and packs
+**Then** `Hexalith.McpCli.Abstractions` (versionless, Builds `HexalithMcpCliVersion`) is its only package reference, MCPCLI001 reports nothing, and the packed Contracts closure passes McpCli's AD-15 package/closure gate
+**And** a drift gate fails when a decorated type's fields, required flags, or bounds diverge from the Contract Spine operation it maps to
+**And** no Folders CLI, MCP host, or McpCli adapter code is added.
+
+### Story 5.13: Admit and authorize Gateway-dispatched Folders commands
+
+**Requirements:** FR48, FR49 (enabler); architecture A-9, A-12; McpCli Folders inventory G2, G3, V03, V07
+
+As a Folders security maintainer,
+I want commands that reach the domain service through the EventStore Gateway from McpCli to pass the same admission and authorization as REST,
+So that McpCli callers cannot reach data or effects that REST would deny.
+
+**Acceptance Criteria:**
+
+**Given** McpCli envelopes carrying canonical uppercase ULID message and correlation IDs
+**When** `/process` admits a decorated Folders command
+**Then** admission accepts them without lowercasing aggregate IDs or weakening McpCli rules, and keeps the caller idempotency key independent of the generated message ID
+**And** replay, changed-input conflict, expiry, and task association behave exactly as A-9 specifies, through admission and persisted effects.
+
+**Given** task and workspace context carried as Payload properties or allowed Envelope extensions
+**When** a mutation or task-required read runs
+**Then** the context is enforced as REST enforces it, and a missing or mismatched task fails closed.
+
+**Given** envelope tenant and actor values
+**When** a command is authorized
+**Then** they serve only as comparison inputs against verified authority. Layered folder/action ACL, revocation, task/workspace/lease ownership, and deny-before-access give the same PD10 v2 safe-denial outcomes as REST.
+
+**Given** cross-tenant, unauthorized, revoked, or forged-tenant commands dispatched through the Gateway
+**When** they are processed
+**Then** they disclose no protected data and cause no mutation, proven by state-store end-state assertions.
+
+### Story 5.14: Serve Folders reads through Gateway query handlers
+
+**Requirements:** FR48, FR49 (enabler); architecture A-12; McpCli Folders inventory G4, G5, V01, V02, V06
+
+As a Folders query maintainer,
+I want every agent-eligible Folders read served by a registered Gateway query handler with metadata-only results,
+So that McpCli reads return the same authorized, bounded data as REST.
+
+**Acceptance Criteria:**
+
+**Given** each eligible decorated Query sent by McpCli through the Gateway
+**When** it is dispatched
+**Then** a registered `IDomainQueryHandler` serves it from durable projections, and `/project` is never used as a query dispatcher.
+
+**Given** the legacy per-operation freshness (V01) and paging/filter inputs (V02)
+**When** a query arrives
+**Then** each operation applies its single freshness value, payload-versus-envelope paging precedence is defined, and conflicting or unsupported combinations are rejected rather than silently dropped.
+
+**Given** any result or error leaving the domain service
+**When** it is serialized
+**Then** content bytes, inline content, stream descriptors, secrets, and unauthorized paths are absent, and authorization ran before any read.
+
+**Given** an authorized content read-back request (Epic 12 action item HXF-MCP-001)
+**When** it is requested
+**Then** it is served as a decorated Query within C4 bounds, or stays an inventory `defer` with a product-approved C13 declaration
+**And** cross-tenant and unauthorized reads return the safe denial and no protected data.
+
+### Story 5.15: Retire Hexalith.Folders.Cli and Hexalith.Folders.Mcp
+
+**Requirements:** FR48, FR49, FR51 (retirement clauses of FR48/FR49)
+
+As the Folders owner,
+I want the legacy Folders CLI and MCP server removed from source, packages, and documentation once McpCli replaces them,
+So that McpCli is the only supported Folders CLI/MCP path and no stale binary is mistaken for a supported surface.
+
+**Acceptance Criteria:**
+
+**Given** an owner-approved McpCli Folders inventory version in which every legacy tool, resource, CLI leaf, and variant is `replace` (with passing Story 5.11 evidence) or `withdraw` (EXT-MCPCLI-FOLDERS-RETIREMENT-GATE)
+**When** the legacy surfaces retire
+**Then** one lockstep change removes or updates all of the following:
+
+- `src/Hexalith.Folders.Cli`, `src/Hexalith.Folders.Mcp` and `src/shared/AdapterCore`, plus their test projects;
+- their entries in both `.slnx` files, `deploy/nuget/release-packages.yaml`, `deploy/nuget/trusted-publishing-policy.yaml` and the CI workflows;
+- the pinned inventory gates: the `ScaffoldContractTests` solution pins and the PD10 conformance-set path bindings.
+
+**And** the C13 `cli_exit_code`/`mcp_failure_kind` columns and the parity-oracle CLI/MCP consumers are removed, while C13 keeps `mcpcli_operation`.
+
+**Given** the README, the Story 7.13 consumer references, and the operator documentation
+**When** they are updated
+**Then** they direct CLI/MCP users to McpCli profile setup, and the README "Legacy compatibility surfaces" section records the retirement, the last published legacy package versions, and the rollback path to them
+**And** the published `Hexalith.Folders.Cli` and `Hexalith.Folders.Mcp` package IDs are marked deprecated on NuGet with McpCli as the alternative.
+
+**Given** a release candidate that still builds, packs, or documents a removed surface
+**When** retirement is verified
+**Then** verification fails and names that surface
+**And** completed Story 5.2–5.7 evidence and lifecycle history are preserved, not rewritten.
 
 ## Epic 6: Read-Only Workspace Trust Console and Audit Review
 
@@ -3225,6 +3348,8 @@ So that cross-surface parity remains consistent without copied code.
 **When** shared adapter-core helpers are introduced
 **Then** CLI/MCP behavior remains parity-oracle equivalent
 **And** bearer-token handling rejects non-HTTPS non-loopback endpoints before token emission.
+
+**Frozen-adapter scope (2026-11-10).** This story is safety and continuity work on the frozen legacy adapters. The bearer-transport guard (HXF-SEC-001) and the shared adapter core landed in `4403ef17`; no further adapter-core work is planned, and McpCli carries its own transport safety. Closure stays gated on Story 1.17, as the 11.6 spec records. Story 5.15 deletes the shared adapter core together with the legacy binaries.
 
 ### Story 11.7: Consolidate deterministic time, context, and path test helpers
 

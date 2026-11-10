@@ -210,32 +210,32 @@ generated_counts:
   technical_enablers: 3
   release_governance_workstreams: 2
   security_operations_hardening_epics: 1
-  canonical_story_identities: 159
-  inventory_rows_including_aliases: 160
+  canonical_story_identities: 163
+  inventory_rows_including_aliases: 164
   superseded_aliases: 1
   stories_by_classification:
     technical-enabler: 41
-    product: 87
+    product: 91
     release-governance: 24
     security-operations-hardening: 7
   canonical_story_lifecycle_statuses:
     done: 111
-    backlog: 45
+    backlog: 49
     in-progress: 2
     review: 1
   inventory_lifecycle_statuses_including_aliases:
     done: 112
-    backlog: 45
+    backlog: 49
     in-progress: 2
     review: 1
   definition_authorities:
     dedicated-story-file: 111
-    reconciled-epics-anchor: 48
+    reconciled-epics-anchor: 52
   functional_requirements: 58
   non_functional_requirements: 84
   ux_design_requirements: 39
   architecture_derived_requirements: 120
-  scheduled_nonterminal_stories: 48
+  scheduled_nonterminal_stories: 52
 classification_register:
   product:
   - 2
@@ -483,11 +483,17 @@ requirement_inventory:
       - '5.2'
       - '5.8'
       - '5.9'
+      - '5.10'
+      - '5.11'
+      - '5.15'
       - '1.17'
       FR49:
       - '5.3'
+      - '5.8'
+      - '5.9'
       - '5.10'
       - '5.11'
+      - '5.15'
       - '1.17'
       FR50:
       - '1.12'
@@ -499,6 +505,8 @@ requirement_inventory:
       - '5.5'
       - '5.6'
       - '5.7'
+      - '5.11'
+      - '5.15'
       - '1.17'
       FR52:
       - '6.6'
@@ -1400,6 +1408,71 @@ external_nodes:
     decision_status: pending
     execution_authorization_status: external-owner-controlled
     delivery_evidence_status: pending
+  EXT-MCPCLI-FOLDERS-ENROLLMENT:
+    node_type: external-platform-release
+    execution_rank: 24
+    prerequisites:
+    - '5.12'
+    - '5.13'
+    - '5.14'
+    repository: references/Hexalith.McpCli
+    repository_owner: Hexalith.McpCli maintainers
+    accountable_role: McpCli maintainer (single-maintainer model)
+    delivery_role: McpCli Epic 5 owner
+    source_work_references:
+    - McpCli Story 5.2 — Decide Generic Non-Gateway Capability Contracts
+    - McpCli Story 5.8 — Refresh and Re-disposition the Folders Inventory
+    - McpCli Folders enrollment story requested by sprint-change-proposal-2026-11-10 (handoff R3)
+    release_identifier: hexalith-mcpcli-folders-enrollment-v1
+    observed_repository_commit: c1313a6ab4a35ffd3fc6d76d8ec4f86f77270e62
+    release_version_or_commit: pending-platform-publication
+    evidence_paths:
+      inventory: references/Hexalith.McpCli/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md
+      source_story_authority: references/Hexalith.McpCli/_bmad-output/planning-artifacts/epics.md
+      escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-10.md
+    required_evidence:
+    - An owner-approved Folders inventory version naming a decorated Contracts type for every replace row.
+    - A McpCli release enrolling the exact Folders Contracts package version, passing the AD-15 package/closure and
+      AD-21 Catalog set/type gates.
+    - One approved execution vector per included operation with loopback request/result parity.
+    acceptance_status: pending
+    acceptance_reason: Requested by sprint-change-proposal-2026-11-10; the McpCli stories that satisfy this node are not yet
+      planned or delivered.
+    placeholder_acceptance_forbidden: true
+    decision_status: pending
+    execution_authorization_status: external-owner-controlled
+    delivery_evidence_status: pending
+  EXT-MCPCLI-FOLDERS-RETIREMENT-GATE:
+    node_type: external-platform-release
+    execution_rank: 45
+    prerequisites:
+    - '5.11'
+    repository: references/Hexalith.McpCli
+    repository_owner: Hexalith.McpCli maintainers
+    accountable_role: McpCli maintainer (single-maintainer model)
+    delivery_role: McpCli Epic 5 owner
+    source_work_references:
+    - McpCli Folders shared-head parity and retirement-verification stories requested by sprint-change-proposal-2026-11-10
+      (handoff R3)
+    - AI.Tools migration plan 1.1.0, Retirement and release prerequisites
+    release_identifier: hexalith-mcpcli-folders-retirement-gate-v1
+    observed_repository_commit: c1313a6ab4a35ffd3fc6d76d8ec4f86f77270e62
+    release_version_or_commit: pending-platform-publication
+    evidence_paths:
+      migration_plan: references/Hexalith.AI.Tools/hexalith-mcpcli-migration-instructions.md
+      source_story_authority: references/Hexalith.McpCli/_bmad-output/planning-artifacts/epics.md
+      escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-10.md
+    required_evidence:
+    - An owner-approved Folders inventory version in which every legacy tool, resource, CLI leaf, and variant is replace
+      with passing evidence or withdraw.
+    - McpCli selected-environment shared-head parity, safety, and rollback evidence for Folders.
+    acceptance_status: pending
+    acceptance_reason: Requested by sprint-change-proposal-2026-11-10; the McpCli stories that satisfy this node are not yet
+      planned or delivered.
+    placeholder_acceptance_forbidden: true
+    decision_status: pending
+    execution_authorization_status: external-owner-controlled
+    delivery_evidence_status: pending
 relock_nodes:
   RELOCK-PLANNING:
     node_type: relock-milestone
@@ -1711,6 +1784,7 @@ execution_waves:
   - '11.11'
   - '11.14'
   - '11.16'
+  - '5.12'
   - '13.1'
   - '13.2'
   - '13.3'
@@ -1738,6 +1812,13 @@ execution_waves:
 - rank: 22
   nodes:
   - '12.7'
+  - '5.13'
+- rank: 23
+  nodes:
+  - '5.14'
+- rank: 24
+  nodes:
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
 - rank: 30
   nodes:
   - '11.15'
@@ -1769,8 +1850,16 @@ execution_waves:
 - rank: 43
   nodes:
   - '5.9'
-  - '5.11'
   - '6.14'
+- rank: 44
+  nodes:
+  - '5.11'
+- rank: 45
+  nodes:
+  - EXT-MCPCLI-FOLDERS-RETIREMENT-GATE
+- rank: 46
+  nodes:
+  - '5.15'
 - rank: 50
   nodes:
   - OQ8-EVIDENCE
@@ -2033,9 +2122,11 @@ exact_prerequisites:
   '5.8':
   - DEC-A8-HOLD
   - '4.19'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   '5.10':
   - DEC-A8-HOLD
-  - '4.19'
+  - '12.1'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   '10.8':
   - DEC-A8-HOLD
   - accepted:10.7
@@ -2050,11 +2141,37 @@ exact_prerequisites:
   - '4.20'
   - '4.21'
   - '12.6'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   '5.11':
   - DEC-A8-HOLD
-  - '4.20'
-  - '4.21'
+  - '5.8'
+  - '5.9'
+  - '5.10'
+  '5.12':
+  - DEC-A8-HOLD
+  - '1.17'
+  '5.13':
+  - DEC-A8-HOLD
+  - '5.12'
+  - '11.10'
+  - '12.1'
   - '12.6'
+  '5.14':
+  - DEC-A8-HOLD
+  - '5.12'
+  - '5.13'
+  - '12.2'
+  - '12.3'
+  '5.15':
+  - DEC-A8-HOLD
+  - '5.11'
+  - EXT-MCPCLI-FOLDERS-RETIREMENT-GATE
+  EXT-MCPCLI-FOLDERS-ENROLLMENT:
+  - '5.12'
+  - '5.13'
+  - '5.14'
+  EXT-MCPCLI-FOLDERS-RETIREMENT-GATE:
+  - '5.11'
   '6.14':
   - DEC-A8-HOLD
   - '4.18'
@@ -2161,7 +2278,7 @@ validation_rules:
 - id: V2-002
   rule: Require every canonical story identity exactly once; permit only the declared 2.8b alias row.
 - id: V2-003
-  rule: Require 159 canonical story identities and 160 inventory rows including aliases.
+  rule: Require 163 canonical story identities and 164 inventory rows including aliases.
 - id: V2-004
   rule: Require exact FR1-FR58 and NFR1-NFR84 identities with no gap, duplicate, or renumbering.
 - id: V2-005
@@ -2220,6 +2337,52 @@ validation_results:
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 planning_amendments:
+- amended_on: '2026-11-10'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  proposal: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-10.md
+  accepted_scope: Proposal edits E1-E6, A1-A7, S1-S11, M1-M3, and T1-T3, plus the FR48/FR49 epics.md mirror of the
+    2026-09-27 PRD wording. Hexalith.McpCli replaces the Folders-specific CLI/MCP (D1 freeze then retire, D2 McpCli
+    required for MVP, D3 re-scope inside Epic 5).
+  changes:
+  - Re-scoped Stories 5.8-5.11 to McpCli enrollment slices; 5.8, 5.9, and 5.10 gain EXT-MCPCLI-FOLDERS-ENROLLMENT, 5.10
+    replaces 4.19 with 12.1, and 5.11 depends on 5.8-5.10 and moves from rank 43 to 44.
+  - Added Stories 5.12 (rank 11), 5.13 (rank 22), 5.14 (rank 23), and 5.15 (rank 46) as backlog.
+  - Added pending external nodes EXT-MCPCLI-FOLDERS-ENROLLMENT (rank 24) and EXT-MCPCLI-FOLDERS-RETIREMENT-GATE (rank 45).
+  - Added 5.10, 5.11, and 5.15 to FR48; 5.8, 5.9, and 5.15 to FR49; 5.11 and 5.15 to FR51; updated generated_counts and
+    V2-003.
+  - Mirrored the PRD FR48/FR49 bullets into epics.md, closing drift left by commit fb551174.
+  changed_authority:
+  - path: _bmad-output/planning-artifacts/prd.md
+    sha256_before: b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608
+    sha256_after: 1b422c87b889bcfa9954a360de7f11e936a0b34b569ff61e57363b8e7a03d7ac
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256_before: 7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa
+    sha256_after: 54e18f3a6b26a43bdb84ff2720255ea604df52b375f5a406d5f26d3b727e8239
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256_before: da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de
+    sha256_after: ca08c03c0dfbd50bfb59eeb270f74d96444ef321f2dce3e004cf0ca1e2b46120
+  tracker_change:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    renamed_keys:
+      5-8-cli-workspace-preparation-and-lock-lifecycle: 5-8-enroll-workspace-preparation-and-lock-lifecycle-through-mcpcli
+      5-9-cli-file-context-commit-status-error-and-audit-behavior: 5-9-enroll-file-context-commit-status-error-and-audit-operations
+      5-10-mcp-workspace-preparation-and-lock-lifecycle: 5-10-enroll-tenant-folder-acl-provider-readiness-and-binding-op
+      5-11-mcp-file-context-commit-status-error-and-audit-behavior: 5-11-prove-four-surface-parity-and-mixed-surface-handoff-through
+    inserted_keys:
+    - 5-12-declare-folders-operations-in-decorated-mcpcli-contracts
+    - 5-13-admit-and-authorize-gateway-dispatched-folders-commands
+    - 5-14-serve-folders-reads-through-gateway-query-handlers
+    - 5-15-retire-hexalith-folders-cli-and-hexalith-folders-mcp
+    sha256_before: ffd345274faded58a37662a1fef945ef87d90e0cd5d10682db71213676ecd0d7
+    sha256_after: a83206320f1fa5c1648779b04b24141c91c4798666cf6dc6747d9c38e70e8f6b
+    regeneration: none
+    note: Frozen evidence snapshots that embed the old keys are historical and were not rewritten.
+  validation: pass-163-canonical-164-with-alias; pass-79-ranked-nodes-284-edges-acyclic-strictly-lower-ranks (V2-002 to
+    V2-011 graph rules; not a Section 9 replay)
+  unchanged: general_execution_hold, v2_exposure_authorized, sprint_status_regeneration_authorized,
+    ordinary_story_execution_authorized, the 2026-09-21 validation_results record, and every approval and provenance
+    digest.
 - amended_on: '2026-10-11'
   decision_maker: Jerome
   decision_policy: docs/governance/approval-policy.md
@@ -4181,7 +4344,7 @@ stories:
   execution_authorization_status: completed
   delivery_evidence_status: accepted
 - id: '5.8'
-  title: CLI workspace preparation and lock lifecycle
+  title: Enroll workspace preparation and lock lifecycle through McpCli
   epic_id: 5
   classification: product
   authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.8
@@ -4189,6 +4352,7 @@ stories:
   prerequisites:
   - DEC-A8-HOLD
   - '4.19'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   requirement_clauses:
   - FR41
   - FR42
@@ -4206,7 +4370,7 @@ stories:
   execution_authorization_status: held
   delivery_evidence_status: open
 - id: '5.9'
-  title: CLI file, context, commit, status, error, and audit behavior
+  title: Enroll file, context, commit, status, error, and audit operations through McpCli
   epic_id: 5
   classification: product
   authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.9
@@ -4216,6 +4380,7 @@ stories:
   - '4.20'
   - '4.21'
   - '12.6'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   requirement_clauses:
   - FR41
   - FR42
@@ -4233,14 +4398,15 @@ stories:
   execution_authorization_status: held
   delivery_evidence_status: open
 - id: '5.10'
-  title: MCP workspace preparation and lock lifecycle
+  title: Enroll tenant, folder, ACL, provider-readiness, and binding operations through McpCli
   epic_id: 5
   classification: product
   authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.10
   aliases: []
   prerequisites:
   - DEC-A8-HOLD
-  - '4.19'
+  - '12.1'
+  - EXT-MCPCLI-FOLDERS-ENROLLMENT
   requirement_clauses:
   - FR41
   - FR42
@@ -4258,16 +4424,16 @@ stories:
   execution_authorization_status: held
   delivery_evidence_status: open
 - id: '5.11'
-  title: MCP file, context, commit, status, error, and audit behavior
+  title: Prove four-surface parity and mixed-surface handoff through McpCli
   epic_id: 5
   classification: product
   authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.11
   aliases: []
   prerequisites:
   - DEC-A8-HOLD
-  - '4.20'
-  - '4.21'
-  - '12.6'
+  - '5.8'
+  - '5.9'
+  - '5.10'
   requirement_clauses:
   - FR41
   - FR42
@@ -4280,7 +4446,87 @@ stories:
   - FR51
   evidence_posture: open-real-production-evidence-required
   story_lifecycle_status: backlog
-  execution_rank: 43
+  execution_rank: 44
+  decision_status: not-applicable
+  execution_authorization_status: held
+  delivery_evidence_status: open
+- id: '5.12'
+  title: Declare Folders operations in decorated McpCli Contracts
+  epic_id: 5
+  classification: product
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.12
+  aliases: []
+  prerequisites:
+  - DEC-A8-HOLD
+  - '1.17'
+  requirement_clauses:
+  - FR48
+  - FR49
+  evidence_posture: open-enabler-or-release-evidence-required
+  story_lifecycle_status: backlog
+  execution_rank: 11
+  decision_status: not-applicable
+  execution_authorization_status: held
+  delivery_evidence_status: open
+- id: '5.13'
+  title: Admit and authorize Gateway-dispatched Folders commands
+  epic_id: 5
+  classification: product
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.13
+  aliases: []
+  prerequisites:
+  - DEC-A8-HOLD
+  - '5.12'
+  - '11.10'
+  - '12.1'
+  - '12.6'
+  requirement_clauses:
+  - FR48
+  - FR49
+  evidence_posture: open-real-production-evidence-required
+  story_lifecycle_status: backlog
+  execution_rank: 22
+  decision_status: not-applicable
+  execution_authorization_status: held
+  delivery_evidence_status: open
+- id: '5.14'
+  title: Serve Folders reads through Gateway query handlers
+  epic_id: 5
+  classification: product
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.14
+  aliases: []
+  prerequisites:
+  - DEC-A8-HOLD
+  - '5.12'
+  - '5.13'
+  - '12.2'
+  - '12.3'
+  requirement_clauses:
+  - FR48
+  - FR49
+  evidence_posture: open-real-production-evidence-required
+  story_lifecycle_status: backlog
+  execution_rank: 23
+  decision_status: not-applicable
+  execution_authorization_status: held
+  delivery_evidence_status: open
+- id: '5.15'
+  title: Retire Hexalith.Folders.Cli and Hexalith.Folders.Mcp
+  epic_id: 5
+  classification: product
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.15
+  aliases: []
+  prerequisites:
+  - DEC-A8-HOLD
+  - '5.11'
+  - EXT-MCPCLI-FOLDERS-RETIREMENT-GATE
+  requirement_clauses:
+  - FR48
+  - FR49
+  - FR51
+  evidence_posture: open-enabler-or-release-evidence-required
+  story_lifecycle_status: backlog
+  execution_rank: 46
   decision_status: not-applicable
   execution_authorization_status: held
   delivery_evidence_status: open

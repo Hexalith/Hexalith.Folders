@@ -120,7 +120,7 @@ editHistory:
 
 # Product Requirements Document — Hexalith.Folders
 
-**Approved McpCli course correction (2026-09-27):** `Hexalith.McpCli` is the target Hexalith-owned CLI/MCP surface for Folders operations that pass contract enrollment and authorization. Any proprietary module CLI, MCP host, plug-in, or planned adapter described below is an obsolete migration source or historical design, not a new target. The module retains its domain, UI, and security semantics; replacement or approved withdrawal and parity evidence precede retirement. External development CLIs are unaffected.
+**Approved McpCli course correction (2026-09-27, extended 2026-11-10):** `Hexalith.McpCli` is the only target Hexalith-owned CLI/MCP surface for Folders. Its CLI and MCP heads dispatch decorated `Hexalith.Folders.Contracts` operations through the EventStore Gateway; they do not wrap the Folders SDK or REST API. Wherever this PRD requires CLI or MCP, the release-qualifying surface is the corresponding McpCli head for operations enrolled under an owner-approved Folders inventory. `Hexalith.Folders.Cli` and `Hexalith.Folders.Mcp` are frozen compatibility binaries: they receive only safety and continuity fixes (including the Story 1.17 v2 migration), never new operations or release evidence, and retire after an approved replacement or withdrawal plus parity evidence. Hash-pinned NFR bullets that name CLI and MCP are read the same way and are not edited. The module retains its domain, UI, and security semantics. External development CLIs are unaffected.
 
 
 **Author:** Jerome
@@ -144,7 +144,7 @@ Users choose Hexalith.Folders over improvised temp folders, direct Git CLI autom
 
 ## Project Classification
 
-**Project Type:** API/backend service module with a generated .NET (C#) SDK and supporting CLI and MCP surfaces.
+**Project Type:** API/backend service module with a generated .NET (C#) SDK, decorated McpCli Contracts, and CLI/MCP access through `Hexalith.McpCli`.
 
 **Domain:** Developer infrastructure and AI workspace storage.
 
@@ -235,7 +235,7 @@ This is an intentional scope change from the Product Brief. The Product Brief in
 
 The MVP includes a tenant-scoped, read-only operations console focused on trust signals: provider readiness, workspace readiness, lock state, dirty state, commit state, failed operation state, and provider/sync status. Normal views use projections. When projections are degraded, an explicitly authorized incident view may expose bounded metadata-only event evidence with a persistent degraded-state warning, the last projection checkpoint, correlation/time-window context, and C9 redaction; it remains read-only and never exposes content, credentials, diffs, or repair controls. The alternative considered was leaving the console unavailable whenever projections degrade. It was rejected because projection degradation is exactly when an operator needs evidence; the accepted cost is a second bounded read path, the incident-admin permission model, and the OQ9 evidence obligation, and the fourth innovation risk (console scope creep) is contained by keeping that path read-only and evidence-only.
 
-The MVP includes the Contract Spine, REST transport, generated SDK, CLI, and MCP for the core lifecycle, plus the diagnostic console. CLI and MCP must preserve the generated SDK and Contract Spine semantics rather than creating independent models.
+The MVP includes the Contract Spine, REST transport, generated SDK, and the `Hexalith.McpCli` CLI and MCP heads over enrolled Folders Contracts for the core lifecycle, plus the diagnostic console. MVP release therefore depends on McpCli enrolling the Folders Contracts. Decorated Contracts must preserve Contract Spine semantics rather than creating independent models; the frozen Folders CLI and MCP binaries do not satisfy MVP CLI or MCP cells.
 
 The MVP must enforce tenant-scoped authorization and must prevent cross-tenant file, credential, workspace, and repository access.
 
@@ -430,7 +430,7 @@ The OpenAPI 3.1 Contract Spine is the canonical machine-readable operation and s
 
 REST, generated SDK, CLI, and MCP are required current-release contract surfaces for the core lifecycle. They must preserve the same workspace states, authorization checks, idempotency rules, lock behavior, structured error categories, correlation metadata, and audit outcomes. The console is query-only and is not part of the mutation-parity surface.
 
-C13 is the single surface-coverage denominator. Every Contract Spine operation has one C13 row declaring required support for REST, SDK, CLI, and MCP. Core lifecycle and tenant-administration contract operations are required on all four surfaces. A diagnostic/read-model operation may be marked not applicable for CLI or MCP only through an explicit product-approved C13 declaration with rationale; no operation may be silently absent, and every supported cell must pass behavioral parity.
+C13 is the single surface-coverage denominator. Every Contract Spine operation has one C13 row declaring required support for REST, SDK, CLI, and MCP. Core lifecycle and tenant-administration contract operations are required on all four surfaces. A diagnostic/read-model operation may be marked not applicable for CLI or MCP only through an explicit product-approved C13 declaration with rationale; no operation may be silently absent, and every supported cell must pass behavioral parity. CLI and MCP cells are satisfied only by the McpCli heads, for an operation whose owner-approved Folders inventory row is `replace / include` with a named decorated Contracts type; an operation McpCli cannot carry needs an inventory `withdraw` or `defer` decision plus a product-approved C13 declaration, never a legacy-binary fallback.
 
 Release acceptance freezes an immutable, versioned snapshot containing the Contract Spine version and digest plus the matching C13 inventory version and digest. A breaking operation or schema change, or any support-cell or rationale change, after approval invalidates prior parity evidence for the affected cells and requires a new reviewed snapshot. An additive change also requires a new reviewed snapshot but reopens only the open release item whose evidence it changes, not every item [ASSUMPTION A11].
 
@@ -662,7 +662,7 @@ Event payload evolution uses schema versions and backward-compatible consumers.
 
 ### SDK Requirements
 
-The generated typed SDK is required for the current release. Its first and only current-release language is .NET (C#), the Hexalith implementation ecosystem; additional SDK languages are Phase 3 candidates, not MVP scope [ASSUMPTION A15]. CLI and MCP consume this SDK and may not implement independent lifecycle behavior.
+The generated typed SDK is required for the current release. Its first and only current-release language is .NET (C#), the Hexalith implementation ecosystem; additional SDK languages are Phase 3 candidates, not MVP scope [ASSUMPTION A15]. The McpCli heads do not consume this SDK; they dispatch decorated Folders Contracts through the EventStore Gateway, and those Contracts may not define lifecycle behavior independent of the Contract Spine. The frozen Folders CLI and MCP binaries keep consuming this SDK until they retire.
 
 The initial generated SDK may be minimal only in packaging and convenience helpers. Its operation client and typed request/response/error models must be generated from the Contract Spine and cover every C13-required SDK cell. It must support authentication configuration, idempotency keys, correlation IDs, async operations where applicable, retry/idempotency helpers, and task-based examples for the core repository workflow.
 
@@ -710,7 +710,7 @@ The MVP must include these quality gates:
 
 ### Implementation Considerations
 
-Implementation must avoid separate business-logic paths for API, CLI, MCP, and SDK. Shared application services or generated client contracts define canonical behavior; each surface adapts transport and presentation only.
+Implementation must avoid separate business-logic paths for API, CLI, MCP, and SDK. Shared application services, generated client contracts, and the Folders domain service behind the EventStore Gateway define canonical behavior; authorization, idempotency, and metadata-only rules hold identically for REST requests and Gateway-dispatched McpCli operations. Each surface adapts transport and presentation only.
 
 Provider readiness must stay narrowly scoped to health, capability discovery, credential reference validation, repository policy validation, and workspace safety. It must not become a broad provider administration platform.
 

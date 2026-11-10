@@ -11,6 +11,8 @@ context:
   - '{project-root}/_bmad-output/implementation-artifacts/epic-5-context.md'
 ---
 
+> **Superseded 2026-11-10** by `sprint-change-proposal-2026-11-10.md`: Story 5.8 now enrolls workspace preparation and the lock lifecycle through `Hexalith.McpCli`. This draft targets the frozen Folders CLI and must not be executed; a fresh spec is required for the re-scoped story.
+
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
 
 ## Intent
