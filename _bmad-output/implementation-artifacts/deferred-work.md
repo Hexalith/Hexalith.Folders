@@ -3243,3 +3243,9 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md`
   summary: Runtime acceptance of all 41 Folders operations remains a McpCli enrollment check, including invalid-example rejection and exact approved lint findings.
   evidence: Fresh verification-gap review found no Core caller in Folders src/tests or Folders Contracts enrollment tests in McpCli. A declaration Example of {} leaves local reflected-shape tests unchanged but CatalogBuilder rejects the missing required fields and drops that operation. This supplements the existing runtime-catalog deferral; its owner and scope remain McpCli enrollment (Story 6.1), not local admission or a Core package dependency.
+
+## Deferred from: code review of spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md (2026-11-11)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md`
+  summary: The new Story 5.13/5.14 handoff obligations recorded by 5.12 are not in those stories' acceptance criteria.
+  evidence: `_bmad-output/planning-artifacts/epics.md:2258` (Story 5.13) does not name the translation of all 13 Command payloads (`docs/contract/mcpcli-folders-operation-declarations.md` command-payload-translation table), wire-type `effect` derivation (E2), discriminator supply or `auditMetadataKeys` uniqueness. `epics.md:2285` (Story 5.14) does not name the Q13/Q35 reserved-actor derivation or the ReadFileRange `endOffset` window. Neither story cites the decision record. Deferred because the fix edits other planning specs; carry these items into the 5.13/5.14 specs when they are created (both are backlog).
