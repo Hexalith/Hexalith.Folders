@@ -19,9 +19,9 @@
     "metadata-only-report",
     "publish"
   ],
-  "package_version": "0.0.0-local.20261111",
+  "package_version": "0.0.0-local.20261111.2",
   "release_tag": "",
-  "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1",
+  "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971",
   "package_manifest_path": "tools/release-packages.json",
   "package_policy_path": "deploy/nuget/release-packages.yaml",
   "package_output_path": "nupkgs",
@@ -36,42 +36,42 @@
     {
       "package_id": "Hexalith.Folders.Contracts",
       "project_path": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20261111.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20261111.snupkg",
-      "version": "0.0.0-local.20261111",
-      "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1"
+      "package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20261111.2.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20261111.2.snupkg",
+      "version": "0.0.0-local.20261111.2",
+      "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971"
     },
     {
       "package_id": "Hexalith.Folders",
       "project_path": "src/Hexalith.Folders/Hexalith.Folders.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20261111.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20261111.snupkg",
-      "version": "0.0.0-local.20261111",
-      "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1"
+      "package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20261111.2.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20261111.2.snupkg",
+      "version": "0.0.0-local.20261111.2",
+      "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971"
     },
     {
       "package_id": "Hexalith.Folders.Client",
       "project_path": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20261111.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20261111.snupkg",
-      "version": "0.0.0-local.20261111",
-      "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1"
+      "package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20261111.2.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20261111.2.snupkg",
+      "version": "0.0.0-local.20261111.2",
+      "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971"
     },
     {
       "package_id": "Hexalith.Folders.Aspire",
       "project_path": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20261111.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20261111.snupkg",
-      "version": "0.0.0-local.20261111",
-      "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1"
+      "package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20261111.2.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20261111.2.snupkg",
+      "version": "0.0.0-local.20261111.2",
+      "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971"
     },
     {
       "package_id": "Hexalith.Folders.Testing",
       "project_path": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20261111.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20261111.snupkg",
-      "version": "0.0.0-local.20261111",
-      "source_revision_id": "2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1"
+      "package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20261111.2.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20261111.2.snupkg",
+      "version": "0.0.0-local.20261111.2",
+      "source_revision_id": "c479580b3e5eb05e02a9ae03d46d3577a4356971"
     }
   ],
   "results": [
@@ -136,5 +136,5 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 159964
+  "elapsed_ms": 17526
 }
