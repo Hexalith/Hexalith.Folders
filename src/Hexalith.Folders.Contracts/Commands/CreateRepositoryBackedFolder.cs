@@ -6,15 +6,15 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Request repository creation for an existing folder where provider capabilities permit it. Requires canonical extensions.taskId; the caller profile must allowlist taskId.</summary>
+/// <summary>Request repository creation for an existing folder where provider capabilities permit it. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.</summary>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="ProviderBindingRef">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="RepositoryProfileRef">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="FolderMetadata">The folderMetadata value.</param>
 /// <param name="BranchRefPolicy">The branchRefPolicy value.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Request repository creation for an existing folder where provider capabilities permit it. Requires canonical extensions.taskId; the caller profile must allowlist taskId.")]
-[HexalithCommand("Request repository creation for an existing folder where provider capabilities permit it. Requires canonical extensions.taskId; the caller profile must allowlist taskId.", Domain = "folders",
+[Description("Request repository creation for an existing folder where provider capabilities permit it. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.")]
+[HexalithCommand("Request repository creation for an existing folder where provider capabilities permit it. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.CreateRepositoryBackedFolder",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record CreateRepositoryBackedFolder(

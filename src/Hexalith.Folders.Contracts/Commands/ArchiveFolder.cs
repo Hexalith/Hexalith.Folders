@@ -6,12 +6,12 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Archive a folder without exposing cross-tenant existence. Requires canonical extensions.taskId; the caller profile must allowlist taskId.</summary>
+/// <summary>Archive a folder without exposing cross-tenant existence. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.</summary>
 /// <param name="ArchiveReasonCode">The archiveReasonCode value.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Archive a folder without exposing cross-tenant existence. Requires canonical extensions.taskId; the caller profile must allowlist taskId.")]
-[HexalithCommand("Archive a folder without exposing cross-tenant existence. Requires canonical extensions.taskId; the caller profile must allowlist taskId.", Domain = "folders",
+[Description("Archive a folder without exposing cross-tenant existence. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.")]
+[HexalithCommand("Archive a folder without exposing cross-tenant existence. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.ArchiveFolder",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record ArchiveFolder(

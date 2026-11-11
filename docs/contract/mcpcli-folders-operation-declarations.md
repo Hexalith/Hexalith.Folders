@@ -51,10 +51,13 @@ Exemptions used by the drift gate:
   `payload.FolderId == envelope.AggregateId`.
 - **E5:** C05 routes on `ProviderBindingRef`. Story 5.13 must derive the reserved
   `ProviderBindingActorId` and reject an actor equal to the tenant before lookup.
-- **E6:** The optional `X-Hexalith-Task-Id` on C01, C02, C04, C05, C06,
-  C07, C08 and C13 is carried by McpCli `extensions["taskId"]`, not a payload
-  member. The current domain requires a canonical `extensions["taskId"]` on every
-  Gateway-dispatched Command; this is the platform-native task carrier. McpCli
+- **E6:** The spine marks `X-Hexalith-Task-Id` optional on C01, C02, C04, C05,
+  C06, C07, C08 and C13; McpCli carries it in `extensions["taskId"]`, not a
+  payload member. The current domain nevertheless requires a caller-chosen
+  `extensions["taskId"]` on every Gateway-dispatched Command, including C06
+  `CreateFolder`, so task association is required for all 13 Commands; this is
+  the platform-native task carrier. The value must match the domain's lowercase
+  grammar `\A[a-z0-9._-]+\z` with at most 128 characters (G2/G3 below). McpCli
   profiles have an empty extension allowlist by default. For an empty allowlist,
   run `config set <profile> allowedExtensions taskId` before any of the 13 Commands
   can carry task context. This setter replaces the entire allowlist. For an
@@ -125,9 +128,10 @@ filter remain typed payload fields (V02). Command task scope is required on C03,
 C09, C10, C11 and C12 as declared by `FoldersCommandCatalog`; every Command
 requires a caller-supplied idempotency key independently of message identity.
 The drift gate derives both command headers' schema and required flags from the
-spine, checks duplicate body/header task inputs agree, and records optional task
-association through envelope extensions (E6). Optional association is preserved
-when the caller profile allowlists `taskId`.
+spine, checks duplicate body/header task inputs agree, and records the spine's
+optional task header as an envelope extension (E6). The current domain requires
+that extension on every Command, so every caller profile must allowlist `taskId`;
+Story 5.13 owns the spine/domain divergence (G2/G3).
 
 ## V02 typed paging approval
 
@@ -163,7 +167,15 @@ reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
 - **G2/G3 — Story 5.13:** verified authority, layered authorization, revocation,
   deny-before-access, admission, task ownership and envelope comparison.
   Legacy lowercase envelope requirements must accept McpCli's uppercase ULIDs
-  without lowercasing opaque payload IDs. Request-schema version is admission
+  without lowercasing opaque payload IDs. The spine marks `X-Hexalith-Task-Id`
+  optional on C01, C02, C04–C08 and C13, while the current domain and the v1
+  REST path require a caller-chosen task ID on every Command (E6). The domain's
+  task extension grammar is lowercase `\A[a-z0-9._-]+\z` with at most 128
+  characters, whereas the payload `TaskId` opaque pattern admits uppercase: a
+  mixed-case task ID satisfies the payload schema but is rejected at `/process`,
+  and on C03, C09, C10, C11 and C12 the equality with the extension forces a
+  lowercase payload value. Story 5.13 reconciles both divergences without
+  silently converting identifiers. Request-schema version is admission
   state. Conditional file transport/add/change/remove combinations, duplicate
   detection and cross-field byte limits remain admission rules. The spine's
   `CommitWorkspaceRequest.auditMetadataKeys` has `uniqueItems: true`; rejecting
@@ -184,11 +196,13 @@ reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
   when adding `taskId` to an existing allowlist. The allowlist is empty by default
   and enforced by McpCli before dispatch; it is
   not a Story 5.13 server setting. Task association through extensions is absent
-  from the operation payload schema. Story 5.13 validates canonical extension
-  values and reconciles them with payload `TaskId` on the five task-scoped Commands.
+  from the operation payload schema. Story 5.13 validates extension values
+  against the domain's lowercase task grammar (G2/G3) and reconciles them with
+  payload `TaskId` on the five task-scoped Commands.
 - **task-extension-trailing-double-hyphen — platform-wide Gateway limit:**
-  v2 task identifiers such as `opaque_TaskAbC012345678--` satisfy the opaque
-  grammar but are rejected as extension values by the injection filter `--\s*$`
+  v2 task identifiers such as `opaque_task_abc012345678--` satisfy the opaque
+  grammar and the domain's lowercase task grammar but are rejected as extension
+  values by the injection filter `--\s*$`
   in both McpCli and the EventStore Gateway. This affects every caller, REST
   included, and is a platform limitation rather than an accepted McpCli behavior
   loss. Stories 5.13 and the EventStore/Gateway maintainers own grammar
@@ -218,7 +232,7 @@ reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
   retaining the typed spine stream descriptor does not approve a transport or
   demonstrate a configured live content store.
 
-## Command payload translation handoff
+### Command payload translation handoff
 
 The `command-payload-translation` gap covers all thirteen Commands; the payload
 names are from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only evidence).
@@ -239,7 +253,7 @@ names are from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only
 | C12 ReleaseWorkspaceLock | `ReleaseWorkspaceLockPayload`: supply the discriminator and reconcile task/lock ownership proof and release intent. |
 | C13 RevokeFolderAccess | `FolderAccessMutationPayload`: derive revoke from the wire type (E2) and translate to authorized `operations[{principalKind,principalId,action}]`. |
 
-## Identifier aggregate grammar gap
+### Identifier aggregate grammar gap
 
 **identifier-aggregate-grammar:** String payload values round-trip unchanged,
 including legacy values. McpCli aggregate routing accepts 1–256 ASCII

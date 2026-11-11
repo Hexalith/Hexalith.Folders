@@ -6,14 +6,14 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Apply ordered file additions, changes and removals atomically. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.</summary>
+/// <summary>Apply ordered file additions, changes and removals atomically. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId. Payload taskId must match extensions.taskId.</summary>
 /// <param name="Changes">The changes value.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="WorkspaceId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="TaskId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Apply ordered file additions, changes and removals atomically. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.")]
-[HexalithCommand("Apply ordered file additions, changes and removals atomically. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.", Domain = "folders",
+[Description("Apply ordered file additions, changes and removals atomically. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId. Payload taskId must match extensions.taskId.")]
+[HexalithCommand("Apply ordered file additions, changes and removals atomically. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId. Payload taskId must match extensions.taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.MutateFiles",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record MutateFiles(

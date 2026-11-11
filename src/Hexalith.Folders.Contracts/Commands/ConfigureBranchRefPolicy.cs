@@ -5,7 +5,7 @@ using Hexalith.McpCli.Abstractions;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Configure tenant-scoped branch and ref policy metadata. Requires canonical extensions.taskId; the caller profile must allowlist taskId.</summary>
+/// <summary>Configure tenant-scoped branch and ref policy metadata. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.</summary>
 /// <param name="RepositoryBindingId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="PolicyRef">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="DefaultRef">The defaultRef value.</param>
@@ -13,8 +13,8 @@ namespace Hexalith.Folders.Contracts.Commands;
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="ProtectedRefPatterns">The protectedRefPatterns value.</param>
-[Description("Configure tenant-scoped branch and ref policy metadata. Requires canonical extensions.taskId; the caller profile must allowlist taskId.")]
-[HexalithCommand("Configure tenant-scoped branch and ref policy metadata. Requires canonical extensions.taskId; the caller profile must allowlist taskId.", Domain = "folders",
+[Description("Configure tenant-scoped branch and ref policy metadata. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.")]
+[HexalithCommand("Configure tenant-scoped branch and ref policy metadata. Requires extensions.taskId of at most 128 lowercase letters, digits, '.', '_' or '-', not ending in '--'; the caller profile must allowlist taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.ConfigureBranchRefPolicy",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record ConfigureBranchRefPolicy(

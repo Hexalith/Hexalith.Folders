@@ -17,7 +17,7 @@ public sealed class ContractSpineDriftGateTests
     // This is the sole exemption table. Keys name the affected operation/field or mapping.
     private static readonly IReadOnlyDictionary<string, string> Exemptions = new Dictionary<string, string>(StringComparer.Ordinal)
     {
-        ["*/requestSchemaVersion"] = "The v2 discriminator is supplied by admission in Story 5.13, including nested requests.",
+        ["*/requestSchemaVersion"] = "The request-schema discriminator is supplied by Story 5.13 admission at the value the domain accepts (today v1), including nested requests.",
         ["C06/folderId"] = "CreateFolder requires caller-supplied routing identity equal to envelope.AggregateId.",
         ["C08/effect"] = "Grant is derived from operation identity, not a payload member (V08); Story 5.13 supplies it during translation.",
         ["C13/effect"] = "Revoke is derived from operation identity, not a payload member (V08); Story 5.13 supplies it during translation.",
@@ -83,9 +83,12 @@ public sealed class ContractSpineDriftGateTests
             OperationDeclaration row = McpCliContractTestSupport.Operations.Single(item => item.Id == id);
             var payload = new JsonObject
             {
-                ["folderId"] = "opaque_FolderAbC0123456789", ["aclEntryId"] = "opaque_AclEntry0123456789",
-                ["subjectRef"] = "opaque_Subject0123456789", ["permissionLevel"] = "read",
-                ["idempotencyKey"] = "01ARZ3NDEKTSV4RRFFQ69G5FAV", ["effect"] = effect == "grant" ? "revoke" : "grant",
+                ["folderId"] = "opaque_FolderAbC0123456789",
+                ["aclEntryId"] = "opaque_AclEntry0123456789",
+                ["subjectRef"] = "opaque_Subject0123456789",
+                ["permissionLevel"] = "read",
+                ["idempotencyKey"] = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                ["effect"] = effect == "grant" ? "revoke" : "grant",
             };
             JsonSerializerOptions options = McpCliContractTestSupport.CreateCanonicalPayloadOptions();
             options.GetTypeInfo(row.Type).Properties.ShouldNotContain(property => property.Name == "effect");
