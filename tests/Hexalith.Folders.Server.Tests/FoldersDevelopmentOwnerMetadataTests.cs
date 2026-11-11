@@ -188,7 +188,8 @@ public sealed class FoldersDevelopmentOwnerMetadataTests
         using var humanTransport = new MockHttpMessageHandler(_ => throw new InvalidOperationException("Human transport must not be reached."));
         builder.Services.AddEventStoreGatewayClient(options => options.BaseAddress = new Uri("http://eventstore/"))
             .AddHttpMessageHandler<FoldersGatewayHumanBearerHandler>().ConfigurePrimaryHttpMessageHandler(() => humanTransport);
-        using var sourceTransport = new MockHttpMessageHandler(message => {
+        using var sourceTransport = new MockHttpMessageHandler(message =>
+        {
             message.RequestUri!.AbsoluteUri.ShouldBe("http://localhost:3500/api/v1/streams/read/workload");
             message.Headers.Authorization.ShouldBeNull();
             message.Headers.GetValues(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName).Single().ShouldBe("owner-assertion");
@@ -196,8 +197,11 @@ public sealed class FoldersDevelopmentOwnerMetadataTests
             sent.Tenant.ShouldBe(identity.TenantId); sent.Domain.ShouldBe(identity.Domain); sent.AggregateId.ShouldBe(identity.AggregateId);
             BoundStreamReadProof.Verify(message.Headers.GetValues(BoundStreamReadProof.HeaderName).Single(), sent,
                 "folders", Convert.ToBase64String(key.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
-            return new HttpResponseMessage(HttpStatusCode.OK) { Content = JsonContent.Create(new StreamReadPage(
-                identity.TenantId, identity.Domain, identity.AggregateId, [], new(sent.FromSequence, sent.ToSequence, null, 0, 0, false, null) { NativeProof = proof })) };
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(new StreamReadPage(
+                identity.TenantId, identity.Domain, identity.AggregateId, [], new(sent.FromSequence, sent.ToSequence, null, 0, 0, false, null) { NativeProof = proof }))
+            };
         });
         builder.Services.AddHttpClient("Hexalith.EventStore.NativeSourceMetadata").ConfigurePrimaryHttpMessageHandler(() => sourceTransport);
         builder.AddFoldersDevelopmentOwnerMetadata();

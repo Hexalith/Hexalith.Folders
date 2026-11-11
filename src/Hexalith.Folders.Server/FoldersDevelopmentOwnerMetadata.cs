@@ -31,7 +31,7 @@ internal static class FoldersDevelopmentOwnerMetadata
                 throw new InvalidOperationException("Private owner metadata requires the actual public SDK reader.");
             if (!builder.Configuration.GetValue<bool>("Folders:EventStore:OwnerMetadataReads:DiagnosticsEnabled")
                 || provider.GetRequiredService<IOptions<RouteCatalogHostOptions>>().Value is not
-                    { DevelopmentFixture: true, Profile: "Development", RequireTechnicalHttpBinding: true }
+                { DevelopmentFixture: true, Profile: "Development", RequireTechnicalHttpBinding: true }
                 || !provider.GetRequiredService<IHostEnvironment>().IsDevelopment()) return reader;
             try
             {

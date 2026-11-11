@@ -40,8 +40,11 @@ internal sealed class ExistingHostedServiceObservation(
             if (existing.Length != current.Length) return Unavailable("inventory_mismatch");
             object[] metadata = existing.Select((service, ordinal) => (object)new
             {
-                ordinal, type = service.GetType().FullName, assembly = service.GetType().Assembly.GetName().Name,
-                backgroundService = service is BackgroundService, hostedLifecycleService = service is IHostedLifecycleService,
+                ordinal,
+                type = service.GetType().FullName,
+                assembly = service.GetType().Assembly.GetName().Name,
+                backgroundService = service is BackgroundService,
+                hostedLifecycleService = service is IHostedLifecycleService,
             }).ToArray();
             Volatile.Write(ref _instances, existing);
             return new { status = "available", reason = "existing_singletons", services = metadata };
@@ -65,9 +68,12 @@ internal sealed class ExistingHostedServiceObservation(
             Task? task = background.ExecuteTask;
             return new
             {
-                ordinal, state = task is null ? "not_started" : "observed",
-                taskStatus = task?.Status, completed = task?.IsCompleted,
-                canceled = task?.IsCanceled, faulted = task?.IsFaulted,
+                ordinal,
+                state = task is null ? "not_started" : "observed",
+                taskStatus = task?.Status,
+                completed = task?.IsCompleted,
+                canceled = task?.IsCanceled,
+                faulted = task?.IsFaulted,
             };
         }
         catch { return new { ordinal, state = "task_unavailable" }; }

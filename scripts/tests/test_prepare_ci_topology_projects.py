@@ -168,7 +168,7 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
         root_build_paths = (
             "references/Hexalith.AI.Tools", "references/Hexalith.Builds", "references/Hexalith.Commons",
             "references/Hexalith.EventStore", "references/Hexalith.FrontComposer", "references/Hexalith.Memories",
-            "references/Hexalith.PolymorphicSerializations", "references/Hexalith.Tenants",
+            "references/Hexalith.McpCli", "references/Hexalith.PolymorphicSerializations", "references/Hexalith.Tenants",
         )
         build_step = f"        run: git submodule update --init --checkout {' '.join(root_build_paths)}\n"
         prepare_step = "      - name: Prepare CI topology projects\n        run: bash scripts/prepare-ci-topology-projects.sh\n"

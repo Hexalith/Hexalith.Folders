@@ -157,8 +157,11 @@ public sealed class FolderDurabilityTenantMaintenanceTests
                     "event" => updated with { EventTypeName = typeof(TenantEnabled).FullName! },
                     "timestamp" => updated with { Timestamp = source.Events[^1].Timestamp },
                     "metadata" => updated with { MetadataVersion = 2 },
-                    "description" => updated with { Payload = JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
-                        FolderDurabilityTenantMaintenance.TenantName, "changed", DateTimeOffset.UtcNow), Json) },
+                    "description" => updated with
+                    {
+                        Payload = JsonSerializer.SerializeToUtf8Bytes(new TenantUpdated(Tenant,
+                        FolderDurabilityTenantMaintenance.TenantName, "changed", DateTimeOffset.UtcNow), Json)
+                    },
                     _ => updated,
                 };
                 source = Append(source, updated);
@@ -383,8 +386,12 @@ public sealed class FolderDurabilityTenantMaintenanceTests
     {
         var projection = new FolderTenantAccessProjection
         {
-            TenantId = Tenant, Enabled = true, Version = 1, Watermark = source.SequenceNumber,
-            LastEventTimestamp = source.Timestamp, ProjectionWatermark = $"{Tenant}:{source.SequenceNumber}",
+            TenantId = Tenant,
+            Enabled = true,
+            Version = 1,
+            Watermark = source.SequenceNumber,
+            LastEventTimestamp = source.Timestamp,
+            ProjectionWatermark = $"{Tenant}:{source.SequenceNumber}",
         };
         projection.Principals[Principal] = new(Principal, "TenantOwner");
         projection.ConfigurationKeys.Add("folders.existing");

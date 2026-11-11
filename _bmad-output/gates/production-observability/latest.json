@@ -54,8 +54,16 @@
     "logs"
   ],
   "health_probes": [
-    "/health/live",
-    "/health/ready"
+    {
+      "owning_component": "folders-server",
+      "liveness": "/alive",
+      "readiness": "/ready"
+    },
+    {
+      "owning_component": "folders-workers",
+      "liveness": "/alive",
+      "readiness": "/ready"
+    }
   ],
   "live_exporter_alert_smoke": {
     "status": "reference_pending_story_7_12",

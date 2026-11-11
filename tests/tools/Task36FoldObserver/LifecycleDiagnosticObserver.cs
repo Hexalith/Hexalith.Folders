@@ -77,8 +77,13 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
                     try
                     {
                         object? capture = _existingServices?.Capture(_lifetime.ApplicationStarted.IsCancellationRequested);
-                        Enqueue(JsonSerializer.Serialize(new { phase = "existing_hosted_services", processId = Environment.ProcessId,
-                            utc = DateTimeOffset.UtcNow, capture }));
+                        Enqueue(JsonSerializer.Serialize(new
+                        {
+                            phase = "existing_hosted_services",
+                            processId = Environment.ProcessId,
+                            utc = DateTimeOffset.UtcNow,
+                            capture
+                        }));
                     }
                     catch { Record("capture_unavailable"); }
                 });
@@ -162,10 +167,13 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
             ?? descriptor.ImplementationInstance?.GetType(), descriptor.ImplementationFactory is not null)).ToArray();
         Enqueue(JsonSerializer.Serialize(new
         {
-            phase = "host_configuration", processId = Environment.ProcessId, utc = DateTimeOffset.UtcNow,
+            phase = "host_configuration",
+            processId = Environment.ProcessId,
+            utc = DateTimeOffset.UtcNow,
             stopConcurrently = _options?.ServicesStopConcurrently,
             shutdownTimeoutMilliseconds = _options?.ShutdownTimeout.TotalMilliseconds,
-            serviceRegistrationOrder = order, serviceRegistrationCount = registrations.Length,
+            serviceRegistrationOrder = order,
+            serviceRegistrationCount = registrations.Length,
             serviceOrderTruncated = registrations.Length > 128,
             serverRegisteredLast = registrations.Length > 0 && Label(registrations[^1].ImplementationType, false) == "web_server",
             factoryRegistrationCount = registrations.Count(descriptor => descriptor.ImplementationFactory is not null),
@@ -193,12 +201,15 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
         {
             Enqueue(JsonSerializer.Serialize(new
             {
-                phase, processId = Environment.ProcessId, utc = DateTimeOffset.UtcNow,
+                phase,
+                processId = Environment.ProcessId,
+                utc = DateTimeOffset.UtcNow,
                 elapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
                 inFlightRequests = Interlocked.Read(ref _inFlight),
                 hostStopSeen = Volatile.Read(ref _hostStopped) != 0,
                 applicationStoppedSeen = Volatile.Read(ref _applicationStopped) != 0,
-                droppedRecords = Interlocked.Read(ref _dropped), sinkFailed = Volatile.Read(ref _sinkFailed) != 0,
+                droppedRecords = Interlocked.Read(ref _dropped),
+                sinkFailed = Volatile.Read(ref _sinkFailed) != 0,
                 hostedServiceStates = _existingServices?.States(),
                 requestCorrelation = _requests.Snapshot(),
                 requestActivityCorrelation = _requestActivities.Snapshot(),
@@ -210,8 +221,11 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
 
     private void RecordRequest(string phase, object correlation) => Enqueue(JsonSerializer.Serialize(new
     {
-        phase, processId = Environment.ProcessId, utc = DateTimeOffset.UtcNow,
-        inFlightRequests = Interlocked.Read(ref _inFlight), correlation,
+        phase,
+        processId = Environment.ProcessId,
+        utc = DateTimeOffset.UtcNow,
+        inFlightRequests = Interlocked.Read(ref _inFlight),
+        correlation,
     }));
 
     private void ObserveRequestActivity(bool started)
@@ -231,8 +245,13 @@ internal sealed class LifecycleDiagnosticObserver : EventListener, IHostedServic
     {
         try
         {
-            FileStreamOptions options = new() { Mode = FileMode.Append, Access = FileAccess.Write,
-                Share = FileShare.ReadWrite, Options = FileOptions.Asynchronous };
+            FileStreamOptions options = new()
+            {
+                Mode = FileMode.Append,
+                Access = FileAccess.Write,
+                Share = FileShare.ReadWrite,
+                Options = FileOptions.Asynchronous
+            };
             if (!OperatingSystem.IsWindows()) options.UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.UserWrite;
             FileStream stream = new(_path, options);
             await using var streamLease = stream.ConfigureAwait(false);

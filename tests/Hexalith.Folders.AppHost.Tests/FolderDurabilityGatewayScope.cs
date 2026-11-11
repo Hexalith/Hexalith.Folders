@@ -48,7 +48,8 @@ internal static class FolderDurabilityGatewayScope
         string assertion, string privateKey, DateTimeOffset now)
     {
         var source = new StreamReadRequest(TenantPlatformScopes.GlobalAdministrators, TenantIdentity.GlobalAdministratorsDomain,
-            TenantIdentity.GlobalAdministratorsAggregateId) { RequireNativeProof = true };
+            TenantIdentity.GlobalAdministratorsAggregateId)
+        { RequireNativeProof = true };
         HttpRequestMessage request = sidecar.CreateInvokeMethodRequest(HttpMethod.Post, gatewayAppId, "api/v1/streams/read/workload");
         try
         {

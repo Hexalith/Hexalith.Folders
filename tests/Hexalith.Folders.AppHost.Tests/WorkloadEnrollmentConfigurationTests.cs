@@ -33,10 +33,16 @@ public sealed class WorkloadEnrollmentConfigurationTests
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         string json = JsonSerializer.Serialize(new
         {
-            schema = "hexalith.workload-enrollment/v1", authority = "https://unreachable.example.invalid/realms/hexalith",
-            issuer = "https://unreachable.example.invalid/realms/hexalith", tokenEndpoint = "https://unreachable.example.invalid/realms/hexalith/protocol/openid-connect/token",
-            notBefore = now - 3600, expiresAt = fault == "expired" ? now - 1 : now + 3600,
-            signingKeyId = "untrusted-component", signingPublicKeySha256 = new string('A', 64), receivers = Array.Empty<string>(), clients = Array.Empty<object>(),
+            schema = "hexalith.workload-enrollment/v1",
+            authority = "https://unreachable.example.invalid/realms/hexalith",
+            issuer = "https://unreachable.example.invalid/realms/hexalith",
+            tokenEndpoint = "https://unreachable.example.invalid/realms/hexalith/protocol/openid-connect/token",
+            notBefore = now - 3600,
+            expiresAt = fault == "expired" ? now - 1 : now + 3600,
+            signingKeyId = "untrusted-component",
+            signingPublicKeySha256 = new string('A', 64),
+            receivers = Array.Empty<string>(),
+            clients = Array.Empty<object>(),
         });
         if (fault == "duplicate") json = json.Replace("\"schema\":", "\"schema\":\"duplicate\",\"schema\":", StringComparison.Ordinal);
         string owned = Path.Combine(Path.GetTempPath(), "workload-enrollment-test-" + Path.GetRandomFileName());

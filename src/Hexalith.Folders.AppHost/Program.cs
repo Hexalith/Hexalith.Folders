@@ -186,7 +186,14 @@ if (security is not null)
     {
         var sourceSecret = builder.AddParameter(name + "-source-client-secret", new GenerateParameterDefault
         {
-            MinLength = 32, Lower = true, MinLower = 1, Upper = true, MinUpper = 1, Numeric = true, MinNumeric = 1, Special = false,
+            MinLength = 32,
+            Lower = true,
+            MinLower = 1,
+            Upper = true,
+            MinUpper = 1,
+            Numeric = true,
+            MinNumeric = 1,
+            Special = false,
         }, secret: true, persist: persistWorkloadSecret);
         using RSA sourceKey = RSA.Create(2048);
         string privateKey = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());

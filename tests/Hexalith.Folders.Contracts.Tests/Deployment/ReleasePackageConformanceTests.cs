@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class ReleasePackageConformanceTests
 {
-    private const string BuildsExecutionSha = "3639c8d9340fc81d6f8e0a90566a97e56d5d8446";
+    private const string BuildsExecutionSha = "6e77e79e8914a375b0c43b0af3bd142405675ecd";
     private const string ManifestPath = "tools/release-packages.json";
     private const string PolicyPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/release-packages/latest.json";
@@ -35,9 +35,10 @@ public sealed partial class ReleasePackageConformanceTests
         triggers.GetReleaseMapping("pull_request").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
 
         YamlMappingNode shared = workflow.GetReleaseMapping("jobs").GetReleaseMapping("ci");
-        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9");
+        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd");
         YamlMappingNode inputs = shared.GetReleaseMapping("with");
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
+        inputs.GetReleaseScalar("additional-sdk-version").ShouldBe("10.0.x");
         inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
         inputs.GetReleaseScalar("run-consumer-validation").ShouldBe("true");
         inputs.GetReleaseScalar("run-coverage-gate").ShouldBe("true");
@@ -121,6 +122,7 @@ public sealed partial class ReleasePackageConformanceTests
         YamlMappingNode inputs = steps[1].GetReleaseMapping("with");
         inputs.GetReleaseScalar("builds-execution-sha").ShouldBe(BuildsExecutionSha);
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
+        inputs.GetReleaseScalar("additional-sdk-version").ShouldBe("10.0.x");
         inputs.GetReleaseScalar("source-branch").ShouldBe("main");
         inputs.GetReleaseScalar("source-ci-workflow").ShouldBe("ci.yml");
         inputs.GetReleaseScalar("package-manifest").ShouldBe(ManifestPath);

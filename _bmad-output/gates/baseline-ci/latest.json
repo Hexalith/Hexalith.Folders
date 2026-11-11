@@ -102,18 +102,6 @@
       "exit_code": 0
     },
     {
-      "category": "restore",
-      "project_path": "",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "build",
-      "project_path": "",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
       "category": "format",
       "project_path": "",
       "status": "passed",

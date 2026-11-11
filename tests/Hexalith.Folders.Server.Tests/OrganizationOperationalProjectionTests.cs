@@ -164,7 +164,7 @@ public sealed class OrganizationOperationalProjectionTests
         wire.Events.ShouldAllBe(item => item.PayloadVersion == null);
         var events = wire.Events.Select(item => new ProjectionEventDto(item.EventTypeName, item.Payload, item.SerializationFormat, ++sequence,
             DateTimeOffset.UtcNow, retained[sequence - 1].CorrelationId, "message-" + sequence, "actor-a", sequence)
-            { MetadataVersion = 1, StoredPayloadVersion = explicitVersion ? 1 : item.PayloadVersion }).ToArray();
+        { MetadataVersion = 1, StoredPayloadVersion = explicitVersion ? 1 : item.PayloadVersion }).ToArray();
         return new("tenant-a", "folders", "tenant-a", events);
     }
 

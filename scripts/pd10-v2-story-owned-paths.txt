@@ -1242,6 +1242,8 @@ tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs
 tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs
 tests/Hexalith.Folders.Server.Tests/DiagnosticCompositionAssertionIssuer.cs
 tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/EnrolledWorkloadIssuerTransport.cs
+tests/Hexalith.Folders.Server.Tests/EnrolledWorkloadSourceBoundaryTests.cs
 tests/Hexalith.Folders.Server.Tests/EventStoreFolderTenantAccessProjectionStoreTests.cs
 tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs
 tests/Hexalith.Folders.Server.Tests/FileContextEndpointTests.cs

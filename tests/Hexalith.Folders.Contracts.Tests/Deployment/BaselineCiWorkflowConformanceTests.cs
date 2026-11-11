@@ -88,9 +88,10 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
         YamlMappingNode sharedJob = GetMapping(jobs, "ci");
-        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9");
+        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd");
         YamlMappingNode sharedInputs = GetMapping(sharedJob, "with");
         GetScalar(sharedInputs, "solution").ShouldBe("Hexalith.Folders.CI.slnx");
+        GetScalar(sharedInputs, "additional-sdk-version").ShouldBe("10.0.x");
         GetScalar(sharedInputs, "test-platform").ShouldBe("microsoft-testing-platform");
 
         YamlMappingNode job = GetMapping(jobs, "folders-specialized-gates");
@@ -110,6 +111,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
+        GetScalar(setupWith, "dotnet-version").ShouldBe("10.0.x");
         GetScalar(setupWith, "cache").ShouldBe("true");
         string cacheDependencyPath = GetScalar(setupWith, "cache-dependency-path");
         foreach (string path in new[] { "Directory.Packages.props", "global.json", "nuget.config", "**/*.csproj" })
@@ -124,12 +126,36 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         GetScalar(runStep, "timeout-minutes").ShouldBe("45");
     }
 
+    [Theory]
+    [InlineData(".github/workflows/ci.yml")]
+    [InlineData(".github/workflows/contract-spine.yml")]
+    [InlineData(".github/workflows/policy-conformance.yml")]
+    [InlineData(".github/workflows/nightly-drift.yml")]
+    public void WorkflowSdkSetupShouldRetainTheNet10Runtime(string workflowPath)
+    {
+        YamlMappingNode jobs = GetMapping(LoadSingleYamlDocument(workflowPath), "jobs");
+        YamlMappingNode[] setupSteps = jobs.Children.Values.Cast<YamlMappingNode>()
+            .Where(job => job.Children.ContainsKey(new YamlScalarNode("steps")))
+            .SelectMany(job => GetSequence(job, "steps").Children.Cast<YamlMappingNode>())
+            .Where(step => step.Children.TryGetValue(new YamlScalarNode("uses"), out YamlNode? value)
+                && value.ToString().StartsWith("actions/setup-dotnet@", StringComparison.Ordinal))
+            .ToArray();
+
+        setupSteps.ShouldNotBeEmpty();
+        foreach (YamlMappingNode setup in setupSteps)
+        {
+            YamlMappingNode inputs = GetMapping(setup, "with");
+            GetScalar(inputs, "global-json-file").ShouldBe("global.json");
+            GetScalar(inputs, "dotnet-version").ShouldBe("10.0.x");
+        }
+    }
+
     [Fact]
     public void BaselineWorkflowShouldExposeMechanicalGateCategoriesWithoutInfrastructure()
     {
         string workflow = ReadText(WorkflowPath);
 
-        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9", Case.Sensitive);
+        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd", Case.Sensitive);
         workflow.ShouldContain("test-platform: microsoft-testing-platform", Case.Sensitive);
         workflow.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
         workflow.ShouldNotContain("secrets.", Case.Insensitive);

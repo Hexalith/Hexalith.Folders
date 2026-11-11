@@ -46,8 +46,12 @@ public sealed class OperationalStatusRoundFiveTests
         history.Add(RoundFiveOperationalHistory.Native("renew", 4257, "continuation") with
         { EffectiveAt = OperationalStatusTestData.Now.AddSeconds(4258), ExpiresAt = OperationalStatusTestData.Now.AddSeconds(4318), OccurredAt = OperationalStatusTestData.Now.AddSeconds(4258) });
         history.Add(RoundFiveOperationalHistory.Native("complete", 4257, "continuation") with
-        { PublicationCommandId = "publication-4257", EffectiveAt = OperationalStatusTestData.Now.AddSeconds(4259),
-            ExpiresAt = OperationalStatusTestData.Now.AddSeconds(4319), OccurredAt = OperationalStatusTestData.Now.AddSeconds(4259) });
+        {
+            PublicationCommandId = "publication-4257",
+            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(4259),
+            ExpiresAt = OperationalStatusTestData.Now.AddSeconds(4319),
+            OccurredAt = OperationalStatusTestData.Now.AddSeconds(4259)
+        });
         primary.Apply(history.Skip(sources.Length), FolderStreamName.Create("tenant-a", "folder-a"))
             .IsTaskClosed("workspace-a", "continuation").ShouldBeTrue();
         var grown = OperationalStatusTestData.Sources(history);
@@ -165,11 +169,20 @@ public sealed class OperationalStatusRoundFiveTests
         history.Add(RoundFiveOperationalHistory.Native("acquire", 2, task) with
         { WorkspaceId = "workspace-b", EffectiveAt = clock.UtcNow, ExpiresAt = clock.UtcNow.AddMinutes(1), OccurredAt = clock.UtcNow });
         var publication = RoundFiveOperationalHistory.File(2, task, 1);
-        history.Add(publication with { WorkspaceId = "workspace-b", OccurredAt = clock.UtcNow,
-            ContentBinding = publication.ContentBinding! with { WorkspaceId = "workspace-b" } });
+        history.Add(publication with
+        {
+            WorkspaceId = "workspace-b",
+            OccurredAt = clock.UtcNow,
+            ContentBinding = publication.ContentBinding! with { WorkspaceId = "workspace-b" }
+        });
         history.Add(RoundFiveOperationalHistory.Native("complete", 2, task) with
-        { WorkspaceId = "workspace-b", EffectiveAt = clock.UtcNow, ExpiresAt = clock.UtcNow.AddMinutes(1), OccurredAt = clock.UtcNow,
-            PublicationCommandId = "publication-2" });
+        {
+            WorkspaceId = "workspace-b",
+            EffectiveAt = clock.UtcNow,
+            ExpiresAt = clock.UtcNow.AddMinutes(1),
+            OccurredAt = clock.UtcNow,
+            PublicationCommandId = "publication-2"
+        });
         FolderState.Empty.Apply(history, FolderStreamName.Create("tenant-a", "folder-a"))
             .IsTaskClosed("workspace-b", task).ShouldBeTrue();
         var grown = OperationalStatusTestData.Sources(history);

@@ -15,9 +15,10 @@ permissions:
 
 jobs:
   ci:
-    uses: Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9
+    uses: Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd
     with:
       solution: Hexalith.Folders.CI.slnx
+      additional-sdk-version: '10.0.x'
       package-prepare-script: scripts/prepare-ci-topology-projects.sh
       build-timeout-minutes: 45
       test-platform: microsoft-testing-platform
@@ -68,6 +69,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
+          dotnet-version: 10.0.x
           cache: true
           cache-dependency-path: |
             Directory.Packages.props
@@ -143,6 +145,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
+          dotnet-version: 10.0.x
 
       - name: Provision Playwright Chromium browser
         shell: pwsh
@@ -173,6 +176,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
+          dotnet-version: 10.0.x
 
       - name: Provision Playwright Chromium browser
         shell: pwsh

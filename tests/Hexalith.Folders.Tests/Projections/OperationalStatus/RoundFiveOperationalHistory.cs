@@ -50,7 +50,8 @@ internal static class RoundFiveOperationalHistory
             MutationTargetDigest = index.ToString("x64", CultureInfo.InvariantCulture),
             ContentBinding = new("tenant-a", "folder-a", "workspace-a", task, command, operation, file, version,
                 fence, fence, "receipt-" + fence, "hashref_" + new string('a', 64), 1, "text/plain", "1.1.0",
-                "policy-digest", kind, "metadata-" + index) { AcceptedSdkKey = "sdk-key-" + fence },
+                "policy-digest", kind, "metadata-" + index)
+            { AcceptedSdkKey = "sdk-key-" + fence },
         };
     }
 

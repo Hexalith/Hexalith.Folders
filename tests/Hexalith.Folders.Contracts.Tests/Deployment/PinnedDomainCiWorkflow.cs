@@ -4,5 +4,5 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 internal static class PinnedDomainCiWorkflow
 {
     /// <summary>The Builds workflow and its full immutable commit identifier.</summary>
-    internal const string Reference = "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@1cc94bbb932be0d08a31b4e1393fcfc450a0b1c9";
+    internal const string Reference = "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd";
 }

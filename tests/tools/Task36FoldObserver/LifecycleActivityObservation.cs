@@ -69,7 +69,9 @@ internal sealed class LifecycleActivityObservation : IObserver<DiagnosticListene
             {
                 status = failures == 0 && _subscriptions.Count > 0 ? "available" : "unavailable",
                 reason = failures > 0 ? "subscription_incomplete" : _subscriptions.Count == 0 ? "listener_not_observed" : "fixed_late_notifications",
-                subscribedListeners = _subscriptions.Count, subscriptionFailures = failures, listenerCapacity = 8,
+                subscribedListeners = _subscriptions.Count,
+                subscriptionFailures = failures,
+                listenerCapacity = 8,
             };
         }
         finally { Monitor.Exit(_gate); }

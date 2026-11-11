@@ -105,14 +105,20 @@ internal sealed class LifecycleRequestCorrelation
             int gap = Volatile.Read(ref _gap);
             object[] active = gap == 0 ? _active.Select(entry => (object)new
             {
-                requestOrdinal = entry.Key, traceId = entry.Value.Trace, spanId = entry.Value.Span,
-                frameworkActivityId = Id(entry.Value.Framework), relatedActivityId = Id(entry.Value.Related),
+                requestOrdinal = entry.Key,
+                traceId = entry.Value.Trace,
+                spanId = entry.Value.Span,
+                frameworkActivityId = Id(entry.Value.Framework),
+                relatedActivityId = Id(entry.Value.Related),
                 elapsedMilliseconds = Stopwatch.GetElapsedTime(entry.Value.Started).TotalMilliseconds,
             }).ToArray() : [];
             return new
             {
-                status = gap == 0 ? "available" : "unavailable", reason = gap == 0 ? "observed_ids_only" : GapReason(),
-                capacity = MaximumTrackedRequests, unavailableStarts = _unavailableStarts, unmatchedEnds = _unmatchedEnds,
+                status = gap == 0 ? "available" : "unavailable",
+                reason = gap == 0 ? "observed_ids_only" : GapReason(),
+                capacity = MaximumTrackedRequests,
+                unavailableStarts = _unavailableStarts,
+                unmatchedEnds = _unmatchedEnds,
                 activeRequests = active,
             };
         }
@@ -121,7 +127,10 @@ internal sealed class LifecycleRequestCorrelation
 
     private string GapReason() => Volatile.Read(ref _gap) switch
     {
-        2 => "tracking_capacity", 3 => "ambiguous_identity", 4 => "incomplete_observation", _ => "observation_busy",
+        2 => "tracking_capacity",
+        3 => "ambiguous_identity",
+        4 => "incomplete_observation",
+        _ => "observation_busy",
     };
 
     private void ReconcileDrain()
@@ -133,10 +142,15 @@ internal sealed class LifecycleRequestCorrelation
 
     private static object Metadata(string status, string reason, long? ordinal, string? trace, string? span,
         Guid framework, Guid related) => new
-    {
-        status, reason, requestOrdinal = ordinal, traceId = trace, spanId = span,
-        frameworkActivityId = Id(framework), relatedActivityId = Id(related),
-    };
+        {
+            status,
+            reason,
+            requestOrdinal = ordinal,
+            traceId = trace,
+            spanId = span,
+            frameworkActivityId = Id(framework),
+            relatedActivityId = Id(related),
+        };
 
     private static string? Id(Guid value) => value == Guid.Empty ? null : value.ToString("D");
 }

@@ -176,7 +176,7 @@ public sealed class ScaffoldContractTests
         string root = RepositoryRoot();
         Dictionary<string, string[]> references = BuildProjectReferenceMap(root);
 
-        AssertReferences(references, "Hexalith.Folders.Contracts", []);
+        AssertReferences(references, "Hexalith.Folders.Contracts", ["Hexalith.McpCli.Abstractions"]);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.EventStore.Client", "Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
@@ -317,7 +317,7 @@ public sealed class ScaffoldContractTests
             .ToArray();
 
         JsonElement sdk = globalJson.RootElement.GetProperty("sdk");
-        sdk.GetProperty("version").GetString().ShouldBe("10.0.403");
+        sdk.GetProperty("version").GetString().ShouldBe("11.0.100");
         sdk.GetProperty("rollForward").GetString().ShouldBe("latestPatch");
         sdk.GetProperty("allowPrerelease").GetBoolean().ShouldBeFalse();
 
