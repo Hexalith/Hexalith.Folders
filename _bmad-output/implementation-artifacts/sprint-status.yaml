@@ -189,6 +189,7 @@ development_status:
   6-10-enforce-console-performance-and-perceived-wait-ux: done
   6-11-verify-no-mutation-enforcement-and-accessibility: done
   6-12-populate-readiness-lock-dirty-state-and-failed-operation-pro: backlog
+  # blocked by unimplemented 4.22 lifecycle rules and unfinished 12.2 acceptance gates
   6-13-populate-provider-status-sync-status-and-projection-freshnes: backlog
   6-14-prove-populated-deployed-host-diagnostic-and-transition-evid: backlog
   epic-6-retrospective: done

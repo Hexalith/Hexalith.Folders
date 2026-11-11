@@ -40,32 +40,30 @@ context:
 
 ## Open Questions
 
-1. Prerequisite scope: keep 6.12 draft until 4.22/12.1/12.2 are delivered (preserves this story's scope), or authorize separate prerequisite-first work (expands the work and still requires platform delivery before dependent execution)?
+1. Prerequisite scope: keep 6.12 draft until 4.22 and 12.2 are delivered (recommended; preserves scope), or authorize prerequisite-first work as separately scoped builds (expands scope; 6.12 still waits for acceptance)? Story 12.1 is delivered.
 
 ## Code Map
 
-- `src/Hexalith.Folders/Queries/OpsConsole/` — reuse existing views, query handlers, and `IOpsConsoleDiagnosticsReadModel`. Views hide scope keys with `JsonIgnore`; persist dedicated records instead.
-- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` — diagnostic and prerequisite status registrations currently use memory.
-- `src/Hexalith.Folders.Server/FolderDomainProcessor.cs`, `FoldersDomainServiceEndpoints.cs`, `FoldersServerHostComposition.cs` — accepted results emit no events, `/project` returns 501, and Production lacks a durable repository.
-- `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs` — pre-PD11 rules; consume 4.22's replacement.
-- `references/Hexalith.EventStore/src/` — reuse `IAsyncDomainProjectionHandler`, `SharedProjectionEpochCoordinator`, read-model batch storage, and freshness helpers. Global position alone does not prove complete consumption.
+- `src/Hexalith.Folders/Projections/OperationalStatus/` and `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs` — reuse source identity, coordinated generations, atomic batches, duplicate/gap/conflict checks and replay.
+- `src/Hexalith.Folders/Queries/OpsConsole/` — existing views/authorized reads; readiness lookup is tenant-only. Persist ownership separately from JsonIgnored wire fields.
+- `src/Hexalith.Folders/Queries/ProviderReadiness/` — observations remain memory-backed; host health defaults are not retained folder readiness evidence.
+- `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs` — actual persisted-state/restart/rebuild harness. Seeded endpoint tests prove contracts only.
 
 ## Tasks & Acceptance
 
-**Execution:**
-- [ ] `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — verify prerequisite delivery/admission and accepted event evolution; bind readiness source/aggregation, failure-resolution, and checkpoint semantics before implementation. Do not rewrite historical approvals.
-- [ ] `src/Hexalith.Folders/Projections/OpsConsole/ReadinessDiagnosticsProjectionHandler.cs`, `LockDiagnosticsProjectionHandler.cs`, `DirtyStateDiagnosticsProjectionHandler.cs`, `FailedOperationDiagnosticsProjectionHandler.cs` — add four named deterministic handlers using prerequisite semantics and coordinated replay.
-- [ ] `src/Hexalith.Folders/Projections/OpsConsole/OpsConsoleDiagnosticRecord.cs` — persist scoped metadata, source identity/checkpoint, schema, timestamps, and availability atomically through EventStore; put additional types in separate files.
-- [ ] `src/Hexalith.Folders/Queries/OpsConsole/EventStoreOpsConsoleDiagnosticsReadModel.cs` — read committed projection generations, validate ownership/disclosure, and materialize existing views with honest freshness/failure behavior.
-- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs` — register durable reads and four named projections through prerequisite SDK composition; reject production memory substitution.
-- [ ] `tests/Hexalith.Folders.Tests/Projections/OpsConsole/OpsConsoleDiagnosticsProjectionTests.cs` — cover the matrix, deterministic folding, redaction, and lifecycle/freshness boundaries.
-- [ ] `tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs` — preserve canonical contract and denial ordering, including folder-scoped v2 readiness.
-- [ ] `tests/Hexalith.Folders.IntegrationTests/DurableOpsConsoleDiagnosticsTests.cs` — use the platform's real persistence harness; assert stored contents/checkpoints, populated reads after host restart, empty rebuild, conflicts, corruption, outage, timeout, and redaction.
+**Execution (after prerequisite delivery):**
+- [ ] `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — verify 4.22/12.2 acceptance and current event evolution; bind retained readiness source, deterministic aggregation, failure resolution and checkpoint coverage. Preserve historical approvals.
+- [ ] `src/Hexalith.Folders/Projections/OpsConsole/` — add `ReadinessDiagnosticsProjectionHandler.cs`, `LockDiagnosticsProjectionHandler.cs`, `DirtyStateDiagnosticsProjectionHandler.cs` and `FailedOperationDiagnosticsProjectionHandler.cs`; fold approved source semantics with coordinated replay.
+- [ ] `src/Hexalith.Folders/Projections/OpsConsole/OpsConsoleDiagnosticRecord.cs` — persist scoped metadata, schema, source identity, timestamps and checkpoint atomically; separate additional types.
+- [ ] `src/Hexalith.Folders/Queries/OpsConsole/` — add `EventStoreOpsConsoleDiagnosticsReadModel.cs`; validate committed generations, ownership/disclosure and persisted freshness. Carry authorized folder scope through readiness interface/handlers; preserve v1 compatibility and disabled public v2.
+- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs` and `FoldersServerHostComposition.cs` — register four named projections and durable reads through SDK composition; prevent production memory substitution.
+- [ ] `tests/Hexalith.Folders.Tests/Projections/OpsConsole/OpsConsoleDiagnosticsProjectionTests.cs` and `tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs` — cover the matrix, deterministic folds, sanitized failures, independent dimensions and authorization before observation.
+- [ ] `tests/Hexalith.Folders.AppHost.Tests/DurableOpsConsoleDiagnosticsTests.cs` — use the real persistence fixture; assert populated stored records/checkpoints, restart, empty rebuild equivalence, source-byte preservation, corruption/conflict, outage, timeout and redaction.
 
 **Acceptance Criteria:**
-- Given delivered prerequisites, when the deployed Server consumes retained/new events, then all four scoped views populate deterministically and survive restart.
-- Given authorized and denied callers, when populated diagnostics are read, then contract, authority, availability, and metadata-redaction evidence passes the matrix.
-- Given a real empty-checkpoint rebuild, when replay completes, then persisted records/checkpoints match live consumption without relying on seed or fake-only evidence.
+- Given accepted prerequisites and retained/new events, when the Server consumes them, then all four scoped views populate deterministically and survive restart.
+- Given authorized/denied callers, when populated diagnostics are queried, then canonical contracts, folder authority, availability and redaction satisfy the matrix.
+- Given empty checkpoints, when real persistence replay completes, then stored records/checkpoints equal live consumption without seed/fake authority.
 
 ## Implementation Notes
 
@@ -75,13 +73,10 @@ context:
 
 ## Design Notes
 
-Investigation on 2026-10-04 confirms missing 4.22/12.1/12.2 delivery, not merely stale tracker labels. EventStore projection/storage APIs exist, but its declared event-evolution acceptance record is absent. Readiness observations currently use memory; their durable source and aggregation rules require prerequisite delivery. Blanket A8 hold was removed; historical per-story holds do not replace the current owner's decision. This draft cannot satisfy ready-for-development until the technical gaps close. No production code, tracker, dependency, or deployment changes are part of this planning pass.
+Reinvestigated 2026-11-11 at `78e2b9387536229199b8bbc24ecd177daaf46db8`. Story 12.1 now supplies repository/event/replay delivery. Story 12.2 supplies substantial operational persistence, but its November 4 spec/handoff retain failed current-source strict shutdown acceptance and open package/Release, PD10, SM4 and review gates. Story 4.22 is ready-for-dev but unimplemented: guarded failure/recovery, staged-task fields and stale-lease vocabulary are absent. Neither tracker labels nor historical blanket holds replace these technical checks.
+
+Readiness still lacks a retained observation source and complete folder aggregation mapping. FR17 forbids ready for unsupported/unknown required capabilities; NFR81 requires actual dependency health. Bind these before readiness implementation. Do not freeze pre-PD11 dirty/failure semantics. Current scope changes only this draft; no source, tracker, dependencies or deployment changed.
 
 ## Verification
 
-After prerequisite delivery:
-
-- `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug`
-- `dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -class '*DurableOpsConsoleDiagnosticsTests'`
-
-Also build/run owning unit and Server projects individually. Record persisted end-state, restart/replay comparisons, and blockers from the real platform persistence lane. Seed-backed endpoint tests establish contract behavior only.
+After prerequisites, build owning Domain, Server and AppHost test projects individually in Debug with `-p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1 -nr:false`. Run built xUnit v3 assemblies with single-dash `-class`, including `*DurableOpsConsoleDiagnosticsTests`. Record real stored end-state, restart/rebuild comparisons and exact blockers; a skipped or unavailable lane cannot establish completion.
