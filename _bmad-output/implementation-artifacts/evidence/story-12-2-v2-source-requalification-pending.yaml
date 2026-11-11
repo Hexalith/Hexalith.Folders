@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 589ea84b1107a7c821333b7046c4f7411251a0b4fd05314900ea6954aa2e3c5c
+candidate_set_sha256: f8f7881d62b088d13004723a3a5ee16ba686c3d63f5147dd21da47fbfa7d0023
 artifact_count: 1608
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4981,8 +4981,8 @@ artifacts:
     sha256: a355c92a64164d9f341afdf2f8bbba7e66e3e0baa314313a5135198b53ae1153
   - path: "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs"
     kind: file
-    bytes: 8161
-    sha256: cbfc717a29660f68ea9addda4106eba3d6a631560c773c83aead2e656cc3d431
+    bytes: 12165
+    sha256: af8d4aa394763ecedf58cdcd57fdadfbebaffaa09f821fe0493614b31faae899
   - path: "tests/Hexalith.Folders.Server.Tests/DeniedTenantAccessProjectionStore.cs"
     kind: file
     bytes: 967

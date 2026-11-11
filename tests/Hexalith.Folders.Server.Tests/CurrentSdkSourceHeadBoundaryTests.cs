@@ -1,17 +1,23 @@
 using System.Net;
+using System.Security.Cryptography;
 
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Streams;
 using Hexalith.EventStore.Contracts.Identity;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.EventStore.Testing.Http;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using Shouldly;
@@ -23,6 +29,59 @@ namespace Hexalith.Folders.Server.Tests;
 [Collection("Source head boundary")]
 public sealed class CurrentSdkSourceHeadBoundaryTests
 {
+    /// <summary>Ordinary source-client credentials cannot issue the SDK's required tenant/domain-bound assertion.</summary>
+    /// <param name="caller">The independently enrolled source-reader workload.</param>
+    [Theory]
+    [InlineData("folders")]
+    [InlineData("folders-workers")]
+    public async Task OrdinaryAuthorityCredentialsRefuseBoundSourceReadsBeforeAnyTransport(string caller)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(caller);
+        using RSA key = RSA.Create(2048);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = Environments.Development,
+        });
+        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Authentication:JwtBearer:Authority"] = "https://identity.example.test/realms/hexalith",
+            ["Authentication:JwtBearer:Issuer"] = "https://identity.example.test/realms/hexalith",
+            ["Authentication:JwtBearer:Audience"] = "hexalith-eventstore",
+            ["Authentication:JwtBearer:AllowedAlgorithms:0"] = "RS256",
+            ["Authentication:JwtBearer:RequireHttpsMetadata"] = "true",
+            ["Authentication:WorkloadIssuer:Workload"] = caller,
+            ["Authentication:WorkloadIssuer:ClientId"] = caller,
+            ["Authentication:WorkloadIssuer:ClientSecret"] = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)),
+            ["Authentication:BoundStreamRead:PrivateKey"] = Convert.ToBase64String(key.ExportPkcs8PrivateKey()),
+            ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500",
+            ["EventStore:Gateway:AppId"] = "eventstore-isolated",
+        });
+        using var issuerTransport = new MockHttpMessageHandler(_ => throw new InvalidOperationException("No issuer request is admitted."));
+        using var sourceTransport = new MockHttpMessageHandler(_ => throw new InvalidOperationException("No source request is admitted."));
+        builder.Services.AddEventStoreGatewayNativeSourceMetadataReader("folders")
+            .ConfigurePrimaryHttpMessageHandler(() => sourceTransport);
+        builder.Services.AddHttpClient(JwtWorkloadAssertionIssuer.HttpClientName)
+            .ConfigurePrimaryHttpMessageHandler(() => issuerTransport);
+        await using ServiceProvider provider = builder.Services.BuildServiceProvider();
+        IWorkloadAssertionIssuer issuer = provider.GetRequiredService<IWorkloadAssertionIssuer>();
+        issuer.ShouldBeOfType<JwtWorkloadAssertionIssuer>();
+        issuer.CanBindResources.ShouldBeFalse();
+        provider.GetRequiredService<IOptions<WorkloadAssertionIssuerOptions>>().Value.EnableResourceBindingRequests.ShouldBeFalse();
+
+        INativeSourceMetadataReader source = provider.GetRequiredService<INativeSourceMetadataReader>();
+        (await source.ReadAsync(new AggregateIdentity("tenant-a", "folders", "tenant-a"), TestContext.Current.CancellationToken)).ShouldBeNull();
+        EffectivePermissionsReadModelResult result = await MissingOrganizationAsync(new DaprOrganizationStreamSequenceReader(source));
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+        result.Snapshot.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("organization_stream_unavailable");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        issuerTransport.CallCount.ShouldBe(0);
+        sourceTransport.CallCount.ShouldBe(0);
+        provider.GetRequiredService<IOptions<EventStoreGatewayClientOptions>>().Value.UseWorkloadTransport.ShouldBeFalse();
+        provider.GetService<IEventStoreGatewayWorkloadAssertionSource>().ShouldBeNull();
+        provider.GetService<IEventStoreGatewayStreamReadProofSource>().ShouldBeNull();
+    }
+
     /// <summary>The migrated head adapter refuses an unavailable independent observation instead of inventing zero.</summary>
     [Fact]
     public async Task UnavailableIndependentSourceObservationNeverInventsZero()
@@ -44,7 +103,7 @@ public sealed class CurrentSdkSourceHeadBoundaryTests
         using var invocation = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
         using HttpClient client = GuardedClient(authority, primary, invocation);
         IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-            { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
+        { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
         var reader = new DaprNativeSourceMetadataReader(client, configuration, TimeProvider.System);
         (await reader.ReadAsync(new AggregateIdentity("tenant-a", "folders", "tenant-a"), TestContext.Current.CancellationToken)).ShouldBeNull();
         primary.CallCount.ShouldBe(0);
@@ -61,7 +120,7 @@ public sealed class CurrentSdkSourceHeadBoundaryTests
         using var invocation = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("0") });
         using HttpClient client = GuardedClient(authority, primary, invocation);
         IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-            { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
+        { ["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500" }).Build();
         EffectivePermissionsReadModelResult result = await MissingOrganizationAsync(new DaprOrganizationStreamSequenceReader(
             new DaprNativeSourceMetadataReader(client, configuration, TimeProvider.System)));
         result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
@@ -115,7 +174,7 @@ public sealed class CurrentSdkSourceHeadBoundaryTests
 
     private static HttpClient GuardedClient(IRouteCatalogAuthority authority, HttpMessageHandler primary, HttpMessageHandler invocation)
         => new(new RouteCatalogInvocationHandler(authority, primary, Options.Create(new RouteCatalogHostOptions
-            { InvocationTransportFactory = _ => invocation })));
+        { InvocationTransportFactory = _ => invocation })));
 
     private static Task<EffectivePermissionsReadModelResult> MissingOrganizationAsync(IOrganizationStreamSequenceReader reader)
     {

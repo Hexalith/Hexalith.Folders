@@ -18,6 +18,7 @@ context:
   - '_bmad-output/implementation-artifacts/proposal-12-2-live-tenant-freshness-prerequisite.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.md'
   - '_bmad-output/implementation-artifacts/review-12-2-round5-keep.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-bound-source-workload-authority.md'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -2752,3 +2753,39 @@ open because the unchanged SDK privacy scanner still has 273 passes/1 failure at
 locations. Pending inventory failures are now resolved. Whole-story and sprint remain in-progress
 for the current live failure, SDK privacy gate, PD10/governance, existing SM4 findings and independent
 review. Historical live passes keep their exact-source scope; none qualifies this current failed run.
+
+### Current workload issuance boundary — 2026-11-11
+
+The retained current strict failure now has an executable source-issuance diagnosis. Its actual
+Folders process logs `bindings-unsupported` during the first provider-configuration request; the
+actor rejects after617.112ms, before the outer request exhausts its unchanged retry budget. Current
+SDK source credentials require signed tenant/domain bindings, while the configured ordinary
+Keycloak client-credentials profile cannot issue them. The two new Server/Workers-identity controls
+exercise the actual issuer and public SDK metadata composition, refuse before token/source HTTP
+transport, and preserve unavailable authority rather than inventing zero. No production guard,
+issuer configuration, permission, SDK source, strict body or deadline was changed.
+
+The [precise remaining prerequisite](proposal-12-2-bound-source-workload-authority.md) separates
+already-authorized local workload/key/receiver wiring from missing actual external authority and
+owner-provisioned trust/grant inputs. Shared issuer/receiver trust also affects existing unbound
+callbacks, query-authority digests and Tenants bootstrap/source calls; their separately exact grants
+must survive any migration. Enabling an option alone, substituting an unbound assertion, or adding
+the SDK's nonconforming Development issuer cannot establish this acceptance authority. No existing
+supported source-only issuer selection or configured conforming external profile was identified.
+
+Final focused Debug/source build and scoped whitespace verification pass. Source/composition/observer
+controls pass68/68, and pending-inventory controls pass18/18, zero failures/errors/skips. Existing
+SDK issuer/authority controls pass130/130; the unchanged source privacy scanner remains273passes/
+1failure at the same four SDK test locations. Only this test input's pending hash/size and set digest
+changed; the dated PD10 and all three protected acceptance bodies/frozen497c remain unchanged.
+The24actually observed focused modules pass DLL/PDB/source audit. A carried99-module full-runtime
+audit separately finds nine old runtime-copy generated AssemblyInfo mismatches after the focused
+build; it supplies no new coherent-runtime/live qualification. SDK variants/project assets and all
+guards remain valid. No new strict/live run or SM4 result is claimed.
+
+[Metadata-only phase evidence](evidence/story-12-2-workload-issuer-boundary-20261111.json) and the
+private phase patch/receipts retain commands, intermediate whitespace failure, final outcomes and
+the exact audit limit. Source/outputs are released without active build/test/topology or owned
+resource remainders. Existing local wiring remains authorized once actual owner inputs exist;
+whole-story/sprint stay in-progress for that prerequisite/current live failure, SDK privacy,
+PD10/governance, SM4 and independent review. Every earlier packet and failed run is preserved.

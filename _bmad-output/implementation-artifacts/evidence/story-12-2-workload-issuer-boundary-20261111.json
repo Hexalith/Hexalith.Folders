@@ -1,0 +1,489 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-11T12:21:45.912300+00:00",
+  "root_head": "74e95703c1260c61587b5600823a0ac14a6e517d",
+  "eventstore_head": "c94e6fffaf2d689c94bb288f151a65e10a2fea82",
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "product_or_sdk_source_changed": false,
+  "changes": [
+    "Add actual-issuer/public-source-composition refusal controls for Server and Workers identities, preserving unavailable rather than zero.",
+    "Refresh only the existing pending compile-input hash/size and set digest.",
+    "Record the exact authority prerequisite, shared-trust impact and current qualification boundary."
+  ],
+  "changed_input_sha256": {
+    "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs": "af8d4aa394763ecedf58cdcd57fdadfbebaffaa09f821fe0493614b31faae899",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml": "f7d2adfde64fa001c22207c0cf11f95010bf2f7423f43a55085547d1034c055a",
+    "_bmad-output/implementation-artifacts/proposal-12-2-bound-source-workload-authority.md": "e8a57f149a8666642e2c8786ec824a878527fd92fb61d5ad71893dae46573495",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md": "b13d4018b43f3fd2b502d665c8b831a7c65f117923ae9a0e2cbb2e2114e182f7"
+  },
+  "commands": [
+    {
+      "phase": "boundary-server-build",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=4.2.0",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:12:12.592259+00:00",
+      "utc_end": "2026-11-11T12:12:21.937742+00:00",
+      "exit_code": 0,
+      "assemblies": null,
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "7d309a7c319f1912164fd29c62de410733cb0c25771306f976bd9551775c4c1e"
+    },
+    {
+      "phase": "boundary-source-controls",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+        "-class",
+        "*Task36*",
+        "-result-xml",
+        "/tmp/story12-2-issuer-boundary-20261111-p2xlt0_l/boundary-source-controls-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:12:54.202717+00:00",
+      "utc_end": "2026-11-11T12:13:02.527957+00:00",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+          "run-date": "2026-11-11",
+          "run-time": "12:12:54",
+          "errors": "0",
+          "failed": "0",
+          "passed": "68",
+          "skipped": "0",
+          "time": "6.290",
+          "total": "68"
+        }
+      ],
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "de965b7d8a92d18a8e30c570a3a764f20fa69dea1394819a73e27628e84affb7"
+    },
+    {
+      "phase": "boundary-owner-controls",
+      "argv": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Authentication.JwtWorkloadAssertionIssuerTests",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Authentication.WorkloadBindingAuthorityTests",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+        "-result-xml",
+        "/tmp/story12-2-issuer-boundary-20261111-p2xlt0_l/boundary-owner-controls-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:13:25.076112+00:00",
+      "utc_end": "2026-11-11T12:13:37.784074+00:00",
+      "exit_code": 1,
+      "assemblies": [
+        {
+          "name": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll",
+          "run-date": "2026-11-11",
+          "run-time": "12:13:25",
+          "errors": "0",
+          "failed": "1",
+          "passed": "403",
+          "skipped": "0",
+          "time": "10.054",
+          "total": "404"
+        }
+      ],
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "b191fb26ce47bce3466787893bc3d1aee70a549e6b0e5e0ea3a8f07f942e263b"
+    },
+    {
+      "phase": "boundary-final-server-build",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=4.2.0",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:15:16.261354+00:00",
+      "utc_end": "2026-11-11T12:15:22.102541+00:00",
+      "exit_code": 0,
+      "assemblies": null,
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "17aa8380d756ce0f213cb8cac91b0f07e8bc2716c16cce62bb6a88e0fab507f8"
+    },
+    {
+      "phase": "boundary-format",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:15:46.293109+00:00",
+      "utc_end": "2026-11-11T12:15:53.247216+00:00",
+      "exit_code": 2,
+      "assemblies": null,
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "44877ef5786f64718f2a62736694ac5931be73c16186114adad88a8d372e67ad"
+    },
+    {
+      "phase": "boundary-final-format",
+      "argv": [
+        "dotnet",
+        "format",
+        "whitespace",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "--no-restore",
+        "--verify-no-changes",
+        "--include",
+        "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:18:54.575182+00:00",
+      "utc_end": "2026-11-11T12:19:01.668845+00:00",
+      "exit_code": 0,
+      "assemblies": null,
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "89bade8fb3492381e79d49944c68559ab3fa3aac66d5e684ed6722031fc2e144"
+    },
+    {
+      "phase": "boundary-qualified-server-build",
+      "argv": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "--no-restore",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=4.2.0",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:19:03.036108+00:00",
+      "utc_end": "2026-11-11T12:19:14.721110+00:00",
+      "exit_code": 0,
+      "assemblies": null,
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "2bdda52718c1b317a30c9624c3dc03cbe1f21297d3b2e786835ddc925a4f591b"
+    },
+    {
+      "phase": "boundary-final-source-controls",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersDevelopmentOwnerMetadataTests",
+        "-class",
+        "*Task36*",
+        "-result-xml",
+        "/tmp/story12-2-issuer-boundary-20261111-p2xlt0_l/boundary-final-source-controls-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:19:16.079266+00:00",
+      "utc_end": "2026-11-11T12:19:24.390553+00:00",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+          "run-date": "2026-11-11",
+          "run-time": "12:19:16",
+          "errors": "0",
+          "failed": "0",
+          "passed": "68",
+          "skipped": "0",
+          "time": "6.437",
+          "total": "68"
+        }
+      ],
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "64e02aded8cdb6a3468dac67e507752bd4da5cbe05308634623e2584f6a72845"
+    },
+    {
+      "phase": "boundary-pending-controls",
+      "argv": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "*Pd10ConformanceSetTests",
+        "-result-xml",
+        "/tmp/story12-2-issuer-boundary-20261111-p2xlt0_l/boundary-pending-controls-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-11T12:19:25.727711+00:00",
+      "utc_end": "2026-11-11T12:19:31.858271+00:00",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+          "run-date": "2026-11-11",
+          "run-time": "12:19:25",
+          "errors": "0",
+          "failed": "0",
+          "passed": "18",
+          "skipped": "0",
+          "time": "4.508",
+          "total": "18"
+        }
+      ],
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "private_receipt_sha256": "2b565548ac51ae13eba6ddf44cc4dd7c5f83c2b725e7a474b69da0d69a152e9e"
+    }
+  ],
+  "final_source_controls": {
+    "passed": 68,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_cases": 2
+  },
+  "final_pending_controls": {
+    "passed": 18,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "existing_owner_selections": {
+    "Hexalith.EventStore.Server.Tests.Authentication.JwtWorkloadAssertionIssuerTests": {
+      "Pass": 38
+    },
+    "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests": {
+      "Pass": 273,
+      "Fail": 1
+    },
+    "Hexalith.EventStore.Server.Tests.Authentication.WorkloadBindingAuthorityTests": {
+      "Pass": 92
+    }
+  },
+  "scanner_failure_locations": [
+    "tests/Hexalith.EventStore.PayloadProtection.LiveSidecar.Tests/KubernetesCryptoFixture.cs:206",
+    "tests/Hexalith.EventStore.PayloadProtection.LiveSidecar.Tests/KubernetesCryptoFixture.cs:56",
+    "tests/Hexalith.EventStore.PayloadProtection.Tests/DaprCryptographyBackendTests.cs:272",
+    "tests/Hexalith.EventStore.RestApi.Generators.Tests/RestApiGeneratedControllerErrorSemanticsTests.cs:36"
+  ],
+  "focused_output_audit": {
+    "modules": 24,
+    "issues": [],
+    "exit_code": 0
+  },
+  "full_runtime_audit_limit": {
+    "modules": 99,
+    "generated_assembly_info_mismatches": [
+      {
+        "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/obj/Debug/net10.0/Hexalith.Folders.Contracts.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders/obj/Debug/net10.0/Hexalith.Folders.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/obj/Debug/net10.0/Hexalith.Folders.Contracts.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/obj/Debug/net10.0/Hexalith.Folders.ServiceDefaults.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders/obj/Debug/net10.0/Hexalith.Folders.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Client.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/obj/Debug/net10.0/Hexalith.Folders.Client.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/obj/Debug/net10.0/Hexalith.Folders.Contracts.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.ServiceDefaults.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/obj/Debug/net10.0/Hexalith.Folders.ServiceDefaults.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+        "error": null,
+        "mismatches": [
+          "/home/administrator/projects/hexalith/folders/src/Hexalith.Folders/obj/Debug/net10.0/Hexalith.Folders.AssemblyInfo.cs"
+        ],
+        "missingOrdinarySource": [],
+        "pdbGuidMatches": true
+      }
+    ],
+    "sdk_variant_failures": {},
+    "asset_failures": [],
+    "new_coherent_runtime_qualification": false
+  },
+  "preserved_guards": {
+    "files": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429"
+    },
+    "frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422"
+  },
+  "established_failure": {
+    "retained_run": "story-12-2-current-qualification-20261111.json",
+    "folders_issuer_reason": "bindings-unsupported",
+    "issuer_observation_utc": "2026-11-11T11:36:18.980Z",
+    "first_actor_rejection_utc": "2026-11-11T11:36:19.089Z",
+    "first_actor_duration_ms": 617.1119,
+    "supports_every_historical_failure_cause": false,
+    "component_token_or_source_transport_calls": 0,
+    "source_zero_inferred": false
+  },
+  "authority_input_status": "No configured conforming bound-issuance authority identified; existing local workload/key/receiver wiring remains authorized.",
+  "live_execution": false,
+  "outputs_released": true,
+  "active_build_test_topology": false,
+  "remaining": [
+    "Actual authority-owner capability/trust/grant inputs and preservation of the full shared-issuer cohort.",
+    "Current unchanged strict real-provider acceptance on a coherent audited runtime after that prerequisite.",
+    "Unchanged SDK privacy scanner failure; PD10/governance, SM4 and independent review."
+  ],
+  "private_receipts_directory": "/tmp/story12-2-issuer-boundary-20261111-p2xlt0_l",
+  "privacy": "No raw logs, response bodies, tokens, keys, secrets or test parameter display values are included."
+}
