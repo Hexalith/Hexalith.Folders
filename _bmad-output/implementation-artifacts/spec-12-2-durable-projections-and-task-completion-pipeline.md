@@ -2649,7 +2649,7 @@ Implement the following bounded qualification control over the preserved complet
 no production implementation, SDK, strict body, shutdown ordering/timeout/retry, authorization, source
 proof, telemetry policy, service replacement or public route change is authorized by this task.
 
-- [ ] In `tests/tools/Task36FoldObserver/Task36HostingStartup.cs` and
+- [x] In `tests/tools/Task36FoldObserver/Task36HostingStartup.cs` and
   `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs`, add an explicit opt-out
   for the optional EventStore lifecycle diagnostic only, using an exact per-resource environment
   flag such as `FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED=true`. Default/invalid/missing values
@@ -2663,7 +2663,7 @@ proof, telemetry policy, service replacement or public route change is authorize
   individual Debug/source projects serially with both flags; refresh only affected pending compile
   inventory hashes/paths and run its controls plus unchanged source privacy scanner as appropriate.
   Preserve strictd29, companion/capacity, mutation2s, datedPD10 and frozen497c hashes.
-- [ ] Hand off a new exact phase patch, before/after/guard/output hashes, commands and all results
+- [x] Hand off a new exact phase patch, before/after/guard/output hashes, commands and all results
   under `/tmp/story12-2-observer-control-20261104`; never overwrite prior handoffs. Release all
   selected outputs with no active build/test/topology. Parent owns coherent runtime/Memories audit,
   any affected requalification and one unchanged strict class with the supported observer opt-out.
@@ -2674,3 +2674,81 @@ payload-free advisory diagnostic work. It does not authorize generic SDK shutdow
 or policy changes. Story/sprint remain in-progress; current strict, package, PD10/governance, SM4 and
 independent review gates stay open. Parent performs no competing build/test/live while delegated
 implementation owns selected source/outputs. Existing rendered workflow/baseline are preserved.
+
+### Current fixture-only observer verification — 2026-11-11
+
+The requested exact-true lifecycle opt-out and its controls are already committed at root
+`dc7198ae6bcd14dd383c642e6f86da061080ea45`; no product, fixture, Tool or SDK source change is
+needed for this control. Current SDK HEAD is `c94e6fffaf2d689c94bb288f151a65e10a2fea82`.
+Server/Tool, AppHost, Contracts and SDK Server Debug/source builds pass with zero warnings/errors.
+Use both source flags and the current catalog's explicit `HexalithEventStoreVersion=4.2.0`
+throughout the graph. The first default-property build mixed Client/Contracts4.1 with SDK4.2;
+its observer selection had41passes/2assembly-load failures. That exact attempt is retained.
+The coherent final observer selection passes43/43 and actual fixture resource-wiring controls
+pass4/4, zero failures/errors/skips. These prove default/invalid/exact-true registration,
+unmodified existing services, retained Folders fold evidence and EventStore-only forwarding.
+
+The controls checkbox remains open for preexisting broader gates. Pending inventory controls
+have14passes/4failures: the allowlist omits OwnerSourceCompositionAssertionIssuer.cs and eight
+listed inputs have stale hashes. The unchanged source privacy scanner has273passes/1failure,
+reporting only four path/line findings in SDK payload-protection/generator tests. No credential
+value is retained in this note. Neither the inventory, scanner nor those unrelated tests was
+changed in this bounded phase. The parent owns the minimal current-inventory repair and separate
+disposition of the scanner failure, preserving dated PD10 and scanner rules.
+
+Exact commands, all results, before/after source and guard hashes, output identities and the
+phase-only documentation patch are retained under `/tmp/story12-2-observer-control-20261104`.
+The d29 strict, companion/capacity, mutation2s, dated PD10 and frozen497c guards are unchanged.
+Selected outputs are released with no active build/test/topology. Parent owns coherent runtime/
+Memories/source/PDB/assets qualification and one unchanged strict class with the supported
+opt-out. No new live pass, stop-cause diagnosis or shutdown correction is claimed. Whole-story,
+Release/package, PD10/governance, SM4 and independent-review gates retain their separate status.
+
+
+### Current source composition and acceptance result — 2026-11-11
+
+- [x] `Directory.Build.props` and `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj`:
+  select the root-declared McpCli abstractions source in local source mode, matching the existing
+  Hexalith dependency policy. Actual MSBuild evaluation passes for default/Debug source mode and
+  Release/CI package mode. Existing package versions, gitlinks and public contracts are unchanged.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/McpCli/PackedContractsClosureTests.cs`: give the
+  Release package build its own artifacts/restore directory and explicit package mode. Preserve
+  every package/framework/assembly dependency assertion and assert the workspace assets remain
+  byte-identical. The initial source-mode package-test failure is retained; the corrected test
+  passes in both Debug and Release.
+- [x] `scripts/pd10-v2-story-owned-paths.txt` and the pending source inventory: include the existing
+  owner-composition assertion helper, bind previously declared additions and refresh stale input
+  hashes. The deterministic inventory now binds 1,608 artifacts. Dated immutable PD10 is unchanged;
+  `pending-a6b`, `candidate-awaiting-a6b`, disabled exposure and false closure claims remain.
+- [x] Current consumer, matrix, capacity and producer qualification: final serial Debug/source
+  solution and Memories builds pass with zero warnings/errors using both source flags,
+  `HexalithEventStoreVersion=4.2.0` and stable local `VersionSuffix=story12-2-qualification`.
+  Six individual consumer assemblies pass 5,664 tests with 2 existing optional Domain skips and no
+  failures. All five frozen matrix rows and 10,001/32,769 histories through the production handler have executed
+  passing coverage. Final Release/package solution build and 422 contract/75 client generation checks
+  pass, zero failures/skips; the additional Release package-closure control passes 1/1.
+- [ ] Current strict real-provider acceptance: the unchanged d29 class with the exact supported
+  lifecycle opt-out fails 1/1, zero skips, in 194.190 seconds. Authenticated bootstrap reaches 202/Completed
+  with original source 1 and catalog/human binding. The initial unknown-profile provider-configuration
+  safe-denial request is canceled before its expected HTTP 403 assertion completes. Task closure, main
+  restart/rebuild and full SM4 measurements are not reached. The unchanged 75-second HTTP retry
+  policy and every production deadline/guard remain. Catalog/delivery availability warnings are
+  retained privately; no causal attribution, observer comparison conclusion or shutdown fix is
+  established by this failed attempt.
+
+The source audit passes for 99 selected assemblies with matching DLL/PDB/document identities, project-only
+selected Hexalith edges and one hash/MVID per SDK assembly. Final source restoration after the Release
+checks produces exactly the same 99 binary/symbol identities as the live producer. All 24 saved actual SDK
+observations match that producer. No mapped observer module identity was captured; selected observer
+source/output qualification is separate. The actual run has no source/head/runtime/status drift and
+no remaining owned descendants, containers or observed Dapr/fixture directories. Unrelated resources
+are untouched. Initial graph/PDB and intermediate failed test attempts remain separately recorded.
+
+The [current metadata-only qualification](evidence/story-12-2-current-qualification-20261111.json)
+retains commands, phase results, exact source/guard bindings, matrix coverage, failure and cleanup.
+Raw logs/XML, bodies and private provider context stay under the private receipt directory named
+there. The first/third observer handoff tasks remain verified; its broader controls checkbox stays
+open because the unchanged SDK privacy scanner still has 273 passes/1 failure at four existing SDK test
+locations. Pending inventory failures are now resolved. Whole-story and sprint remain in-progress
+for the current live failure, SDK privacy gate, PD10/governance, existing SM4 findings and independent
+review. Historical live passes keep their exact-source scope; none qualifies this current failed run.

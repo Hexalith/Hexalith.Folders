@@ -3,7 +3,8 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Hexalith.McpCli.Abstractions" />
+    <ProjectReference Include="$(HexalithMcpCliRoot)/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj" Condition="'$(HexalithMcpCliFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.McpCli.Abstractions" Condition="'$(HexalithMcpCliFromSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Contracts.Tests" />

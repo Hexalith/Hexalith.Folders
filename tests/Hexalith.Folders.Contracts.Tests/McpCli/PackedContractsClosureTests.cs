@@ -15,6 +15,10 @@ public sealed class PackedContractsClosureTests
     public async Task ReleasePackageDependsOnlyOnMcpCliAbstractionsAndTheNetRuntimeAsync()
     {
         string output = Path.Combine(Path.GetTempPath(), "folders-contracts-closure-" + Guid.NewGuid().ToString("N"));
+        string artifacts = Path.Combine(output, "artifacts");
+        string currentAssets = Path.Combine(McpCliContractTestSupport.RepositoryRoot,
+            "src/Hexalith.Folders.Contracts/obj/project.assets.json");
+        byte[] originalAssets = File.ReadAllBytes(currentAssets);
         Directory.CreateDirectory(output);
         try
         {
@@ -28,7 +32,8 @@ public sealed class PackedContractsClosureTests
             foreach (string argument in new[]
             {
                 "pack", "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-                "--configuration", "Release", "--no-restore", "--output", output,
+                "--configuration", "Release", "--artifacts-path", artifacts, "--output", output,
+                "-p:UseNuGetDeps=true", "-p:UseHexalithProjectReferences=false",
             })
             {
                 start.ArgumentList.Add(argument);
@@ -49,6 +54,7 @@ public sealed class PackedContractsClosureTests
             }
 
             process.ExitCode.ShouldBe(0, await standardOutput.ConfigureAwait(true) + await standardError.ConfigureAwait(true));
+            File.ReadAllBytes(currentAssets).ShouldBe(originalAssets);
             using ZipArchive package = ZipFile.OpenRead(Directory.GetFiles(output, "*.nupkg").Single());
             ZipArchiveEntry nuspec = package.Entries.Single(entry => entry.FullName.EndsWith(".nuspec", StringComparison.Ordinal));
             using Stream stream = nuspec.Open();
@@ -59,8 +65,8 @@ public sealed class PackedContractsClosureTests
                 .Select(node => (string?)node.Attribute("name") ?? (string?)node.Attribute("assemblyName"))
                 .ShouldAllBe(name => name == "Microsoft.NETCore.App");
 
-            JsonNode assets = JsonNode.Parse(File.ReadAllText(Path.Combine(McpCliContractTestSupport.RepositoryRoot,
-                "src/Hexalith.Folders.Contracts/obj/project.assets.json")))!;
+            JsonNode assets = JsonNode.Parse(File.ReadAllText(Directory.EnumerateFiles(artifacts,
+                "project.assets.json", SearchOption.AllDirectories).Single()))!;
             assets["project"]!["frameworks"]!["net10.0"]!["frameworkReferences"]!.AsObject()
                 .Select(item => item.Key).ShouldBe(["Microsoft.NETCore.App"]);
             assets["libraries"]!.AsObject().Select(item => item.Key)

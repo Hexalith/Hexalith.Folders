@@ -1316,6 +1316,7 @@ tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/OrganizationAclReauthorizationTests.cs
 tests/Hexalith.Folders.Server.Tests/OrganizationOperationalProjectionTests.cs
 tests/Hexalith.Folders.Server.Tests/OrphanOperationalProjectionHandler.cs
+tests/Hexalith.Folders.Server.Tests/OwnerSourceCompositionAssertionIssuer.cs
 tests/Hexalith.Folders.Server.Tests/ParallelPermissionObservationTests.cs
 tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs
 tests/Hexalith.Folders.Server.Tests/Pd10NonSeekableReadStream.cs
