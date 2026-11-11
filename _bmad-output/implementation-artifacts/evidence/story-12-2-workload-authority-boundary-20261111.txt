@@ -1,0 +1,15 @@
+xUnit.net v3 In-Process Runner v4.0.3+384aa7f0b4 (64-bit .NET 10.0.15)
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.JwtWorkloadAssertionIssuer[5511]
+      Workload assertion could not be issued: Reason=bindings-unsupported. Outbound internal calls will be denied by their receivers.
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.JwtWorkloadAssertionIssuer[5511]
+      Workload assertion could not be issued: Reason=bindings-unsupported. Outbound internal calls will be denied by their receivers.
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.JwtWorkloadAssertionIssuer[5511]
+      Workload assertion could not be issued: Reason=bindings-unsupported. Outbound internal calls will be denied by their receivers.
+warn: Hexalith.EventStore.ServiceDefaults.Authentication.JwtWorkloadAssertionIssuer[5511]
+      Workload assertion could not be issued: Reason=bindings-unsupported. Outbound internal calls will be denied by their receivers.
+  Finished:    Hexalith.Folders.Server.Tests (ID = '75ae1bb5acca7e7fab4b4a39600c0126dbad41fe4b548962d18157435348c538')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 9, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.324s

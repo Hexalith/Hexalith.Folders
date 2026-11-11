@@ -1,0 +1,311 @@
+{
+  "story": "12.2",
+  "capturedAtUtc": "2026-11-11T12:40:55.526835+00:00",
+  "state": "planning-checkpoint-awaiting-approval",
+  "implementationPerformed": false,
+  "authorityEnrolled": false,
+  "activated": false,
+  "sources": {
+    "folders": "35c2c640c1babc0a1aba5fce08466575617bbfb0",
+    "eventstore": "c94e6fffaf2d689c94bb288f151a65e10a2fea82",
+    "platformRootDeclared": "5adb00b2f30d2985ee0b1fb1abd713b10660dc48",
+    "platformSiblingInspectedReadOnly": "15926cac7ffe7bb91926617a586f34262beb0665"
+  },
+  "ownership": {
+    "established": "Platform owns the existing Keycloak realm-contract instance and enrollment integration under adopted AD-6. EventStore owns claim semantics.",
+    "notEstablished": "AD-6 does not designate a new standalone workload issuer or enroll any signer/client/grant.",
+    "proposal": "Implement the exact profile as a Platform-owned extension of existing Keycloak; pending build spec approval.",
+    "checkout": "Use the root-declared Platform source identity. Sibling platform has unrelated existing changes and is not substituted."
+  },
+  "existingCapability": {
+    "result": "No conforming implementation or current enrollment identified in inspected Platform source/config/tests or SDK security documentation.",
+    "sdkAuthority": "Only the explicitly nonconforming Development fixture; conforming-host refusal remains required.",
+    "otherRepositoriesInspected": [
+      {
+        "repository": "Hexalith.Security",
+        "url": "https://github.com/Hexalith/Hexalith.Security/blob/b27c4806cc4d438be6279bc7fec3b769b0e93e27/README.md",
+        "finding": "ASP.NET authentication, authorization and user-management modules; no profile search result."
+      },
+      {
+        "repository": "Hexalith.IdentityStores",
+        "url": "https://github.com/Hexalith/Hexalith.IdentityStores/blob/main/README.md",
+        "finding": "Actor-backed identity stores; README states no server projects."
+      },
+      {
+        "repository": "Hexalith.DaprIdentityStore",
+        "url": "https://github.com/Hexalith/Hexalith.DaprIdentityStore/blob/main/README.md",
+        "finding": "ASP.NET Identity storage using Dapr actors."
+      }
+    ],
+    "searchLimit": "Bounded accessible-source/default-branch search, not proof that no privately operated authority exists."
+  },
+  "supportedExtensionEvidence": {
+    "installedImage": "quay.io/keycloak/keycloak:26.6",
+    "observedImageVersion": "26.6.4",
+    "imageSourceRevision": "be9ce7fa2cecc897d47e8922ba9e6b86cee881b0",
+    "upstream": "https://github.com/keycloak/keycloak/blob/26.6.4/services/src/main/java/org/keycloak/protocol/oidc/grants/ClientCredentialsGrantType.java#L148",
+    "finding": "Client-credentials flow retains authorization_details for custom protocol mappers. This is an extension seam, not an implementation or enrollment of the Hexalith profile."
+  },
+  "preserveGrantFamilies": [
+    {
+      "caller": "Actual Folders Server, Workers and each distinct proof Worker",
+      "audience": "eventstore",
+      "operation": "eventstore:stream-read",
+      "bindings": "Exact managed tenant and folders domain; distinct own credentials and RSA source proofs; metadata-only receiver enrollment preserved."
+    },
+    {
+      "caller": "Actual EventStore",
+      "audience": "Each actual Folders/Tenants receiving AppId",
+      "operations": [
+        "domain-service:process",
+        "domain-service:replay-state",
+        "domain-service:project",
+        "domain-service:metadata"
+      ],
+      "bindings": "Explicit separate AllowUnbound grants; no wildcard/unhosted sample."
+    },
+    {
+      "caller": "Actual EventStore",
+      "audience": "Each actual Folders/Tenants query receiver",
+      "operation": "domain-service:query",
+      "bindings": "Exact tenant/domain and canonical complete query-envelope digest; default-off AllowQueryAuthorityDigest enabled only for each exact enrolled query grant."
+    },
+    {
+      "caller": "Actual Tenants",
+      "audience": "eventstore",
+      "operations": [
+        "eventstore:command-submit",
+        "eventstore:stream-read"
+      ],
+      "bindings": "Preserve current bootstrap/source authorization and separate explicit unbound grants; independent command/source RSA proofs and tenants/global-administrators checks remain."
+    }
+  ],
+  "activationPrerequisites": [
+    {
+      "input": "Owner direction",
+      "missing": "Owner acceptance of the proposed Keycloak extension and ownership of its protected enrollment. A standalone issuer would require a separate explicit decision."
+    },
+    {
+      "input": "Authority trust",
+      "missing": "Exact approved HTTPS issuer/discovery/token/JWKS addresses, validated TLS route and client trust, approved actual signer/key identity and custody/rotation references."
+    },
+    {
+      "input": "Per-client protected references",
+      "missing": "Current secret references for every actual source caller, EventStore and Tenants; no supplied owner-approved reference map. Existing generic workload-issuer-client-secret reference names no actual client-specific enrollment."
+    },
+    {
+      "input": "Current grants",
+      "missing": "Approved exact grant IDs, positive revisions, validity/revocation facts and exact physical caller/audience/operation/binding inventories for all four grant families."
+    },
+    {
+      "input": "Supported delivery",
+      "missing": "Disposable target and protected parameter/mount/configuration delivery, reload and cleanup references. Platform planning references deploy/dapr/openbao-secret-contract.yaml, but that file is absent in the inspected checkout."
+    },
+    {
+      "input": "Runtime qualification",
+      "missing": "After actual enrollment, coherent Debug/source rebuild, runtime identity audit, unchanged strict real-provider acceptance and its original 403 control."
+    }
+  ],
+  "consumerConfiguration": {
+    "trustSection": "Authentication:WorkloadJwtBearer",
+    "clientSection": "Authentication:WorkloadIssuer",
+    "profileOptIn": "EnableResourceBindingRequests",
+    "humanSectionPreserved": "Authentication:JwtBearer",
+    "cohort": [
+      "EventStore",
+      "Tenants",
+      "Folders Server",
+      "actual Workers including distinct proof Workers"
+    ],
+    "exclude": "Memories is not silently enrolled. No generic SDK operation becomes a new grant."
+  },
+  "validation": [
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "exitCode": 0,
+      "result": "Initial build: zero warnings/errors. Does not establish coherent runtime."
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -showLiveOutput",
+      "exitCode": 1,
+      "total": 9,
+      "failed": 6,
+      "skipped": 0,
+      "result": "Initial run: SDK Client/Contracts 4.2.0.0 assembly load failures. No authority-behavior conclusion."
+    },
+    {
+      "command": "dotnet restore tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "exitCode": 0,
+      "result": "Restored explicit source graph; focused rebuild/rerun follows."
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "exitCode": 0,
+      "result": "After explicit restore: zero warnings/errors."
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -showLiveOutput",
+      "exitCode": 1,
+      "total": 9,
+      "failed": 6,
+      "skipped": 0,
+      "result": "After restore/build: same assembly-load failures."
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -t:Rebuild -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "exitCode": 0,
+      "result": "Rebuild succeeded, zero warnings/errors; direct class rerun still failed 6/9 due assembly-load mismatch."
+    },
+    {
+      "command": "dotnet restore tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:HexalithEventStoreVersion=4.2.0 -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "exitCode": 0,
+      "result": "Source-only coherence restore with the root Builds existing 4.2.0 selection. No dependency-pin files changed."
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -t:Rebuild -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:HexalithEventStoreVersion=4.2.0 -p:NuGetAudit=false -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "exitCode": 0,
+      "result": "55.85 seconds; zero warnings/errors."
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -showLiveOutput",
+      "exitCode": 0,
+      "total": 9,
+      "failed": 0,
+      "skipped": 0,
+      "result": "Current source boundary/refusal controls pass. Ordinary credentials still correctly report bindings-unsupported. This is component baseline evidence, not new authority enrollment or strict runtime qualification."
+    }
+  ],
+  "separateGates": [
+    "SDK privacy",
+    "PD10/governance",
+    "SM4/performance",
+    "independent review"
+  ],
+  "strictAcceptance": "Not rerun: no new authority implementation/enrollment or runtime selection exists yet; historical pass gives no new qualification.",
+  "fileBindings": [
+    {
+      "path": "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md",
+      "sha256": "8e9c775c8ed59e761ced36852b1782a4fd827731c2cfd954d716bd6f8885bcc4"
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Identity/PlatformIdentityServiceCollectionExtensions.cs",
+      "sha256": "0a2414ee733a0727bbc5122714354e0676f057520640d39beff7c2fa355d7d0d"
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/Declarations/eventstore.json",
+      "sha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495"
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/Declarations/local-profile.json",
+      "sha256": "6cf2cc9bcda7c7e158a595b4a6839b864381d88cfb541a382ec8c45597b6bd50"
+    },
+    {
+      "path": "references/Hexalith.EventStore/docs/security/workload-binding-authority.md",
+      "sha256": "c8d6ef3b1d4b2b41c3e9d3765c40272d0bda5bbe417a38902dbdf728163f9d43"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthorizationDetails.cs",
+      "sha256": "66690b01b199711d87c9f1bdc7fea50f7a2bc26296c9013984d448277572b0ca"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthorityGrant.cs",
+      "sha256": "8735be14e080e6907139e0261e889a0099fe3debaf9bceb77f363bbd216aaede"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadBindingAuthorityExtensions.cs",
+      "sha256": "4282f2d5a10d4a8d77730c71b2b8167fbac166d654a765b31c877c19911a5199"
+    },
+    {
+      "path": "src/Hexalith.Folders.AppHost/Program.cs",
+      "sha256": "6a3ada7f81c48d6b8f0bb4a930a57830e1a6423b96f2191b3ecea52572dfd55c"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "sha256": "db7e596b77cdc739e2f604f7ca27070913a8d7f414dfeac85f62fe2d7a385a36"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "sha256": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/CurrentSdkSourceHeadBoundaryTests.cs",
+      "sha256": "af8d4aa394763ecedf58cdcd57fdadfbebaffaa09f821fe0493614b31faae899"
+    }
+  ],
+  "preservedGuards": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": {
+      "expectedSha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "actualSha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": {
+      "expectedSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "actualSha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "unchanged": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": {
+      "expectedSha256": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+      "actualSha256": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+      "unchanged": true
+    },
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+      "expectedSha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "actualSha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+      "unchanged": true
+    },
+    "src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs": {
+      "expectedSha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "actualSha256": "b8c5c73add9b18c98c34c78a6912d057bbe21069e90cbb9b0bb7e23375ffa429",
+      "unchanged": true
+    }
+  },
+  "sourceBuildCoherenceObservation": {
+    "rootSelection": "references/Hexalith.Builds/Props/Directory.Packages.props selects 4.2.0",
+    "tenantsDefault": "references/Hexalith.Tenants/Directory.Build.props defaults HexalithEventStoreVersion to 4.1.0",
+    "observedRuntime": "Client and Contracts 4.1.0.0; ServiceDefaults/Server/DomainService/Testing and test references 4.2.0.0",
+    "supportedOverride": "Explicit global HexalithEventStoreVersion=4.2.0 only in Debug source build commands; pins unchanged."
+  },
+  "focusedBinaryAudit": {
+    "eventStoreAssemblyVersion": "4.2.0.0 for Client, Contracts, DomainService, Server, ServiceDefaults and Testing",
+    "files": [
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.dll",
+        "sha256": "4732b5abaaac2d4bdad96b6d03ac34a7a991dfd2ca4326a399b86234cf5ee5d9"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+        "sha256": "25bd08f1764b93d9c13582e6f65fab94d531c64d5900799c0376671c0819d60e"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.dll",
+        "sha256": "bce85a065cd9d81b2df603000e2268fc59755e3d68899eb8ea8cf62038eb1d87"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.dll",
+        "sha256": "b3c5176ae4fe249f59792aae20e69a63d6ccd6a76fbae489c8bb8e9017a09d90"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+        "sha256": "9e6a41f27126033dd130a2d235c33ea0f07aeeb05a495e51eed556c9952a124b"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+        "sha256": "4ed8497426a465c62cbd20db2199e4f2b3ef2ad833c2d312ce7f92ef5b418079"
+      },
+      {
+        "path": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "sha256": "aba1a991f2c7ba487ee6a4713ed9c785ca696b4e9e1deb3695bb99cab24d4d94"
+      }
+    ],
+    "scope": "Focused Server test graph only; complete runtime remains unqualified."
+  },
+  "focusedTestLog": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-workload-authority-boundary-20261111.txt",
+    "sha256": "b0d60452a258a67b272d9491c1496f9aadb377696beb6425a3b3c8bb2a54cd2a"
+  },
+  "nextRequiredAction": "Human bmad-build spec checkpoint. No implementation/enrollment/activation performed."
+}
