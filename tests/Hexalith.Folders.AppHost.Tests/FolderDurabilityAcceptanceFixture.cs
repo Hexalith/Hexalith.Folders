@@ -25,7 +25,9 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Tenants.Contracts.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Xunit;
 
@@ -797,7 +799,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         Directory.CreateDirectory(componentDirectory);
         Directory.CreateDirectory(configurationDirectory);
         _builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Hexalith_Folders_AppHost>(
-            ["--EnableKeycloak=true", "--KeycloakPersistent=false"], timeout.Token).ConfigureAwait(false);
+            ["--EnableKeycloak=true", "--KeycloakPersistent=false", "--Folders:WorkloadEnrollment:DeferToCohort=true"], timeout.Token).ConfigureAwait(false);
         // The owner's single startup bootstrap sees real signed credentials from its first attempt.
         // Only this disposable realm import is extended; the checked-in issuer and business grants stay intact.
         KeycloakResource security = _builder.Resources.OfType<KeycloakResource>().Single(resource => resource.Name == "security");
@@ -1138,6 +1140,10 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             certificateDirectory = _localDapr.Value.CertificateDirectory,
         }));
 
+        // Configure every actual receiver/caller, including replicas and distinct proof Workers,
+        // before the catalog captures their environment. Missing owner references remain disabled.
+        _ = await Hexalith.Platform.Composition.PlatformWorkloadEnrollment.ConfigureAsync(_builder, timeout.Token, TenantId).ConfigureAwait(false);
+
         // This key is provisioned with this fixture's genuinely new, owned Redis backend.
         // It never replaces digest custody for an existing business store.
         string catalogDigest = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
@@ -1335,6 +1341,8 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     {
         if (operation is not (EventStoreWorkloadOperations.GatewayCommandSubmit or EventStoreWorkloadOperations.GatewayStreamRead))
             throw new InvalidOperationException("The bootstrap owner assertion names an unsupported operation.");
+        string? enrolled = await IssueEnrolledAssertionAsync("tenants", "eventstore", operation, cancellationToken).ConfigureAwait(false);
+        if (enrolled is not null) return enrolled;
         using HttpResponseMessage issued = await issuer.PostAsync("/realms/hexalith/protocol/openid-connect/token",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -1361,6 +1369,9 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 
     private async Task<string> IssueWorkloadAsync(string scopeOperation, string expectedOperation)
     {
+        string? enrolled = await IssueEnrolledAssertionAsync("eventstore", AppId("folders"), expectedOperation,
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+        if (enrolled is not null) return enrolled;
         using HttpClient client = App.CreateHttpClient("security", "http");
         using HttpResponseMessage workload = await client.PostAsync("/realms/hexalith/protocol/openid-connect/token",
             new FormUrlEncodedContent(new Dictionary<string, string>
@@ -1378,6 +1389,26 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         if (operations.Length != 1 || operations[0] != expectedOperation)
             throw new InvalidOperationException("The real identity provider did not issue the requested single workload operation.");
         return token;
+    }
+
+    private async Task<string?> IssueEnrolledAssertionAsync(string resource, string audience, string operation, CancellationToken cancellationToken)
+    {
+        ProjectResource caller = _builder!.Resources.OfType<ProjectResource>().Single(project => project.Name == resource);
+        Dictionary<string, object> environment = new(StringComparer.Ordinal);
+        foreach (EnvironmentCallbackAnnotation annotation in caller.Annotations.OfType<EnvironmentCallbackAnnotation>())
+            await annotation.Callback(new EnvironmentCallbackContext(_builder.ExecutionContext, caller, environment, cancellationToken)).ConfigureAwait(false);
+        if (!environment.TryGetValue("Authentication__WorkloadIssuer__EnableResourceBindingRequests", out object? enabled) || enabled is not "true") return null;
+        HostApplicationBuilder builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings { EnvironmentName = Environments.Development });
+        Dictionary<string, string?> settings = environment.Where(pair => pair.Value is string
+            && (pair.Key.StartsWith("Authentication__WorkloadJwtBearer__", StringComparison.Ordinal)
+                || pair.Key.StartsWith("Authentication__WorkloadIssuer__", StringComparison.Ordinal)))
+            .ToDictionary(pair => pair.Key.Replace("__", ":", StringComparison.Ordinal), pair => (string?)pair.Value, StringComparer.Ordinal);
+        settings["Authentication:WorkloadIssuer:ClientSecret"] = await ParameterAsync("enrolled-" + resource + "-workload-secret").ConfigureAwait(false);
+        builder.Configuration.AddInMemoryCollection(settings);
+        builder.Services.AddEventStoreWorkloadAssertionIssuer(builder.Configuration);
+        using IHost host = builder.Build();
+        return await host.Services.GetRequiredService<IWorkloadAssertionIssuer>().IssueAsync(new(audience, operation), cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("The verified workload enrollment refused a required fixture assertion.");
     }
 
     private async Task ConfigureIdentityAsync()

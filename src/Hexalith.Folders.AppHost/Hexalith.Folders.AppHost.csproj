@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="$(HexalithPlatformRoot)/DaprSelfHostedMtls.cs" Link="Platform/DaprSelfHostedMtls.cs" />
     <Compile Include="$(HexalithPlatformRoot)/DaprSelfHostedMtlsSubscriber.cs" Link="Platform/DaprSelfHostedMtlsSubscriber.cs" />
+    <Compile Include="$(HexalithPlatformRoot)/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs" Link="Platform/PlatformWorkloadEnrollment.cs" />
     <ProjectReference Include="$(HexalithBuildsRoot)/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj" IsAspireProjectResource="false" GlobalPropertiesToRemove="HexalithEventStoreVersion" />
   </ItemGroup>
   <ItemGroup>

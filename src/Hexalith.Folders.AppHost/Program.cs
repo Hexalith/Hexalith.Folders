@@ -208,6 +208,12 @@ if (security is not null)
         .WithEnvironment("Folders__Authentication__RequireHttpsMetadata", security.RequireHttpsMetadata ? "true" : "false");
 }
 
+// The final caller/receiver cohort must consume owner-approved enrollment before catalog capture.
+// Acceptance finishes its isolated identities and replicas before invoking the same Platform consumer.
+Hexalith.Platform.Composition.PlatformWorkloadEnrollment.Disable(builder);
+if (!builder.Configuration.GetValue<bool>("Folders:WorkloadEnrollment:DeferToCohort"))
+    _ = await Hexalith.Platform.Composition.PlatformWorkloadEnrollment.ConfigureAsync(builder).ConfigureAwait(false);
+
 // A retained local backend requires its owner's private custody profile. A disposable acceptance
 // runner composes after selecting its isolated backend and final AppIds instead.
 DevelopmentRouteCatalogComposition? catalog = null;

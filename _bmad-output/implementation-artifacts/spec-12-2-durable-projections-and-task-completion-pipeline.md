@@ -2789,3 +2789,32 @@ the exact audit limit. Source/outputs are released without active build/test/top
 resource remainders. Existing local wiring remains authorized once actual owner inputs exist;
 whole-story/sprint stay in-progress for that prerequisite/current live failure, SDK privacy,
 PD10/governance, SM4 and independent review. Every earlier packet and failed run is preserved.
+
+### External workload source prerequisite — 2026-11-11
+
+The approved [external workload authority spec](spec-12-2-external-workload-authority.md)
+now has a Platform-owned Keycloak 26.6.4 provider, protected enrollment consumer, Folders
+AppHost/fixture integration before catalog capture and an enrollment runbook. Source work
+keeps actual activation disabled without protected owner inputs. Human authentication,
+independent RSA proofs, source authorization, strict acceptance bodies and all deadlines
+remain unchanged; Memories is outside the enrollment.
+
+[Component qualification](evidence/story-12-2-external-workload-authority-20261111/verification.json)
+records three successful Debug/source builds, 23 Java policy tests, 11 actual-issuer SDK
+controls, five live consumer controls, eight AppHost configuration/source controls and
+23 existing Server controls, with zero failures/skips in these final selections. Fifteen
+additional provider refusal controls, separate callback/query grants, live grant replacement
+and observed zero task-owned cleanup remainders passed. These are disposable component
+results; their signer and TLS fixture establish no approved enrollment authority.
+
+The parent diff/hash audit verified all 19 source bindings, all three protected test bodies
+and the retained earlier-source failed strict result. DomainService, Client, Contracts and
+ServiceDefaults copies in both selected test outputs match their Debug/source binaries;
+this comparison does not establish a current Folders/Workers topology audit.
+
+Actual protected ManifestPath/ManifestSha256 references, approved TLS/signer trust and
+complete current grants for the actual cohort remain absent. After those inputs are
+supplied, qualify the enrolled runtime and run the unchanged strict real-provider class.
+The parent and child remain in-progress; privacy, PD10/governance, SM4 and independent
+whole-story review retain their separate open dispositions. No commit, push, dependency
+pin update, publication or deployment was performed.

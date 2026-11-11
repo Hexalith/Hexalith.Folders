@@ -1,0 +1,83 @@
+{
+  "schema": "hexalith.external-workload-parent-audit/v1",
+  "captured_utc": "2026-11-11T13:38:37.907624+00:00",
+  "verification_artifact": "_bmad-output/implementation-artifacts/evidence/story-12-2-external-workload-authority-20261111/verification.json",
+  "verification_sha256": "748b24d665cf0bde1cdea40f54947f212f4cb896e6238184f547cd98af80b0fe",
+  "source_hashes_verified": 19,
+  "protected_acceptance_file_hashes_verified": 3,
+  "retained_earlier_source_strict_failure_hash_verified": true,
+  "frozen_blocks_unchanged": {
+    "spec-12-2-external-workload-authority.md": true,
+    "spec-12-2-durable-projections-and-task-completion-pipeline.md": true
+  },
+  "reviewed_complete_unified_diff_including_untracked_platform_source": true,
+  "build_output_source_comparisons": [
+    {
+      "name": "Hexalith.EventStore.DomainService",
+      "sha256": "eb056399e645b9ed2f1505b565171655e9c6bbe2038fa0ce9b093e36b7bdf07a",
+      "server_and_apphost_copies_match_source": true
+    },
+    {
+      "name": "Hexalith.EventStore.Client",
+      "sha256": "18042f1ae8371bf4db8426070d53a8292429a5c833a27e22213dfd10b058df84",
+      "server_and_apphost_copies_match_source": true
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts",
+      "sha256": "268347dd8008f38e77ed7df11d1a88f48fe194ce56efa8a287a0d007f687f9de",
+      "server_and_apphost_copies_match_source": true
+    },
+    {
+      "name": "Hexalith.EventStore.ServiceDefaults",
+      "sha256": "0d4ee6861243f13b590132e1175c546d2047fa8ed6af0895f49becc3f3573d9c",
+      "server_and_apphost_copies_match_source": true
+    }
+  ],
+  "comparison_limit": "On-disk copies only. Loaded-module audit remains limited to the three modules in verification.json; no Folders/Workers topology audit is claimed.",
+  "tracked_and_untracked_whitespace_issues": 0,
+  "matrix_component_coverage": [
+    {
+      "row": "Bound source",
+      "coverage": "ActualIssuerAndIndependentSdkGuardEverySourceRequest: none, missing-proof",
+      "ran_and_passed": true
+    },
+    {
+      "row": "Invalid admission",
+      "coverage": "WorkloadBindingGrantPolicyTest and all 15 actual Keycloak provider refusal controls",
+      "ran_and_passed": true
+    },
+    {
+      "row": "Existing traffic",
+      "coverage": "ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation: none, permissions; provider callback/query controls; Java unbound bootstrap/source controls",
+      "ran_and_passed": true
+    },
+    {
+      "row": "Invalid assertion",
+      "coverage": "ActualIssuerAndIndependentSdkGuardEverySourceRequest: signature, scope, expired, malformed, cancelled",
+      "ran_and_passed": true
+    },
+    {
+      "row": "Missing enrollment",
+      "coverage": "MissingProtectedEnrollmentDisablesEveryActualCaller; PartialOwnerReferencesRefuseBeforeCatalogCapture",
+      "ran_and_passed": true
+    }
+  ],
+  "final_test_output_summaries_independently_read": {
+    "java_policy": 23,
+    "sdk_component": 11,
+    "consumer_component": 5,
+    "apphost_focused": 8,
+    "server_existing_focused": 23,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "not_run": 0
+  },
+  "gate_disposition": {
+    "workflow_step": "03-implement",
+    "status": "in-progress",
+    "actual_owner_enrollment": "blocked: protected manifest/digest, approved trust and complete current grants absent",
+    "current_strict_acceptance": "not performed; prerequisite enrollment absent",
+    "independent_whole_story_review": "not entered; acceptance incomplete"
+  }
+}

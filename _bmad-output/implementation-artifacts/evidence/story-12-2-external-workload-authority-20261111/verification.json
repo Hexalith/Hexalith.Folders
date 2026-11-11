@@ -1,0 +1,335 @@
+{
+  "schema": "hexalith.external-workload-component-evidence/v1",
+  "captured_utc": "2026-11-11T13:32:06.016692+00:00",
+  "status": "in-progress; source and component checks passed; protected activation blocked",
+  "spec": "_bmad-output/implementation-artifacts/spec-12-2-external-workload-authority.md",
+  "root_baseline_commit": "5107222fe6be005e800f3d8bac296b89f5310087",
+  "platform_baseline_commit": "5adb00b2f30d2985ee0b1fb1abd713b10660dc48",
+  "configuration": {
+    "build": "Debug",
+    "references": "root-declared source",
+    "HexalithEventStoreVersion": "4.2.0",
+    "VersionSuffix": "story12-2-qualification",
+    "dependency_pins_changed": false,
+    "committed_or_pushed": false
+  },
+  "checks": [
+    {
+      "name": "platform-owner",
+      "command": "dotnet build src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:VersionSuffix=story12-2-qualification -p:NuGetAudit=false -m:1 -nr:false",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0,
+      "cwd": "references/Hexalith.Platform"
+    },
+    {
+      "name": "folders-apphost",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:VersionSuffix=story12-2-qualification -p:NuGetAudit=false -m:1 -nr:false",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "folders-server",
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:VersionSuffix=story12-2-qualification -p:NuGetAudit=false -m:1 -nr:false",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "name": "provider-policy",
+      "cwd": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding",
+      "command": "mvn -B -ntp package",
+      "exit_code": 0,
+      "tests": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "live-component",
+      "cwd": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding",
+      "command": "python3 verify_component.py --sdk-assembly <workspace>/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll --apphost-assembly <workspace>/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "exit_code": 0,
+      "sdk_tests": 11,
+      "consumer_tests": 5,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0
+    },
+    {
+      "name": "apphost-focused",
+      "command": "dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentConfigurationTests -class Hexalith.Folders.AppHost.Tests.FolderDurabilitySourceReadConfigurationTests",
+      "exit_code": 0,
+      "tests": 8,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0
+    },
+    {
+      "name": "server-existing-focused",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CurrentSdkSourceHeadBoundaryTests -class Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "exit_code": 0,
+      "tests": 23,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0
+    }
+  ],
+  "component": {
+    "qualification": "disposable-component-only",
+    "serverVersion": "26.6.4",
+    "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+    "providerSha256": "667a29dd9fc4d68a0ceb77bd3d1d475a632cfe06c7e9333b60b059978458226f",
+    "actualProtectedEnrollment": false,
+    "approvedTlsTrust": false,
+    "componentTlsValidation": true,
+    "independentRsaVerification": true,
+    "negativeControls": [
+      "credential",
+      "tenant",
+      "domain",
+      "audience",
+      "operation",
+      "missing",
+      "extra",
+      "duplicate",
+      "oversized",
+      "unbound",
+      "revoked",
+      "expired",
+      "ambiguous",
+      "caller",
+      "revision"
+    ],
+    "liveGrantReload": true,
+    "separateCallbackAndQueryGrants": true,
+    "sdkValidSignedScopeAndNaturalExpiryControls": true,
+    "consumerLiveControls": true,
+    "observedRemainingContainers": 0,
+    "observedRemainingTemporaryPaths": 0,
+    "privateDirectoryMode": "0700",
+    "privateFileMode": "0600"
+  },
+  "runtime_source_identity": {
+    "qualification": "SDK component process only; no current Folders/Workers topology claim",
+    "loaded_modules": [
+      {
+        "name": "Hexalith.EventStore.ServiceDefaults",
+        "version": "4.2.0.0",
+        "sha256": "0D4EE6861243F13B590132E1175C546D2047FA8ED6AF0895F49BECC3F3573D9C",
+        "mvid": "69f4655a-9686-4a3c-9140-f3eec9521c4f"
+      },
+      {
+        "name": "Hexalith.EventStore.Client",
+        "version": "4.2.0.0",
+        "sha256": "18042F1AE8371BF4DB8426070D53A8292429A5C833A27E22213DFD10B058DF84",
+        "mvid": "f7a4e594-71ea-4dca-8f31-0fa8fda53dec"
+      },
+      {
+        "name": "Hexalith.EventStore.Contracts",
+        "version": "4.2.0.0",
+        "sha256": "268347DD8008F38E77ED7DF11D1A88F48FE194CE56EFA8A287A0D007F687F9DE",
+        "mvid": "7b0a8a3c-4632-4c1c-a19c-7586b77147e2"
+      }
+    ],
+    "all_reported_hashes_and_mvids_match_debug_source": true
+  },
+  "test_assemblies": [
+    {
+      "logical_name": "Hexalith.Folders.Server.Tests",
+      "sha256": "61096bbb7d2e37c51de02a956bb10a057361bfa7c2ef3f10f04f38f81f59d43a"
+    },
+    {
+      "logical_name": "Hexalith.Folders.AppHost.Tests",
+      "sha256": "f285df56d0af1bc3a1550624ffeda3104d6c56b24727b65afed9d09451dbc4e3"
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "references/Hexalith.Platform/docs/security/workload-binding-enrollment.md",
+      "sha256": "96401fabb3a961c4402469e821d140d575ebb4fce3f34c3c12748a9644abfa80"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/.gitignore",
+      "sha256": "02e7b40893c74a993a139de7b0f85d8cf2eaea57d544effd576920a514872af4"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/pom.xml",
+      "sha256": "6479e76a58bbd3e1996d2074015e41f616e14b91b1ced153ab69637ea528900e"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/java/com/hexalith/security/WorkloadBindingClientPolicyExecutor.java",
+      "sha256": "8508a4cdff45abfb46caab6084d40e082040222c0fc216fc913b98e49c35aead"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/java/com/hexalith/security/WorkloadBindingClientPolicyExecutorFactory.java",
+      "sha256": "568d7777869fdd6c494aee0837e571c4cdffecfd9f75e68a84e638e25c327e8d"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/java/com/hexalith/security/WorkloadBindingGrantPolicy.java",
+      "sha256": "e932fa37b85d0a8c0628c564c7db606abaa72688f4aff8573dd67bb874512b2d"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/java/com/hexalith/security/WorkloadBindingProtocolMapper.java",
+      "sha256": "2804338e00c33abfa2cb60e99ed147b2a32df3e298436f61078a3122f182a91c"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/resources/META-INF/services/org.keycloak.protocol.ProtocolMapper",
+      "sha256": "75d55581c68b00cdca21fae50de5e9e59023fb875533ae76d8cc5117841f3a70"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/main/resources/META-INF/services/org.keycloak.services.clientpolicy.executor.ClientPolicyExecutorProviderFactory",
+      "sha256": "b0f103fbdb24168709d0ee91dc5f4b2e8c745cc5a623109d34d0d1cf3602d30f"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/src/test/java/com/hexalith/security/WorkloadBindingGrantPolicyTest.java",
+      "sha256": "3b2cccbf15db4223f740a4151da2b84a335c84e29abd5e9aac476d74299cbaa5"
+    },
+    {
+      "path": "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/verify_component.py",
+      "sha256": "7cd631a1d51e3c43626f49139241ecb6149e0621a8d49fb9d8c5375886c46d4d"
+    },
+    {
+      "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs",
+      "sha256": "68f4bfca1a2c5f812badc3df9aa0799acce9b583a78ee9180b2952cf3acf6d53"
+    },
+    {
+      "path": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "sha256": "e2bbd4d713a7da6d42a1d4b1d61ed89164c05e02e2fe785aab19015cccf62040"
+    },
+    {
+      "path": "src/Hexalith.Folders.AppHost/Program.cs",
+      "sha256": "cd34f01ad11b0c7033a5fde4470f00363df6f9ce406161a54021873c443d5ab3"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+      "sha256": "e35408f2ed12638fabb8863af1c4fde1690bc26d610ac77f20c44cee3ce3a977"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentComponentTests.cs",
+      "sha256": "46138180e993d0c8c33ed5cdaa5fa25e493a5f9ae7abc7537cf605d56e8a1f81"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentConfigurationTests.cs",
+      "sha256": "0dcc5dee6963326762595843dde1f0403a11944b14f831693486db36ace8a1ce"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/EnrolledWorkloadIssuerTransport.cs",
+      "sha256": "ac872e4fba9bb346767cd880484c5f3d746e9b33aa2b92b8cc243565ae66b00e"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/EnrolledWorkloadSourceBoundaryTests.cs",
+      "sha256": "ff359009ce06a58a302267d0c3d957f7cf8e7acb2654fdb52c497856645ebcfc"
+    }
+  ],
+  "unchanged_strict_and_companions": [
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+      "sha256": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs",
+      "sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+    },
+    {
+      "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+      "sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+    }
+  ],
+  "retained_strict_result": {
+    "qualification": "earlier-source failed result; never a current-source pass",
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-qualification-20261111.json",
+    "sha256": "51f247b10fbec83a0e3c8909338584881f90f5817e43ac665388f37b0c14d530",
+    "section": "strict_live_acceptance",
+    "utc_start": "2026-11-11T11:34:25.638738+00:00",
+    "exit_code": 1,
+    "failed": 1,
+    "skipped": 0,
+    "original_control": "HTTP 403",
+    "actual": "request canceled under unchanged 75-second policy",
+    "current_strict_run_performed": false,
+    "strict_body_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+  },
+  "resolved_validation_failures": [
+    {
+      "command": "aspire run --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --non-interactive",
+      "result": "CS1704: mixed source/package Hexalith.Commons.UniqueIds; no AppHost started",
+      "resolution": "Explicit Debug/source restore; subsequent focused builds passed."
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:NuGetAudit=false -m:1 -nr:false",
+      "result": "One overlapping build failed MSB4018 on shared EventStore.Server.dll",
+      "resolution": "Serialized subsequent builds and test runs; final build passed."
+    },
+    {
+      "command": "python3 verify_component.py --sdk-assembly <Debug Server tests assembly>",
+      "result": "First SDK attempt: EventStore.DomainService referenced Client 4.2.0 while copied Client was 4.1.0; 11 tests failed before issuance",
+      "resolution": "Explicit existing catalog HexalithEventStoreVersion=4.2.0 and stable VersionSuffix; final 11 tests and identity assertions passed."
+    }
+  ],
+  "activation_blockers": [
+    "Protected Folders:WorkloadEnrollment:ManifestPath and independently approved ManifestSha256 references are absent.",
+    "Owner-approved TLS origin, current realm RSA signer/SPKI and exact current grants for the complete actual isolated cohort have not been supplied or qualified.",
+    "Current audited Folders/Workers source runtime and unchanged strict acceptance including the original 403 control remain unqualified."
+  ],
+  "separate_gates": {
+    "privacy": "not granted by component results",
+    "governance": "not granted by component results",
+    "performance": "not granted by component results"
+  },
+  "cleanup": {
+    "observed_owned_containers_remaining": 0,
+    "observed_owned_temp_paths_remaining": 0,
+    "owned_commands_or_apphosts_running": false,
+    "observed_session_component_temp_paths_remaining": 0
+  },
+  "restore_checks": [
+    {
+      "cwd": "references/Hexalith.Platform",
+      "command": "dotnet restore src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:VersionSuffix=story12-2-qualification -p:NuGetAudit=false",
+      "exit_code": 0
+    },
+    {
+      "cwd": ".",
+      "command": "dotnet restore tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:VersionSuffix=story12-2-qualification -p:NuGetAudit=false",
+      "exit_code": 0
+    },
+    {
+      "cwd": ".",
+      "command": "dotnet restore tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=4.2.0 -p:NuGetAudit=false",
+      "exit_code": 0
+    }
+  ],
+  "parent_finalization": {
+    "captured_utc": "2026-11-11T13:38:37.907624+00:00",
+    "correction": "Removed one final blank line from the new configuration test; production behavior unchanged.",
+    "source_path": "tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentConfigurationTests.cs",
+    "prior_source_sha256": "7d67191f5afcc8176ffd79e60d87b79f3b1488cb143f5697cdce0e419bce87bb",
+    "current_source_sha256": "0dcc5dee6963326762595843dde1f0403a11944b14f831693486db36ace8a1ce",
+    "prior_apphost_test_assembly_sha256": "7df235f228021ccd5ce67a25faefa7847ece6ad5d09f4c5905d93fb9da9e5fa2",
+    "current_apphost_test_assembly_sha256": "f285df56d0af1bc3a1550624ffeda3104d6c56b24727b65afed9d09451dbc4e3",
+    "apphost_rebuild": {
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    "apphost_focused_rerun": {
+      "tests": 8,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0
+    },
+    "combined_component_rerun": {
+      "sdk_tests": 11,
+      "consumer_tests": 5,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0
+    },
+    "all_source_and_protected_body_hashes_verified": true,
+    "observed_remaining_owned_containers": 0,
+    "observed_remaining_owned_temporary_paths": 0
+  }
+}
