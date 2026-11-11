@@ -13,7 +13,7 @@ dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=tr
 dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli
 ```
 
-The script runs the focused OpenAPI gate tests and generated-client consistency tests. The McpCli namespace selector runs separately in the workflow and in the command above, covering decorated-operation eligibility, routing, spine drift, identifiers and packed closure independently of the PD10-red OpenAPI set. It is validation-mode only and must leave tracked generated output unchanged.
+The script runs the focused OpenAPI gate tests and generated-client consistency tests. It is validation-mode only and must leave tracked generated output unchanged. The McpCli namespace selector runs separately in the workflow and in the command above, covering decorated-operation eligibility, routing, spine drift, identifiers and packed closure independently of the PD10-red OpenAPI set.
 
 ## CI Job
 

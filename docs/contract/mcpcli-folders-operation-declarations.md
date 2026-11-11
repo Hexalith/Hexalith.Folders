@@ -38,10 +38,13 @@ Exemptions used by the drift gate:
 - **E1:** `requestSchemaVersion` is implied by v2 admission, including nested
   request objects (Story 5.13).
 - **E2:** C08 and C13 map to `UpdateFolderAclEntry`; `effect` is derived
-  from operation identity, not a payload member (V08). Canonical deserialization
-  rejects any caller-supplied `effect`. Story 5.13 supplies `grant` or `revoke`
-  from the wire type when translating to `UpdateFolderAclEntry` and the domain
-  ACL payload; the domain already selects intent from that command type.
+  from operation identity, not a payload member (V08). McpCli validates raw JSON
+  against its exported schema, whose `additionalProperties: false` rejects any
+  caller-supplied `effect`. The local canonical STJ deserialization test is mirror
+  evidence only; McpCli forwards the payload without deserializing it. Story 5.13
+  also owns validation for callers reaching the Gateway directly and supplies
+  `grant` or `revoke` from the wire type when translating to `UpdateFolderAclEntry`
+  and the domain ACL payload; the domain already selects intent from that command type.
 - **E3:** C10 maps to the `MutateFilesRequest` component and uses AddFile's path
   and task scope, preserving the canonical batch shape.
 - **E4:** C06 adds caller-supplied `FolderId`; the domain requires
@@ -50,7 +53,19 @@ Exemptions used by the drift gate:
   `ProviderBindingActorId` and reject an actor equal to the tenant before lookup.
 - **E6:** The optional `X-Hexalith-Task-Id` on C01, C02, C04, C05, C06,
   C07, C08 and C13 is carried by McpCli `extensions["taskId"]`, not a payload
-  member. Story 5.13/G3 owns the extension allowlist, validation and task association.
+  member. The current domain requires a canonical `extensions["taskId"]` on every
+  Gateway-dispatched Command; this is the platform-native task carrier. McpCli
+  profiles have an empty extension allowlist by default. For an empty allowlist,
+  run `config set <profile> allowedExtensions taskId` before any of the 13 Commands
+  can carry task context. This setter replaces the entire allowlist. For an
+  existing allowlist, preserve every currently permitted key and include `taskId`
+  in the comma-separated value, for example `existingKey,taskId` when `existingKey`
+  is already permitted. McpCli enrollment (5.8/6.1 vectors) and the Folders
+  5.10/5.11 parity setup own this profile prerequisite. Story 5.13 validates the
+  task-value grammar and association, and reconciles the payload `TaskId` with
+  the extension on C03, C09, C10, C11 and C12. Values ending in `--` are rejected
+  by both McpCli and the Gateway for every caller, including REST; see the named
+  platform gap below.
 
 | ID | Owner eligibility | CLR type | Explicit wire name | Spine operation/component | Aggregate source | Exemptions | Fixed freshness |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -111,8 +126,8 @@ C09, C10, C11 and C12 as declared by `FoldersCommandCatalog`; every Command
 requires a caller-supplied idempotency key independently of message identity.
 The drift gate derives both command headers' schema and required flags from the
 spine, checks duplicate body/header task inputs agree, and records optional task
-association through envelope extensions (E6). This preserves optional association
-rather than accepting its loss.
+association through envelope extensions (E6). Optional association is preserved
+when the caller profile allowlists `taskId`.
 
 ## V02 typed paging approval
 
@@ -156,10 +171,28 @@ reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
 - **command-payload-translation — Story 5.13:** the decorated v2 request shapes
   cannot be forwarded unchanged to the existing domain payload records under the
   same wire names. Admission must translate every Command listed below, supply
-  `requestSchemaVersion: v2` at each required root/nested location, keep caller
-  idempotency and task context distinct from generated message identity, and
-  validate or resolve the domain evidence before execution. No handler change is
-  made by 5.12.
+  each domain payload's required `requestSchemaVersion` at the value the domain
+  accepts (today `v1`, mirroring `Pd10V2CandidateCompatibilitySeam`'s root and nested
+  `branchRefPolicy` v2-to-v1 rewrite), keep caller idempotency and task context
+  distinct from generated message identity, and validate or resolve the domain
+  evidence before execution. No handler change is made by 5.12.
+- **task-extension-profile — McpCli enrollment and Folders parity setup:**
+  McpCli 5.8/6.1 vectors and Folders 5.10/5.11 must configure the selected caller
+  profile to allow `taskId` for all 13 Commands. For an empty allowlist, use
+  `config set <profile> allowedExtensions taskId`. The setter replaces the entire
+  allowlist, so preserve all currently permitted keys in its comma-separated value
+  when adding `taskId` to an existing allowlist. The allowlist is empty by default
+  and enforced by McpCli before dispatch; it is
+  not a Story 5.13 server setting. Task association through extensions is absent
+  from the operation payload schema. Story 5.13 validates canonical extension
+  values and reconciles them with payload `TaskId` on the five task-scoped Commands.
+- **task-extension-trailing-double-hyphen — platform-wide Gateway limit:**
+  v2 task identifiers such as `opaque_TaskAbC012345678--` satisfy the opaque
+  grammar but are rejected as extension values by the injection filter `--\s*$`
+  in both McpCli and the EventStore Gateway. This affects every caller, REST
+  included, and is a platform limitation rather than an accepted McpCli behavior
+  loss. Stories 5.13 and the EventStore/Gateway maintainers own grammar
+  reconciliation without silently converting identifiers.
 - **provider-binding-reserved-actor — Stories 5.13 and 5.14:** C05 admission
   (5.13), Q13 `GetProviderBinding` and Q35 `ValidateProviderReadiness` handlers
   (5.14) must derive the reserved `ProviderBindingActorId` from the public
@@ -173,14 +206,22 @@ reference for McpCli enrollment; the runtime lint gate remains McpCli-owned.
   `endOffset - startOffset <= 262144`; Story 5.14 enforces these derived rules
   with the spine's 400/422 outcomes before observation. Static member ranges
   cannot reject a reversed or oversized window.
+- **tenant-wide-query-aggregate — Story 5.14:** Q16 `GetProviderSupportEvidence`
+  declares neither an aggregate accessor nor a constant. McpCli still requires
+  an envelope `aggregateId`, so callers must supply this routing input separately
+  from the query payload. Story 5.14 selects and validates the authorized
+  tenant-wide scope represented by that value. This declaration chooses no
+  routing constant and does not treat the caller's aggregate as tenant authority.
 - **G6 — Story 5.10:** provider credentials by reference, authorized egress,
   readiness, failure and reconciliation evidence.
 - **staged-content-above-inline — McpCli 5.2:** larger content remains deferred;
   retaining the typed spine stream descriptor does not approve a transport or
   demonstrate a configured live content store.
 
-The command translation gap covers all thirteen Commands; the payload names are
-from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only evidence).
+## Command payload translation handoff
+
+The `command-payload-translation` gap covers all thirteen Commands; the payload
+names are from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only evidence).
 
 | Candidate and declared command | Existing domain payload and translation requirement (Story 5.13) |
 | --- | --- |
@@ -198,11 +239,13 @@ from `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` (read-only evidence)
 | C12 ReleaseWorkspaceLock | `ReleaseWorkspaceLockPayload`: supply the discriminator and reconcile task/lock ownership proof and release intent. |
 | C13 RevokeFolderAccess | `FolderAccessMutationPayload`: derive revoke from the wire type (E2) and translate to authorized `operations[{principalKind,principalId,action}]`. |
 
-- **identifier-aggregate-grammar:** String payload values round-trip unchanged,
-  including legacy values. McpCli aggregate routing accepts 1–256 ASCII
-  letters/digits/dot/underscore/hyphen and requires alphanumeric first/last
-  characters. The following accepted payload spellings cannot currently route
-  as aggregates and are asserted as explicit gaps, without conversion:
+## Identifier aggregate grammar gap
+
+**identifier-aggregate-grammar:** String payload values round-trip unchanged,
+including legacy values. McpCli aggregate routing accepts 1–256 ASCII
+letters/digits/dot/underscore/hyphen and requires alphanumeric first/last
+characters. The following accepted payload spellings cannot currently route
+as aggregates and are asserted as explicit gaps, without conversion:
 
 | Named gap | Unmodified sample | Source grammar |
 | --- | --- | --- |

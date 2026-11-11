@@ -6,14 +6,14 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Bind an existing repository reference to a folder where supported.</summary>
+/// <summary>Bind an existing repository reference to a folder where supported. Requires canonical extensions.taskId; the caller profile must allowlist taskId.</summary>
 /// <param name="ProviderBindingRef">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="ExternalRepositoryRef">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="BranchRefPolicy">The branchRefPolicy value.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Bind an existing repository reference to a folder where supported.")]
-[HexalithCommand("Bind an existing repository reference to a folder where supported.", Domain = "folders",
+[Description("Bind an existing repository reference to a folder where supported. Requires canonical extensions.taskId; the caller profile must allowlist taskId.")]
+[HexalithCommand("Bind an existing repository reference to a folder where supported. Requires canonical extensions.taskId; the caller profile must allowlist taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.BindRepository",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record BindRepository(

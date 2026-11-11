@@ -47,6 +47,7 @@ jobs:
       - name: Run McpCli contract gates
         if: ${{ !cancelled() }}
         shell: pwsh
+        timeout-minutes: 15
         run: |
           $output = & dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli 2>&1
           $exitCode = $LASTEXITCODE

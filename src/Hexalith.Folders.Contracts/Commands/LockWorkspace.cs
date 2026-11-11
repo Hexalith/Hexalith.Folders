@@ -6,15 +6,15 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Accept task-scoped workspace lock acquisition.</summary>
+/// <summary>Accept task-scoped workspace lock acquisition. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.</summary>
 /// <param name="LockIntent">The lockIntent value.</param>
 /// <param name="RequestedLeaseSeconds">Sets the initial lease expiry so `expiresAt` equals the lock `effectiveAt` plus `requestedLeaseSeconds`; the lock is expired at `now &gt;= expiresAt` unless a successful authorized renewal has already established later effective and expiry timestamps. Renewal timing and the expired-to-stale boundary are governed by docs/exit-criteria/c7-lock-authorization-timing.md version 1.0.0; default lease duration and clock-skew policy remain deferred.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="WorkspaceId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="TaskId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Accept task-scoped workspace lock acquisition.")]
-[HexalithCommand("Accept task-scoped workspace lock acquisition.", Domain = "folders",
+[Description("Accept task-scoped workspace lock acquisition. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.")]
+[HexalithCommand("Accept task-scoped workspace lock acquisition. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.LockWorkspace",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record LockWorkspace(

@@ -6,13 +6,13 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Create a tenant-scoped folder identity.</summary>
+/// <summary>Create a tenant-scoped folder identity. Requires canonical extensions.taskId; the caller profile must allowlist taskId.</summary>
 /// <param name="FolderMetadata">The folderMetadata value.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="ParentFolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Create a tenant-scoped folder identity.")]
-[HexalithCommand("Create a tenant-scoped folder identity.", Domain = "folders",
+[Description("Create a tenant-scoped folder identity. Requires canonical extensions.taskId; the caller profile must allowlist taskId.")]
+[HexalithCommand("Create a tenant-scoped folder identity. Requires canonical extensions.taskId; the caller profile must allowlist taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.CreateFolder",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record CreateFolder(

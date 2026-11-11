@@ -6,7 +6,7 @@ using Hexalith.Folders.Contracts.Commands.Models;
 
 namespace Hexalith.Folders.Contracts.Commands;
 
-/// <summary>Accept task-scoped workspace lock release.</summary>
+/// <summary>Accept task-scoped workspace lock release. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.</summary>
 /// <param name="LockId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="LockOwnershipProof">Non-secret opaque lock proof scoped to an authorized tenant, folder, workspace, task, and lock. This value proves lock ownership only inside that scope and is not authentication, provider access, session material, refresh material, or an authorization override.</param>
 /// <param name="ReleaseReasonCode">The releaseReasonCode value.</param>
@@ -14,8 +14,8 @@ namespace Hexalith.Folders.Contracts.Commands;
 /// <param name="WorkspaceId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="IdempotencyKey">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="TaskId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
-[Description("Accept task-scoped workspace lock release.")]
-[HexalithCommand("Accept task-scoped workspace lock release.", Domain = "folders",
+[Description("Accept task-scoped workspace lock release. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.")]
+[HexalithCommand("Accept task-scoped workspace lock release. Requires canonical extensions.taskId; the caller profile must allowlist taskId. Payload TaskId must match extensions.taskId.", Domain = "folders",
     WireType = "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
     AggregateIdProperty = nameof(FolderId), IdempotencyKeyProperty = nameof(IdempotencyKey))]
 public sealed record ReleaseWorkspaceLock(

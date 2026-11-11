@@ -159,13 +159,19 @@ public sealed class ContractSpineDriftGateTests
 
         // Required task flags and duplicate body/header mismatches fail during extraction;
         // represented header members fail during the normal reflected-shape comparison.
-        Exception? failure = Record.Exception(() =>
+        ShouldAssertException failure = Should.Throw<ShouldAssertException>(() =>
         {
             var differences = new List<string>();
             CompareObject(spine, row.Type, ExpectedFields(spine, row), row.Id + "/" + row.Type.Name, differences, row.Id);
             differences.ShouldBeEmpty(string.Join(Environment.NewLine, differences));
         });
-        failure.ShouldNotBeNull(id + " " + name + " " + mutation);
+        string field = name switch
+        {
+            "Idempotency-Key" => "idempotencyKey",
+            "taskId" => "taskId",
+            _ => mutation == "required" ? "task-header" : row.TaskScoped ? "taskId" : name,
+        };
+        failure.Message.ShouldContain(field, Case.Sensitive, id + " " + name + " " + mutation);
     }
 
     [Fact]
@@ -267,6 +273,29 @@ public sealed class ContractSpineDriftGateTests
     }
 
     [Fact]
+    public void CanonicalBatchRootAllOfKeepsTheSchemaVersionExemption()
+    {
+        JsonObject spine = McpCliContractTestSupport.LoadSpine();
+        JsonObject request = spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject();
+        JsonObject properties = request["properties"]!.AsObject();
+        JsonNode discriminator = properties["requestSchemaVersion"]!.DeepClone();
+        properties.Remove("requestSchemaVersion");
+        JsonArray required = request["required"]!.AsArray();
+        required.Remove(required.Single(value => value!.GetValue<string>() == "requestSchemaVersion"));
+        request["allOf"] = new JsonArray(new JsonObject
+        {
+            ["properties"] = new JsonObject { ["requestSchemaVersion"] = discriminator },
+            ["required"] = new JsonArray("requestSchemaVersion"),
+        });
+
+        OperationDeclaration row = McpCliContractTestSupport.Operations.Single(item => item.Id == "C10");
+        DecisionExemptionCodes(spine, row).ShouldBe("E1, E3");
+        var differences = new List<string>();
+        CompareObject(spine, row.Type, ExpectedFields(spine, row), "C10/MutateFiles", differences, row.Id);
+        differences.ShouldBeEmpty(string.Join(Environment.NewLine, differences));
+    }
+
+    [Fact]
     public void DriftGateRejectsIgnoredAndRemovedEffectiveJsonMembers()
     {
         JsonObject spine = McpCliContractTestSupport.LoadSpine();
@@ -311,6 +340,28 @@ public sealed class ContractSpineDriftGateTests
         var differences = new List<string>();
         CompareObject(spine, typeof(PutFileInline), ObjectFields(spine, inline), "PutFileInline", differences, "C10");
         differences.ShouldContain(message => message.Contains("PutFileInline.contentBytes: " + field, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void EmptyInlineContentIsValidButContentBytesPresenceRemainsRequired()
+    {
+        var inline = new PutFileInline("application/octet-stream", string.Empty);
+        var validation = new List<ValidationResult>();
+        Validator.TryValidateObject(inline, new ValidationContext(inline), validation, validateAllProperties: true)
+            .ShouldBeTrue(string.Join(Environment.NewLine, validation));
+        Convert.FromBase64String(inline.ContentBytes).ShouldBeEmpty();
+
+        JsonSerializerOptions options = McpCliContractTestSupport.CreateCanonicalPayloadOptions();
+        const string payload = """{"mediaType":"application/octet-stream","contentBytes":""}""";
+        JsonSerializer.Deserialize<PutFileInline>(payload, options)!.ShouldBe(inline);
+        JsonSerializer.Serialize(inline, options).ShouldBe(payload);
+        Should.Throw<JsonException>(() => JsonSerializer.Deserialize<PutFileInline>(
+            """{"mediaType":"application/octet-stream"}""", options)).Message.ShouldContain("contentBytes");
+
+        PutFileInline missing = inline with { ContentBytes = null! };
+        validation.Clear();
+        Validator.TryValidateObject(missing, new ValidationContext(missing), validation, validateAllProperties: true).ShouldBeFalse();
+        validation.ShouldContain(result => result.MemberNames.Contains(nameof(PutFileInline.ContentBytes), StringComparer.Ordinal));
     }
 
     private static Dictionary<string, JsonObject> ExpectedFields(JsonObject spine, OperationDeclaration row)
@@ -407,7 +458,9 @@ public sealed class ContractSpineDriftGateTests
     internal static string DecisionExemptionCodes(JsonObject spine, OperationDeclaration row)
     {
         JsonObject operation = McpCliContractTestSupport.FindOperation(spine, row.Id == "C10" ? "AddFile" : row.SpineOperation);
-        JsonObject body = row.Id == "C10" ? spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject() : RequestSchema(spine, operation);
+        JsonObject body = row.Id == "C10"
+            ? McpCliContractTestSupport.Resolve(spine, spine["components"]!["schemas"]!["MutateFilesRequest"]!.AsObject())
+            : RequestSchema(spine, operation);
         var codes = new List<string>();
         if (body["properties"]?.AsObject().ContainsKey("requestSchemaVersion") == true)
         {
