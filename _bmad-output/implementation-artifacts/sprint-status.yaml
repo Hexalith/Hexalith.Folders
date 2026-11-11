@@ -165,7 +165,8 @@ development_status:
   5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: done
   5-6-validate-behavioral-parity-across-cli-and-mcp: done
   5-7-validate-mixed-surface-handoff-scenario: done
-  5-8-enroll-workspace-preparation-and-lock-lifecycle-through-mcpcli: backlog
+  5-8-enroll-workspace-preparation-and-lock-lifecycle-through-mcpcli: in-progress
+  # blocked by 4.19, 5.13–5.14, and McpCli Folders enrollment.
   5-9-enroll-file-context-commit-status-error-and-audit-operations: backlog
   5-10-enroll-tenant-folder-acl-provider-readiness-and-binding-op: backlog
   5-11-prove-four-surface-parity-and-mixed-surface-handoff-through: backlog
