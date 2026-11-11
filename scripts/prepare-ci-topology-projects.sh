@@ -58,6 +58,32 @@ selected_status="$(git -C "$module_path" status --porcelain --untracked-files=al
 [[ -f "$module_path/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj" ]] || fail "Memories server project metadata is unavailable."
 echo "[ci-topology] Prepared $module_path at $recorded_sha."
 
+# Package-mode contract tests inspect McpCli's immutable inventory and serializer
+# source. Its update=none root must be present without enabling source references.
+module_path=references/Hexalith.McpCli
+module_url=https://github.com/Hexalith/Hexalith.McpCli.git
+[[ ! -L "$module_path" ]] || fail "The McpCli root path must not be a symbolic link."
+[[ "$(git config --file .gitmodules --get-all submodule.Hexalith.McpCli.path)" = "$module_path" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.McpCli.url)" = "$module_url" &&
+   "$(git config --file .gitmodules --get-all submodule.Hexalith.McpCli.update)" = none ]] ||
+    fail "The root McpCli declaration is missing or changed."
+[[ "$(git config --file .gitmodules --get-regexp '^submodule\..*\.path$' | awk -v path="$module_path" '$2 == path { count++ } END { print count+0 }')" = 1 ]] ||
+    fail "The McpCli path must have exactly one root declaration."
+configured_url="$(git config --get submodule.Hexalith.McpCli.url || true)"
+[[ -z "$configured_url" || "$configured_url" = "$module_url" ]] || fail "The local McpCli URL differs from the root declaration."
+read -r mode object_type recorded_sha recorded_path <<< "$(git ls-tree HEAD -- "$module_path")"
+[[ "$mode" = 160000 && "$object_type" = commit && "$recorded_sha" =~ ^[0-9a-f]{40}$ && "$recorded_path" = "$module_path" ]] ||
+    fail "McpCli must be a root gitlink recorded in HEAD."
+git diff --cached --quiet HEAD -- "$module_path" || fail "The McpCli gitlink has staged changes."
+git -c submodule.recurse=false -c fetch.recurseSubmodules=false submodule update --init --checkout -- "$module_path"
+[[ "$(git -C "$module_path" rev-parse HEAD)" = "$recorded_sha" ]] || fail "The McpCli checkout differs from the recorded gitlink."
+selected_status="$(git -C "$module_path" status --porcelain --untracked-files=all)" || fail "Cannot inspect the McpCli checkout worktree."
+[[ -z "$selected_status" ]] || fail "The McpCli checkout must be clean, including untracked metadata."
+[[ -f "$module_path/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md" &&
+   -f "$module_path/src/Hexalith.McpCli.Core/Serialization/McpCliJson.cs" ]] ||
+    fail "McpCli's immutable Folders inventory or serializer source is unavailable."
+echo "[ci-topology] Prepared $module_path at $recorded_sha."
+
 # The AppHost resolves the real Tenants project during model-only tests. Its
 # update=none declaration makes the generic submodule initializer skip it.
 module_path=references/Hexalith.Tenants

@@ -15,6 +15,11 @@ SCRIPT = ROOT / "scripts/prepare-ci-topology-projects.sh"
 MODULE = "references/Hexalith.Memories"
 PLATFORM_MODULE = "references/Hexalith.Platform"
 TENANTS_MODULE = "references/Hexalith.Tenants"
+MCPCLI_MODULE = "references/Hexalith.McpCli"
+MCPCLI_INPUTS = (
+    "_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md",
+    "src/Hexalith.McpCli.Core/Serialization/McpCliJson.cs",
+)
 RECORDED_SHA = "0123456789abcdef0123456789abcdef01234567"
 UPDATE = [
     "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
@@ -27,6 +32,10 @@ PLATFORM_UPDATE = [
 TENANTS_UPDATE = [
     "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
     "submodule", "update", "--init", "--checkout", "--", TENANTS_MODULE,
+]
+MCPCLI_UPDATE = [
+    "-c", "submodule.recurse=false", "-c", "fetch.recurseSubmodules=false",
+    "submodule", "update", "--init", "--checkout", "--", MCPCLI_MODULE,
 ]
 
 
@@ -63,12 +72,17 @@ class PrepareCiTopologyProjectsTests(unittest.TestCase):
             '[submodule "Hexalith.Tenants"]\n'
             f'\tpath = {TENANTS_MODULE}\n'
             '\turl = https://github.com/Hexalith/Hexalith.Tenants.git\n'
+            '\tupdate = none\n'
+            '[submodule "Hexalith.McpCli"]\n'
+            f'\tpath = {MCPCLI_MODULE}\n'
+            '\turl = https://github.com/Hexalith/Hexalith.McpCli.git\n'
             '\tupdate = none\n', encoding="utf-8",
         )
         self.git("add", ".gitmodules", "Hexalith.Folders.slnx", "scripts")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{MODULE}")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{PLATFORM_MODULE}")
         self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{TENANTS_MODULE}")
+        self.git("update-index", "--add", "--cacheinfo", f"160000,{RECORDED_SHA},{MCPCLI_MODULE}")
         self.git("commit", "-m", "test: declare standalone Folders fixture")
 
         # Read-only Git probes use the isolated real fixture. The only update
@@ -95,6 +109,22 @@ if 'submodule' in arguments:
     tenant_project = pathlib.Path(os.environ['GITHUB_WORKSPACE']) / 'references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj'
     tenant_project.parent.mkdir(parents=True, exist_ok=True)
     tenant_project.write_text('<Project />\\n', encoding='utf-8')
+    if arguments[-1] == 'references/Hexalith.McpCli':
+        for relative in ('_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md',
+                         'src/Hexalith.McpCli.Core/Serialization/McpCliJson.cs'):
+            if relative == os.environ.get('TEST_MCPCLI_MISSING_INPUT'):
+                continue
+            path = pathlib.Path(os.environ['GITHUB_WORKSPACE']) / arguments[-1] / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('fixture\\n', encoding='utf-8')
+    raise SystemExit(0)
+if arguments == ['-C', 'references/Hexalith.McpCli', 'rev-parse', 'HEAD']:
+    print(os.environ.get('TEST_MCPCLI_CHECKOUT_SHA', os.environ['TEST_RECORDED_SHA']))
+    raise SystemExit(0)
+if arguments == ['-C', 'references/Hexalith.McpCli', 'status', '--porcelain', '--untracked-files=all']:
+    if os.environ.get('TEST_MCPCLI_STATUS_EXIT'):
+        raise SystemExit(int(os.environ['TEST_MCPCLI_STATUS_EXIT']))
+    print(os.environ.get('TEST_MCPCLI_STATUS', ''), end='')
     raise SystemExit(0)
 if arguments in (['-C', 'references/Hexalith.Memories', 'rev-parse', 'HEAD'],
                  ['-C', 'references/Hexalith.Platform', 'rev-parse', 'HEAD'],
@@ -152,14 +182,57 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
         self.git("add", ".gitmodules")
         self.git("commit", "-m", "test: alter fixture declaration")
 
-    def test_standalone_dispatch_checks_out_recorded_memories_tenants_and_platform_roots(self) -> None:
+    def test_standalone_dispatch_initializes_missing_recorded_mcpcli_and_topology_roots(self) -> None:
+        self.assertFalse((self.workspace / MCPCLI_MODULE).exists())
         result = self.prepare()
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-        self.assertEqual([UPDATE, TENANTS_UPDATE, PLATFORM_UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
+        self.assertEqual([UPDATE, MCPCLI_UPDATE, TENANTS_UPDATE, PLATFORM_UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
         self.assertIn("fixture-dapr-cli", (self.root / "github-path").read_text())
         self.assertIn(RECORDED_SHA, result.stdout)
         self.assertFalse((self.workspace / MODULE / ".git").exists())
         self.assertFalse((self.workspace / PLATFORM_MODULE / ".git").exists())
+        for relative in MCPCLI_INPUTS:
+            self.assertTrue((self.workspace / MCPCLI_MODULE / relative).is_file())
+        self.assertFalse((self.workspace / MCPCLI_MODULE / "references").exists())
+
+    def test_mcpcli_contract_inputs_must_exist_after_initialization(self) -> None:
+        for relative in MCPCLI_INPUTS:
+            with self.subTest(relative=relative):
+                shutil.rmtree(self.workspace / MCPCLI_MODULE, ignore_errors=True)
+                result = self.prepare(overrides={"TEST_MCPCLI_MISSING_INPUT": relative})
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn("inventory or serializer source is unavailable", result.stderr)
+                self.assertNotIn(f"Prepared {MCPCLI_MODULE}", result.stdout)
+
+    def test_mcpcli_checkout_must_match_the_recorded_revision(self) -> None:
+        result = self.prepare(overrides={"TEST_MCPCLI_CHECKOUT_SHA": "a" * 40})
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("McpCli checkout differs from the recorded gitlink", result.stderr)
+
+    def test_mcpcli_checkout_must_be_clean_and_inspectable(self) -> None:
+        for overrides, diagnostic in (
+            ({"TEST_MCPCLI_STATUS": "?? untracked-metadata"}, "McpCli checkout must be clean"),
+            ({"TEST_MCPCLI_STATUS_EXIT": "128"}, "Cannot inspect the McpCli checkout worktree"),
+        ):
+            with self.subTest(overrides=overrides):
+                result = self.prepare(overrides=overrides)
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn(diagnostic, result.stderr)
+                self.assertNotIn(f"Prepared {MCPCLI_MODULE}", result.stdout)
+
+    def test_rejects_mcpcli_url_override_before_its_checkout(self) -> None:
+        self.git("config", "submodule.Hexalith.McpCli.url", "file:///outside")
+        result = self.prepare()
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("local McpCli URL differs", result.stderr)
+        self.assertEqual([UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
+
+    def test_rejects_a_staged_mcpcli_gitlink_before_its_checkout(self) -> None:
+        self.git("update-index", "--cacheinfo", f"160000,{'a' * 40},{MCPCLI_MODULE}")
+        result = self.prepare()
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("McpCli gitlink has staged changes", result.stderr)
+        self.assertEqual([UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
 
     def test_workflow_selects_the_existing_package_prepare_hook(self) -> None:
         self.assertIn("      package-prepare-script: scripts/prepare-ci-topology-projects.sh\n",

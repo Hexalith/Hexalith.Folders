@@ -19,6 +19,25 @@ jobs:
     with:
       solution: Hexalith.Folders.CI.slnx
       additional-sdk-version: '10.0.x'
+      # Explicit Keycloak/Platform proof cases run only through their separate component verifier.
+      # Unknown NotRunnable results continue to fail shared CI.
+      allowed-not-runnable-tests: |
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"none\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"credential\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"caller\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"tenant\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"audience\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"signature\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"scope\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"expired\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"malformed\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"missing-proof\")
+        Hexalith.Folders.Server.Tests.EnrolledWorkloadSourceBoundaryTests.ActualIssuerAndIndependentSdkGuardEverySourceRequest(fault: \"cancelled\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"none\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"probe\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"tls\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"signer\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"permissions\")
       package-prepare-script: scripts/prepare-ci-topology-projects.sh
       build-timeout-minutes: 45
       test-platform: microsoft-testing-platform
