@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-11-11T23:43:32.944528+00:00",
+  "version": "1.4.0",
+  "source_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+  "publication_workflow": {
+    "url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43120187462",
+    "conclusion": "success"
+  },
+  "source_checks": [
+    {
+      "name": "CI",
+      "url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43117191737",
+      "conclusion": "success"
+    },
+    {
+      "name": "CodeQL",
+      "url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43117191509",
+      "conclusion": "success"
+    },
+    {
+      "name": "Commitlint",
+      "url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43117192400",
+      "conclusion": "success"
+    },
+    {
+      "name": "contract-spine-gates",
+      "url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43117191081",
+      "conclusion": "success"
+    }
+  ],
+  "github_release": {
+    "tag_name": "v1.4.0",
+    "html_url": "https://github.com/Hexalith/Hexalith.Folders/releases/tag/v1.4.0",
+    "published_at": "2026-11-11T23:34:38Z",
+    "draft": false,
+    "prerelease": false,
+    "source_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+    "assets": [
+      {
+        "name": "Hexalith.Folders.1.4.0.nupkg",
+        "size": 708621,
+        "state": "uploaded",
+        "digest": "sha256:770af452ad1f05807dc223ac21e03c30e31a60e1545310e64261b7f576e68eb0",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.1.4.0.nupkg"
+      },
+      {
+        "name": "Hexalith.Folders.1.4.0.snupkg",
+        "size": 194220,
+        "state": "uploaded",
+        "digest": "sha256:8541acdce6741d059f75e6d9ad4f4902aa86fbe816faf3a5480aab8288716eca",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.1.4.0.snupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Aspire.1.4.0.nupkg",
+        "size": 9071,
+        "state": "uploaded",
+        "digest": "sha256:a3381400fe2745200f9e0858a188f86e94890259a3c87682739c5d6c669f1a08",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Aspire.1.4.0.nupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Aspire.1.4.0.snupkg",
+        "size": 15880,
+        "state": "uploaded",
+        "digest": "sha256:8c4cadd3133179f817508ad22f17e107d764371de55e50ccf54bc74c24675899",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Aspire.1.4.0.snupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Client.1.4.0.nupkg",
+        "size": 225167,
+        "state": "uploaded",
+        "digest": "sha256:1b77e9bfc9571bb234bda29d59cb5a7509cbd753041ae47f9ff4baf6e8511b0c",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Client.1.4.0.nupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Client.1.4.0.snupkg",
+        "size": 57700,
+        "state": "uploaded",
+        "digest": "sha256:6cf39f7e80045ac32eb84670d8ae96d6e0d65f7f3c5a1ab201c7b29e6d8ee00e",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Client.1.4.0.snupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts.1.4.0.nupkg",
+        "size": 64626,
+        "state": "uploaded",
+        "digest": "sha256:4c1d21f8182313baeb28cc25deff5a6840e9fbf5b288f3a98038bd56e99cca5c",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Contracts.1.4.0.nupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Contracts.1.4.0.snupkg",
+        "size": 20173,
+        "state": "uploaded",
+        "digest": "sha256:9afc8cdc737b19fa1144400da89c6d9495a3da12400cca3b7e990b83ebc58154",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Contracts.1.4.0.snupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Testing.1.4.0.nupkg",
+        "size": 24815,
+        "state": "uploaded",
+        "digest": "sha256:3bbfdcb5ba07400ce8c01cfabaad1a8146ea87db74bea1ab616d7064edcbdb0a",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Testing.1.4.0.nupkg"
+      },
+      {
+        "name": "Hexalith.Folders.Testing.1.4.0.snupkg",
+        "size": 19810,
+        "state": "uploaded",
+        "digest": "sha256:8a54b1f9dcffe8425348843661bdfe7188da7bf393fd1995b054c142f1ce6aad",
+        "browser_download_url": "https://github.com/Hexalith/Hexalith.Folders/releases/download/v1.4.0/Hexalith.Folders.Testing.1.4.0.snupkg"
+      }
+    ]
+  },
+  "nuget_packages": [
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "version": "1.4.0",
+      "repository_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+      "sha256": "492dd508739678c0fbb761d76d3b0247e775ac586966dae61576247323eaf83e",
+      "archive_bytes": 77712,
+      "nuget_url": "https://www.nuget.org/packages/Hexalith.Folders.Contracts/1.4.0",
+      "download_url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.contracts/1.4.0/hexalith.folders.contracts.1.4.0.nupkg"
+    },
+    {
+      "id": "Hexalith.Folders",
+      "version": "1.4.0",
+      "repository_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+      "sha256": "269f49e5e55ace87676bda53c7a916a30127118eeed2115c0cb48c15629de51f",
+      "archive_bytes": 721708,
+      "nuget_url": "https://www.nuget.org/packages/Hexalith.Folders/1.4.0",
+      "download_url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders/1.4.0/hexalith.folders.1.4.0.nupkg"
+    },
+    {
+      "id": "Hexalith.Folders.Client",
+      "version": "1.4.0",
+      "repository_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+      "sha256": "5ff508f4a42e1b6540329bbf6cd9e091c3fc1c10acd7d21e1477daa74e04ea26",
+      "archive_bytes": 238254,
+      "nuget_url": "https://www.nuget.org/packages/Hexalith.Folders.Client/1.4.0",
+      "download_url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.client/1.4.0/hexalith.folders.client.1.4.0.nupkg"
+    },
+    {
+      "id": "Hexalith.Folders.Aspire",
+      "version": "1.4.0",
+      "repository_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+      "sha256": "b71f5d47d55c3486e297ba6044fed0645f1d99bf51d7722d5d624015bcb4da1d",
+      "archive_bytes": 22157,
+      "nuget_url": "https://www.nuget.org/packages/Hexalith.Folders.Aspire/1.4.0",
+      "download_url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.aspire/1.4.0/hexalith.folders.aspire.1.4.0.nupkg"
+    },
+    {
+      "id": "Hexalith.Folders.Testing",
+      "version": "1.4.0",
+      "repository_commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+      "sha256": "63d452622381c7da829c9b08a4f83b78654250c05c643458e0a1be4641e2f1b2",
+      "archive_bytes": 37902,
+      "nuget_url": "https://www.nuget.org/packages/Hexalith.Folders.Testing/1.4.0",
+      "download_url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.testing/1.4.0/hexalith.folders.testing.1.4.0.nupkg"
+    }
+  ]
+}

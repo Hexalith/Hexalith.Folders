@@ -2,7 +2,7 @@
 title: 'Refresh the toolchain and publish a verified Folders release'
 type: 'bugfix'
 created: '2026-11-11'
-status: 'in-review'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '2f2f95d2c1daa2f3fbeffcadedd97a8616d89af1'
@@ -47,7 +47,7 @@ Microsoft release metadata identifies SDK 11.0.100 as current stable. Adopt it i
 - [x] Shared package authority: validate the latest catalog/audit and exception inventory, report any deliberate compatibility holds; npm should remain unchanged when its live outdated query is empty.
 - [x] Folders CI: retain or advance the shared workflow pin only when a demonstrated needed fix is remotely available, then build/test Debug/source and Release/package paths and validate the five-package dry run.
 - [x] Git synchronization: commit/push changed owners, verify remote reachability and separately commit root pointer/configuration changes; preserve concurrent changes.
-- [ ] Hosted release: obtain successful exact-main CI, dispatch existing Release, satisfy authorized existing production review, and independently verify all five NuGet versions and GitHub package assets.
+- [x] Hosted release: obtain successful exact-main CI, dispatch existing Release, satisfy authorized existing production review, and independently verify all five NuGet versions and GitHub package assets.
 
 **Acceptance Criteria:**
 - Given each active root SDK pin, when SDK selection runs, then it selects stable 11.0.100 without changing the supported target frameworks.
@@ -144,3 +144,7 @@ Implementation handoff: perform local code/configuration changes and validation 
 
 - The exact proposed Commons catalog377773c9 cleared NU1903 during isolated restore. Its build exposed twelve SDK11 test-style diagnostics; five test files were corrected without changing comparers, behavior or assertions. The Release standalone build then passed with zero warnings/errors and four individual suites passed 295/295. Those source fixes are pushed as `f789cd85599fc3dbd7bf02c24cbeb2f381b0287a`; the nested catalog gitlink remains unchanged pending authorization.
 - Committed-source package dryrun at `c479580b3e5eb05e02a9ae03d46d3577a4356971` passed all five package/symbol pairs and both isolated consumers at `0.0.0-local.20261111.2`. This is unpublished diagnostic evidence. The final candidate records that result and the last Commons test-only SDK fix before hosted publication; exact-source CI must pass again after this source advance.
+
+- Release completed: all four hosted source checks passed for `f9808ddecaae791a9802561e7c513da21a61b473`. Existing authorized production review was approved through GitHub API without changing protections. [Release run 43120187462](https://github.com/Hexalith/Hexalith.Folders/actions/runs/43120187462) succeeded and published [v1.4.0](https://github.com/Hexalith/Hexalith.Folders/releases/tag/v1.4.0). The immutable tag resolves to that exact green source, and all ten package/symbol assets are uploaded.
+- Independent public NuGet verification passed for all five manifest IDs at 1.4.0 after indexing. Each downloaded archive has the expected ID/version and repository commit `f9808ddecaae791a9802561e7c513da21a61b473`; archive hashes and public URLs are retained in `evidence/release-v1.4.0-verification.json`. The workflow also acknowledged all five symbol uploads.
+- Completed the remaining four isolated Commons suites: Diagnostics 16, HTTP 16, Publication 9 and Serialization 21. Combined with the four affected suites, the proposed catalog has 357 passing tests across all eight projects. Its nested gitlink remains unchanged pending the explicit scope decision; the wider qualification, census and Sonar blockers above remain open.
