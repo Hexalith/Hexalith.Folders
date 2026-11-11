@@ -131,13 +131,15 @@ git -c submodule.recurse=false submodule update --init
 The seven cyclic source roots have `update = none`, so implicit updater clones
 and that default command skip them. The four acyclic roots (AI.Tools, Builds,
 Commons and PolymorphicSerializations), including the shared package catalog,
-remain available. Folders CI uses the reusable workflow's `package-prepare-script`
-input to run `scripts/prepare-ci-topology-projects.sh` before restore. This
-workflow-owned hook prepares only the recorded root Memories gitlink: packaged
-Aspire topology registration needs the server project and its real HTTP launch
-profile on disk. The hook requires a standalone GitHub
-`Hexalith/Hexalith.Folders` checkout at the exact workspace root with an unchanged
-root declaration and a clean selected Memories worktree. It refuses submodule,
+remain available. Folders CI and release preparation use the shared
+`package-prepare-script` input to run `scripts/prepare-ci-topology-projects.sh`
+before restore. This workflow-owned hook prepares the recorded root Memories,
+McpCli and Platform gitlinks. Packaged Aspire topology registration needs the
+Memories server project and its real HTTP launch profile on disk; contract tests
+read McpCli's contract sources, and the AppHost compiles Platform's canonical
+mTLS and workload-enrollment sources. The hook requires a standalone GitHub
+`Hexalith/Hexalith.Folders` checkout at the exact workspace root with unchanged
+root declarations and clean selected worktrees. It refuses submodule,
 superproject, nested-repository, and mismatched workspace/repository contexts;
 it must not be used to initialize dependencies inside an umbrella checkout.
 Project dependencies still resolve through NuGet, and nested dependencies remain

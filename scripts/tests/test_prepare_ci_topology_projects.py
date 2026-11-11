@@ -235,8 +235,10 @@ os.execv(os.environ['TEST_REAL_GIT'], [os.environ['TEST_REAL_GIT'], *arguments])
         self.assertEqual([UPDATE], [json.loads(line) for line in self.log.read_text().splitlines()])
 
     def test_workflow_selects_the_existing_package_prepare_hook(self) -> None:
-        self.assertIn("      package-prepare-script: scripts/prepare-ci-topology-projects.sh\n",
-                      (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
+        for workflow_name in ("ci.yml", "release.yml"):
+            with self.subTest(workflow=workflow_name):
+                workflow_text = (ROOT / ".github/workflows" / workflow_name).read_text(encoding="utf-8")
+                self.assertIn("package-prepare-script: scripts/prepare-ci-topology-projects.sh\n", workflow_text)
         workflow = (ROOT / ".github/workflows/contract-spine.yml").read_text(encoding="utf-8")
         root_build_paths = (
             "references/Hexalith.AI.Tools", "references/Hexalith.Builds", "references/Hexalith.Commons",

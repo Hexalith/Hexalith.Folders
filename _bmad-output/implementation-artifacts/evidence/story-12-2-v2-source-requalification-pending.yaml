@@ -16,7 +16,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: a90a09b8595544441fe9cc28527b88941fce5d396f4d601451114ea0193af844
+candidate_set_sha256: a962d25719d1473d78c0aa09a41a94e2f03a3dc4df6a0f6e1fe0195fed9c12a2
 artifact_count: 1610
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -125,8 +125,8 @@ artifacts:
     sha256: 033cc33a6801d3cf615bf708f0fdef89f8257ebbeb9489c4080e3e5e4d3e945f
   - path: "scripts/tests/test_prepare_ci_topology_projects.py"
     kind: file
-    bytes: 20232
-    sha256: 74ee54a9181c6aa92d8c3a8ac4f05b25975449b64467ee4269c1dd06ae343b41
+    bytes: 20378
+    sha256: 03c840240804cb84bb5332d0a3ed2ce01d8ace0f8a473eef696784a3f6879ec2
   - path: "src/Hexalith.Folders.Cli/CliApplication.cs"
     kind: file
     bytes: 3443
@@ -4645,8 +4645,8 @@ artifacts:
     sha256: 3abcf3bf86a14bc209e362ea5323cf63797c590cb6bbc6e97c45f3ba51772696
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs"
     kind: file
-    bytes: 28057
-    sha256: 5d305ce1ecc2e56c9a1d437b6b3d038bc454fe664b3633716f8bcbc823ac5603
+    bytes: 28168
+    sha256: 26f95e5389c0b0e8aed5959ba734ea4ba18400a04c19ecd0af7d0a8853dad539
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/RetentionAndTenantDeletionConformanceTests.cs"
     kind: file
     bytes: 21768

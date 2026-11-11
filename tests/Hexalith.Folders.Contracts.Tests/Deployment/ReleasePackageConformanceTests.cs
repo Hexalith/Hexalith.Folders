@@ -123,6 +123,7 @@ public sealed partial class ReleasePackageConformanceTests
         inputs.GetReleaseScalar("builds-execution-sha").ShouldBe(BuildsExecutionSha);
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
         inputs.GetReleaseScalar("additional-sdk-version").ShouldBe("10.0.x");
+        inputs.GetReleaseScalar("package-prepare-script").ShouldBe("scripts/prepare-ci-topology-projects.sh");
         inputs.GetReleaseScalar("source-branch").ShouldBe("main");
         inputs.GetReleaseScalar("source-ci-workflow").ShouldBe("ci.yml");
         inputs.GetReleaseScalar("package-manifest").ShouldBe(ManifestPath);
