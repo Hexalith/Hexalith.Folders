@@ -27,7 +27,8 @@
   <!-- Consume the canonical Platform-owned local identity implementation, as the Tenants host does. -->
   <PropertyGroup>
     <HexalithPlatformRoot Condition="'$(HexalithPlatformRoot)' == ''">$(MSBuildThisFileDirectory)../../references/Hexalith.Platform</HexalithPlatformRoot>
-    <HexalithBuildsRoot Condition="'$(HexalithBuildsRoot)' == ''">$(MSBuildThisFileDirectory)../../references/Hexalith.Builds</HexalithBuildsRoot>
+    <HexalithBuildsRoot Condition="'$(HexalithBuildsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../../references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj')">$(MSBuildThisFileDirectory)../../references/Hexalith.Builds</HexalithBuildsRoot>
+    <HexalithBuildsRoot Condition="'$(HexalithBuildsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)../../../Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj')">$(MSBuildThisFileDirectory)../../../Hexalith.Builds</HexalithBuildsRoot>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(HexalithPlatformRoot)/DaprSelfHostedMtls.cs" Link="Platform/DaprSelfHostedMtls.cs" />

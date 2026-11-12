@@ -45,7 +45,7 @@
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -p:NuGetAudit=false -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           DependsOnTargets="GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers"
