@@ -28,6 +28,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.Platform",
         "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];

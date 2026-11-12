@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 917a2d5d41222481a7647c346f2a47c98d64aa728597b55b4ee69cf47adcdd76
+candidate_set_sha256: 133a251e1ffe99fb0711402276141d3f955c133be89b81dac76d2f22e2dce400
 artifact_count: 1610
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4654,8 +4654,8 @@ artifacts:
     sha256: e1d9a30b4f16e5b3affdb6110972e0aa8fe318909d2bdc050a08c2d8bbb908ef
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ScheduledDriftAndPolicyWorkflowConformanceTests.cs"
     kind: file
-    bytes: 28720
-    sha256: 24975ffcb0790fbb76b2f4bc610fbb58baf2d5d6fbc98510518e51946d2d788b
+    bytes: 28760
+    sha256: 4187cbdcf00d5c7791aa03ecea22a95bd71f80cbde614bef857d13124c6ccdcc
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/SecurityRedactionCiWorkflowConformanceTests.cs"
     kind: file
     bytes: 17542
