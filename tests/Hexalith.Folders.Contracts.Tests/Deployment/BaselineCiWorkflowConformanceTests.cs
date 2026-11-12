@@ -88,7 +88,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
         YamlMappingNode sharedJob = GetMapping(jobs, "ci");
-        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd");
+        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b");
         YamlMappingNode sharedInputs = GetMapping(sharedJob, "with");
         GetScalar(sharedInputs, "solution").ShouldBe("Hexalith.Folders.CI.slnx");
         GetScalar(sharedInputs, "additional-sdk-version").ShouldBe("10.0.x");
@@ -155,7 +155,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     {
         string workflow = ReadText(WorkflowPath);
 
-        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd", Case.Sensitive);
+        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b", Case.Sensitive);
         workflow.ShouldContain("test-platform: microsoft-testing-platform", Case.Sensitive);
         workflow.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
         workflow.ShouldNotContain("secrets.", Case.Insensitive);

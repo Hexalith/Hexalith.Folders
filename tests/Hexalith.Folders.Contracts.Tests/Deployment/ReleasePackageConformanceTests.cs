@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class ReleasePackageConformanceTests
 {
-    private const string BuildsExecutionSha = "6e77e79e8914a375b0c43b0af3bd142405675ecd";
+    private const string BuildsExecutionSha = "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b";
     private const string ManifestPath = "tools/release-packages.json";
     private const string PolicyPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/release-packages/latest.json";
@@ -35,7 +35,7 @@ public sealed partial class ReleasePackageConformanceTests
         triggers.GetReleaseMapping("pull_request").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
 
         YamlMappingNode shared = workflow.GetReleaseMapping("jobs").GetReleaseMapping("ci");
-        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6e77e79e8914a375b0c43b0af3bd142405675ecd");
+        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b");
         YamlMappingNode inputs = shared.GetReleaseMapping("with");
         inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
         inputs.GetReleaseScalar("additional-sdk-version").ShouldBe("10.0.x");

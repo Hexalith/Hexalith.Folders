@@ -438,7 +438,7 @@ print(os.environ['TEST_TAG_SHA'])
                     "GITHUB_SHA": "0123456789abcdef0123456789abcdef01234567",
                     "GITHUB_TOKEN": "test-token",
                     "GITHUB_REPOSITORY": "Hexalith/Hexalith.Folders",
-                    "HEXALITH_BUILDS_EXECUTION_SHA": "6e77e79e8914a375b0c43b0af3bd142405675ecd",
+                    "HEXALITH_BUILDS_EXECUTION_SHA": "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b",
                     "HEXALITH_RELEASE_SOURCE_BRANCH": "main",
                     "HEXALITH_RELEASE_SOURCE_CI_WORKFLOW": "ci.yml",
                     "HEXALITH_RELEASE_ENVIRONMENT": "production",

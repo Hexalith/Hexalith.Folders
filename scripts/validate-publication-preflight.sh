@@ -3,7 +3,7 @@ set -euo pipefail
 
 version="${1:-}"
 phase="${2:-}"
-expected_builds_sha="6e77e79e8914a375b0c43b0af3bd142405675ecd"
+expected_builds_sha="6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b"
 expected_package_count=5
 manifest="${HEXALITH_RELEASE_PACKAGE_MANIFEST:-}"
 source_sha="${GITHUB_SHA:-}"
