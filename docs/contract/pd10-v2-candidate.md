@@ -49,10 +49,15 @@ The active v1 contract has the separately approved Story 12.2 optional task fold
 change the disabled v2 candidate or qualify its current runtime source. The original dated conformance
 manifest and previous approvals retain their original hashes.
 
-The last command writes `_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml`.
-This current-source inventory explicitly records pending requalification and binds the immutable original
-`_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml` by hash. It supplies no new
-v2 qualification, approval, release authority or production exposure.
+The last command writes `_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml`.
+This current-source derivative records pending requalification after the qualified Platform and Builds source
+pins in commit `5c318e6f4abea88076d1e7f1eb0abfaf9b9c0e25`. Its `source_baseline_commit` identifies that
+source checkpoint; the original candidate `baseline_commit` remains unchanged. It binds the immutable
+October 18 inventory `story-12-2-v2-source-requalification-pending.yaml` by its exact raw-byte hash. That
+inventory retains its binding to the September 17 original
+`_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml`. The generator verifies both
+historical hashes and refuses to overwrite either input. This derivative supplies no new v2 qualification,
+approval, release authority or production exposure, and does not alter the published v1.4.0 authority.
 The manifest binds each candidate path to its raw-byte SHA-256 and binds the ordered path/digest inventory to a
 candidate-set SHA-256. It deliberately excludes the historical v1 spine, OQ3 approval record, lifecycle status,
 and deployment/release configuration because Story 1.17 must leave those unchanged.

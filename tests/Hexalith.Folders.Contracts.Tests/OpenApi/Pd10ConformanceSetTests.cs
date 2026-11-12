@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed class Pd10ConformanceSetTests
 {
-    private const string ManifestPath = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml";
+    private const string ManifestPath = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml";
     private const string StoryOwnedPathsPath = "scripts/pd10-v2-story-owned-paths.txt";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
 
@@ -38,13 +38,21 @@ public sealed class Pd10ConformanceSetTests
     [Fact]
     public void CurrentSourceInventoryPreservesHistoricalEvidenceAndRequiresRequalification()
     {
-        const string previous = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
-        const string previousHash = "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286";
+        const string original = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
+        const string originalHash = "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286";
+        const string previous = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml";
+        const string previousHash = "08ea78bcbcffa422632fd7d944b745a1d1a65c93120c80be8cc2c793e83b0c70";
+        Sha256(Path.Combine(RepositoryRoot, original)).ShouldBe(originalHash);
         Sha256(Path.Combine(RepositoryRoot, previous)).ShouldBe(previousHash);
+        YamlMappingNode prior = Load(Path.Combine(RepositoryRoot, previous));
+        Scalar(prior, "prior_conformance_set_path").ShouldBe(original);
+        Scalar(prior, "prior_conformance_set_sha256").ShouldBe(originalHash);
         YamlMappingNode current = Load(Path.Combine(RepositoryRoot, ManifestPath));
         Scalar(current, "prior_conformance_set_path").ShouldBe(previous);
         Scalar(current, "prior_conformance_set_sha256").ShouldBe(previousHash);
-        Scalar(current, "source_identity_qualification").ShouldBe("pending-after-approved-v1-addition");
+        Scalar(current, "generated_for_date").ShouldBe("2026-11-12");
+        Scalar(current, "source_identity_qualification").ShouldBe("pending-after-qualified-source-pins");
+        Scalar(current, "source_baseline_commit").ShouldBe("5c318e6f4abea88076d1e7f1eb0abfaf9b9c0e25");
         Scalar(current, "approval_status").ShouldBe("pending-a6b");
         Scalar(current, "production_exposure").ShouldBe("disabled");
         Sha256(Path.Combine(RepositoryRoot, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"))
@@ -150,11 +158,15 @@ public sealed class Pd10ConformanceSetTests
         }
     }
 
-    [Fact]
-    public void GeneratorRejectsOutputThatAliasesARequiredCandidateInput()
+    [Theory]
+    [InlineData("docs/contract/authorization-matrix.md")]
+    [InlineData("src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml")]
+    [InlineData("_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml")]
+    [InlineData("_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml")]
+    public void GeneratorRejectsOutputThatAliasesCandidateOrHistoricalInput(string relativePath)
     {
-        string matrix = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
-        string before = Sha256(matrix);
+        string input = Path.Combine(RepositoryRoot, relativePath);
+        string before = Sha256(input);
         ProcessStartInfo start = new("python3")
         {
             WorkingDirectory = RepositoryRoot,
@@ -166,14 +178,14 @@ public sealed class Pd10ConformanceSetTests
         start.ArgumentList.Add("--repository-root");
         start.ArgumentList.Add(RepositoryRoot);
         start.ArgumentList.Add("--output");
-        start.ArgumentList.Add(matrix);
+        start.ArgumentList.Add(input);
 
         using Process process = Process.Start(start) ?? throw new InvalidOperationException("Could not start the conformance-set generator.");
         process.WaitForExit(60_000).ShouldBeTrue();
         string diagnostic = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
         process.ExitCode.ShouldNotBe(0);
         diagnostic.ShouldContain("must not alias", Case.Insensitive);
-        Sha256(matrix).ShouldBe(before);
+        Sha256(input).ShouldBe(before);
     }
 
     private static string Sha256(string path) =>

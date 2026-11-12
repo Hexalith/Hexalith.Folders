@@ -9,9 +9,15 @@ import json
 from pathlib import Path
 
 
-OUTPUT_PATH = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml"
-PRIOR_CONFORMANCE_PATH = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+OUTPUT_PATH = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml"
+PRIOR_CONFORMANCE_PATH = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml"
+HISTORICAL_CONFORMANCE_PATH = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+IMMUTABLE_CONFORMANCE_HASHES = {
+    PRIOR_CONFORMANCE_PATH: "08ea78bcbcffa422632fd7d944b745a1d1a65c93120c80be8cc2c793e83b0c70",
+    HISTORICAL_CONFORMANCE_PATH: "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+}
 BASELINE_COMMIT = "3f1056d998ac4688f36eb869c516812c1a4ddb71"
+SOURCE_BASELINE_COMMIT = "5c318e6f4abea88076d1e7f1eb0abfaf9b9c0e25"
 MATRIX_PATH = "docs/contract/authorization-matrix.md"
 HISTORICAL_V1_PATH = "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml"
 STORY_OWNED_PATHS_PATH = "scripts/pd10-v2-story-owned-paths.txt"
@@ -50,7 +56,7 @@ def candidate_paths(root: Path, output: Path) -> list[str]:
         raise RuntimeError("Candidate inventory omits runtime/test compile inputs: " + ", ".join(missing))
 
     resolved_output = output.resolve()
-    for historical_input in (HISTORICAL_V1_PATH, PRIOR_CONFORMANCE_PATH):
+    for historical_input in (HISTORICAL_V1_PATH, *IMMUTABLE_CONFORMANCE_HASHES):
         if (root / historical_input).resolve() == resolved_output:
             raise RuntimeError("The conformance-set output must not alias immutable historical evidence.")
     for relative_path in paths:
@@ -81,6 +87,9 @@ def main() -> int:
         output = root / output
     output = output.resolve()
     paths = candidate_paths(root, output)
+    for relative_path, expected_digest in IMMUTABLE_CONFORMANCE_HASHES.items():
+        if hashlib.sha256((root / relative_path).read_bytes()).hexdigest() != expected_digest:
+            raise RuntimeError(f"Immutable conformance evidence has changed: {relative_path}")
     entries = [artifact_entry(root, path) for path in paths]
     entry_digests = {path: digest for path, _, _, digest, _ in entries}
 
@@ -95,11 +104,12 @@ def main() -> int:
         "schema_version: '1.0.0'",
         "evidence_id: PD10-V2-CONFORMANCE-SET",
         "candidate_version: '2.0.0'",
-        "generated_for_date: '2026-10-18'",
-        "source_identity_qualification: pending-after-approved-v1-addition",
+        "generated_for_date: '2026-11-12'",
+        "source_identity_qualification: pending-after-qualified-source-pins",
         f"prior_conformance_set_path: {PRIOR_CONFORMANCE_PATH}",
         f"prior_conformance_set_sha256: {hashlib.sha256((root / PRIOR_CONFORMANCE_PATH).read_bytes()).hexdigest()}",
         f"baseline_commit: {json.dumps(arguments.baseline_commit)}",
+        f"source_baseline_commit: {json.dumps(SOURCE_BASELINE_COMMIT)}",
         f"historical_v1_path: {HISTORICAL_V1_PATH}",
         f"historical_v1_sha256: {historical_v1_digest}",
         f"authorization_matrix_path: {MATRIX_PATH}",

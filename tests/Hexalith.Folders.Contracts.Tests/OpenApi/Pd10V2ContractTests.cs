@@ -13,7 +13,7 @@ public sealed class Pd10V2ContractTests
     private static readonly string V1Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml");
     private static readonly string V2Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
-    private static readonly string ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "implementation-artifacts", "evidence", "story-12-2-v2-source-requalification-pending.yaml");
+    private static readonly string ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "implementation-artifacts", "evidence", "story-12-2-v2-source-requalification-pending-2026-11-12.yaml");
 
     [Fact]
     public void V2PublishesExactly49ProtectedOperationsWithClosedPreObservationOutcomes()
