@@ -38,6 +38,7 @@ jobs:
         Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"tls\")
         Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"signer\")
         Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.ActualIssuerVerifiesCompleteConsumerCohortBeforeActivation(fault: \"permissions\")
+        Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentComponentTests.RunOwnedAuthorityVerifiesFinalCohortAndAllRefusals
       package-prepare-script: scripts/prepare-ci-topology-projects.sh
       build-timeout-minutes: 45
       test-platform: microsoft-testing-platform

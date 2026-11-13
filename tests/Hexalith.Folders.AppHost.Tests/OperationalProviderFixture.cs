@@ -35,7 +35,8 @@ internal sealed class OperationalProviderFixture(string directory, string runId)
             File.SetUnixFileMode(key, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.GroupRead | UnixFileMode.OtherRead);
             File.SetUnixFileMode(directory, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         }
-        string systemTrust = "/etc/ssl/certs/ca-certificates.crt";
+        // Preserve prelaunch workload trust and system roots when adding the Forgejo CA.
+        string systemTrust = Environment.GetEnvironmentVariable("SSL_CERT_FILE") ?? "/etc/ssl/certs/ca-certificates.crt";
         await File.WriteAllTextAsync(TrustFile, (File.Exists(systemTrust) ? await File.ReadAllTextAsync(systemTrust).ConfigureAwait(false) : string.Empty)
             + await File.ReadAllTextAsync(certificate).ConfigureAwait(false)).ConfigureAwait(false);
         _container = "folders-provider-" + runId;

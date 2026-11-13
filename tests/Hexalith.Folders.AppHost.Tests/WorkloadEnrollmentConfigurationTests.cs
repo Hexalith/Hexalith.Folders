@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
@@ -60,6 +61,29 @@ public sealed class WorkloadEnrollmentConfigurationTests
                 .Message.ShouldStartWith("Protected workload enrollment verification refused.");
         }
         finally { File.Delete(owned); }
+    }
+
+    /// <summary>The same final inventory rejects a foreign selected tenant and pre-normalization Tenants storage.</summary>
+    /// <param name="fault">The isolated tenant boundary.</param>
+    [Theory]
+    [InlineData("selected-tenant")]
+    [InlineData("tenants-storage")]
+    public async Task FinalInventoryRefusesChangedTenantBeforeIssuerExchange(string fault)
+    {
+        IDistributedApplicationTestingBuilder builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Hexalith_Folders_AppHost>(
+            ["--EnableKeycloak=true", "--KeycloakPersistent=false", "--Folders:WorkloadEnrollment:DeferToCohort=true"], TestContext.Current.CancellationToken).ConfigureAwait(true);
+        await using var scope = builder.ConfigureAwait(true);
+        JsonObject inventory = JsonNode.Parse(PlatformWorkloadEnrollmentInventory.Create(builder, "selected-tenant").GetRawText())!.AsObject();
+        if (fault == "tenants-storage")
+        {
+            JsonArray clients = inventory["clients"]!.AsArray();
+            JsonArray probes = clients.Single(client => client!["resource"]!.GetValue<string>() == "eventstore")!["probes"]!.AsArray();
+            probes.Single(probe => probe!["bindings"] is JsonObject binding && binding["eventstore:bound-domain"]?.GetValue<string>() == "tenants")!
+                ["bindings"]!["eventstore:bound-tenant"] = "selected-tenant";
+        }
+        using JsonDocument document = JsonDocument.Parse(inventory.ToJsonString());
+        Should.Throw<InvalidOperationException>(() => PlatformWorkloadEnrollmentInventory.Validate(PlatformWorkloadEnrollmentInventory.Cohort(builder),
+            [.. document.RootElement.GetProperty("clients").EnumerateArray()], fault == "selected-tenant" ? "foreign-tenant" : "selected-tenant"));
     }
 
     /// <summary>Without protected owner references every caller remains disabled, even if an inherited option was true.</summary>

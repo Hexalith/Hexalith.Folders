@@ -54,6 +54,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     private DaprClient? _dapr;
     private DaprClient? _proofDapr;
     private OperationalProviderFixture? _provider;
+    private Hexalith.Platform.Composition.PlatformRunOwnedWorkloadEnrollment? _workloadEnrollment;
     internal Task SetProviderRepositoryAvailableAsync(bool available, CancellationToken cancellationToken)
         => (_provider ?? throw new InvalidOperationException("The disposable provider is unavailable."))
             .SetRepositoryAccessAsync(available, cancellationToken);
@@ -700,6 +701,13 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             }
         }
 
+        if (_workloadEnrollment is not null)
+        {
+            try { await _workloadEnrollment.DisposeAsync().ConfigureAwait(false); }
+            catch (Exception exception) { Record(exception); }
+            finally { _workloadEnrollment = null; }
+        }
+
         if (_catalog is not null)
         {
             try { await _catalog.DisposeAsync().ConfigureAwait(false); }
@@ -1142,6 +1150,8 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 
         // Configure every actual receiver/caller, including replicas and distinct proof Workers,
         // before the catalog captures their environment. Missing owner references remain disabled.
+        _workloadEnrollment = await Hexalith.Platform.Composition.PlatformRunOwnedWorkloadEnrollment.AdoptAsync(
+            _builder, TenantId, timeout.Token, _provider?.TrustFile).ConfigureAwait(false);
         _ = await Hexalith.Platform.Composition.PlatformWorkloadEnrollment.ConfigureAsync(_builder, timeout.Token, TenantId).ConfigureAwait(false);
 
         // This key is provisioned with this fixture's genuinely new, owned Redis backend.
