@@ -2818,3 +2818,23 @@ supplied, qualify the enrolled runtime and run the unchanged strict real-provide
 The parent and child remain in-progress; privacy, PD10/governance, SM4 and independent
 whole-story review retain their separate open dispositions. No commit, push, dependency
 pin update, publication or deployment was performed.
+
+### Run-owned workload authority decision — 2026-11-13
+
+A recheck found the owner enrollment references still absent. Investigation showed they could
+never match this story's strict fixture. `FolderDurabilityAcceptanceFixture` draws a random run
+identity for every run and embeds it in every caller AppId and in `TenantId`, and the Platform
+consumer refuses any manifest that doesn't name exactly that cohort and tenant. Jerome approved
+[sprint-change-proposal-2026-11-13](../planning-artifacts/sprint-change-proposal-2026-11-13.md).
+Inside the disposable strict fixture, enrollment now comes from a Platform run-owned
+authority (Platform Story 2.12, backlog). It is enrolled for that run only and verified by the
+unchanged consumer. The renegotiated scope, the run-owned evidence label and the single
+authorized Platform gitlink update live in the
+[external workload authority spec](spec-12-2-external-workload-authority.md)'s frozen intent.
+This parent's frozen block (`frozen497c`) is intentionally unchanged.
+
+Owner enrollment remains the only activation path outside the fixture; its proof moves to
+Platform Story 10.1 in staging. The new pending external node
+`EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY` is a prerequisite of 12.2. The previously failed
+strict run's canceled 403 control is not attributed to enrollment and remains open. Strict
+bodies, deadlines, retries and budgets are unchanged. The parent and child remain in-progress.

@@ -1,6 +1,6 @@
 # generated: 2026-05-12T07:11:18+02:00
 # current_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
-# last_updated: 2026-11-11 (Story 5.12 follow-up build code review via bmad-code-review [4 layers, none failed; diff f7305f5c..b80c5c00, 21 files; 29 raw findings verified against FolderDomainProcessor, FoldersDomainServiceEndpoints, the Pd10 v2 seam, McpCli Core and the workflow] -> done. Jerome chose apply every patch: 6 patches applied [E6/header/G2-G3 record now states the domain requires a lowercase caller-chosen extensions[taskId] on every Command; 13 Command descriptions state the task grammar and payload taskId; drift-gate E1 rationale reworded + CI whitespace fix; named-gap subsections demoted]. Format whitespace exit 0, Release build 0W/0E, McpCli 46/46, full Contracts 677/682 with exactly the five approved PD10 failures. 3 defers in deferred-work.md; 15 rejected.)
+# last_updated: 2026-11-13 (correct-course sprint-change-proposal-2026-11-13: Story 12.2's strict fixture can never match a pre-provisioned owner workload enrollment because it draws a random run identity each run. Its enrollment now comes from a Platform run-owned workload-binding authority (Platform Story 2.12, backlog); owner enrollment proof moves to Platform Story 10.1. New pending external node EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY gates 12.2; 12.2 stays in-progress.)
 # previous_story_5_12_followup_build: 2026-11-11 (Story 5.12 follow-up build completed -> review; all ten approved patches plus four independent-review corrections implemented. McpCli 46/46; full Contracts 677/682 with exactly the five approved PD10 failures; Release solution 0 warnings/errors; all three review layers completed and every finding triaged. No new deferrals; existing AppHost source/package collision and PD10 reseal remain with their owners.)
 # previous_story_5_12_followup_review: 2026-11-11 (Story 5.12 follow-up code review via bmad-code-review [4 layers, none failed; diff a9c77c85..976be351, 49 files; 32 raw findings verified against McpCli ExtensionValidator/SettingsResolver/SchemaDeriver, FolderCommandValidator, FolderDomainProcessor, the Pd10 v2 seam and the workflow] -> in-progress. 1 decision resolved by Jerome [E6: keep extensions[taskId], correct the record: domain already requires the taskId extension on every /process Command, McpCli profile allowlist is a prerequisite for all 13 Commands, `--`-suffix values are a platform-wide Gateway limit] + 9 patches = 10 action items left in the spec; 1 defer in deferred-work.md; 13 rejected. Previous: 2026-11-11 (Story 5.12 approved review fixes completed via bmad-build -> review; 16 patches plus C10 allOf correction; McpCli 44/44, CI wiring 6/6, client generation 75/75, full Contracts 675/680 with the five approved PD10 failures; Release solution build 0 warnings/errors. Independent review completed; runtime catalog enrollment deferral retained; AppHost source/package collision remains blocked.))
 # previous_story_5_12_review: 2026-11-10 (Story 5.12 code review via bmad-code-review [4 layers, none failed; diff c5c8c194..a9c77c85, 82 files; 59 raw findings verified against McpCli Core source, the v2 spine and FolderDomainProcessor] -> in-progress. 3 decisions resolved by Jerome [drop fixed ACL effect member, route optional non-task task association via McpCli extensions[taskId] + derive header fields from spine, separate contract-spine CI step for the McpCli selector] + 13 patches = 16 action items left in the spec; 2 defers in deferred-work.md; 21 rejected. Previous: 2026-11-10 (bmad-correct-course sprint-change-proposal-2026-11-10: Hexalith.McpCli replaces the Folders-specific CLI/MCP. Epic 5 keys 5-8..5-11 renamed to their re-scoped McpCli enrollment stories [old keys 5-8-cli-workspace-preparation-and-lock-lifecycle, 5-9-cli-file-context-commit-status-error-and-audit-behavior, 5-10-mcp-workspace-preparation-and-lock-lifecycle, 5-11-mcp-file-context-commit-status-error-and-audit-behavior]; 5-12..5-15 added as backlog; HXF-MCP-001 action item redirected to McpCli. Previous: 2026-11-04 (Story 12.3 code review chunk 1 of 3 [src] via bmad-code-review [4 layers, none failed; frozen diff 28513763..d6fda13a -- src/, 72 files; 82 raw findings verified at d6fda13a and rechecked on main 46214293] -> in-progress. 7 decisions resolved by Jerome [terminal-status Pending resolution, extend v1 spine, retire JSON PutFileStream, receipt-relevant erasure generation, per-workspace+task operationId replay, digest operational content bookkeeping, breaking-change notice for 1.3.2+] + 33 patches = 40 action items left in the spec; 4 defers in deferred-work.md; 31 rejected; 3 already fixed on main [21d9c38e, 9a818bb6, c901c8be]. Chunks 2 [tests] and 3 [docs/scripts] pending. Spec frontmatter status left as-is [spec-kernel owned].)))
@@ -40,7 +40,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-11-11'
+last_updated: '2026-11-13'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -128,6 +128,7 @@ development_status:
   3-12-forgejo-repository-provisioning-binding-and-branch-ref-behav: done
   3-13-forgejo-file-mutation-commit-status-and-failure-behavior: done
   3-14-complete-asynchronous-repository-creation-and-binding: backlog
+  # prerequisite 12.1 .. 12.7
   epic-3-retrospective: optional
 
   epic-4: in-progress
@@ -274,6 +275,7 @@ development_status:
   epic-12: in-progress
   12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: done
   # needs Stories 4.22 and 11.15
+  # 2026-11-13: 12.2 also needs Platform Story 2.12 (run-owned workload authority, EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY)
   12-2-durable-projections-and-task-completion-pipeline: in-progress
   12-3-durable-workspace-file-content-store-and-content-read-source: in-progress
   12-4-real-git-commit-executor-and-provider-write-path: backlog

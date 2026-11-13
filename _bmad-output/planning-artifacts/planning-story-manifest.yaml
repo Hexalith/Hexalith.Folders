@@ -1473,6 +1473,36 @@ external_nodes:
     decision_status: pending
     execution_authorization_status: external-owner-controlled
     delivery_evidence_status: pending
+  EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY:
+    node_type: external-platform-release
+    execution_rank: 1
+    prerequisites: []
+    repository: references/Hexalith.Platform
+    repository_owner: Hexalith.Platform maintainers
+    accountable_role: Platform maintainer (single-maintainer model)
+    delivery_role: Platform Epic 2 owner
+    source_work_references:
+    - Platform Story 2.12 — Provision a run-owned workload-binding authority for disposable test environments (requested by
+      sprint-change-proposal-2026-11-13)
+    release_identifier: hexalith-platform-run-owned-workload-authority-v1
+    observed_repository_commit: 32643bde39b4da0e4538f8388e225727f82122f6
+    release_version_or_commit: pending-platform-publication
+    evidence_paths:
+      enrollment_runbook: references/Hexalith.Platform/docs/security/workload-binding-enrollment.md
+      source_story_authority: references/Hexalith.Platform/_bmad-output/planning-artifacts/epics.md
+      escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-13.md
+    required_evidence:
+    - A disposable Keycloak 26.6.4 workload-binding authority enrolled for exactly one run's cohort and tenant through the
+      existing provider, verified by the unchanged Platform enrollment consumer.
+    - Platform component evidence for full enrollment, cohort or tenant mismatch, foreign-run manifest, missing TLS trust,
+      and cleanup.
+    - The exact Platform commit that Folders pins as its references/Hexalith.Platform gitlink.
+    acceptance_status: pending
+    acceptance_reason: Requested by sprint-change-proposal-2026-11-13; Platform Story 2.12 is backlog.
+    placeholder_acceptance_forbidden: true
+    decision_status: pending
+    execution_authorization_status: external-owner-controlled
+    delivery_evidence_status: pending
 relock_nodes:
   RELOCK-PLANNING:
     node_type: relock-milestone
@@ -1748,6 +1778,7 @@ execution_waves:
 - rank: 1
   nodes:
   - EXT-ES-EVENT-EVOLUTION
+  - EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY
 - rank: 2
   nodes:
   - EXT-ES-RECOVERY
@@ -1995,6 +2026,7 @@ exact_prerequisites:
   - DEC-A8-HOLD
   - '12.1'
   - EXT-ES-EVENT-EVOLUTION
+  - EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY
   '12.3':
   - DEC-A8-HOLD
   - '12.1'
@@ -2337,6 +2369,37 @@ validation_results:
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 planning_amendments:
+- amended_on: '2026-11-13'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  proposal: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-13.md
+  accepted_scope: Proposal edits F1-F5 and P1-P3. The Story 12.2 strict acceptance fixture takes its workload-binding
+    enrollment from a Platform run-owned authority enrolled for its own run; owner enrollment of persistent, staging, and
+    production authorities stays with the realm owner (Platform Story 10.1).
+  changes:
+  - Added pending external node EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY (rank 1) as a prerequisite of 12.2; no story
+    rows, ranks, or generated_counts changed.
+  - Renegotiated the frozen intent of spec-12-2-external-workload-authority.md (human decision); the parent 12.2 frozen
+    block (frozen497c) is unchanged and records the decision outside it.
+  - Platform gained Story 2.12 (backlog) and a staging workload-binding enrollment criterion on Story 10.1 (uncommitted
+    in references/Hexalith.Platform).
+  changed_authority:
+  - path: _bmad-output/implementation-artifacts/spec-12-2-external-workload-authority.md
+    sha256_before: 6d2fc5b76059f7d2097289c4a98f2cda247c80e79561469e073f1c6a986d9415
+    sha256_after: 63066c3305d99433bfb2d2657948187239d24a7570942364952ba5a6d183dac2
+    frozen_block_sha256_before: 69e8a7beff20c976a844e19fc6cd4646c543d7d083909849f849b75d71092840
+    frozen_block_sha256_after: baf299675fe11e5807e0792ad53feb8a8c3837bba5a29735b805ac410ff8b433
+  - path: _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+    sha256_before: 4b12ddf16aa8603d197fe58dd1146e03bdb2d4a6264ab56587441ae5ae229c5e
+    sha256_after: 5bbe94f91dcd0ef7c6d0499eeffc69cddfac694382c722bbc0d9545f1ed5a6b4
+  tracker_change:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    inserted_keys: []
+    sha256_before: e2c90705a2436a47cd9fad521871637b520c8a1e5f1f6b2db58ccc2e6f722967
+    sha256_after: 7ff67766f11d7a7eb44e5d6c5f782c6151deb2f82de65f972af6b1faed076842
+    regeneration: none
+    note: Comment and last_updated changes only. The before digest already includes an unrelated uncommitted Epic 3
+      comment line.
 - amended_on: '2026-11-10'
   decision_maker: Jerome
   decision_policy: docs/governance/approval-policy.md

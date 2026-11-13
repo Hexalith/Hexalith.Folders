@@ -18,11 +18,13 @@ parent_spec: 'spec-12-2-durable-projections-and-task-completion-pipeline.md'
 
 **Approach:** Extend the existing Keycloak authority through a Platform-owned provider and explicit enrollment integration. Platform AD-6 establishes realm-contract ownership; it does not establish a new standalone issuer. Implement locally against the installed 26.6.4 server without changing dependency pins. Keep activation blocked until actual protected trust and grants are supplied and verified.
 
+**Renegotiated (2026-11-13, Jerome, [sprint-change-proposal-2026-11-13](../planning-artifacts/sprint-change-proposal-2026-11-13.md)):** The strict acceptance fixture draws a new run identity for every run, so a pre-provisioned owner manifest can never match its callers or tenant. Inside that disposable fixture only, verified enrollment comes from the Platform run-owned authority (Platform Story 2.12). That authority is a disposable Keycloak 26.6.4 with the same provider, enrolled for exactly that run's cohort and tenant and verified by the unchanged consumer. Persistent, staging and production enrollment stays owner-provisioned (Platform Story 10.1). Updating the Folders Platform gitlink to the commit that delivers Story 2.12 is the one authorized dependency-pin change.
+
 ## Boundaries & Constraints
 
-**Always:** Validate authenticated client, server-owned caller, exact audience, operation and complete binding set. Require one current, unambiguous, nonrevoked grant with identity, positive revision and bounded validity. Preserve independent RSA proofs, human authentication, SDK guards, source authorization and metadata-only grants. Preserve callback AllowUnbound grants, query-envelope digests and Tenants bootstrap/source permissions separately. Bound tokens to 120 seconds and grant/signer expiry. Qualify TLS and actual enrollment separately from synthetic component signers.
+**Always:** Validate authenticated client, server-owned caller, exact audience, operation and complete binding set. Require one current, unambiguous, nonrevoked grant with identity, positive revision and bounded validity. Preserve independent RSA proofs, human authentication, SDK guards, source authorization and metadata-only grants. Preserve callback AllowUnbound grants, query-envelope digests and Tenants bootstrap/source permissions separately. Bound tokens to 120 seconds and grant/signer expiry. Qualify TLS and actual enrollment separately from synthetic component signers. Label run-owned enrollment evidence as run-owned; it never qualifies owner enrollment.
 
-**Never:** Embed an issuer in Folders, activate the SDK fixture, infer enrollment from an option, generate a signer and declare it trusted, borrow another workload's identity, broaden grants, fabricate source zero, alter strict tests/deadlines/retries, deploy, publish, change dependency pins, commit or push.
+**Never:** Embed an issuer in Folders, activate the SDK fixture, infer enrollment from an option, generate or trust a signer outside the Platform run-owned authority, reuse a run-owned enrollment for another run or present it as owner enrollment, borrow another workload's identity, broaden grants, fabricate source zero, alter strict tests/deadlines/retries, deploy, publish, change dependency pins other than the approved Platform gitlink update, commit or push.
 
 ## I/O & Edge-Case Matrix
 
@@ -32,7 +34,8 @@ parent_spec: 'spec-12-2-durable-projections-and-task-completion-pipeline.md'
 | Invalid admission | Wrong client/caller/tenant/domain/audience/operation; missing/extra bindings; stale/revoked/ambiguous grant | Refuse issuance | No fallback |
 | Existing traffic | Exact enrolled unbound callbacks/bootstrap/source; bound query digest | Preserve each separate permission | No implicit grant |
 | Invalid assertion | Malformed, expired, altered signature/scope; cancellation | SDK refuses or propagates cancellation | No source request |
-| Missing enrollment | Absent protected trust/grant references | Remain disabled; identify missing inputs | No runtime qualification claim |
+| Missing enrollment | Absent owner references (outside the fixture), or a missing or failed run-owned authority (inside it) | Remain disabled; identify missing inputs | No runtime qualification claim |
+| Run-owned enrollment | Platform producer manifest for this run's exact cohort and tenant | Unchanged consumer verifies TLS, signer and every probe; profile enabled before catalog capture; evidence labeled run-owned | Foreign-run or mismatched manifest refuses; no fallback |
 
 </frozen-after-approval>
 
@@ -51,22 +54,27 @@ parent_spec: 'spec-12-2-durable-projections-and-task-completion-pipeline.md'
 - [x] Platform `docs/security/workload-binding-enrollment.md`: document protected enrollment, validity/revocation, reload, independent TLS/signer verification, disable/cleanup and exact grant inventory. Distinguish source implementation from enrollment authority.
 - [x] Folders AppHost/fixture above: consume supported provider enrollment and dedicated `Authentication:WorkloadJwtBearer`/`Authentication:WorkloadIssuer`; configure every affected actual receiver/caller before catalog capture. Enable the profile only with verified enrollment. Source integration and component controls are complete; actual protected activation remains blocked.
 - [x] Platform provider `src/test/java/com/hexalith/security/WorkloadBindingGrantPolicyTest.java` and Folders `tests/Hexalith.Folders.Server.Tests/EnrolledWorkloadSourceBoundaryTests.cs`: qualify the matrix with actual issuer controls; preserve existing tests. Qualification is explicitly disposable-component-only, using the actual 26.6.4 credential/signing implementation.
-- [ ] `_bmad-output/implementation-artifacts/evidence/`: bind coherent Debug/source runtime, focused results, unchanged strict real-provider result, source/loaded identities and owned cleanup. Keep privacy, governance and performance gates separate. Component evidence and the retained earlier-source failure are recorded; actual enrolled Folders/Workers runtime and current strict acceptance evidence remain outstanding.
+- [ ] External prerequisite (not implemented here): Platform Story 2.12 delivers the run-owned workload-binding authority. Then update the Folders `references/Hexalith.Platform` gitlink to exactly that commit; no other pin changes.
+- [ ] Folders `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs`: after the final cohort, replicas and `TenantId` are selected, start the Platform run-owned authority, then call the unchanged `PlatformWorkloadEnrollment.ConfigureAsync` before catalog capture. Dispose the authority with the fixture's other owned resources. `src/Hexalith.Folders.AppHost/Program.cs` keeps owner references as its only activation path. Add a focused control showing that a missing or failed authority leaves the profile disabled.
+- [ ] `_bmad-output/implementation-artifacts/evidence/`: bind coherent Debug/source runtime, focused results, unchanged strict real-provider result, source/loaded identities and owned cleanup, labeled run-owned enrollment. Keep privacy, governance and performance gates separate. Component evidence and the retained earlier-source failure are recorded; run-owned enrolled Folders/Workers runtime and current strict acceptance evidence remain outstanding.
 
 **Acceptance Criteria:**
-- Given approved protected trust and exact current grants, when actual enrolled clients acquire assertions, then source, callback, query and Tenants traffic retain their exact permissions.
+- Given verified enrollment (run-owned inside the disposable strict fixture, owner-provisioned elsewhere), when the enrolled clients acquire assertions, then source, callback, query and Tenants traffic retain their exact permissions.
 - Given the rebuilt audited runtime, when unchanged strict real-provider acceptance runs, then current source/Workers evidence and its original 403 control pass without skips or relaxed budgets.
-- Given absent owner configuration, when local qualification finishes, then report the exact activation blockers and leave story 12.2 incomplete.
+- Given no verified enrollment (no owner references outside the fixture, or a missing or failed run-owned authority inside it), when local qualification finishes, then the profile stays disabled, the exact activation blockers are reported and story 12.2 stays incomplete.
+- Given a run-owned enrollment, when its evidence is recorded, then it is labeled run-owned, claims no owner-enrollment qualification and is refused for any other run.
 
 ## Implementation Notes
 
 - Platform owns the provider and shared enrollment consumer. Folders links the consumer into its existing AppHost; no issuer, grant writer or fixture-authority activation was added to Folders. Memories remains outside this enrollment.
 - The consumer verifies protected manifest bytes against a separately configured approved SHA-256, complete exact traffic probes, normal TLS, pinned RSA SPKI and fresh independently verified assertions before enabling the dedicated SDK profile. The fixture applies this after selecting all actual caller identities and before catalog capture; its manual bootstrap/capacity assertions use the enrolled SDK configuration when active.
 - Missing `Folders:WorkloadEnrollment:ManifestPath` and `Folders:WorkloadEnrollment:ManifestSha256`, absent approved TLS/signer/grants and the outstanding current strict acceptance keep this child and story 12.2 **in-progress**. Disposable component signers and credentials establish no owner enrollment.
+- From 2026-11-13, the strict fixture's enrollment comes from the Platform run-owned authority (Platform Story 2.12), not from owner references. Until that story lands and the fixture consumes it, the profile stays disabled in the fixture. Owner references remain the only activation path outside the fixture.
 
 ## Spec Change Log
 
 - 2026-11-11: Implemented the approved source prerequisite and recorded component qualification; frozen intent and all strict acceptance bodies, budgets and retries remain unchanged. Actual protected activation and current strict runtime acceptance are incomplete.
+- 2026-11-13: Human renegotiation (Jerome, [sprint-change-proposal-2026-11-13](../planning-artifacts/sprint-change-proposal-2026-11-13.md)). The random per-run fixture identity makes any pre-provisioned owner manifest unmatchable. Frozen intent: added the *Renegotiated* paragraph, the run-owned evidence label (Always), the scoped signer and pin rules (Never), and the *Run-owned enrollment* matrix row; the *Missing enrollment* row was widened. Added the prerequisite and fixture-wiring tasks and AC4; reworded AC1, AC3 and the evidence task. Strict bodies, deadlines, retries and budgets are unchanged. Frozen block SHA-256 before: `69e8a7beff20c976a844e19fc6cd4646c543d7d083909849f849b75d71092840`; the after-value is in the proposal's Appendix.
 
 ## Review Triage Log
 
