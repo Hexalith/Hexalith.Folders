@@ -92,7 +92,7 @@ public sealed class WorkloadEnrollmentComponentTests
             ["--EnableKeycloak=true", "--KeycloakPersistent=false", "--Folders:WorkloadEnrollment:DeferToCohort=true"], TestContext.Current.CancellationToken).ConfigureAwait(true);
         await using var scope = builder.ConfigureAwait(true);
         foreach (string name in new[] { "folders-workers-replica", "folders-workers-proof-a", "folders-workers-proof-b" })
-            builder.AddProject<Projects.Hexalith_Folders_Workers>(name).WithDaprSidecar(sidecar => sidecar.WithOptions(new DaprSidecarOptions { AppId = name }));
+            builder.AddProject<Projects.Hexalith_Folders_Workers>(name).WithDaprSidecar(sidecar => sidecar.WithOptions(new DaprSidecarOptions { AppId = name == "folders-workers-replica" ? "folders-workers" : name }));
         builder.AddProject<Projects.Hexalith_Folders_Server>("folders-replica").WithDaprSidecar(sidecar => sidecar.WithOptions(new DaprSidecarOptions { AppId = "folders" }));
         string suffix = "-" + Convert.ToHexString(RandomNumberGenerator.GetBytes(6)).ToLowerInvariant();
         var proofs = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -145,6 +145,9 @@ public sealed class WorkloadEnrollmentComponentTests
         JsonObject original = JsonNode.Parse(manifestBytes)!.AsObject();
         JsonArray clients = original["clients"]!.AsArray();
         clients.Count.ShouldBe(8);
+        clients.Select(client => client!["workload"]!.GetValue<string>()).Distinct().Count().ShouldBe(6);
+        string Workload(string name) => clients.Single(client => client!["resource"]!.GetValue<string>() == name)!["workload"]!.GetValue<string>();
+        Workload("folders-workers-replica").ShouldBe(Workload("folders-workers"));
         string Secret(string name) => clients.Single(client => client!["resource"]!.GetValue<string>() == name)!["secretFile"]!.GetValue<string>();
         Secret("folders").ShouldBe(Secret("folders-replica"));
         Secret("folders-workers").ShouldBe(Secret("folders-workers-replica"));

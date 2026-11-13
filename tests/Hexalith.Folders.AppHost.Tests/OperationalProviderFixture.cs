@@ -38,7 +38,7 @@ internal sealed class OperationalProviderFixture(string directory, string runId)
         // Preserve prelaunch workload trust and system roots when adding the Forgejo CA.
         string systemTrust = Environment.GetEnvironmentVariable("SSL_CERT_FILE") ?? "/etc/ssl/certs/ca-certificates.crt";
         await File.WriteAllTextAsync(TrustFile, (File.Exists(systemTrust) ? await File.ReadAllTextAsync(systemTrust).ConfigureAwait(false) : string.Empty)
-            + await File.ReadAllTextAsync(certificate).ConfigureAwait(false)).ConfigureAwait(false);
+            + "\n" + await File.ReadAllTextAsync(certificate).ConfigureAwait(false)).ConfigureAwait(false);
         _container = "folders-provider-" + runId;
         _ = await FolderDurabilityProcess.RunAsync("docker", "run", "--detach", "--rm", "--name", _container,
             "--publish", "127.0.0.1::3000", "--mount", $"type=bind,source={certificates},target=/certs,readonly",
