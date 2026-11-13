@@ -140,8 +140,9 @@ public sealed class WorkloadEnrollmentComponentTests
             }
             finally { await File.WriteAllBytesAsync(receiptPath, receiptBytes, TestContext.Current.CancellationToken).ConfigureAwait(true); }
         }
-        await using PlatformRunOwnedWorkloadEnrollment? enrollment = await PlatformRunOwnedWorkloadEnrollment.AdoptAsync(builder, tenant, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        PlatformRunOwnedWorkloadEnrollment? enrollment = await PlatformRunOwnedWorkloadEnrollment.AdoptAsync(builder, tenant, TestContext.Current.CancellationToken).ConfigureAwait(true);
         enrollment.ShouldNotBeNull();
+        await using System.Runtime.CompilerServices.ConfiguredAsyncDisposable enrollmentCleanup = enrollment.ConfigureAwait(true);
         string manifestPath = builder.Configuration[PlatformWorkloadEnrollment.ConfigurationPrefix + "ManifestPath"]!;
         byte[] manifestBytes = await File.ReadAllBytesAsync(manifestPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
         JsonObject original = JsonNode.Parse(manifestBytes)!.AsObject();

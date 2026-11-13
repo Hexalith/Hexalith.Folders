@@ -83,7 +83,7 @@ function Write-GovernanceReport {
 }
 
 function Invoke-GovernanceTests {
-    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
     if (-not (Test-Path $testAssembly)) {
         Write-Host 'GOVERNANCE-PREREQUISITE-DRIFT: governance test assembly is missing. Build the Release test project before running this gate.'
         return 1

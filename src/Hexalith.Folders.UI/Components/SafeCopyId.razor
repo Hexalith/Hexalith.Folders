@@ -40,7 +40,18 @@
         if (!string.IsNullOrEmpty(Value))
         {
             // Read-only clipboard copy of an already-displayed safe identifier — no server mutation.
-            await Js.InvokeVoidAsync("navigator.clipboard.writeText", Value).ConfigureAwait(false);
+            try
+            {
+                await Js.InvokeVoidAsync("navigator.clipboard.writeText", Value).ConfigureAwait(false);
+            }
+            catch (JSException)
+            {
+                // Clipboard permissions can be denied; keep the read-only view available.
+            }
+            catch (JSDisconnectedException)
+            {
+                // The circuit can close before the clipboard operation completes.
+            }
         }
     }
 }

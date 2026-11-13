@@ -134,7 +134,7 @@ public sealed partial class SecurityRedactionCiWorkflowConformanceTests
         script.ShouldContain("$ErrorActionPreference = 'Stop'");
         script.ShouldContain(ReportPath);
         script.ShouldContain("$LASTEXITCODE");
-        script.ShouldContain("bin/Release/net10.0/$projectName.dll", Case.Sensitive);
+        script.ShouldContain("bin/Release/net11.0/$projectName.dll", Case.Sensitive);
         script.ShouldContain("$runnerArguments += @('-method', $method)", Case.Sensitive);
         script.ShouldContain("& dotnet $runnerPath @runnerArguments", Case.Sensitive);
         script.ShouldNotContain("@('test', 'Hexalith.Folders.slnx'", Case.Sensitive);

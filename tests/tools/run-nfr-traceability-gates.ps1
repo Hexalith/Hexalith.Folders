@@ -186,7 +186,7 @@ try {
         Remove-Item $trxPath -Force
     }
 
-    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
     # Isolated runner-failure tests use their actual current assembly without manufacturing
     # another configuration's output. Normal CI keeps the fixed Release/package lane above.
     if ($BuiltTestAssemblyPath) {

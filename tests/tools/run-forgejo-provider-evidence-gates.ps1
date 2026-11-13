@@ -105,7 +105,7 @@ if (-not $SkipRestoreBuild) {
 }
 
 $runnerName = if ($IsWindows) { 'Hexalith.Folders.Tests.exe' } else { 'Hexalith.Folders.Tests' }
-$testRunner = Join-Path $repositoryRoot "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/$runnerName"
+$testRunner = Join-Path $repositoryRoot "tests/Hexalith.Folders.Tests/bin/Debug/net11.0/$runnerName"
 if (-not (Test-Path -LiteralPath $testRunner)) {
     Fail-EvidenceGate -Scenario 'prerequisites' -Reason 'live-test-runner-missing'
 }

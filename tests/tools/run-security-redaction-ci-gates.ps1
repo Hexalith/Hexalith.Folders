@@ -109,7 +109,7 @@ function Assert-RequiredInput {
 }
 
 function Assert-TestAssembly {
-    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
 
     if (-not (Test-Path $testAssembly)) {
         Write-SecurityRedactionReport -Status 'failed' -Results $script:results
@@ -166,7 +166,7 @@ function Invoke-XunitAssembly {
 
     $projectDirectory = Split-Path -Parent (Join-Path $repositoryRoot $Gate.project_path)
     $projectName = [System.IO.Path]::GetFileNameWithoutExtension($Gate.project_path)
-    $runnerPath = Join-Path $projectDirectory "bin/Release/net10.0/$projectName.dll"
+    $runnerPath = Join-Path $projectDirectory "bin/Release/net11.0/$projectName.dll"
     if (-not (Test-Path $runnerPath)) {
         Write-Host "SECURITY-REDACTION-CI-PREREQUISITE-DRIFT: xUnit test assembly missing for project path=$($Gate.project_path)"
         return 1

@@ -113,7 +113,7 @@ public sealed partial class E2eCiWorkflowConformanceTests
             "Hexalith.Folders.CI.slnx",
             "--configuration Release",
             "-p:UseNuGetDeps=true",
-            "bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll",
+            "bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll",
             "& dotnet $testAssembly -noLogo -noColor",
             "full UI E2E selection executed zero tests",
             E2eProject,

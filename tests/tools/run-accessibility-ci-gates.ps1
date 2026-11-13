@@ -51,7 +51,7 @@ function Write-AccessibilityReport {
 }
 
 function Invoke-AccessibilityTests {
-    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll'
     if (-not (Test-Path $testAssembly)) {
         Write-Host 'ACCESSIBILITY-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Build the Release test project before running this gate.'
         return 1
@@ -96,7 +96,7 @@ try {
         }
     }
     else {
-        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll'
 
         if (-not (Test-Path $testAssembly)) {
             Write-Error 'ACCESSIBILITY-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Run the accessibility gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'

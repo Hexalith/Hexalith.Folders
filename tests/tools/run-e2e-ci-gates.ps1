@@ -48,7 +48,7 @@ function Write-E2eReport {
 }
 
 function Invoke-E2eTests {
-    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll'
     if (-not (Test-Path $testAssembly)) {
         Write-Host 'E2E-PREREQUISITE-DRIFT: Release UI E2E test assembly is missing.'
         return 1
@@ -89,7 +89,7 @@ try {
         }
     }
     else {
-        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll'
 
         if (-not (Test-Path $testAssembly)) {
             Write-Error 'E2E-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Run the E2E gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'

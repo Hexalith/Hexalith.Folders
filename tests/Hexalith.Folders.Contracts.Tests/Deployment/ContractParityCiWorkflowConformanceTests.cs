@@ -123,7 +123,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         script.ShouldContain("$ErrorActionPreference = 'Stop'");
         script.ShouldContain(ReportPath);
         script.ShouldContain("$LASTEXITCODE");
-        script.ShouldContain("bin/Release/net10.0/$projectName.dll", Case.Sensitive);
+        script.ShouldContain("bin/Release/net11.0/$projectName.dll", Case.Sensitive);
         script.ShouldContain("$selectors = @($Gate.filter -split '\\|')", Case.Sensitive);
         script.ShouldContain("foreach ($selector in $qualifiedSelectors)", Case.Sensitive);
         script.ShouldContain("$selectorArguments += @('-method', $selector)", Case.Sensitive);

@@ -175,7 +175,7 @@ function Invoke-XunitAssembly {
 
     $projectDirectory = Split-Path -Parent (Join-Path $repositoryRoot $Gate.project_path)
     $projectName = [System.IO.Path]::GetFileNameWithoutExtension($Gate.project_path)
-    $runnerPath = Join-Path $projectDirectory "bin/Release/net10.0/$projectName.dll"
+    $runnerPath = Join-Path $projectDirectory "bin/Release/net11.0/$projectName.dll"
     if (-not (Test-Path $runnerPath)) {
         Write-Host "CONTRACT-PARITY-CI-PREREQUISITE-DRIFT: xUnit test assembly not found at repository-relative project output for $($Gate.project_path). Build the solution before running this gate."
         return 1

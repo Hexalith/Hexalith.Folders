@@ -199,7 +199,7 @@ public sealed partial class GovernanceCompletenessGateTests
         workflow.ShouldContain("global-json-file: global.json");
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll");
         script.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true");
         script.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror");
         script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests'", Case.Sensitive);

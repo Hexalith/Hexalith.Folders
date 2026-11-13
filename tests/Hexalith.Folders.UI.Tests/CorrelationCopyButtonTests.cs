@@ -2,6 +2,8 @@ using Bunit;
 
 using Hexalith.Folders.UI.Components;
 
+using Microsoft.JSInterop;
+
 using Shouldly;
 
 using Xunit;
@@ -16,6 +18,23 @@ namespace Hexalith.Folders.UI.Tests;
 public sealed class CorrelationCopyButtonTests
 {
     private const string ClipboardFunction = "navigator.clipboard.writeText";
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ClipboardFailure_KeepsReadOnlyButtonAvailable(bool disconnected)
+    {
+        using BunitContext ctx = BadgeRenderingFixture.Create();
+        ctx.JSInterop.SetupVoid(ClipboardFunction, _ => true)
+            .SetException<Exception>(disconnected ? new JSDisconnectedException("Circuit closed.") : new JSException("Clipboard denied."));
+        IRenderedComponent<CorrelationCopyButton> rendered = ctx.Render<CorrelationCopyButton>(p => p
+            .Add(c => c.CorrelationId, "corr-1"));
+
+        rendered.Find("[data-testid=\"incident-correlation-copy\"]").Click();
+
+        rendered.Find("[data-testid=\"incident-correlation-copy\"]").GetAttribute("type").ShouldBe("button");
+        rendered.ShouldHaveNoMutationAffordances();
+    }
 
     [Fact]
     public void RendersReadOnlyButton_WithAccessibleLabel_NoMutationAffordance()

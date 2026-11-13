@@ -96,7 +96,7 @@ public sealed class EnrolledWorkloadSourceBoundaryTests
             {
                 string name = assembly.GetName().Name!;
                 string sourcePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../references/Hexalith.EventStore/src",
-                    name, "bin/Debug/net10.0", name + ".dll"));
+                    name, "bin/Debug/net11.0", name + ".dll"));
                 byte[] loaded = await File.ReadAllBytesAsync(assembly.Location, TestContext.Current.CancellationToken);
                 string hash = Convert.ToHexString(SHA256.HashData(loaded));
                 hash.ShouldBe(Convert.ToHexString(SHA256.HashData(await File.ReadAllBytesAsync(sourcePath, TestContext.Current.CancellationToken))));

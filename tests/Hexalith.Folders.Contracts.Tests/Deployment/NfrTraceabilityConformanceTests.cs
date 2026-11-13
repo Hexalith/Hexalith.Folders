@@ -339,7 +339,7 @@ public sealed partial class NfrTraceabilityConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "built xUnit v3 Contracts.Tests assembly",
-            "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+            "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll",
             "BuiltTestAssemblyPath requires SkipRestoreBuild",
             "$testExitCode = $LASTEXITCODE",
             "Hexalith.Folders.Contracts.Tests.dll",

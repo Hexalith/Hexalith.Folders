@@ -113,7 +113,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         }
 
         string tenantsHost = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "../../../../../references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net10.0/Hexalith.Tenants.dll"));
+            "../../../../../references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net11.0/Hexalith.Tenants.dll"));
         if (!File.Exists(tenantsHost)) throw new InvalidOperationException(
             "Build the independently composed root-declared Tenants host in Debug/source mode before durability acceptance.");
 
@@ -897,7 +897,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
             .WithEnvironment("EventStore__ProjectionDispatch__MaxRebuildEventCount", "40000");
         string observer = Environment.GetEnvironmentVariable("FOLDERS_TASK36_OBSERVER")
-            ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../tests/tools/Task36FoldObserver/bin/Debug/net10.0/Task36FoldObserver.dll"));
+            ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../tests/tools/Task36FoldObserver/bin/Debug/net11.0/Task36FoldObserver.dll"));
         if (!File.Exists(observer)) throw new InvalidOperationException("Build the Task36FoldObserver test project before running durability acceptance.");
         ConfigureObservers(
             _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders")),

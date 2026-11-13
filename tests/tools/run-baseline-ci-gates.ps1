@@ -294,7 +294,7 @@ try {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($testProject.project_path)
         if ($testProject.Contains('runner_classes')) {
             $projectDirectory = Split-Path -Parent $testProject.project_path
-            $testAssembly = Join-Path $projectDirectory "bin/Release/net10.0/$projectName.dll"
+            $testAssembly = Join-Path $projectDirectory "bin/Release/net11.0/$projectName.dll"
             foreach ($testClass in $testProject.runner_classes) {
                 Invoke-BaselineSelectedClass -ProjectPath $testProject.project_path -TestAssembly $testAssembly -TestClass $testClass
             }
@@ -303,7 +303,7 @@ try {
 
         if ($testProject.runner_arguments.Count -gt 0) {
             $projectDirectory = Split-Path -Parent $testProject.project_path
-            $testAssembly = Join-Path $projectDirectory "bin/Release/net10.0/$projectName.dll"
+            $testAssembly = Join-Path $projectDirectory "bin/Release/net11.0/$projectName.dll"
             $testArguments = @($testAssembly, '-noLogo', '-noColor') + @($testProject.runner_arguments) + @('-result-trx', (Join-Path $reportDirectory "$projectName.trx"))
         }
         else {

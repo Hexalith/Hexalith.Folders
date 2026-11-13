@@ -40,7 +40,7 @@ internal static class FolderDurabilityRuntimeBinding
             _ => "Hexalith.Folders.Workers",
         };
         string expected = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src", project,
-            "bin/Debug/net10.0", project + ".dll"));
+            "bin/Debug/net11.0", project + ".dll"));
         bool observedHost = false;
         foreach (int managedProcessId in DescendantsAndSelf(processId))
         {

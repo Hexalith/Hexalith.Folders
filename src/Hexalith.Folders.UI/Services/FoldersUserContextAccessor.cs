@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 using Hexalith.FrontComposer.Contracts.Rendering;
@@ -30,6 +31,7 @@ internal sealed class FoldersUserContextAccessor : IUserContextAccessor
 
     public string? UserId => ReadClaim(ClaimTypes.NameIdentifier);
 
+    [SuppressMessage("Microsoft.AspNetCore.Components.Analyzers", "BL0013", Justification = "Every claim read queries the current provider; this accessor never caches authentication state.")]
     private string? ReadClaim(string claimType)
     {
         AuthenticationState state = _authenticationStateProvider

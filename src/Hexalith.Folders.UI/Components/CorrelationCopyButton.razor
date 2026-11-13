@@ -42,6 +42,19 @@
             $"correlationId={CorrelationId}; window={(string.IsNullOrWhiteSpace(TimeWindow) ? "unknown" : TimeWindow)}");
 
     private async Task CopyAsync()
+    {
         // Read-only clipboard copy of an already-composed metadata-only string — no server mutation.
-        => await Js.InvokeVoidAsync("navigator.clipboard.writeText", Payload).ConfigureAwait(false);
+        try
+        {
+            await Js.InvokeVoidAsync("navigator.clipboard.writeText", Payload).ConfigureAwait(false);
+        }
+        catch (JSException)
+        {
+            // Clipboard permissions can be denied; keep the read-only view available.
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit can close before the clipboard operation completes.
+        }
+    }
 }

@@ -70,6 +70,24 @@ public sealed class UserContextAccessorRegistrationTests
         accessor.UserId.ShouldBeNull();
     }
 
+    [Fact]
+    public void FoldersUserContextAccessor_ReadsCurrentPrincipalAfterProviderChanges()
+    {
+        AuthenticationStateProvider provider = AuthenticationStateProviderStub.WithClaims(
+            ("tenant_id", "tenant-a"),
+            (ClaimTypes.NameIdentifier, "user-a"));
+        FoldersUserContextAccessor accessor = new(provider);
+
+        accessor.TenantId.ShouldBe("tenant-a");
+        accessor.UserId.ShouldBe("user-a");
+
+        provider.GetAuthenticationStateAsync()
+            .Returns(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()))));
+
+        accessor.TenantId.ShouldBeNull();
+        accessor.UserId.ShouldBeNull();
+    }
+
     private static class AuthenticationStateProviderStub
     {
         public static AuthenticationStateProvider Anonymous()
