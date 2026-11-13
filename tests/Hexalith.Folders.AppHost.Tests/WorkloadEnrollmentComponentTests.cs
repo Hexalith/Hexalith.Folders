@@ -125,7 +125,7 @@ public sealed class WorkloadEnrollmentComponentTests
         }
         finally { Environment.SetEnvironmentVariable(PlatformRunOwnedWorkloadEnrollment.CapabilityEnvironmentVariable, capability); }
         byte[] receiptBytes = await File.ReadAllBytesAsync(receiptPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
-        foreach (string fault in new[] { "expiry", "child", "directory" })
+        foreach ((string fault, string code) in new[] { ("expiry", "fixed-owner-deadline-expired-or-invalid"), ("child", "owner-child-process-binding"), ("directory", "foreign-launcher-receipt") })
         {
             JsonObject changed = JsonNode.Parse(receiptBytes)!.AsObject();
             if (fault == "expiry") changed["deadline"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 1;
@@ -134,7 +134,9 @@ public sealed class WorkloadEnrollmentComponentTests
             try
             {
                 await File.WriteAllTextAsync(receiptPath, changed.ToJsonString(), TestContext.Current.CancellationToken).ConfigureAwait(true);
-                await Should.ThrowAsync<InvalidOperationException>(() => PlatformRunOwnedWorkloadEnrollment.AdoptAsync(builder, tenant, TestContext.Current.CancellationToken));
+                (await Should.ThrowAsync<InvalidOperationException>(() => PlatformRunOwnedWorkloadEnrollment.AdoptAsync(builder, tenant, TestContext.Current.CancellationToken)))
+                    .Message.ShouldContain(code);
+                File.Exists(Path.Combine(Path.GetDirectoryName(receiptPath)!, "request.json")).ShouldBeFalse("A refused receipt publishes no request.");
             }
             finally { await File.WriteAllBytesAsync(receiptPath, receiptBytes, TestContext.Current.CancellationToken).ConfigureAwait(true); }
         }
