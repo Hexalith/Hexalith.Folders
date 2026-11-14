@@ -1,0 +1,300 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "scope": "Current-source qualification of the approved SDK shutdown continuation, plus current reruns mapped to the unchanged frozen I/O matrix. Earlier matrices remain immutable. This is not a whole-story completion decision.",
+  "evidence": "story-12-2-sdk-shutdown-implementation-20261114.json",
+  "frozen_io_rows": [
+    {
+      "scenario": "Delivery/replay",
+      "current_executed_classes": {
+        "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests": {
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests": {
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests": {
+          "passed": 23,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests": {
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "unchanged_strict_coverage": "real-source, repeated SDK rebuild, two-process delivery"
+    },
+    {
+      "scenario": "Task closure",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "passed": 34,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "unchanged_strict_coverage": "real-provider task pipeline, equivalent replay and closed-binding denial"
+    },
+    {
+      "scenario": "Conflict/crash",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests": {
+          "passed": 17,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests": {
+          "passed": 7,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests": {
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.ProjectionRebuildProductionPathTests": {
+          "passed": 102,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "unchanged_strict_coverage": "interrupted SDK generation, changed writer PID and original-session resume"
+    },
+    {
+      "scenario": "Denial/storage",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "passed": 34,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "unchanged_strict_coverage": "safe-failure, bound-target denial and exact source/checkpoint preservation"
+    },
+    {
+      "scenario": "Retention",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests": {
+          "passed": 7,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "unchanged_strict_coverage": "persisted source-relative retention and rebuild checks"
+    }
+  ],
+  "approved_handoff": [
+    {
+      "item": 1,
+      "status": "done",
+      "evidence": "Exact approved patches applied at the selected heads; existing Root/Platform changes preserved."
+    },
+    {
+      "item": 2,
+      "status": "done",
+      "current_controls": {
+        "scope_privacy_ownership": 13,
+        "fixture_configuration": 10,
+        "catalog_cancellation_ownership": 5,
+        "admin_index": 22,
+        "compile_inventory": 21
+      },
+      "limit": "Compile inventory inputs are unchanged; its 21-case pass and package-mode 500-case pass retain explicit input/producer scope."
+    },
+    {
+      "item": 3,
+      "status": "done",
+      "normal_analyzer_debug_source_builds": 5,
+      "producer_modules": 106,
+      "source_pdb_asset_issues": 0
+    },
+    {
+      "item": 4,
+      "status": "done",
+      "evidence": "Two positive connected Host.StopAsync/actual-actor-method captures; failed and canceled infrastructure attempts preserved."
+    },
+    {
+      "item": 5,
+      "status": "done",
+      "regressions": {
+        "coordinator": {
+          "before_passed": 1,
+          "before_failed": 1,
+          "after_passed": 2,
+          "after_failed": 0
+        },
+        "legacy_finalization": {
+          "before_passed": 2,
+          "before_failed": 1,
+          "after_passed": 3,
+          "after_failed": 0
+        }
+      },
+      "guarantees": "Actual task waits, unknown fences and original durable work retained; original TimeProvider deadline and ordinary caller independence preserved."
+    },
+    {
+      "item": 6,
+      "status": "done",
+      "affected_sdk_passes": 571,
+      "current_consumer_passes": 5673,
+      "current_issuer_wrapper_server_passes": 11,
+      "current_issuer_wrapper_consumer_passes": 5,
+      "strict_tracing_off": {
+        "passed": 1,
+        "failed": 0,
+        "assembly_seconds": 443.78
+      },
+      "actual_scoped_module_observations": 568,
+      "actual_sdk_observations": 240,
+      "drift": 0,
+      "owned_resource_remainders": 0,
+      "limit": "One strict pass does not erase earlier failures or establish absence of shutdown flakiness."
+    }
+  ],
+  "new_control_tests": [
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests",
+      "method": "FinalizationRetainsActualCallAndUnknownFenceUntilCompletion",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests.FinalizationRetainsActualCallAndUnknownFenceUntilCompletion(cancellation: \\\"caller\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests",
+      "method": "FinalizationRetainsActualCallAndUnknownFenceUntilCompletion",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests.FinalizationRetainsActualCallAndUnknownFenceUntilCompletion(cancellation: \\\"host\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests",
+      "method": "FinalizationRetainsActualCallAndUnknownFenceUntilCompletion",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests.FinalizationRetainsActualCallAndUnknownFenceUntilCompletion(cancellation: \\\"deadline\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "NullTelemetryProvidersKeepSequentialStageOrder",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.NullTelemetryProvidersKeepSequentialStageOrder"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "ThrowingLoggerCannotReplaceOriginalResult",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.ThrowingLoggerCannotReplaceOriginalResult"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "WorkerTracePreservesActualRemoteCallAndAmbiguousLeaseAfterCanceledStop",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.WorkerTracePreservesActualRemoteCallAndAmbiguousLeaseAfterCanceledStop(ambiguous: False)"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "WorkerTracePreservesActualRemoteCallAndAmbiguousLeaseAfterCanceledStop",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.WorkerTracePreservesActualRemoteCallAndAmbiguousLeaseAfterCanceledStop(ambiguous: True)"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "AdminBridgeReturnsOnlyItsOwnAccessibleType",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.AdminBridgeReturnsOnlyItsOwnAccessibleType"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "UnwindingPreservesExactExceptionAndCancellationToken",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.UnwindingPreservesExactExceptionAndCancellationToken"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "ReturnedScopeIsPairedOnceAndPayloadIsClosed",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.ReturnedScopeIsPairedOnceAndPayloadIsClosed"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DefaultAndInvalidOptInsDoNotTouchLogger",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DefaultAndInvalidOptInsDoNotTouchLogger(value: null)"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DefaultAndInvalidOptInsDoNotTouchLogger",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DefaultAndInvalidOptInsDoNotTouchLogger(value: \\\"\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DefaultAndInvalidOptInsDoNotTouchLogger",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DefaultAndInvalidOptInsDoNotTouchLogger(value: \\\"false\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DefaultAndInvalidOptInsDoNotTouchLogger",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DefaultAndInvalidOptInsDoNotTouchLogger(value: \\\"TRUE\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DefaultAndInvalidOptInsDoNotTouchLogger",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DefaultAndInvalidOptInsDoNotTouchLogger(value: \\\"1\\\")"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+      "method": "DebugFilterAndClosedStageSetAreRequired",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests.DebugFilterAndClosedStageSetAreRequired"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Projections.NamedProjectionDispatchCoordinatorTests",
+      "method": "HostShutdownCancelsActualLifecycleCompletionWhileUnknownFenceAndOriginalWorkRemain",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Projections.NamedProjectionDispatchCoordinatorTests.HostShutdownCancelsActualLifecycleCompletionWhileUnknownFenceAndOriginalWorkRemain(stopHost: False)"
+    },
+    {
+      "type": "Hexalith.EventStore.Server.Tests.Projections.NamedProjectionDispatchCoordinatorTests",
+      "method": "HostShutdownCancelsActualLifecycleCompletionWhileUnknownFenceAndOriginalWorkRemain",
+      "result": "Pass",
+      "name": "Hexalith.EventStore.Server.Tests.Projections.NamedProjectionDispatchCoordinatorTests.HostShutdownCancelsActualLifecycleCompletionWhileUnknownFenceAndOriginalWorkRemain(stopHost: True)"
+    }
+  ],
+  "open_independent_gates": [
+    "Parent step-04 independent review and whole-story acceptance decision",
+    "SM4 acknowledgment p95 8642.996ms >1000ms; status read p95 1291.141ms >500ms; record without redesign",
+    "PD10/A6b governance/exposure/closure decisions and owner enrollment outside this disposable fixture remain excluded",
+    "Retained unrelated Platform broad analyzer blocker was not rerun; no passing status is inferred"
+  ]
+}

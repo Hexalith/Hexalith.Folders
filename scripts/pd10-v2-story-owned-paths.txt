@@ -661,6 +661,8 @@ src/Hexalith.Folders/Projections/FolderAccess/FolderAccessProjection.cs
 src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs
 src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs
 src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs
+src/Hexalith.Folders/Projections/OperationalStatus/FoldersRejectionSource.cs
+src/Hexalith.Folders/Projections/OperationalStatus/FoldersSourceOwnerKind.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusCheckpoint.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusCompaction.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusEvent.cs
@@ -676,6 +678,7 @@ src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusStateFold.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTaskCompletion.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusUnavailableException.cs
+src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusViewApplicability.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusViewBinding.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusViewEvidence.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalWorkspaceStatus.cs
@@ -1138,6 +1141,7 @@ tests/Hexalith.Folders.Cli.Tests/MetadataOnlyOutputTests.cs
 tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs
 tests/Hexalith.Folders.Cli.Tests/TestSupport/TestData.cs
 tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
+tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs
 tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
 tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/ContractsSmokeTests.cs
@@ -1474,6 +1478,7 @@ tests/Hexalith.Folders.Tests/Projections/FolderList/FolderRepositoryBindingProje
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/CancelingOperationalClock.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/CancelingOperationalEvents.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NonFolderOperationalSourceTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/ObservedOperationalBatchStore.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs
@@ -1481,9 +1486,11 @@ tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCorr
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFixture.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFoldTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReadInterleavingStore.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReviewThreeTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundFiveTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundSixTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/RoundFiveOperationalHistory.cs
 tests/Hexalith.Folders.Tests/Projections/SemanticIndexing/SemanticIndexingBridgeProjectionTests.cs
 tests/Hexalith.Folders.Tests/Projections/TenantAccess/FolderTenantAccessHandlerTests.cs

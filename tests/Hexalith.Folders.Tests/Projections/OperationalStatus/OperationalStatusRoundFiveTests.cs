@@ -117,8 +117,10 @@ public sealed class OperationalStatusRoundFiveTests
             .Status.ShouldBe(WorkspaceStatusReadModelStatus.Stale);
     }
 
-    [Fact]
-    public async Task OldCompactedCheckpointRequiresNamedCompleteSourceRepairBeforeResumingLiveWritesAsync()
+    [Theory]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task OldCompactedCheckpointRequiresNamedCompleteSourceRepairBeforeResumingLiveWritesAsync(int schema)
     {
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
@@ -126,7 +128,8 @@ public sealed class OperationalStatusRoundFiveTests
         OperationalStatusProjectionWriter writer = new(store, store, store);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, token)).IsSuccess.ShouldBeTrue();
         string checkpointKey = OperationalStatusKeys.Checkpoint("tenant-a", "folder-a");
-        var old = store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)! with { SchemaVersion = 2 };
+        var old = store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)! with
+        { SchemaVersion = schema, TaskEvidence = new Dictionary<string, string>(), WorkspaceEvidence = new Dictionary<string, string>() };
         old = old with { IntegrityDigest = OperationalStatusIntegrity.Checkpoint(old) };
         store.SeedRaw("statestore", checkpointKey, old);
         OperationalStatusFold.Valid(old, "tenant-a", "folder-a").ShouldBeTrue();
@@ -139,7 +142,7 @@ public sealed class OperationalStatusRoundFiveTests
         JsonSerializer.Serialize(store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)).ShouldBe(JsonSerializer.Serialize(old));
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "upgrade-source", sources,
             sources.Length, token)).IsSuccess.ShouldBeTrue();
-        store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)!.SchemaVersion.ShouldBe(3);
+        store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)!.SchemaVersion.ShouldBe(4);
         (await writer.ApplyAsync("tenant-a", "folder-a", "resumed", [grant], token)).IsSuccess.ShouldBeTrue();
         var grown = sources.Append(grant).ToArray();
         store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)!.SourceDigest

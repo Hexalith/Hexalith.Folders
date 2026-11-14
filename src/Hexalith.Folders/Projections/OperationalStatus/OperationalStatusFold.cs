@@ -20,7 +20,7 @@ public static class OperationalStatusFold
             throw new InvalidOperationException("Malformed operational checkpoint.");
         }
         FolderState state = current?.State ?? FolderState.Empty;
-        bounded |= current?.SchemaVersion is 2 or 3;
+        bounded |= current?.SchemaVersion is 2 or 3 or 4;
         long sequence = current?.Sequence ?? 0;
         string digest = current?.SourceDigest ?? OperationalStatusKeys.Digest(tenantId, folderId);
         DateTimeOffset observed = current?.ObservedAt ?? DateTimeOffset.UnixEpoch;
@@ -116,7 +116,7 @@ public static class OperationalStatusFold
     /// <summary>Checks the stored checkpoint identity and required source evidence.</summary>
     public static bool Valid(OperationalStatusCheckpoint value, string tenantId, string folderId)
     {
-        if (value?.SchemaVersion is 2 or 3)
+        if (value?.SchemaVersion is 2 or 3 or 4)
             return value.ManagedTenantId == tenantId && value.FolderId == folderId && value.Sequence > 0
                 && value.SourceDigest is { Length: 64 } && value.ObservedAt != default
                 && value.State is not null && (value.State.IsCreated
@@ -127,7 +127,10 @@ public static class OperationalStatusFold
                 && tail is { Length: 64 } && value.MessageIds is { Count: 1 }
                 && value.MessageIds.TryGetValue(value.Sequence, out string? message) && !string.IsNullOrWhiteSpace(message)
                 && value.State.TaskClosures is { Count: 0 } && value.TaskClosedSequences is { Count: 0 }
-                && value.WorkspaceEvidence is { Count: 0 } && value.TaskEvidence is { Count: 0 }
+                && (value.SchemaVersion < 4
+                    ? value.WorkspaceEvidence is { Count: 0 } && value.TaskEvidence is { Count: 0 }
+                    : ValidCurrentEvidence(value.WorkspaceEvidence, value.State.WorkspaceLifecycleState is null ? null : value.State.WorkspaceId)
+                        && ValidCurrentEvidence(value.TaskEvidence, value.State.WorkspaceLifecycleState is null ? null : value.State.WorkspaceTaskId))
                 && value.IntegrityDigest == OperationalStatusIntegrity.Checkpoint(value);
         if (value is null || value.SchemaVersion != 1 || value.ManagedTenantId != tenantId || value.FolderId != folderId
             || value.Sequence < 1 || value.SourceDigest is not { Length: 64 } || value.EventDigests is null
@@ -154,6 +157,10 @@ public static class OperationalStatusFold
         }
         return digest == value.SourceDigest && value.IntegrityDigest == OperationalStatusIntegrity.Checkpoint(value);
     }
+
+    private static bool ValidCurrentEvidence(IReadOnlyDictionary<string, string>? evidence, string? id)
+        => evidence is not null && (id is null ? evidence.Count == 0
+            : evidence.Count == 1 && evidence.TryGetValue(id, out string? digest) && digest is { Length: 64 });
 
     private static void ValidateWorkspaceEvent(FolderState state, IFolderEvent value)
     {

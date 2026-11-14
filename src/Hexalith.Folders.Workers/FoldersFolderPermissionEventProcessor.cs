@@ -98,7 +98,7 @@ public sealed class FoldersFolderPermissionEventProcessor(
             }
 
             if (envelope.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
-                && FoldersRejectedCommandClassifier.IsOrganization(envelope.Payload))
+                && FoldersRejectedCommandClassifier.IsOrganization(envelope))
             {
                 if (HasProviderBindingCommand(envelope.Payload))
                 {

@@ -797,6 +797,16 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED", lifecycleDiagnosticsDisabled ?? "");
     }
 
+    /// <summary>Forwards the exact diagnostic opt-in only to the fixture's selected EventStore resource.</summary>
+    internal static void ConfigureSdkShutdownTrace(IResourceBuilder<ProjectResource> eventStore, string? enabled)
+    {
+        if (!string.Equals(enabled, "true", StringComparison.Ordinal)) return;
+        eventStore.WithEnvironment("HEXALITH_EVENTSTORE_SHUTDOWN_TRACE", "true")
+            .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Projections.ProjectionActivationWorker", "Debug")
+            .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.BoundedTelemetryShutdownService", "Debug")
+            .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Indexes.AdminOperationalIndexHostedService", "Debug");
+    }
+
     private async Task StartAsync()
     {
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
@@ -918,6 +928,10 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Hosting.Diagnostics", "Information")
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker", "Information")
             .WithEnvironment("Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor", "Information");
+        // The private diagnostic opt-in is forwarded only to this fixture's EventStore host.
+        ConfigureSdkShutdownTrace(
+            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore")),
+            Environment.GetEnvironmentVariable("FOLDERS_TASK36_SDK_SHUTDOWN_TRACE"));
         // Retain standard request/status timing for the independent Folders metadata client.
         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
             .WithEnvironment("Logging__LogLevel__System.Net.Http.HttpClient.Hexalith.EventStore.NativeSourceMetadata", "Information")

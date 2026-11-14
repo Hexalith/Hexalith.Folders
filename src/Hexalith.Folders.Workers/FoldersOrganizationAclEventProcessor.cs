@@ -72,7 +72,7 @@ public sealed class FoldersOrganizationAclEventProcessor(
                     throw new InvalidOperationException("Organization rejection event is unreadable.");
                 }
 
-                if (!FoldersRejectedCommandClassifier.IsOrganization(envelope.Payload))
+                if (!FoldersRejectedCommandClassifier.IsOrganization(envelope))
                 {
                     throw new InvalidOperationException("Folder rejection is on the organization actor.");
                 }

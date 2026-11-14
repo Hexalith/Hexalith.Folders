@@ -268,8 +268,9 @@ public sealed partial class ClientGenerationTests
                 Console.WriteLine("nested-probe-passed");
                 """);
             string probeProject = Path.Combine(temp, "probe.csproj");
+            string targetFramework = "net" + new System.Runtime.Versioning.FrameworkName(AppContext.TargetFrameworkName!).Version.ToString(2);
             new XDocument(new XElement("Project", new XAttribute("Sdk", "Microsoft.NET.Sdk"),
-                new XElement("PropertyGroup", new XElement("TargetFramework", "net10.0"), new XElement("OutputType", "Exe"),
+                new XElement("PropertyGroup", new XElement("TargetFramework", targetFramework), new XElement("OutputType", "Exe"),
                     new XElement("Nullable", "enable"), new XElement("ImplicitUsings", "enable")),
                 new XElement("ItemGroup", new[] { typeof(HexalithIdempotencyHasher).Assembly, typeof(JToken).Assembly }
                     .Select(assembly => new XElement("Reference", new XAttribute("Include", assembly.GetName().Name!),

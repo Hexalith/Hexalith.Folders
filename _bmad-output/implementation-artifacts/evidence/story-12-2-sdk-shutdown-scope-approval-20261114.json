@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T07:43:22.965997+00:00",
+  "owner": "Jerome",
+  "reply": "approve",
+  "proposal": "../proposal-12-2-sdk-shutdown-stage-tracing.md",
+  "approval_scope": "Bounded SDK shutdown tracing, investigation, smallest causally demonstrated internal coordination correction and unchanged-strict qualification; all fixed guarantees preserved.",
+  "parent_frozen_before_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+  "parent_frozen_approved_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "sdk_patch_sha256": "c7ad6daddefce7c18de8a98999e696bd67e6b0ffa9b2d1e8da1db67bb70138ba",
+  "fixture_patch_sha256": "4097a3af7391e2e3c47241f95cffae781e0e747301ec16e9c13c4fe725384aff",
+  "baseline_commit_preserved": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "guard_note": "Only the explicitly approved frozen scope paragraph is added. All three strict test bodies, existing budgets and earlier evidence stay unchanged.",
+  "story_status": "in-progress"
+}

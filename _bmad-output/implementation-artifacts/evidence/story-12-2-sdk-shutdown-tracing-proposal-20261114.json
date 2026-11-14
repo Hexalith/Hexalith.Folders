@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "story": "12.2",
+  "phase": "SDK shutdown scope proposal preparation",
+  "created_utc": "2026-11-14T03:41:53.993545+00:00",
+  "decision": "human scope decision pending",
+  "story_status": "in-progress",
+  "bmad_step": "03",
+  "whole_story_complete": false,
+  "actual_patches_applied": false,
+  "shutdown_cause_established": false,
+  "product_repair_claimed": false,
+  "new_live_or_strict_run": false,
+  "sdk_head": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+  "root_head": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+  "artifacts": {
+    "proposal-12-2-sdk-shutdown-stage-tracing.md": {
+      "sha256": "fd3ae3237b40dfd05180e00092a2756a6c6ea402355171367fe5605b4fc6a6b2",
+      "role": "scope decision"
+    },
+    "proposal-12-2-sdk-shutdown-stage-tracing.patch": {
+      "sha256": "c7ad6daddefce7c18de8a98999e696bd67e6b0ffa9b2d1e8da1db67bb70138ba",
+      "role": "unapplied SDK diagnostic patch"
+    },
+    "proposal-12-2-sdk-shutdown-stage-tracing.fixture.patch": {
+      "sha256": "4097a3af7391e2e3c47241f95cffae781e0e747301ec16e9c13c4fe725384aff",
+      "role": "unapplied Root forwarding patch"
+    }
+  },
+  "scope_exclusion_needing_human_decision": "It does not authorize generic SDK shutdown/performance repair or policy changes.",
+  "proposed_scope": "bounded SDK shutdown investigation and smallest evidence-confirmed internal coordination correction; all existing budgets/order/retries/authorization/source/lease/remote-call ownership guarantees fixed",
+  "sdk_patch_input_and_proposed_sha256": {
+    "src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs": {
+      "base_sha256": null,
+      "proposed_sha256": "ea5ff24166ad52111f6b423db3bdb560e84f3517fc0ce66e0c94ec5c82465f74"
+    },
+    "src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs": {
+      "base_sha256": "94add172fc336d0a1e46e1931556234d1db7b5ccec82dba1f42bd9cd00dc8769",
+      "proposed_sha256": "0945113a3bf579d159c86f67f8188f0371039c88c4be736e8d3e4150cf58c6dd"
+    },
+    "src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs": {
+      "base_sha256": "a9175339c5e51f4d486fb6b7183849a29610ad5a467afe108756a51034effa0e",
+      "proposed_sha256": "348a2963d4078fda507dc20ec519fe06b7c7a34b669c52c2948cdfa8d18f5b16"
+    },
+    "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs": {
+      "base_sha256": null,
+      "proposed_sha256": "d1ce411986dc8b3bea83951d414f619d1cdddf3afcf6b417ea13d334c06ffece"
+    },
+    "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs": {
+      "base_sha256": null,
+      "proposed_sha256": "02fb8f16f2aeb8dff4432f44cf6521247becddec256570b50c1323fee633bd2a"
+    },
+    "src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs": {
+      "base_sha256": "0bfa0a66e3cf36c4baa225426576b65198cbb2354c76a59a17508a771a067fe5",
+      "proposed_sha256": "34abc945cb99e8c695e424b2aa8ffc48deb4236e7cdb409396d1000c82cc23ba"
+    },
+    "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs": {
+      "base_sha256": null,
+      "proposed_sha256": "2e24c1fa3e5ce307571698ea2b240a6bfd4dc12fa20f4401b8b88477ab7700dc"
+    },
+    "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs": {
+      "base_sha256": null,
+      "proposed_sha256": "bd6535f9474a3f007c35834c41e5b8d91730c73d1c9f74d33e2a0393a71acdaf"
+    }
+  },
+  "root_fixture_input_and_proposed_sha256": {
+    "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "base_sha256": "17d82532cad9f597200635b724a0901e128daa2c6de2f221aebd0a3d01aecbd4",
+    "proposed_sha256": "bd03f7ed7d1e24ad8bdc268b5688ae3f9a91590f7f8a515b13aa68bfbe76eedc"
+  },
+  "applicability": {
+    "sdk_command": "git -C references/Hexalith.EventStore apply --check --unidiff-zero --whitespace=error-all <absolute-sdk-patch>",
+    "sdk_exit_code": 0,
+    "root_fixture_command": "git apply --check --unidiff-zero --whitespace=error-all <root-fixture-patch>",
+    "root_fixture_exit_code": 0,
+    "root_diff_check_exit_code": 0,
+    "format": "zero-context LF patch; exact revision/input binding required"
+  },
+  "private_overlay": {
+    "outside_private_directory_and_overlay": "read-only bubblewrap bind",
+    "network": "disabled",
+    "shared_cache_write": "read-only enforced",
+    "restore": false,
+    "normal_analyzers_retained": true,
+    "builds": [
+      {
+        "label": "direct-Hexalith.EventStore.ServiceDefaults",
+        "command": [
+          "dotnet",
+          "/home/administrator/.dotnet/sdk/11.0.100/MSBuild.dll",
+          "src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj",
+          "-t:Build",
+          "-p:BuildProjectReferences=false",
+          "-p:Configuration=Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-p:UseSharedCompilation=false",
+          "-nr:false",
+          "-maxcpucount:1",
+          "-verbosity:minimal"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 2.774
+      },
+      {
+        "label": "direct-Hexalith.EventStore.Server",
+        "command": [
+          "dotnet",
+          "/home/administrator/.dotnet/sdk/11.0.100/MSBuild.dll",
+          "src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj",
+          "-t:Build",
+          "-p:BuildProjectReferences=false",
+          "-p:Configuration=Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-p:UseSharedCompilation=false",
+          "-nr:false",
+          "-maxcpucount:1",
+          "-verbosity:minimal"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 8.769
+      },
+      {
+        "label": "direct-Hexalith.EventStore",
+        "command": [
+          "dotnet",
+          "/home/administrator/.dotnet/sdk/11.0.100/MSBuild.dll",
+          "src/Hexalith.EventStore/Hexalith.EventStore.csproj",
+          "-t:Build",
+          "-p:BuildProjectReferences=false",
+          "-p:Configuration=Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-p:UseSharedCompilation=false",
+          "-nr:false",
+          "-maxcpucount:1",
+          "-verbosity:minimal"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 2.12
+      },
+      {
+        "label": "direct-Hexalith.EventStore.Server.Tests",
+        "command": [
+          "dotnet",
+          "/home/administrator/.dotnet/sdk/11.0.100/MSBuild.dll",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "-t:Build",
+          "-p:BuildProjectReferences=false",
+          "-p:Configuration=Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-p:UseSharedCompilation=false",
+          "-nr:false",
+          "-maxcpucount:1",
+          "-verbosity:minimal"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 21.127
+      }
+    ],
+    "tests": {
+      "command": [
+        "dotnet",
+        "tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/Hexalith.EventStore.Server.Tests.dll",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Telemetry.ShutdownStageScopeTests",
+        "-showLiveOutput",
+        "-result-xml",
+        "/dev/shm/h12proposal-df79xuod/results/controls.xml"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.666,
+      "writes": "private RAM overlay/CLI/temp only; outside bind is read-only; network disabled"
+    },
+    "test_summary": {
+      "passed": "11",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "total": "11",
+      "time": "0.121"
+    },
+    "final_proposed_sources_match_compiled_overlay": true,
+    "root_fixture_compile_or_runtime_tested": false,
+    "initial_cli_attempt": {
+      "elapsed_seconds": 179.688,
+      "signal_associated_exit_code": 0,
+      "valid_build_success": false,
+      "reason": "Stalled before compiler output and was stopped; no cause assigned",
+      "retained_privately": true
+    },
+    "cleanup": {
+      "phase_owned_ram_overlay_removed": true,
+      "removed_file_bytes": 2593767553,
+      "retained": "four proposed DLL/PDB pairs, exact sources/patches, input hashes and build/test/audit receipts",
+      "outside_workspace_or_shared_cache_deletion": false,
+      "live_topology_started": false
+    }
+  },
+  "actual_workspace_audit": {
+    "sdk_head_before": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "sdk_head_after": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "sdk_status_before": "",
+    "sdk_status_after": "",
+    "ordinary_sdk_source_files_checked": 4987,
+    "ordinary_sdk_source_mismatches": [],
+    "sdk_dll_pdb_files_checked": 7142,
+    "sdk_dll_pdb_mismatches": [],
+    "touched_inputs_match": {
+      "src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs": true,
+      "src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs": true,
+      "src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs": true,
+      "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs": true,
+      "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs": true,
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": true
+    },
+    "compiled_overlay_sources_match_final_patch": {
+      "src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs": true,
+      "src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs": true,
+      "src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs": true,
+      "src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs": true,
+      "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs": true,
+      "tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs": true
+    },
+    "parent_frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "parent_frozen_matches": true,
+    "protected_body_matches": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    },
+    "overlay_test_summary": {
+      "passed": "11",
+      "failed": "0",
+      "skipped": "0",
+      "errors": "0",
+      "total": "11",
+      "time": "0.121"
+    },
+    "new_live_run": false,
+    "actual_patch_applied": false,
+    "selected_final_producer_modules_checked": 106,
+    "selected_final_producer_dll_mismatches": []
+  },
+  "changes": {
+    "actual_sdk_source_or_outputs": false,
+    "actual_root_fixture": false,
+    "actual_shared_cache_or_package_pins": false,
+    "new_public_api_or_friendship": false,
+    "frozen_intent_or_strict_test_bodies": false,
+    "existing_platform_changes_preserved": true
+  },
+  "private_packet": {
+    "directory_name": "h12proposal-df79xuod",
+    "mode_directory": "0700",
+    "mode_files": "0600",
+    "seal_filename": "seal.json",
+    "seal_sha256": "64e534c9433d2e0f5910ec25e95d08c38771a0c5714ec33b94b065544a14097c",
+    "sealed_file_count": 55
+  },
+  "prior_packets_preserved": true,
+  "source_outputs_released": true,
+  "remaining": {
+    "authorized_now": "Parent independent artifact verification and concrete human scope decision; no live run launched here",
+    "blocked_by_scope": "Apply SDK/Root diagnostics, bounded live shutdown investigation and any evidence-confirmed repair await human decision",
+    "unchanged_independent_gates": [
+      "ordinary final-producer strict acceptance failure",
+      "full-CI disk qualification",
+      "command/status SM4 over-budget findings",
+      "governance and whole-story review"
+    ]
+  },
+  "privacy": "Metadata-only: no bodies, credentials, business identifiers, full logs, stack/object values or heap contents."
+}

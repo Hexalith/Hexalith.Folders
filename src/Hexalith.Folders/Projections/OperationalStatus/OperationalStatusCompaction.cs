@@ -12,16 +12,21 @@ internal static class OperationalStatusCompaction
     {
         OperationalStatusCheckpoint compact = checkpoint with
         {
-            SchemaVersion = 3,
+            SchemaVersion = 4,
             State = CurrentState(checkpoint.State) with { TaskClosures = FrozenDictionary<string, FolderTaskClosure>.Empty },
             EventDigests = new Dictionary<long, string> { [checkpoint.Sequence] = checkpoint.EventDigests[checkpoint.Sequence] },
             MessageIds = new Dictionary<long, string> { [checkpoint.Sequence] = checkpoint.MessageIds[checkpoint.Sequence] },
             TaskClosedSequences = new Dictionary<string, long>(),
-            TaskEvidence = new Dictionary<string, string>(),
-            WorkspaceEvidence = new Dictionary<string, string>(),
+            TaskEvidence = CurrentEvidence(checkpoint.TaskEvidence, checkpoint.State.WorkspaceTaskId),
+            WorkspaceEvidence = CurrentEvidence(checkpoint.WorkspaceEvidence, checkpoint.State.WorkspaceId),
         };
         return compact with { IntegrityDigest = OperationalStatusIntegrity.Checkpoint(compact) };
     }
+
+    private static IReadOnlyDictionary<string, string> CurrentEvidence(IReadOnlyDictionary<string, string> evidence, string? id)
+        => id is not null && evidence.TryGetValue(id, out string? digest)
+            ? new Dictionary<string, string>(StringComparer.Ordinal) { [id] = digest }
+            : new Dictionary<string, string>(StringComparer.Ordinal);
 
     /// <summary>Removes primary content and replay ledgers that no operational transition consumes.</summary>
     internal static FolderState CurrentState(FolderState state) => state with

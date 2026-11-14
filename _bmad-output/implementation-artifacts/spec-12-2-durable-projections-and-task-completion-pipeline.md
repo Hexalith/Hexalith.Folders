@@ -2,10 +2,11 @@
 title: 'Story 12.2: Durable projections and task-completion pipeline'
 type: 'feature'
 created: '2026-10-18'
-status: 'in-progress'
+status: 'in-review'
 baseline_commit: 'c22b13137202f7bf8c60b80c095a69748435bd6e'
 route: 'dispatch'
-review_loop_iteration: 5
+review_loop_iteration: 7
+approved_review_loop_iteration: 6
 enrollment_baseline_commit: '91c0b89801a114962433f6dc6efd54d308d9a548'
 context:
   - '_bmad-output/implementation-artifacts/epic-12-context.md'
@@ -19,6 +20,10 @@ context:
   - '_bmad-output/implementation-artifacts/proposal-12-2-foreign-task-scope-proof.md'
   - '_bmad-output/implementation-artifacts/review-12-2-round5-keep.md'
   - '_bmad-output/implementation-artifacts/proposal-12-2-bound-source-workload-authority.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-sdk-shutdown-stage-tracing.md'
+  - '_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-scope-approval-20261114.json'
+  - '_bmad-output/implementation-artifacts/review-12-2-round6-disposition.md'
+  - '_bmad-output/implementation-artifacts/evidence/story-12-2-review6-continuation-approval-20261114.json'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -42,6 +47,8 @@ context:
 **Approved native authority read-path performance (2026-11-02):** The user authorized performance work on the Tenants/EventStore native administrator source read path to complete Story 12.2's strict real-provider acceptance. Preserve every required source read, proof and final observation check, the existing five-second domain-service deadline, authorization and fail-closed behavior. This approval supersedes the prior performance-redesign exclusion only for that path; it does not authorize publication, dependency or gitlink updates, commit, push, public v2 exposure or weaker acceptance assertions.
 
 **Approved bootstrap-path performance (2026-11-02):** After a strict run stopped at bootstrap, the user explicitly answered “Yes, optimize bootstrap too” to a request to optimize that command path. This permits bounded bootstrap-path performance work while preserving Dapr's existing five-second attempt limit, durable/catalog/security guards and every unchanged strict assertion. It does not authorize treating a failed HTTP response as accepted, changing admission semantics, or weakening source/projection proof.
+
+**Approved bounded SDK shutdown investigation and correction (2026-11-14):** Jerome answered “approve” to [the concrete shutdown proposal](proposal-12-2-sdk-shutdown-stage-tracing.md), including its exact SDK and fixture patches. Apply and qualify the default-off SDK stage tracing, diagnose the actual stop wait, and implement the smallest internal coordination correction only after causal evidence and a failing/passing regression identify it. This supersedes the earlier generic SDK shutdown exclusion only for that bounded work. Preserve existing host-command budgets, resource restart order, retries, authorization, source proofs, exact lease/remote-call ownership and durable outcomes. General performance redesign and policy changes, publication, deployment, package/gitlink/pin changes, commits, pushes, public v2 exposure and weakened acceptance remain excluded. Prior pending-decision notes are historical; no repeated approval is needed for work inside this approved scope.
 
 **Never:** Write Dapr/domain storage directly, invent provider/cleanup success, or replace retained event bytes. Exclude bodies and credentials. Keep transition evidence, diagnostics and search projections with Epics 4/6/10; content, provider commit execution, idempotency admission, confidentiality and destructive cleanup remain with 12.3–12.7/4.22. No deployment or public v2 exposure. Dependency changes are limited to the approved minimal SDK capability.
 
@@ -224,6 +231,58 @@ The first five rows are complete on the current source graph, with broad contrac
   prior396.332s pass as exact old-source evidence, not a pass for modified source. Package/SM4 and
   independent review remain separate; no publication/pin/deployment/Git operation is authorized.
 
+**Review-six corrections — one additional cycle approved 2026-11-14:**
+
+- [x] `EventStoreOperationalStatusReadModel.cs`, bounded domain evidence and relevant read/persistence
+  tests: reject a coherent older task/workspace row plus its matching older evidence when contradicted
+  by current source-derived authority. The parent reproduction restores the sequence-7 locked task
+  pair after a sequence-8 ready closure and receives Available/locked/nonterminal. An old valid
+  receipt proves a former value, not its present applicability. Reuse SDK logical storage,
+  generation selection and bounded domain metadata; preserve lawful older rows after pure rejections,
+  historical tasks/workspaces, original earliest closure, authorization before observation and the
+  frozen paired-absence/400-day outcomes. Do not equate every view watermark with the current
+  checkpoint: unrelated positions may legitimately leave a view unchanged. Qualify coherent rollback,
+  current unknown/terminal outcomes, legitimate historical reads, pure rejections, source-head lag,
+  missing/corrupt authority, selected/inherited generations and authoritative source repair.
+- [x] `OperationalStatusProjectionWriter.cs` and durable persistence regressions: never preserve a
+  prior terminal row based only on its ready/committed token when its integrity evidence is absent.
+  The parent reproduction forges LastOperationId, removes evidence and sends a lawful next policy
+  event; current code acknowledges Completed and writes new proof for forged-operation. Trust valid
+  prior evidence or restore the row from existing validated source-derived completion; otherwise fail
+  closed for controlled source repair. Retain exact earliest closure, fields, source timestamps,
+  original expiry and current valid conflict guards. Add the demonstrated red/green regression.
+- [x] `FoldersRejectedCommandClassifier.cs`, its production permission-stage callers and actual
+  Workers subscription regressions: permit lawful normalized unknown-command rejection positions
+  from FolderDomainProcessor to traverse permission/nonpermission processing and operational
+  persistence. The current classifier throws before operational intake for UnsupportedCommandType.
+  Determine owner kind from validated source scope while retaining known wrong-kind/cross-tenant
+  refusals, invalid rejection-code/version checks and zero protected effects on denial. Test the
+  actual authenticated subscription: unknown-command rejection-only prefix, later creation/delivery,
+  replay and malformed/wrong-owner controls; acknowledgement requires durable operational state.
+- [x] `OrganizationAclOperationalSource.cs`, `OperationalStatusProjectionHandler.cs`, adjacent finite
+  source recognizers and named/shared production-handler tests: validate all legitimate non-Folder
+  prefixes reaching the domain-wide folders route before returning no Folder operations. A valid
+  provider-binding partition currently throws Unknown operational source event; an organization
+  FolderCommandRejected-only prefix throws InvalidFolderId, and mixed ACL/rejection histories fail.
+  Cover configured/rejected provider-binding streams and accepted/rejected organization ACL prefixes
+  through live and bounded named/shared intake, including complete rebuild and catch-up. Preserve
+  exact owner/contract/version/position/source-binding validation, safe malformed/foreign refusal,
+  unchanged original bytes and no fabricated Folder/provider result.
+- [x] EventStore-owned `NamedProjectionDispatchCoordinatorTests.Shutdown.cs`: independently hold the
+  actual final lifecycle completion after successful dispatch when ApplicationStopping fires. The
+  existing test only holds the earlier Retryable-admission branch. Restoring None at the successful
+  cleanup site must fail the new assertion. Preserve caller-independent cleanup, actual-task await,
+  retained unknown catalog fence, original retry work and both qualified SDK shutdown corrections.
+- [x] Rebuild affected Debug/source projects with normal analyzers and both source flags, version
+  5.0.1 and story12-2-qualification suffix; refresh only current mutable compile inputs and run its
+  controls. Run affected domain/Server/Workers/SDK regressions individually, with current matrix and
+  meaningful capacity/source/retention coverage. Requalify the final coherent Root/Memories producer,
+  current issuer component cases, relevant package/contract gates and unchanged strict acceptance;
+  retain exact input-based reuse and limits rather than silently reusing modified producers. Preserve
+  all three protected strict bodies, deadlines, restart order, all failures and SM4 record-only scope.
+  Release every owned process/container/scratch and provide new metadata-only evidence for parent
+  diff/matrix/identity verification and the following independent review.
+
 **Acceptance Criteria:**
 - Given authorized source events, when delivery, duplicates, restart and empty-checkpoint rebuild run, then all six status concerns converge with truthful freshness and unchanged retained hashes.
 - Given clean release, when the real authenticated path closes a task, then terminal evidence survives restart and later non-replay mutation is denied. Given retained commit-success evidence, when folded, then status reports `committed`; real provider execution remains Story 12.4.
@@ -310,6 +369,10 @@ The first five rows are complete on the current source graph, with broad contrac
   - **KEEP.** Every invariant from earlier change-log entries. The deterministic six-concern fold and original event bytes and identities. Bounded checkpoints and SDK logical evidence. Earliest closure and per-binding source authority. Rejection-only prefixes. Provider semantic fingerprints and source-bound repair. Real bound-target readiness. The task folder hint and canonical denials. The named SDK discovery and mapper. All five evidence stages and the parent qualification record. Task 36 stays open, blocked on the approved EventStore owner-identity work. No SDK protocol, schema, limit, pin, publication or public v2 change.
 
 - 2026-10-20 SDK expiry/recovery approval: the user responded “I approve” to the concrete prerequisite proposal. Record the two bounded capabilities as approved EventStore-owned work and qualify their local source consumption afterward. Historical diagnostics remain unchanged; full story acceptance stays open for the existing remaining gates.
+
+- 2026-11-14 parent review six: current source/runtime/matrix verification and the strict pass are retained. Four runtime correction areas plus the successful-dispatch shutdown test gap remain; all 14 findings are triaged before grouping. The next loop exceeds the rendered limit, so no code is reverted or re-derived pending the human decision.
+
+- 2026-11-14 review-six continuation: the user answered yes to one additional correction/review cycle beyond the five-loop guard. Iteration 6 is authorized once; preserve its counter and the original baseline. Re-derive affected functions in place under the logged KEEP constraints, without a physical rollback of approved work. The four runtime correction areas and successful-dispatch shutdown test patch are specified above; captured intent/frozen matrix stay unchanged. A further bad-spec/intent-gap loop is not implicitly authorized.
 
 ## Review Triage Log
 
@@ -462,11 +525,71 @@ bounded metadata and no resurrection. No intent decision or frozen amendment is 
 phantom-drain correction and contention-test patches survive re-derivation. Two unverified performance
 entries remain separate potential-medium defers. Other findings are rejected as recorded.
 
+### Review six — 2026-11-14
+
+All three required layers returned. The complete preserved-baseline diff has 10443 sections and
+1.79 GB; reviewers indexed it and traced selected behavior, without claiming exhaustive historical
+coverage. Parent isolated probes independently reproduce both corruption defects and the three
+source/refusal paths. Useful source, commands, outputs and binary hashes survive outside the removed
+run-with-temp scratch. [Full disposition](review-12-2-round6-disposition.md) and
+[machine-readable triage](evidence/story-12-2-review6-triage-20261114.json) retain every finding.
+
+| Round / finding | Verdict | Route | Verified evidence |
+| --- | --- | --- | --- |
+| 6 / blind-1 | medium | bad_spec | `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:280`: Reader accepts coherent older task row and evidence beside newer closure. Parent probe returns Available/locked/nonterminal for seq7 after seq8 ready closure. Same old receipt is genuine but is insufficient current-view authority; distinct from prior paired-absence/dead-callback triage. |
+| 6 / blind-2 | medium | patch | `src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs:176`: Writer preserves a forged LastOperationId from a ready row with missing evidence, then writes fresh proof after a lawful next event. Parent probe returns Completed/forged-operation. Existing source-derived completion can restore the row; prior terminal state alone must not override it. |
+| 6 / blind-3 | false | reject | `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:266`: The frozen 2026-10-20 decision explicitly permits not-found when view and evidence are both absent; round-five instructions also preserve paired absence at a current checkpoint. Requiring an independent expiry timestamp would change that decision. |
+| 6 / blind-4 | medium | bad_spec | `src/Hexalith.Folders.Workers/FoldersRejectedCommandClassifier.cs:47`: FolderDomainProcessor emits normalized unknown-command UnsupportedCommandType rejections. Folder permission processing calls the strict command-name classifier before operational persistence and throws for that lawful position. Parent classifier probe confirms the refusal; later source positions can remain stale. |
+| 6 / blind-5 | maybe-false | carried-defer | `src/Hexalith.Folders/Queries/ProviderReadiness/EventStoreProviderReadinessBindingReadModel.cs:72`: carried 5/blind-5: same Messages append/validation and direct single-value store path remain. No new lawful-history measurement against actual transport/store limits was supplied. Retain potential medium unverified disposition; do not duplicate its patch or defer. |
+| 6 / blind-6 | medium | reject-out-of-scope | `_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-implementation-20261114.json`: Acknowledgment p95 8642.996ms exceeds 1000ms and remains an open gate. Existing instructions require recording rather than general performance redesign; the full retry-wrapper metric does not attribute cost to an approved native/bootstrap subpath. No passing SM4 claim is made. |
+| 6 / blind-7 | medium | reject-out-of-scope | `_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-implementation-20261114.json`: Status p95 1291.141ms exceeds 500ms and remains open. Preserve this real finding under the same explicit record-only/general-redesign exclusion; Workers timing does not close it. |
+| 6 / blind-8 | false | reject | `.github/workflows/ci.yml:94`: The specialized job explicitly runs git submodule update --init --checkout, rather than a strategy-free update. Git documents that --checkout overrides submodule.<name>.update; update=none therefore does not establish this predicted failure. No submodule was changed to verify it. |
+| 6 / blind-9 | maybe-false | defer | `.github/workflows/ci.yml:25`: No checked-in invocation was found in Root/Platform workflow sources, and the default CI whitelist is explicit. The current producer separately executes all 11+5 issuer cases. A mandatory automatic-gate requirement or the external owner automation/policy would settle whether this deliberate manual/component partition creates a false-green defect; potential medium remains unverified. |
+| 6 / blind-10 | low | patch-artifact | `.artifacts/story-12-2-review6-20261114/review-artifact-index.json`: The canonical preserved-baseline diff is 1788748446 bytes/10443 sections, chiefly historical evidence. A supplementary 4650235-byte runtime/test view and immutable index/hash were retained for human use without changing the original baseline or pretending exhaustive historical review. |
+| 6 / edge-1 | medium | bad_spec | `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs:93`: Operational handler is registered for the whole folders domain, but no-ops only three ACL contracts. A valid configured provider-binding partition reaches Unknown operational source event; parent probe validates the provider command then reproduces this refusal. Workers already skip the reserved binding owner. |
+| 6 / edge-2 | medium | bad_spec | `src/Hexalith.Folders.Server/OrganizationAclOperationalSource.cs:23`: A lawful organization FolderCommandRejected alone is not recognized as ACL and reaches FolderStreamName tenant==folder rejection; parent probe reproduces InvalidFolderId. Mixed ACL/rejection histories also fail the three-contract-only loop. Validate legitimate non-Folder prefixes before an empty fold without weakening bad-scope refusal. |
+| 6 / edge-3 | medium | bad_spec | `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:280`: Same verified coherent rollback as blind-1. Independent old evidence and receipt only prove a former valid value; ReadAsync never applies the supplied sourceEvidence predicate or retained task completion authority to reject the rolled-back nonterminal row. |
+| 6 / verification-1 | medium | patch | `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/NamedProjectionDispatchCoordinator.cs:1186`: Pre-verified gap accepted as filed: new host-stop test forces Retryable admission and independently holds only the early completion call. Successful dispatch cleanup at line1186 lacks a held-call cancellation assertion. Add that case without changing production semantics or relaxing actual-call/fence/work ownership. |
+
+Surviving bad-spec root groups are current-view authority (blind-1 + edge-3), Worker rejection
+intake (blind-4), and legitimate non-Folder named-input coverage (edge-1 + edge-2). The terminal
+restoration and successful-dispatch shutdown-test patches remain required but are lower-order work
+until re-derivation. Provider-history growth carries its existing unverified defer; the CI automation
+claim remains unverified. Paired absence and CI initialization are refuted; existing SM4 measurements
+stay open under the record-only performance instruction. No new intent gap is established.
+
+Before the next implementation loop, review_loop_iteration advances from 5 to 6. The rendered
+step-04 limit requires HALT and human escalation at this point. No code is reverted, no baseline is
+rewritten, and no further implementation loop has started. One additional correction/review cycle
+within the existing intent requires a human decision; the report states its concrete scope and
+positive preservation constraints.
+
 ## Design Notes
 
 Intent gaps: none. Irreversibles: none; live checks own disposable state. Footprint: fold/guards, SDK readers/writer, host/Workers wiring and tests. Baseline: clean `main`, Folders `c22b13137202f7bf8c60b80c095a69748435bd6e`, EventStore `84bb115a0ced2497ca4315644a677b273cb44edf`. Rebuild current source; 12.1 acceptance used an older pin. Preserve historical manifest evidence; no sprint-status regeneration.
 
 Round four: operational status has one live writer (Workers) and one rebuild path (the SDK-driven named transport). That keeps tenant-wide rebuild sessions out of the command path, which EventStore awaits but does not fail on. Trade-off: a dead-lettered delivery, or history from before enablement, leaves that folder honestly `projection_stale` until an operator runs the named rebuild. The retention docs task records this. The strict profile and source-time expiry rules are frozen decisions. The five-minute skew tolerance and the static serializer options are implementation choices.
+
+### Review seven — 2026-11-14
+
+All three required lenses returned. Parent verified every non-gap claim against source/callers and retained isolated probes; the verification-gap claim is accepted as pre-verified. Coverage is selective across the original-baseline 1.79 GB diff. [Disposition and concrete correction plan](review-12-2-round7-disposition.md) and [machine-readable triage](evidence/story-12-2-review7-triage-20261114.json) preserve every finding.
+
+| Round / finding | Verdict | Route | Verified evidence |
+| --- | --- | --- | --- |
+| 7 / blind-1 | medium | bad_spec | `EventStoreOperationalStatusReadModel.cs:314`: Parent existing-assembly probe: after native acquire/release and task B, restoring task A’s earlier row/evidence/applicability returns Available/locked instead of the source-derived Available/ready. Native release creates no TaskCompletion; schema 4 retains only task B’s digest, leaving the historical task without independent current authority. |
+| 7 / blind-2 | medium | bad_spec | `OperationalStatusProjectionWriter.cs:217`: Parent probe closes task A, advances to workspace/task B, restores A’s preclosure row/evidence/applicability and redelivers A’s original acquisition. Writer returns AlreadyCompleted while the durable reader returns Unavailable. RequireCurrentViewsAsync never consults A’s independently retained completion. |
+| 7 / blind-3 | medium | patch | `OperationalStatusProjectionWriter.cs:62`: At day 401, parent probe redelivers the checkpoint’s exact retained sequence with a different MessageId. Writer returns AlreadyCompleted despite retaining the original tail MessageId/EventDigest. Check the existing tail identity before the expired-replay shortcut, preserving legitimate expired duplicate acknowledgement and original TTLs. |
+| 7 / blind-4 | false | reject | `OperationalStatusProjectionWriter.cs:109`: Production writer and SDK DomainProjectionDispatcher construct payload and delivery headers from the same event. Dispatcher validates positive/contiguous/increasing positions; SharedProjectionEpochCoordinator hashes headers with payload and verifies that digest during restoration. No production mismatch path was demonstrated; reviewer withdrew the defensive-asymmetry claim after caller tracing. |
+| 7 / blind-5 | medium | bad_spec | `FolderEventReplay.cs:83`: Parent probe passes a normalized future_command/UnsupportedCommandType rejection to the production legacy classifier and gets Unclassifiable Folders rejection event. The same finite mapper is used in actor-owned FoldFolder/FoldOrganization, which FolderDomainProcessor primes before ordinary command processing; new operational/Workers acceptance does not repair primary reconstruction. |
+| 7 / blind-6 | medium | bad_spec | `FoldersProviderBindingEventProcessor.cs:47`: Parent probe classifies the normalized rejection as ProviderBinding and gets true from the named complete-prefix recognizer, but the actual provider Worker processor throws Provider configuration rejection is invalid. Its extra ConfigureProviderBinding-only check, repeated by folder-permission intake, makes live and supported named handling diverge. |
+| 7 / blind-7 | medium | patch | `FoldersRejectionSource.cs:56`: Parent probes show Created, IdempotentReplay and AlreadyApplied accepted by ReadOwner and persisted as Completed by the actual operational writer. FolderDomainProcessor explicitly classifies those three plus Accepted as successes; rejection guards currently exclude only Accepted. Reject all four existing success codes consistently without a new public contract. |
+| 7 / blind-8 | false | reject | `AuthoritativeWorkspaceFileContextSource.cs:113`: PaginationMetadata/FileSearchPaginationMetadata make cursor issuance optional, including truncated results. No valid issued cursor is rejected because this implementation issues none; request echo support does not require issuance. Owning Story 12.3 B7 records the same refutation, and the reviewer withdrew this claim. |
+| 7 / blind-9 | high | defer (moot on loopback) | `AuthoritativeWorkspaceFileContextSource.cs:106`: Range and collection paths await source.ReadAsync after their last authorization-bearing store call and return after only Folder-head/policy checks. WorkspaceContentStateReader performs authenticated workload source reconstruction, with no final human organization/tenant reauthorization, so revocation during that await can escape the disclosure check. This pre-existing authoritative-content implementation belongs to Story 12.3 and is expressly excluded by 12.2’s frozen intent; preserve it for that owner, without changing it in this cycle. |
+| 7 / blind-10 | low | reject | `Oq2WireObjectConverter.cs:194`: Parent existing-assembly probe confirms numeric ownerFileId is coerced to string and a 129-character value is accepted by incoming and outgoing validation. This affects malformed content-client objects, is outside ordinary valid generated-owner use, and server owner matching still rejects an invalid target. Additional validation branches/tests exceed a direct correction for this negligible, content-owned case; no 12.2 patch is introduced. |
+| 7 / edge-1 | medium | bad_spec | `OperationalStatusProjectionWriter.cs:129`: Retained isolated probe: initial positions 1/2 complete; after day 401 and expiry of position 1’s receipt/message evidence, new position 3 reuses its MessageId and completes with checkpoint 3. The identical full source then throws Operational source sequence gap. Compaction retains only the tail identity and SDK journal guards bind positions/payloads without a MessageId uniqueness index; C3 must not make live and rebuild identity validation disagree. |
+| 7 / verification-1 | medium | patch | `WorkersOrganizationAclRouteTests.cs`: Pre-verified gap accepted as filed: unknown-command cases cover Folder owners only, while organization route/inventory/non-Folder cases use known commands. Add an authenticated organization-owner unknown rejection prefix, duplicate acknowledgement, persisted LastSequence and next-sequence baseline success; no production semantics need change. |
+
+Five distinct bad-spec entries require another nonfrozen derivation; three patches survive. The current implementation/strict pass and all KEEP constraints are preserved. The workflow counter is incremented to 7; the explicit approved exception remains 6. HALT at the review-loop limit pending a new human exception. No code is reverted, no seventh-cycle implementation starts, and no content-owned change or duplicate defer is applied.
 
 ## Verification
 
@@ -2989,3 +3112,659 @@ body hashes remain unchanged. No commit, push, dependency update or deployment w
 Story/sprint remain **in-progress at step 03**. Current strict acceptance, the external
 prerequisite disposition, full SDK/Release-package gates, PD10/A6b governance, complete SM4 and
 independent whole-story review remain open.
+
+
+### Latest-checkout continuation — 2026-11-14
+
+After the changing-checkout checkpoint, Jerome answered “yes” to continuing on the latest
+checkout while preserving Platform’s seven existing changes. The selected root is
+`b915d3ec5180f45c4c477cbeffb9b98df91082d0`; EventStore is
+`51dd68b86a690ffe9e11c565dccec49b2d401a94` and Platform is
+`2a1a343c35d58e6368cd4c34288dc3f9c567f8b9`. Preserve all other current dependency heads,
+the existing Platform audience correction, the original baseline and every frozen/strict guard.
+This supersedes the older non-frozen checkout-selection notes only; no Git mutation or new
+SDK repair scope is authorized.
+
+Resume step 03 on this source graph. Finish loading the specification and frontmatter context;
+do not render or dispatch the parent workflow again. Investigate the existing strict EventStore
+stop failure using preserved private receipts, source inspection and bounded diagnostics before
+selecting a correction. Build/test/runtime work is sequential and belongs to the implementation
+handoff until released. Keep protected values in private receipts and record only metadata in
+repository evidence. The prior exclusion of generic SDK shutdown/performance repair and policy
+changes still applies. If the demonstrated correction crosses that boundary, prepare a concrete,
+reviewable proposal with the identified owner, affected files, regression and unchanged strict
+qualification plan; do not apply it without a further human scope decision. Do not infer a strict
+pass from the retained partial results or change timeouts, ordering, retries or acceptance bodies.
+
+
+### Latest-checkout stop qualification — 2026-11-14
+
+The user-selected root `b915d3ec5180f45c4c477cbeffb9b98df91082d0`, EventStore
+`51dd68b86a690ffe9e11c565dccec49b2d401a94` and Platform
+`2a1a343c35d58e6368cd4c34288dc3f9c567f8b9` remain selected. All seven existing
+Platform changes are preserved. No production, test or SDK source correction was made.
+
+Fresh serialized Folders solution and Memories Debug/source builds pass with zero warnings/errors,
+using both source flags, `HexalithEventStoreVersion=5.0.1` and
+`VersionSuffix=story12-2-qualification`. The pre-live producer audit passes for 99 assembly files;
+four additional actually observed UI/FrontComposer metadata files pass their subsequent ordinary/
+generated-source, PE/PDB and source-project asset audit. All 572 scoped actual observations,
+including 232 SDK observations, match the resulting 103-file producer scope. The selected observer
+source/output is audited; no actual loaded observer identity is inferred where none was saved.
+
+The first unchanged strict attempt fails 1/1, zero errors/skips, in **302.545 seconds** at the first
+EventStore stop, after six-concern rebuild assertions. Its intended diagnostic capture misses the
+actual launcher shape; no process suspension occurs. This attempt and its matcher failure remain
+retained. Eleven private matcher controls then qualify selection from the fixture's exact resource/
+process binding, current mapped host, owned ancestry and process-start identity, with refusal of
+wrong-host, unowned and reused process identities.
+
+The corrected unchanged strict invocation passes **1/1**, zero failures/errors/skips, in
+**423.055 assembly seconds** (**351.412 test-body seconds**). It runs through the existing disposable
+run-owned authority wrapper and completes all original provider/task/restart/rebuild/replay/retention/
+concurrency/denial/fault assertions. It was launched as a diagnostic attempt, but none of its three
+recognized EventStore stops reaches the eight-second capture trigger: **no live heap capture or
+process suspension occurs**. Source, heads, working-tree status and runtime files do not drift during
+execution. Every observed owned descendant, container and temporary directory is absent afterward.
+This current strict pass does not identify a stop cause, establish a shutdown repair or erase any
+retained intermittent failure.
+
+A private synthetic capture preflight confirms the supported diagnostic-client route and a compatible
+private analyzer; its .NET 11 async-completeness warning remains explicit. A separate exact-service-DLL
+cancellation probe finds a later logger can remain unclaimed when stop returns, but current telemetry
+provider disposal receives a finite 5,000 ms budget. It establishes no unbounded hang or strict-failure
+causality. No SDK shutdown, policy, ordering, timeout, retry or acceptance body was changed.
+
+Current SM4 p50/p95 milliseconds remain over budget for command acknowledgment
+**6527.249/9641.575** (10 samples, 1000 ms p95 budget) and status read
+**752.982/908.407** (12 samples, 500 ms). Workers delivery is **111.688/264.381**
+(27 samples, unchanged 1000 ms diagnostic budget). The command stopwatch includes the existing HTTP
+retry wrapper; the explicit one-second fixture delay and owner bootstrap are outside it. Retained
+successful gateway metadata ranks BindRepository at 9166.227 ms, PrepareWorkspace at 7946.583 ms and
+ConfigureProviderBinding at 7208.961 ms; BindRepository's actor summary is 4080.438 ms. The unlabelled
+metric samples retain no exact command association or retry-delay split, so these observations do
+not locate the dominant time in the approved native authority/bootstrap subpaths. Record the open
+findings and preserve the existing instruction to avoid redesign.
+
+[Metadata-only qualification evidence](evidence/story-12-2-latest-checkout-stop-qualification-20261114.json)
+retains commands, guards, phase distinctions, source/loaded identities, failed attempts, timing,
+privacy limits and owned cleanup. All earlier packets remain unchanged. Current consumer suites,
+required capacity evidence, full SDK and Release/package consumption gates and independent whole-story
+review remain available for their existing authorized validation; none is relabeled by this phase.
+The retained Platform analyzer blocker is not rerun here. PD10/A6b governance, owner enrollment outside
+the disposable fixture, and any future generic SDK shutdown/policy correction retain their separate
+owner/scope limits. No causal correction is identified for a new repair proposal. Story/sprint remain
+**in-progress at step 03**; no publication, deployment, pin update or Git mutation was performed.
+Selected source/outputs are released with no active build/test/topology.
+
+
+### Final consumer and package qualification continuation — 2026-11-14
+
+The parent completed all six current consumer assemblies (5673 passes, two existing optional
+skips and eleven explicit issuer cases initially unrun), current core SDK Client/DomainService/
+ServiceDefaults/Server assemblies, focused package/Release conformance, and the actual issuer
+component wrapper. Eleven explicit issuer/source-proof and five consumer cases passed through
+Platform's existing verifier. The SDK Server run's sole failure was the selected unsigned
+Tenants 7.0.0 peer archive. The official NuGet archive matches the existing pinned SHA-256 exactly;
+materializing that same version through the existing supported fixture target from a private
+cache makes all three authenticity/ABI/materialization controls pass. No expected hash, pin,
+SDK source or shared package cache was changed. Preserve the original failed result separately.
+
+One Release client-generation scaffold still targeted net10.0 while referencing the net11.0
+client. In `tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs`, the
+parent derives the temporary probe framework from its actual test host. Existing generated-helper
+null/presence assertions are unchanged. That input is added explicitly to the mutable story-owned
+inventory; its 1616-path pending manifest keeps A6b/exposure/closure flags unchanged. All 500
+original package/Release conformance selections, 75 Debug generation cases and 21 pending-inventory
+cases now pass. The narrow fallback also builds the existing Release parity tool required by those
+selectors. The full CI solution build hit ENOSPC; only ignored Release/net11.0 output directories
+created by this phase were reclaimed, then final Debug/source builds passed. Retain both that
+broad-gate blocker and the passing narrow evidence. No broader performance redesign is authorized.
+
+The private parent receipts are under directory name
+`story12-2-final-validation-20261114-z8scqn4k`. All commands/results and intermediate failures
+are retained there. The original pass packet remains immutable. The final byte comparison finds
+one changed producer module pair: the native `Hexalith.Tenants.dll`/PDB under its source Debug
+output. Its repository/head and ordinary generated source hashes are unchanged, but the prior
+strict pass cannot silently qualify this new binary identity. The other 102 producer module pairs
+match after SHA-256 hex normalization. Direct source builds of Memories and native Tenants have
+completed successfully with the same source flags and pinned qualification suffix.
+
+Final implementation handoff: reuse the available private source/PDB audit and run monitor,
+without rendering the workflow. Audit the complete 103-module final producer, actual SDK variants,
+project-only Hexalith assets (include native Tenants), all three protected bodies and frozen497c.
+Then execute one unchanged strict class with the existing run-owned authority wrapper and supported
+observer opt-out. No live dump, process suspension, deadline/order/retry or test-body alteration is
+needed for this qualification. Preserve every failure and source scope; verify actual loaded
+identities, drift and exact owned cleanup, retain SM4 observations, and release all outputs.
+The parent performs no competing build/test/topology while this handoff owns them. Report a failure
+as a failure; one success establishes no causal repair of the intermittent stop problem. Add a new
+metadata-only qualification file and an append-only spec note, keeping raw receipts private.
+Story/sprint remain in-progress while the full CI disk blocker, SM4, governance and whole-story
+review dispositions remain unresolved. Do not request new approval for already authorized validation.
+
+
+### Final-producer strict qualification result — 2026-11-14
+
+The selected root and dependency heads remain unchanged. The final producer audit passes for all
+103 previously selected files plus three additional UI dependency copies (106 module files), including
+native Tenants, ordinary/generated source, PE/PDB identity, one SDK variant per assembly, and source-only
+Hexalith assets. All three protected bodies and frozen497c match. The changed native
+`Hexalith.Tenants.dll`/PDB pair is observed in the actual runtime and matches this final producer;
+the other 102 prior producer pairs remain identical after hash-case normalization. The earlier
+423.055-second passing packet is preserved and is not reused to qualify the changed pair.
+
+The single unchanged strict class under the existing run-owned authority wrapper and supported
+observer opt-out fails **0 passed / 1 failed**, zero errors/skips, in **411.136 assembly seconds**
+(**335.046 test-body seconds**). Genuine owner bootstrap, provider-binding checks and all six-concern
+integrity/complete-source rebuild assertions pass before the first EventStore stop fails at
+`RequireAllConcernRebuildAndRecoveryAsync:567`. Its application logs shutdown at
+02:31:02.806 UTC; DCP reports `timed out waiting for process to stop` at 02:31:14.805 UTC.
+Interrupted-generation recovery, concurrent Workers and later main/fault assertions are not reached.
+No dump, process suspension, source correction, deadline/order/retry or test-body change occurs.
+
+All 288 scoped actual observations, including 112 SDK observations and the changed native Tenants
+identity, match the final producer. Post-live source/PDB/assets/guard audits pass. Source, heads,
+working-tree status and runtime files do not drift during execution; the parent's framework/inventory
+changes and all seven existing Platform changes remain intact. Every observed owned descendant,
+container and temporary directory is absent afterward, and Aspire reports no running AppHosts.
+Filesystem headroom temporarily drops to 184 MiB then recovers without a deletion by this handoff;
+this attempt records no `No space left on device` line. No storage or shutdown cause is inferred.
+
+[The new metadata-only failed qualification](evidence/story-12-2-final-producer-qualification-20261114.json)
+binds the final producer, exact failure, partial assertions, unchanged guards, private receipts and
+owned cleanup. All earlier evidence remains preserved. Complete SM4 measurement is not reached;
+prior over-budget findings retain their exact producer scope. The full-CI ENOSPC blocker, governance,
+external owner-enrollment limits and independent whole-story review remain separate. Current final-
+producer strict acceptance is failed, not complete. No causal SDK repair is established or applied.
+Selected outputs are released without an active build/test/topology; no further live run is launched
+by this handoff. Story/sprint remain **in-progress at step 03**.
+
+
+### Bounded RAM-backed stop diagnosis — 2026-11-14
+
+The completed parent verification is now recorded separately in
+[evidence/story-12-2-current-consumer-sdk-package-gates-20261114.json](evidence/story-12-2-current-consumer-sdk-package-gates-20261114.json).
+It retains six consumer suites, four core SDK suites and the resolved same-version public-peer input
+fault, the real issuer controls, the helper framework correction and the final 500 passing focused
+Release conformance cases. Full CI solution build remains disk-blocked; narrow evidence does not
+relabel that gate. The 106-module final producer's failed strict run remains authoritative for its
+exact scope; earlier successful runs are not promoted to it.
+
+Further bounded diagnostics are already within the current continuation. The root filesystem is
+small, while `/dev/shm` has roughly 41 GiB available and system available memory roughly 68 GiB.
+Use a new private 0700 RAM directory for at most one 512 MiB target heap, with a 1 GiB free-space
+floor on that RAM filesystem and strict verification of target PID, start identity, ancestry and
+mapped EventStore host before collection. Reuse the eleven-control-qualified capture selector
+and the privately installed compatible diagnostic client/analyzer. Keep heap, raw stack/async
+analysis and credentials private with 0600 files; no raw object values enter repository evidence.
+Do not alter a protected body, host/command deadline, retry, shutdown order, service implementation,
+policy or selected producer. No source or package/pin update is authorized by this diagnostic.
+
+Run one unchanged strict diagnostic class under the existing authority wrapper and observer opt-out,
+with the validated eight-second stop trigger. A capture may suspend the process, so this run is
+explicitly timing-perturbing diagnostic evidence, never a production acceptance pass. Preserve its
+outcome, exact source/runtime identities, drift and owned cleanup separately. If a heap is captured,
+inspect positive managed-thread and async-wait frames to locate the actual stop await; the current
+analyzer's .NET 11 completeness warning remains a limit, and missing frames prove nothing. Do not
+repeat the disproved unbounded-telemetry hypothesis or infer causality from a generic await alone.
+
+After evidence is obtained, make the smallest isolated private diagnostic needed to confirm a
+specific causal wait. If the demonstrated correction is within existing fixture scope, implement
+and verify it under the unchanged acceptance contract. If it crosses the explicit generic SDK
+shutdown/performance/policy exclusion, prepare a concrete owner/file/regression proposal and an
+unapplied reviewable patch, preserve exact lease/remote-call ownership and every security/source
+proof, and request the human scope decision before application. If no cause is established, report
+the precise evidence and limit instead of inventing a repair. Parent performs no competing build,
+test or topology while the handoff owns selected outputs; release every owned process/container
+and diagnostic target when finished. Preserve all earlier packets and keep story/sprint in-progress.
+
+
+### RAM-backed stop diagnostic result — 2026-11-14
+
+The unchanged final 106-file producer passes its pre/post source, PE/PDB, project-assets, SDK-variant
+and protected-body/frozen497c audits. A new private 0700 RAM directory holds receipts and the attempted
+heap; a short private RAM TMPDIR uses the existing disposable temp-file seam. No production/test/SDK
+source, selected producer, package pin, deadline, retry, service, policy or shutdown order changes.
+
+The one unchanged strict diagnostic class fails **0 passed / 1 failed**, zero errors/skips, in
+**298.549 assembly seconds** (**228.449 test-body seconds**) at the first EventStore stop in
+`RequireAllConcernRebuildAndRecoveryAsync:567`. Genuine owner bootstrap, provider binding and the
+six-concern integrity/rebuild checks pass before that failure. The exact fixture resource/PID,
+process-start identity, owned ancestry and mapped EventStore host qualify the eight-second trigger.
+The selector functions are identical to the previously eleven-control-qualified versions.
+
+The target reports **407332 KiB RSS**. Its heap writer crosses the **536870912-byte (512 MiB)** polling
+threshold in **0.500 seconds**; the observed partial is **550985728 bytes**, an overshoot of
+**14114816 bytes**. The guard is a polling threshold rather than a kernel hard file-size limit.
+Only the verified owned dump worker is terminated, and the partial heap is removed. Roughly 42.8 GiB
+remains free on RAM. No usable heap remains, so no managed-thread/async wait analysis or causal stop
+finding is established. Target RSS did not bound dump-file size. The run is explicitly timing-
+perturbing diagnostic evidence and supplies no production acceptance pass or new complete SM4 result.
+
+All 285 scoped actual observations, including 110 SDK observations, match the final producer. Source,
+heads, working-tree status and runtime files do not drift; all observed owned process/container/
+fixture-directory remainders are zero. The phase-owned RAM temp directory and partial heap are absent.
+An unrelated Projects AppHost was observed initially and absent at the final read; this handoff issued
+no command against it and attributes no external lifecycle cause. The parent separately reclaimed only
+its phase-created ignored Release outputs, with an independent zero-mismatch check of the selected
+Debug producer. That overlap is retained privately and changes no source/Debug file or service behavior.
+
+[The metadata-only RAM diagnostic](evidence/story-12-2-ram-stop-diagnostic-20261114.json) records the
+failed run, exact cap behavior, analysis limit, identity/guard checks, parent cleanup overlap and owned
+cleanup. All earlier packets remain unchanged. No speculative product patch or repair proposal is
+created because no specific causal await was obtained. The parent will record any next bounded
+storage-estimate correction before a further run; none is launched automatically here. Generic SDK
+shutdown/performance/policy repair retains its explicit scope limit. Current strict acceptance, full-
+CI disk, retained SM4, governance and whole-story review remain open. Source/outputs are released with
+no active owned build/test/topology; story/sprint remain **in-progress at step 03**.
+
+
+### RAM capture sizing correction — 2026-11-14
+
+The first RAM-backed diagnostic reached the actual stop wait but retained no usable heap: the
+407332 KiB resident target's heap dump exceeded the parent's 512 MiB estimate. The poll observed
+550985728 bytes before abort; the partial was removed. Its failed result, overshoot, zero causal
+finding and all cleanup/identity evidence remain sealed in the prior diagnostic packet. This is
+an instrumentation-size failure, not evidence for an SDK repair.
+
+Continue the already-authorized bounded diagnosis with a corrected private RAM abort threshold
+of **2 GiB**, a **4 GiB free-space floor** on that RAM filesystem, and at least **8 GiB available
+system memory** at preflight. This changes only the parent's self-imposed diagnostic storage
+estimate; it changes no service/command/host timeout, shutdown order, retry, source proof, producer
+or test-body contract. State that the file-size guard is polled and retain any measured overshoot.
+Use at most one retained heap and the same validated selector/eight-second trigger, current private
+analyzer, short private RAM TMPDIR, protected modes and expanded owned-temp discovery. Reuse the
+unchanged 106-file producer after a fresh audit and record the unrelated Projects AppHost as outside
+this run's ownership. Do not touch unrelated applications, source, shared caches or prior receipts.
+
+Run one new unchanged strict diagnostic class. If the larger capture succeeds, analyze positive
+thread/async wait evidence and perform the smallest private causal confirmation, retaining the
+.NET 11 completeness limit. The existing handoff's requirement for a demonstrated correction,
+concrete owner/file/regression proposal and unapplied patch before any generic SDK shutdown/policy
+repair remains unchanged. Do not infer acceptance from this timing-perturbing diagnostic. Preserve
+all earlier failures and keep the parent free of competing builds/tests/topologies until release.
+
+
+### Corrected RAM sizing diagnostic result — 2026-11-14
+
+A fresh audit again passes the unchanged 106-file producer, source/PE/PDB/project assets, SDK variants,
+all three protected bodies and frozen497c. Preflight observes 42976374784 RAM-filesystem bytes free
+and 74974064640 system-memory bytes available. The new private RAM monitor uses a **2 GiB polled
+abort threshold**, **4 GiB RAM free-space floor**, **8 GiB system-memory minimum** and the unchanged
+validated selector/eight-second stop trigger. No service timeout, retry, order, policy, proof,
+source, selected output or test-body change occurs.
+
+The one unchanged strict diagnostic class passes **1/1**, zero failures/errors/skips, in
+**416.448 assembly seconds** (**341.201 test-body seconds**), completing the original assertions.
+All three observed EventStore stops cease to be eligible before the eight-second collection
+trigger. Thus **no capture is attempted, no heap is created and no process suspension occurs**.
+The larger size estimate is not exercised. Under this explicit diagnostic/RAM-temp handoff the
+execution is not promoted to production acceptance. The precise remaining diagnostic limit is that
+the long stop did not reproduce in this one bounded run; no positive causal wait evidence exists.
+No speculative isolated causal probe or unapplied product-repair patch is justified or created.
+
+All 626 scoped actual observations, including 260 SDK observations, match the final producer.
+Source, heads, working-tree status and runtime files do not drift. Owned process/container/fixture
+directory remainders are zero; the phase-owned RAM temp directory is removed, no heap/dump worker
+remains, and no AppHost is running at the final read. Unrelated applications and earlier receipts
+are untouched.
+
+Diagnostic p50/p95 milliseconds are command acknowledgment **6732.786/8135.412** (10 samples,
+1000 ms p95 budget), Workers delivery **107.841/314.903** (27 samples, unchanged 1000 ms diagnostic
+budget), and status read **876.545/1109.949** (12 samples, 500 ms p95 budget). Command and status
+remain over budget; sampling, budgets and the existing record-without-redesign instruction remain.
+
+[The metadata-only sizing recheck](evidence/story-12-2-ram-stop-sizing-recheck-20261114.json) preserves
+the exact scope, preflight, unexercised capture guard, passing diagnostic, identities, timing and
+cleanup. The final-producer failed qualification, aborted 512 MiB attempt and every earlier packet
+remain unchanged. No shutdown cause or correction is established. Generic SDK shutdown/performance/
+policy repair retains its existing proposal/decision boundary. Current production acceptance, the
+full-CI disk blocker, SM4, governance and whole-story review remain open. Source/outputs are released
+without an active owned build/test/topology; no further run is launched by this handoff. Story/sprint
+remain **in-progress at step 03**.
+
+
+### SDK shutdown observability proposal preparation — 2026-11-14
+
+The 2 GiB diagnostic passed without any long-stop trigger or suspension and produced no heap.
+It establishes neither the causal stop await nor a repair. Keep the ordinary final-producer failed
+strict result and both diagnostic outcomes separate. Further generic SDK source work remains outside
+the current approved scope.
+
+Prepare a concrete scope proposal at
+`proposal-12-2-sdk-shutdown-stage-tracing.md` with an **unapplied** companion `.patch`. This is
+proposal preparation, not permission to modify EventStore source or apply a repair. Explain the
+actual evidence and limits, the proposed owner/files, minimal opt-in payload-free stage tracing
+around existing SDK stop/drain awaits, the default-off behavior, privacy/failure/cancellation
+controls and current unchanged-strict verification plan. Prefer the existing worker, telemetry and
+logging seams; introduce no service proxy, dummy sink, forced Activity, new endpoint, timeout,
+restart policy, business identifier or body logging. Tracing must preserve source authorization,
+actual lease/remote-call ownership, durable outcomes and existing stop results. Validate patch
+applicability read-only against the exact current SDK revision; do not alter shared caches, pins,
+source or generated SDK runtime outputs. Use a whitespace-clean patch format without unrelated
+repository configuration changes.
+
+The proposal should ask for the narrowly bounded SDK shutdown investigation and evidence-confirmed
+repair scope needed to unblock this story, with this initial diagnostic patch reviewable now.
+Identify explicitly which existing exclusion would be superseded; any proposed change in internal
+SDK stop coordination must be justified by causal evidence, while existing host-command budgets,
+resource restart order, retries, authorizations and source/lease guarantees remain fixed. Do not
+invent or claim a product repair where none is established. No further live run is needed to prepare
+this scope decision. Leave the frozen intent unchanged until the human answers, and release files
+for parent verification before the final question. Story and sprint remain in-progress.
+
+
+### SDK shutdown scope proposal prepared — 2026-11-14
+
+[The concrete scope proposal](proposal-12-2-sdk-shutdown-stage-tracing.md),
+[unapplied SDK tracing patch](proposal-12-2-sdk-shutdown-stage-tracing.patch) and separate
+[unapplied Root fixture forwarding patch](proposal-12-2-sdk-shutdown-stage-tracing.fixture.patch)
+are released for parent verification and the human scope decision. No patch is applied to either
+actual repository. The proposal identifies the exact generic SDK shutdown/performance/policy
+exclusion and asks only for bounded shutdown investigation and a causally demonstrated internal
+correction, with existing host-command budgets, restart order, retries, authorization, source proof,
+exact lease/remote-call ownership and durable outcomes fixed. No product repair is claimed.
+
+The default-off SDK draft observes the worker host/execution/actual remote-call drains, sequential
+telemetry provider calls and registered admin-index stop/cancellation/refresh waits. Closed stage
+names, timing, process-local pairing and observed-only token flags flow through existing logging.
+The internal Server bridge uses existing friendships and exposes no new public surface. The Root
+draft forwards a separate test-process opt-in only to its owned EventStore resource before catalog
+composition, preserving existing observer behavior. Full logs stay private and the proposal states
+the limits of synchronous/enriched/unavailable logging and of interpreting a missing event.
+
+Both exact-input read-only `git apply --check --unidiff-zero --whitespace=error-all` checks pass.
+A private RAM source/output overlay, with the actual workspace/shared caches read-only and network
+disabled, builds ServiceDefaults, Server, EventStore and Server.Tests with normal analyzers: four
+exit-0 results. The final patch's new controls pass **11/11**, zero failures/errors/skips, in
+**0.121 assembly seconds** (**0.666 wrapper seconds**). An earlier isolated CLI attempt stalled
+before compiler output and was stopped; its signal-associated exit 0 is not counted as a build
+success. The Root forwarding patch is applicability-checked only, not compiled or exercised.
+No live topology, heap capture or strict run occurs in this preparation phase.
+
+The actual SDK stays clean at `51dd68b86a690ffe9e11c565dccec49b2d401a94`. All 4987 ordinary SDK
+C# files and 7142 actual SDK DLL/PDB files match their pre-preparation hashes; all 106 selected
+final-producer DLLs match the retained audit. Frozen497c and all three protected bodies match.
+The phase-owned 2593767553-byte RAM overlay is removed, retaining only private proposed output
+pairs, exact sources/patches and receipts. [The metadata-only preparation receipt](evidence/story-12-2-sdk-shutdown-tracing-proposal-20261114.json)
+binds the proposal, patch hashes, checks, unsuccessful CLI attempt, unchanged-input audits and
+cleanup. Earlier qualification/diagnostic packets and Platform changes remain untouched.
+
+The frozen intent and SDK scope exclusion remain unchanged pending the human answer. No further
+run is launched. Current strict acceptance, full-CI disk qualification, SM4 over-budget findings,
+governance and whole-story review remain open. Source/outputs are released with no active owned
+build/test/topology; story and sprint remain **in-progress at step 03**.
+
+
+### Approved SDK shutdown implementation handoff — 2026-11-14
+
+Jerome's latest “approve” authorizes the concrete proposal and both prepared patches. The bounded
+exception is recorded in the frozen intent; its before/after SHA-256 and exact patch identities are
+in [the approval receipt](evidence/story-12-2-sdk-shutdown-scope-approval-20261114.json). Keep the
+original baseline and every historical packet unchanged; use the new approved frozen hash for
+subsequent guards. Earlier no-SDK/pending-approval notes are superseded only within this scope.
+Do not render or dispatch the parent workflow again.
+
+- [x] Apply the exact SDK patch in the owning root-declared EventStore repository and the fixture
+  patch in Folders, after current-head/input/whitespace checks. Preserve every earlier Root change
+  and all seven Platform changes. The selected root remains b915d3ec5180f45c4c477cbeffb9b98df91082d0,
+  SDK 51dd68b86a690ffe9e11c565dccec49b2d401a94 and Platform 2a1a343c35d58e6368cd4c34288dc3f9c567f8b9.
+- [x] Run meaningful production-seam, privacy, cancellation and lifetime regressions for affected
+  SDK worker/catalog/telemetry/admin stop paths; run the new eleven controls with normal analyzers.
+  Check absent/invalid/true fixture forwarding, exact owned resource and unchanged observer/security
+  annotations through the existing configuration test seams. Refresh only affected mutable compile
+  inventory inputs and execute its controls; keep A6b/exposure/closure flags and old inventories fixed.
+- [x] Build and audit the final coherent Debug/source runtime and Memories using both source flags,
+  HexalithEventStoreVersion=5.0.1 and VersionSuffix=story12-2-qualification, with root-declared
+  dependency paths. Disk is constrained; use private RAM/temp/output layouts where supported,
+  preserve actual selected outputs and avoid broad duplicate Release output generation. Never
+  initialize nested submodules, suppress analyzers or weaken a gate to hide an environment failure.
+- [x] Diagnose one unchanged strict class with the exact test-specific SDK tracing opt-in, existing
+  supported observer opt-out and private receipts. The eleven-control-qualified monitor and
+  compatible analyzer/capped RAM capture helpers may be reused as useful; retain all source/loaded
+  identity, PID/start, drift, performance and exact owned-cleanup evidence. A tracing pass or a
+  missing marker alone establishes no cause. Full logs and enriched scopes stay private.
+- [x] Once positive evidence identifies the wait, make the smallest deterministic held-await
+  reproduction at that actual seam and identify the causal owner/files/ownership chain. Implement
+  only its bounded correction and require the regression to fail before and pass after. The
+  approval already covers this evidence-confirmed repair; no further permission is needed while
+  every fixed guarantee remains intact. No guessed repair, forced lease release, discarded work,
+  success inference, added deadline/retry or changed resource restart order is permitted.
+- [x] Rebuild/audit affected producer/runtime identities and relevant consumer/capacity gates, then
+  run unchanged strict acceptance with SDK tracing off. Retain failed attempts and flakiness; one
+  pass does not prove a repair. Keep full-CI disk, SM4 redesign, governance and independent review
+  dispositions separate. Record new metadata-only evidence/spec notes and release every owned
+  process/container/temp fixture plus selected outputs for parent verification.
+
+The parent performs no competing source/output mutation, build, test or topology during this
+implementation handoff. Existing private receipt directories and seals remain intact. Root disk and
+RAM headroom must be checked before allocating new artifacts. Do not touch unrelated AppHosts or
+shared caches. Source/lease/security guards and all three protected strict bodies remain unchanged.
+Story/sprint remain in-progress until actual acceptance is satisfied; report a precise blocker
+without inventing completion if an independent requirement cannot be fulfilled within this scope.
+
+
+### Approved SDK shutdown implementation and current qualification — 2026-11-14
+
+The six implementation-handoff items above are complete within Jerome's approved bounded scope.
+[Current metadata-only evidence](evidence/story-12-2-sdk-shutdown-implementation-20261114.json)
+and [the current coverage matrix](evidence/story-12-2-sdk-shutdown-implementation-matrix-20261114.json)
+retain the exact commands, source/producer identities, failed/canceled attempts, ownership controls,
+measurements and cleanup. Earlier packets remain immutable. The approved frozen SHA remains
+`ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f`; the selected Root,
+EventStore and Platform heads and all three protected strict bodies are unchanged.
+
+Both exact approved patches were applied in their owning repositories, followed by the redundant
+Dispose-summary cleanup and focused controls. Default-off SDK tracing observes the existing worker,
+telemetry and admin-index awaits through the existing logging/friendship seams. The Root fixture
+forwards its separate opt-in only to the owned EventStore resource before catalog composition;
+existing observer/security annotations remain intact. Final scope/privacy/ownership controls pass
+13/13 and fixture configuration controls 10/10. The mutable 1616-path compile inventory's 21 controls
+pass; A6b/exposure/closure flags and historical inventories remain unchanged.
+
+Two separate positive ownership chains justified two bounded corrections:
+
+- The initial traced failure (0/1, 423.993 seconds) connected Host.StopAsync to the retry worker's
+  actual coordinator admission-denied `CompleteDeliveryWriteAsync`. The worker/coordinator tokens
+  were canceled while the actual actor invocation received CancellationToken.None. The coordinator
+  now forwards the existing host ApplicationStopping token to its lifecycle-completion calls.
+  Identical held-actual-transport regression bytes pass the ordinary-caller control and fail only
+  host cancellation before the correction (1/2); both pass afterward (2/2). A still-held call and
+  unknown completion retain the real catalog fence and original retry work.
+- That correction alone did not qualify shutdown: tracing-off strict failed 0/1 in 322.011 seconds.
+  A later complete diagnostic heap connected Host.StopAsync to **ProjectionPollerService's own
+  ExecuteTask**, then compatible replay state 42 and the actual `CompleteDeliveryWriteAsync`.
+  The poller/orchestrator stopping tokens were canceled, but its original 30-second finalization
+  token remained live. A coordinator `BeginDeliveryWriteAsync` in a separate async stack is not
+  attributed to that stop. The legacy finally now links the existing TimeProvider-backed deadline
+  with host ApplicationStopping for lifecycle completion and the same conditional intent cleanup.
+  Ordinary caller independence, the 30-second deadline, actual task awaits, unknown fences and
+  original persisted work remain intact. Identical held-call controls pass caller/deadline and
+  fail only host cancellation before (2/3); all pass afterward (3/3, 0.721 seconds).
+
+The failed tool-before-attachment diagnostic (0/1, 327.790 seconds), normally canceled child-env
+attempt (exit 58, 231.847 seconds; no target suspension), and successful-capture failing diagnostic
+(0/1, 372.554 seconds) remain separate. The corrected capture job installed/probed the compatible
+analyzer within its own cleaned temporary lifetime, validated the actual child environment and five
+refusal cases, and retained its capped RAM heap. The .NET 11 analyzer's completeness limit is explicit;
+positive method/token/task fields corroborate the connected chains. Missing trace boundaries alone
+establish no cause. No stop-command success is inferred from a later PID exit.
+
+All five final Debug/source builds pass with normal analyzers and the prescribed source/version
+flags, including Root and Memories. Current affected SDK legacy/poller/coordinator/worker/ownership/
+privacy/capacity checks pass **571/571**; catalog cancellation **5/5**, admin index **22/22** and
+fixture configuration **10/10** also pass. Six current consumer assemblies pass **5673**, with zero
+failures/errors, the same two operator skips and eleven issuer cases explicitly NotRun in the default
+Server suite. The refreshed actual-issuer wrapper separately passes those **11/11** and **5/5**
+consumer cases. Rebuild initially recopied the existing nonauthentic Tenants peer fixture (2/3);
+using the unchanged supported copy target with the retained official same-version read-only cache
+restores **3/3** authenticity/ABI controls. No expected hash, pin or shared cache was changed.
+
+The complete Release/package CI build and original conformance selections now pass **500/500**,
+resolving the earlier ENOSPC qualification blocker. Its unchanged 2190 owning Root source inputs,
+package-mode graph and pinned 5.0.1 payloads bind reuse after the second SDK-only correction. That
+lane does not claim execution of unpublished SDK source; its original receipt lacked a PE hash
+snapshot. The current Debug/source producer supplies the separate SDK qualification.
+
+Final unchanged strict acceptance with SDK tracing **off** passes **1/1**, exit 0, zero failures/
+errors/skips, in **443.780 assembly seconds**. Native Tenants owner bootstrap, exact process
+replacement, interrupted SDK generation/resume, real supported provider task pipeline, complete
+source rebuild, two-process delivery, retention and safe failures are positively observed. No
+capture/suspension occurred and no SDK trace messages were emitted. All **568** scoped actual-loaded
+observations, including **240** SDK observations, match the audited **106-module** producer.
+Source/head/status/runtime drift and post-run DLL/PDB mismatches are zero. One current pass does not
+erase prior flakiness or establish absence of every shutdown failure mode.
+
+SM4 remains open. Current p50/p95 milliseconds are command acknowledgment **7139.309/8642.996**
+(10 samples, p95 budget 1000), Workers delivery **126.498/356.683** (27 samples, diagnostic budget
+1000), and status read **987.164/1291.141** (12 samples, p95 budget 500). The acknowledgment stopwatch
+still surrounds the complete HTTP retry wrapper; the explicit one-second pre-call delay/bootstrap
+is outside it. Existing successful-stage metadata and unlabelled samples cannot assign an exact
+command/retry-delay/subpath split. The frozen instruction remains **record findings; do not redesign**.
+
+Remaining work is partitioned explicitly: the parent may now independently audit this diff, matrix,
+identities and acceptance in the already-rendered step 04. Current broad findings are the two SM4
+over-budget measurements; the historical unrelated Platform 57-error analyzer gate was not rerun
+and is not relabeled a current failure. PD10/A6b governance, public v2 exposure/closure, owner
+enrollment outside this disposable fixture, publication/deployment, pins and general performance/
+policy redesign retain their human/external scope limits. Whole-story acceptance is not inferred.
+
+Every owned descendant, container and temporary fixture directory is gone; run-with-temp jobs wait
+for children and remove their scratch. Two unrelated external fixture containers observed during
+final strict remain untouched. After retaining useful exact source/output pairs and private hash
+inventories, only this phase's disposable SDK overlay and old scratch were removed (2699565068
+bytes). Full logs, useful heaps and producer receipts remain private under `h12impl-kmdf_6ag`, with
+an integrity seal; earlier private packets are preserved. No commit, push, submodule update, pin
+change, publication or deployment occurred. Sources and selected outputs are released with no active
+owned build/test/topology. Story/sprint remain **in-progress** pending independent acceptance.
+
+
+### Parent review six handoff — 2026-11-14
+
+Parent verification passes all 2252 sealed private entries, 106 selected DLL/PDB pairs, 17 changed
+source hashes, raw strict XML and all five frozen matrix rows. All review child jobs and parent
+probe jobs have exited; their scratch is removed. The two bounded SDK shutdown corrections and
+unchanged tracing-off strict pass (1/1, 443.780 seconds) remain exact-source evidence. No production
+code or selected output was changed during review.
+
+Independent review nonetheless reproduces stale coherent task rollback and forged terminal
+metadata re-attestation, plus legitimate provider/organization partition and unknown-command
+Worker refusals. These current defects prevent whole-story acceptance despite the passing existing
+suites. [The review disposition](review-12-2-round6-disposition.md) and
+[all individual verdicts](evidence/story-12-2-review6-triage-20261114.json) are authoritative for the
+next correction pass. A supplementary indexed source/test view is retained alongside the complete
+canonical diff, preserving the original baseline.
+
+The review counter is now 6, beyond the rendered limit of 5. Workflow work stops before any physical
+rollback or re-derivation, pending the human decision on one additional correction/review cycle.
+No override has been inferred from the earlier bounded SDK shutdown approval. Frozen intent, every
+protected test body, all prior evidence, source/lease guarantees and disabled public v2 remain fixed.
+Story stays in-review and sprint stays in-progress; no completion, release or Git mutation is claimed.
+
+
+### Approved review-six correction handoff — 2026-11-14
+
+The user's latest **yes** approves the concrete additional correction/review cycle requested in
+[the review disposition](review-12-2-round6-disposition.md). The decision is recorded in
+[the continuation receipt](evidence/story-12-2-review6-continuation-approval-20261114.json).
+It supersedes the last workflow-halt note only for iteration 6 and its following review. Keep
+review_loop_iteration=6 and the original c22b baseline; do not reset either, rerender the workflow,
+physically roll back approved code or treat this as release/Git/public-v2/performance authority.
+
+The six new Review-six tasks in Tasks & Acceptance are current implementation instructions.
+Earlier checked tasks remain historical evidence for their exact source; their core invariants
+must survive these corrections. Follow all existing Spec Change Log constraints and re-derive
+only the demonstrated input/authority defects in place. Preserve both independently justified SDK
+shutdown fixes, default-off diagnostics, source proofs, actual remote-call/catalog ownership and
+all successful round-five compaction/retention/closure/native-validation/observer corrections.
+The three protected bodies retain d29afa3c / f5e8767a / 2ae31131 identities. Public v2 stays disabled.
+
+The parent probes and indexed review artifacts are useful retained results under
+`../../.artifacts/story-12-2-review6-20261114/`: claims-probe.Program.cs/log/receipt reproduce both
+corruption defects, source-scope-probe-v3.Program.cs/log/receipt reproduce the provider/organization/
+unknown-command refusals, and probe-input-hashes.json binds their unchanged helpers and binaries.
+The full canonical diff, compact runtime/test view and immutable index are retained together;
+review6-triage records all fourteen verdicts. Do not patch/refile the carried provider-history
+claim or infer a new CI automation/performance requirement from rejected/unverified findings.
+
+New ad hoc verification jobs that create disposable workspaces must use run-with-temp. Place
+copies, feeds and disposable build outputs below its TMPDIR; retain useful logs/results outside,
+wait for children before wrapper exit and remove every owned topology/scratch. Commands with
+existing reliable scratch cleanup may retain it. Selected reviewable runtime artifacts are useful
+results, not disposable workspace; preserve/audit them explicitly. Never rely on an old named /tmp
+helper surviving. Reuse the latest proven production AppHost baseline only after source/output/head
+preflight; do not start or stop unrelated applications or resources. Keep raw logs/private data out
+of tracked evidence. Root disk currently has ample headroom, so do not delete unrelated outputs.
+
+If the existing SDK cannot establish bounded current-view authority within these fixed guarantees,
+complete the independent corrections and report the exact missing public capability and concrete
+owner prerequisite; do not invent a generic local protocol or weaken the expected behavior.
+
+The implementation agent owns sources and selected outputs serially until released. Parent does
+no competing edits/build/test/topology, then independently verifies the actual diff, matrix and
+runtime evidence before the next required review. Story/sprint are in-progress. No further human
+confirmation is needed for these approved corrections within existing intent.
+
+
+### Review-six implementation and current qualification — 2026-11-14
+
+The six approved correction tasks are implemented and qualified on the final current source.
+[The metadata-only implementation packet](evidence/story-12-2-review6-implementation-20261114.json)
+and [current five-row matrix](evidence/story-12-2-review6-implementation-matrix-20261114.json)
+retain the exact commands, source/producer bindings, failures, component results and live limits.
+The review iteration remains 6 and the original c22b baseline is unchanged. Parent independent
+review remains required; story and sprint remain in-progress.
+
+Schema 4 keeps only one active workspace digest and one active task digest in the bounded
+checkpoint. Per-key applicability uses ordinary SDK batches/generations and the identical original
+source-time +400-day deadline as its status/evidence. It does not extend C3 retention or replace
+the existing independently retained original task-completion/closure authority. Reads validate that
+authority, active source evidence and an unchanged selected generation/checkpoint across reads.
+Paired absence and positively expired views retain their frozen outcomes without interpreting
+irrelevant malformed applicability. Missing/corrupt surviving authority fails closed; an authorized
+complete-source named rebuild repairs schema 2/3 and damaged derived records without changing source
+bytes, original deadlines or valid source-conflict guards. Terminal preservation requires validated
+original source completion. Current/historical coherent rollback, forged proof, pure rejection,
+inherited generation and interleaved reads are covered.
+
+Validated owner scope now permits lawful normalized unknown-command rejections through actual
+authenticated Workers intake and legitimate provider/organization accepted/rejected prefixes through
+live and bounded named/shared processing. Foreign/wrong-kind/malformed/version/position/source-binding
+controls still refuse without fabricated Folder/provider results or durable acknowledgment.
+
+The successful final-dispatch cleanup regression independently fails when its exact host-stop token
+is restored to None, and passes after exact byte restoration. A later bounded diagnostic retained
+one complete 751181824-byte private heap. Its positive chain connected Host.StopAsync through
+GenericWebHostService/Kestrel's one outstanding transport and the exact inbound request context to
+ReconcileBoundReplayCompletionAsync -> OwnsPublicationAsync -> OwnsDeliveryLeaseAsync with an
+uncancelable actual weak/JSON actor RPC. The correction connects only that reconciliation proof call
+to ApplicationStopping. The existing constructor, other publication methods, both prior SDK fixes,
+ordinary caller independence, actual-task await, unknown catalog fence and original committed receipt
+remain intact. The production-DI/actual-transport actor class changes from 52/53 to 53/53; cancellation
+does not abandon the held transport, actor task or catalog ownership before actual completion.
+
+Final normal-analyzer Debug/source builds pass for Root, Memories and the three affected SDK test
+projects with both source flags, version 5.0.1 and story12-2-qualification suffix. The six Root suites
+pass 5704 cases, with two unchanged optional Domain skips and 11 issuer cases explicitly NotRun in the
+default lane. The current issuer wrapper separately passes 11+5 cases. Affected SDK coordination,
+capacity, shutdown and actor checks pass 626/626; catalog 5, admin-index 22, fixture 10, authentic published
+peer ABI 3 and mutable inventory 21 also pass. The same-version peer fixture-copy failure is retained;
+the supported target rematerializes only the hash-verified official archive, without changed expected
+hashes, pins or shared cache. Root/package gate coverage remains 500/500 with explicit unchanged Root
+inputs and package-mode limits; it does not qualify unpublished SDK source as released packages.
+
+The final 106-module producer audit has no PE/PDB/source/assets issue or SDK variant. All three
+protected body hashes and frozen ba0f8873...f183f remain exact. Tracing-off unchanged strict acceptance
+passes 1/1, zero failures/errors/skips, 477.194 assembly seconds and 391.808 body seconds. All three
+restart/recovery assertions execute, actual loaded identities match (246 scoped SDK observations),
+and source/head/runtime drift and owned process/container/scratch remainders are zero. Prior strict,
+diagnostic, issuer startup, fixture and compilation failures remain failures in the retained phase;
+one earlier overwritten full compiler log is explicitly identified by its preserved failed receipt.
+No missing trace or PID exit is used as proof of stop/recovery success.
+
+SM4 remains record-only and open: acknowledgment p95=8438.024ms exceeds 1000ms; status-read
+p95=1277.472ms exceeds 500ms; Workers operational delivery p95=220.032ms is within 1000ms. No budget,
+retry, restart order, protected assertion, authorization, source proof, public-v2, package/gitlink/pin,
+Git or deployment change is made. PD10/A6b/governance/exposure/closure, production owner enrollment,
+separately authorized SDK release consumption and whole-story acceptance remain independent gates.

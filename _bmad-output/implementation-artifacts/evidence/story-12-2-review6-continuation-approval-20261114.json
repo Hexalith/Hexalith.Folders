@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T10:49:29.257232+00:00",
+  "owner_reply": "yes",
+  "approved_action": "One additional correction/implementation/review cycle after review-six triage within existing captured intent.",
+  "approved_review_loop_iteration": 6,
+  "review_loop_iteration_preserved": 6,
+  "baseline_commit_preserved": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "frozen_sha256_unchanged": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "review_disposition_sha256": "a12ac216246821ece5212dc9261346ca6efb0809800bd00b12dac5ac9ef13efd",
+  "physical_rollback_authorized": false,
+  "future_extra_loops_automatically_authorized": false,
+  "story_status": "in-progress"
+}

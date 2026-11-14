@@ -74,7 +74,7 @@ public sealed class OrganizationDeliveryRegressionTests
         var beforeGap = await store.GetAsync<OrganizationPermissionProjection>("statestore", key, ct);
         EventStoreDomainEventEnvelope rejected = new("rejected", "tenant-a", "tenant-a",
             "Hexalith.Folders.Server.FolderCommandRejected", 4, clock.UtcNow, "corr", "json",
-            JsonSerializer.SerializeToUtf8Bytes(new { CommandType = FoldersServerModule.GrantOrganizationAclPrincipalCommandType }))
+            JsonSerializer.SerializeToUtf8Bytes(new { Code = "ValidationFailed", CommandType = FoldersServerModule.GrantOrganizationAclPrincipalCommandType }))
         { Domain = "folders", MetadataVersion = 1 };
         await Should.ThrowAsync<InvalidOperationException>(() => processor.ProcessAsync(rejected, ct));
         var unchanged = await store.GetAsync<OrganizationPermissionProjection>("statestore", key, ct);
@@ -99,7 +99,7 @@ public sealed class OrganizationDeliveryRegressionTests
         var processor = new FoldersOrganizationAclEventProcessor(model);
         var envelope = new EventStoreDomainEventEnvelope("rejection", "tenant-a", "tenant-a",
             "Hexalith.Folders.Server.FolderCommandRejected", 1, clock.UtcNow, "corr", "json",
-            JsonSerializer.SerializeToUtf8Bytes(new { CommandType = FoldersServerModule.InitializeOrganizationAclBaselineCommandType }))
+            JsonSerializer.SerializeToUtf8Bytes(new { Code = "ValidationFailed", CommandType = FoldersServerModule.InitializeOrganizationAclBaselineCommandType }))
         { Domain = "folders", MetadataVersion = 1 };
         await processor.ProcessAsync(envelope, TestContext.Current.CancellationToken);
         var row = await store.GetAsync<OrganizationPermissionProjection>("statestore",
@@ -110,7 +110,7 @@ public sealed class OrganizationDeliveryRegressionTests
         {
             MessageId = "folder-rejection",
             SequenceNumber = 2,
-            Payload = JsonSerializer.SerializeToUtf8Bytes(new { CommandType = FoldersServerModule.CreateFolderCommandType })
+            Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "ValidationFailed", CommandType = FoldersServerModule.CreateFolderCommandType })
         },
             TestContext.Current.CancellationToken));
         (await store.GetAsync<OrganizationPermissionProjection>("statestore",
@@ -134,7 +134,11 @@ public sealed class OrganizationDeliveryRegressionTests
             mapped++;
             bool organization = mapping.ScopeKind == FolderCommandOperationScopeKind.OrganizationBaseline
                 && name != FoldersServerModule.CreateFolderCommandType;
-            FoldersRejectedCommandClassifier.IsOrganization(JsonSerializer.SerializeToUtf8Bytes(new { CommandType = name }))
+            string owner = name == FoldersServerModule.ConfigureProviderBindingCommandType
+                ? ProviderBindingActorId.Create("binding-a") : organization ? "tenant-a" : "folder-a";
+            FoldersRejectedCommandClassifier.IsOrganization(new EventStoreDomainEventEnvelope("rejected", owner, "tenant-a",
+                "Hexalith.Folders.Server.FolderCommandRejected", 1, clock.UtcNow, "corr", "json",
+                JsonSerializer.SerializeToUtf8Bytes(new { Code = "ValidationFailed", CommandType = name })))
                 .ShouldBe(organization, name);
             var readModel = new InMemoryEffectivePermissionsReadModel();
             readModel.Save(new("tenant-a", "tenant-a", "organization_baseline", EffectivePermissionsFolderLifecycleState.Active,

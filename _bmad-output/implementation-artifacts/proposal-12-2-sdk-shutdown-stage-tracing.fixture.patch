@@ -1,0 +1,11 @@
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -920,0 +921,7 @@
++        // The private diagnostic opt-in is forwarded only to this fixture's EventStore host.
++        if (string.Equals(Environment.GetEnvironmentVariable("FOLDERS_TASK36_SDK_SHUTDOWN_TRACE"), "true", StringComparison.Ordinal))
++            _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
++                .WithEnvironment("HEXALITH_EVENTSTORE_SHUTDOWN_TRACE", "true")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Projections.ProjectionActivationWorker", "Debug")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.ServiceDefaults.BoundedTelemetryShutdownService", "Debug")
++                .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Indexes.AdminOperationalIndexHostedService", "Debug");

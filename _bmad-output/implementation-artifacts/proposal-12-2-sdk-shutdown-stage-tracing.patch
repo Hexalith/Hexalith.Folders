@@ -1,0 +1,452 @@
+diff --git a/src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs b/src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs
+new file mode 100644
+--- /dev/null
++++ b/src/Hexalith.EventStore.Server/Diagnostics/AdminIndexShutdownTrace.cs
+@@ -0,0 +1,34 @@
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
++
++using Microsoft.Extensions.Logging;
++
++namespace Hexalith.EventStore.Server.Diagnostics;
++
++/// <summary>Exposes the admin index's fixed observation points through existing assembly friendships.</summary>
++internal sealed class AdminIndexShutdownTrace : IDisposable
++{
++    private readonly ShutdownStageScope _scope;
++
++    private AdminIndexShutdownTrace(ShutdownStageScope scope) => _scope = scope;
++
++    /// <summary>Observes the admin index stop operation.</summary>
++    internal static AdminIndexShutdownTrace? StartStop(ILogger logger, CancellationToken token)
++        => Wrap(ShutdownStageScope.TryStart(logger, ShutdownStage.AdminIndexStop, token));
++
++    /// <summary>Observes the existing refresh cancellation callback wait.</summary>
++    internal static AdminIndexShutdownTrace? StartCancellation(ILogger logger, CancellationToken token)
++        => Wrap(ShutdownStageScope.TryStart(logger, ShutdownStage.AdminIndexCancelCallbacks, token));
++
++    /// <summary>Observes the existing refresh-task wait.</summary>
++    internal static AdminIndexShutdownTrace? StartRefresh(ILogger logger, CancellationToken token)
++        => Wrap(ShutdownStageScope.TryStart(logger, ShutdownStage.AdminIndexRefreshDrain, token));
++
++    /// <summary>Records return without changing the observed operation's result.</summary>
++    internal void Complete() => _scope.Complete();
++
++    /// <inheritdoc/>
++    /// <summary>Verifies dispose.</summary>
++    public void Dispose() => _scope.Dispose();
++
++    private static AdminIndexShutdownTrace? Wrap(ShutdownStageScope? scope) => scope is null ? null : new(scope);
++}
+diff --git a/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs b/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs
+--- a/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs
++++ b/src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs
+@@ -2,0 +3 @@
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
+@@ -50,0 +52 @@
++        using ShutdownStageScope? trace = ShutdownStageScope.TryStart(Logger, ShutdownStage.ProjectionActivationStop, cancellationToken);
+@@ -51,0 +54 @@
++        trace?.Complete();
+@@ -73,0 +77 @@
++            using ShutdownStageScope? trace = ShutdownStageScope.TryStart(Logger, ShutdownStage.ProjectionActivationExecutionDrain, stoppingToken);
+@@ -74,0 +79 @@
++            trace?.Complete();
+@@ -215 +220,6 @@
+-            if (lease is not null) await lease.DrainRemoteCallsAsync().ConfigureAwait(false);
++            if (lease is not null)
++            {
++                using ShutdownStageScope? trace = ShutdownStageScope.TryStart(Logger, ShutdownStage.ProjectionActivationRemoteDrain, stoppingToken);
++                await lease.DrainRemoteCallsAsync().ConfigureAwait(false);
++                trace?.Complete();
++            }
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs b/src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs
+--- a/src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs
++++ b/src/Hexalith.EventStore.ServiceDefaults/BoundedTelemetryShutdownService.cs
+@@ -0,0 +1,2 @@
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
++
+@@ -55,0 +58 @@
++        using ShutdownStageScope? trace = ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryStop, cancellationToken);
+@@ -59,3 +62,15 @@
+-                ShutdownProvider("tracer", () => tracerProvider?.Shutdown(budgetMilliseconds));
+-                ShutdownProvider("meter", () => meterProvider?.Shutdown(budgetMilliseconds));
+-                ShutdownProvider("logger", () => loggerProvider?.Shutdown(budgetMilliseconds));
++                using (ShutdownStageScope? providerTrace = ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryTracerCall, cancellationToken))
++                {
++                    ShutdownProvider("tracer", () => tracerProvider?.Shutdown(budgetMilliseconds));
++                    providerTrace?.Complete();
++                }
++                using (ShutdownStageScope? providerTrace = ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryMeterCall, cancellationToken))
++                {
++                    ShutdownProvider("meter", () => meterProvider?.Shutdown(budgetMilliseconds));
++                    providerTrace?.Complete();
++                }
++                using (ShutdownStageScope? providerTrace = ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryLoggerCall, cancellationToken))
++                {
++                    ShutdownProvider("logger", () => loggerProvider?.Shutdown(budgetMilliseconds));
++                    providerTrace?.Complete();
++                }
+@@ -71,0 +87 @@
++        trace?.Complete();
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs
+new file mode 100644
+--- /dev/null
++++ b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStage.cs
+@@ -0,0 +1,26 @@
++namespace Hexalith.EventStore.ServiceDefaults.Diagnostics;
++
++/// <summary>Names the closed set of SDK shutdown waits eligible for opt-in observation.</summary>
++internal enum ShutdownStage
++{
++    /// <summary>The activation worker's host stop wait.</summary>
++    ProjectionActivationStop,
++    /// <summary>The activation execution loop's owned-task drain.</summary>
++    ProjectionActivationExecutionDrain,
++    /// <summary>An actual lease's remote-call drain during shutdown.</summary>
++    ProjectionActivationRemoteDrain,
++    /// <summary>The telemetry service's host stop wait.</summary>
++    TelemetryStop,
++    /// <summary>The existing tracer provider shutdown call.</summary>
++    TelemetryTracerCall,
++    /// <summary>The existing meter provider shutdown call.</summary>
++    TelemetryMeterCall,
++    /// <summary>The existing logger provider shutdown call.</summary>
++    TelemetryLoggerCall,
++    /// <summary>The admin index's host stop operation.</summary>
++    AdminIndexStop,
++    /// <summary>The admin index's refresh cancellation callbacks.</summary>
++    AdminIndexCancelCallbacks,
++    /// <summary>The admin index's refresh-task wait.</summary>
++    AdminIndexRefreshDrain,
++}
+diff --git a/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs
+new file mode 100644
+--- /dev/null
++++ b/src/Hexalith.EventStore.ServiceDefaults/Diagnostics/ShutdownStageScope.cs
+@@ -0,0 +1,77 @@
++using System.Diagnostics;
++
++using Microsoft.Extensions.Logging;
++
++namespace Hexalith.EventStore.ServiceDefaults.Diagnostics;
++
++/// <summary>Observes existing shutdown calls without owning or changing their execution.</summary>
++internal sealed partial class ShutdownStageScope : IDisposable
++{
++    private const string EnableVariable = "HEXALITH_EVENTSTORE_SHUTDOWN_TRACE";
++    private static long _nextSequence;
++    private readonly ILogger _logger;
++    private readonly ShutdownStage _stage;
++    private readonly CancellationToken _observedCancellation;
++    private readonly long _started;
++    private readonly long _sequence;
++    private int _ended;
++
++    private ShutdownStageScope(ILogger logger, ShutdownStage stage, CancellationToken observedCancellation)
++    {
++        _logger = logger;
++        _stage = stage;
++        _observedCancellation = observedCancellation;
++        _started = Stopwatch.GetTimestamp();
++        _sequence = Interlocked.Increment(ref _nextSequence);
++        Write("Started");
++    }
++
++    /// <summary>Starts only for an exact process opt-in and an enabled existing Debug logger.</summary>
++    /// <remarks>The token is observed only; it is never registered, canceled, or passed to an operation.</remarks>
++    internal static ShutdownStageScope? TryStart(ILogger logger, ShutdownStage stage, CancellationToken observedCancellation)
++    {
++        try
++        {
++            if (!string.Equals(Environment.GetEnvironmentVariable(EnableVariable), "true", StringComparison.Ordinal)
++                || !Enum.IsDefined(stage) || !logger.IsEnabled(LogLevel.Debug)) return null;
++            return new ShutdownStageScope(logger, stage, observedCancellation);
++        }
++        catch
++        {
++            // Advisory logging must not replace a shutdown result, even if a provider throws.
++            return null;
++        }
++    }
++
++    /// <summary>Records that the observed call returned, without asserting its business or provider success.</summary>
++    internal void Complete()
++    {
++        if (Interlocked.Exchange(ref _ended, 1) == 0) Write("Returned");
++    }
++
++    /// <summary>Records an unfinished scope unwinding without inspecting its exception.</summary>
++    /// <summary>Verifies dispose.</summary>
++    public void Dispose()
++    {
++        if (Interlocked.Exchange(ref _ended, 1) == 0) Write("Unwound");
++    }
++
++    private void Write(string state)
++    {
++        try
++        {
++            int elapsedMs = (int)Math.Clamp(Stopwatch.GetElapsedTime(_started).TotalMilliseconds, 0, int.MaxValue);
++            StageObserved(_logger, _stage.ToString(), state, elapsedMs, Environment.ProcessId, _sequence,
++                _observedCancellation.CanBeCanceled, _observedCancellation.IsCancellationRequested);
++        }
++        catch
++        {
++            // Do not read exceptions, ambient activities, scopes, identifiers, or payloads.
++        }
++    }
++
++    [LoggerMessage(EventId = 6210, Level = LogLevel.Debug,
++        Message = "SDK shutdown observation: Stage={Stage}, State={State}, ElapsedMs={ElapsedMs}, ProcessId={ProcessId}, Sequence={Sequence}, ObservedCanBeCanceled={ObservedCanBeCanceled}, ObservedCanceled={ObservedCanceled}")]
++    private static partial void StageObserved(ILogger logger, string stage, string state, int elapsedMs,
++        int processId, long sequence, bool observedCanBeCanceled, bool observedCanceled);
++}
+diff --git a/src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs b/src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs
+--- a/src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs
++++ b/src/Hexalith.EventStore/Indexes/AdminOperationalIndexHostedService.cs
+@@ -19,0 +20 @@
++using Hexalith.EventStore.Server.Diagnostics;
+@@ -94 +95,6 @@
+-        await _refreshStopping.CancelAsync().ConfigureAwait(false);
++        using AdminIndexShutdownTrace? trace = AdminIndexShutdownTrace.StartStop(logger, cancellationToken);
++        using (AdminIndexShutdownTrace? cancellationTrace = AdminIndexShutdownTrace.StartCancellation(logger, cancellationToken))
++        {
++            await _refreshStopping.CancelAsync().ConfigureAwait(false);
++            cancellationTrace?.Complete();
++        }
+@@ -96,0 +103 @@
++                using AdminIndexShutdownTrace? refreshTrace = AdminIndexShutdownTrace.StartRefresh(logger, cancellationToken);
+@@ -97,0 +105 @@
++                refreshTrace?.Complete();
+@@ -101,0 +110 @@
++        trace?.Complete();
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs b/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs
+new file mode 100644
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageScopeTests.cs
+@@ -0,0 +1,179 @@
++using System.Diagnostics;
++
++using Hexalith.EventStore.Server.Diagnostics;
++using Hexalith.EventStore.ServiceDefaults;
++using Hexalith.EventStore.ServiceDefaults.Diagnostics;
++
++using Shouldly;
++
++namespace Hexalith.EventStore.Server.Tests.Telemetry;
++
++/// <summary>Checks opt-in privacy and advisory behavior without changing shutdown ownership.</summary>
++[Collection("ReadDiagnosticsPrivacy")]
++public sealed class ShutdownStageScopeTests
++{
++    private const string EnableVariable = "HEXALITH_EVENTSTORE_SHUTDOWN_TRACE";
++
++    /// <summary>Verifies default and invalid opt ins do not touch logger.</summary>
++    [Theory]
++    [InlineData(null)]
++    [InlineData("")]
++    [InlineData("false")]
++    [InlineData("TRUE")]
++    [InlineData("1")]
++    public void DefaultAndInvalidOptInsDoNotTouchLogger(string? value)
++    {
++        WithFlag(value, () =>
++        {
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests> { Throw = true };
++            ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryStop, default).ShouldBeNull();
++            AdminIndexShutdownTrace.StartStop(logger, default).ShouldBeNull();
++            logger.EnableChecks.ShouldBe(0);
++            logger.Records.ShouldBeEmpty();
++        });
++    }
++
++    /// <summary>Verifies debug filter and closed stage set are required.</summary>
++    [Fact]
++    public void DebugFilterAndClosedStageSetAreRequired()
++    {
++        WithFlag("true", () =>
++        {
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests> { Enabled = false };
++            ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryStop, default).ShouldBeNull();
++            logger.Enabled = true;
++            ShutdownStageScope.TryStart(logger, (ShutdownStage)int.MaxValue, default).ShouldBeNull();
++            logger.Records.ShouldBeEmpty();
++        });
++    }
++
++    /// <summary>Verifies returned scope is paired once and payload is closed.</summary>
++    [Fact]
++    public void ReturnedScopeIsPairedOnceAndPayloadIsClosed()
++    {
++        WithFlag("true", () =>
++        {
++            using var activity = new Activity("private-business-activity").Start();
++            activity.SetTag("private-key", "private-body");
++            activity.AddBaggage("private-credential", "private-value");
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests>();
++            using var cancellation = new CancellationTokenSource();
++            ShutdownStageScope scope = ShutdownStageScope.TryStart(logger, ShutdownStage.ProjectionActivationRemoteDrain, cancellation.Token)!;
++            cancellation.Cancel();
++            scope.Complete();
++            scope.Complete();
++            scope.Dispose();
++            logger.Records.Count.ShouldBe(2);
++            IReadOnlyDictionary<string, object?>[] records = logger.Records.ToArray();
++            records[0]["State"].ShouldBe("Started");
++            records[1]["State"].ShouldBe("Returned");
++            records[0]["Sequence"].ShouldBe(records[1]["Sequence"]);
++            records[0]["ObservedCanceled"].ShouldBe(false);
++            records[1]["ObservedCanceled"].ShouldBe(true);
++            foreach (IReadOnlyDictionary<string, object?> record in records)
++            {
++                record.Keys.Order().ShouldBe(new[] { "ElapsedMs", "ObservedCanBeCanceled", "ObservedCanceled", "ProcessId", "Sequence", "Stage", "State", "{OriginalFormat}" }.Order());
++                record["Stage"].ShouldBe("ProjectionActivationRemoteDrain");
++                record["ProcessId"].ShouldBe(Environment.ProcessId);
++                record["ObservedCanBeCanceled"].ShouldBe(true);
++                ((int)record["ElapsedMs"]!).ShouldBeGreaterThanOrEqualTo(0);
++                string.Join("|", record.Values).ShouldNotContain("private-");
++            }
++            Activity.Current.ShouldBeSameAs(activity);
++            activity.GetTagItem("private-key").ShouldBe("private-body");
++            activity.GetBaggageItem("private-credential").ShouldBe("private-value");
++        });
++    }
++
++    /// <summary>Verifies unwinding preserves exact exception and cancellation token.</summary>
++    [Fact]
++    public void UnwindingPreservesExactExceptionAndCancellationToken()
++    {
++        WithFlag("true", () =>
++        {
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests>();
++            using var cancellation = new CancellationTokenSource();
++            cancellation.Cancel();
++            var original = new OperationCanceledException("private-state", cancellation.Token);
++            OperationCanceledException observed = Should.Throw<OperationCanceledException>(() =>
++            {
++                using ShutdownStageScope? scope = ShutdownStageScope.TryStart(logger, ShutdownStage.AdminIndexRefreshDrain, cancellation.Token);
++                throw original;
++            });
++            observed.ShouldBeSameAs(original);
++            observed.CancellationToken.ShouldBe(cancellation.Token);
++            logger.Records.Count.ShouldBe(2);
++            logger.Records.Last()["State"].ShouldBe("Unwound");
++        });
++    }
++
++    /// <summary>Verifies throwing logger cannot replace original result.</summary>
++    [Fact]
++    public void ThrowingLoggerCannotReplaceOriginalResult()
++    {
++        WithFlag("true", () =>
++        {
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests> { Throw = true };
++            ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryStop, default).ShouldBeNull();
++            logger.Throw = false;
++            using ShutdownStageScope? scope = ShutdownStageScope.TryStart(logger, ShutdownStage.TelemetryStop, default);
++            scope.ShouldNotBeNull();
++            logger.Throw = true;
++            scope.Complete();
++            scope.Dispose();
++        });
++    }
++
++    /// <summary>Verifies admin bridge returns only its own accessible type.</summary>
++    [Fact]
++    public void AdminBridgeReturnsOnlyItsOwnAccessibleType()
++    {
++        WithFlag("true", () =>
++        {
++            var logger = new ShutdownStageTestLogger<ShutdownStageScopeTests>();
++            using AdminIndexShutdownTrace? scope = AdminIndexShutdownTrace.StartCancellation(logger, default);
++            scope.ShouldNotBeNull();
++            scope.Complete();
++            logger.Records.Last()["Stage"].ShouldBe("AdminIndexCancelCallbacks");
++            logger.Records.Last()["State"].ShouldBe("Returned");
++        });
++    }
++
++    /// <summary>Verifies null telemetry providers keep sequential stage order.</summary>
++    [Fact]
++    public async Task NullTelemetryProvidersKeepSequentialStageOrder()
++    {
++        string? previous = Environment.GetEnvironmentVariable(EnableVariable);
++        try
++        {
++            Environment.SetEnvironmentVariable(EnableVariable, "true");
++            var logger = new ShutdownStageTestLogger<BoundedTelemetryShutdownService>();
++            var service = new BoundedTelemetryShutdownService(logger);
++            await service.StopAsync(CancellationToken.None).ConfigureAwait(true);
++            logger.Records.Select(record => $"{record["Stage"]}:{record["State"]}").ShouldBe(new[]
++            {
++                "TelemetryStop:Started", "TelemetryTracerCall:Started", "TelemetryTracerCall:Returned",
++                "TelemetryMeterCall:Started", "TelemetryMeterCall:Returned", "TelemetryLoggerCall:Started",
++                "TelemetryLoggerCall:Returned", "TelemetryStop:Returned",
++            });
++        }
++        finally
++        {
++            Environment.SetEnvironmentVariable(EnableVariable, previous);
++        }
++    }
++
++    private static void WithFlag(string? value, Action action)
++    {
++        string? previous = Environment.GetEnvironmentVariable(EnableVariable);
++        try
++        {
++            Environment.SetEnvironmentVariable(EnableVariable, value);
++            action();
++        }
++        finally
++        {
++            Environment.SetEnvironmentVariable(EnableVariable, previous);
++        }
++    }
++}
+diff --git a/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs b/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs
+new file mode 100644
+--- /dev/null
++++ b/tests/Hexalith.EventStore.Server.Tests/Telemetry/ShutdownStageTestLogger.cs
+@@ -0,0 +1,42 @@
++using System.Collections.Concurrent;
++
++using Microsoft.Extensions.Logging;
++
++namespace Hexalith.EventStore.Server.Tests.Telemetry;
++
++/// <summary>Captures only the observation's structured fields and can reject advisory logging.</summary>
++internal sealed class ShutdownStageTestLogger<T> : ILogger<T>
++{
++    /// <summary>Gets captured fixed-field records.</summary>
++    internal ConcurrentQueue<IReadOnlyDictionary<string, object?>> Records { get; } = new();
++
++    /// <summary>Gets or sets whether Debug observations are enabled.</summary>
++    internal bool Enabled { get; set; } = true;
++
++    /// <summary>Gets or sets whether the existing logging seam throws.</summary>
++    internal bool Throw { get; set; }
++
++    /// <summary>Gets the count of logger enablement checks.</summary>
++    internal int EnableChecks { get; private set; }
++
++    /// <inheritdoc/>
++    public bool IsEnabled(LogLevel logLevel)
++    {
++        EnableChecks++;
++        if (Throw) throw new InvalidOperationException("private-logger-failure");
++        return Enabled && logLevel == LogLevel.Debug;
++    }
++
++    /// <inheritdoc/>
++    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
++        => throw new InvalidOperationException("Shutdown observations must not create scopes.");
++
++    /// <inheritdoc/>
++    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
++    {
++        if (Throw) throw new InvalidOperationException("private-logger-failure");
++        if (exception is not null || eventId.Id != 6210 || logLevel != LogLevel.Debug)
++            throw new InvalidOperationException("Unexpected observation surface.");
++        Records.Enqueue(((IEnumerable<KeyValuePair<string, object?>>)(object)state!).ToDictionary(static pair => pair.Key, static pair => pair.Value));
++    }
++}

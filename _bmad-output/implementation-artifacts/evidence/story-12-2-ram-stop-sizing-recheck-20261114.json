@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T03:09:33.372711+00:00",
+  "qualification": "Corrected RAM capture sizing: long EventStore stop not reproduced in one bounded diagnostic run",
+  "diagnostic_only": true,
+  "production_acceptance_claimed": false,
+  "current_final_producer_production_qualification_promoted": false,
+  "shutdown_cause_identified": false,
+  "shutdown_repair_proposed_or_applied": false,
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "repository_heads": {
+    ".": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "2f4f1cf9ae4889f8d96b4af3ceb01442163d1215",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.EventStore": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "references/Hexalith.FrontComposer": "0623f3acca3cc6d8b8151b99636458beaa8dd34a",
+    "references/Hexalith.McpCli": "edd15cfe372ba7ecdd0c835966fa93073a072fae",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.Platform": "2a1a343c35d58e6368cd4c34288dc3f9c567f8b9",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "9c804569031eee647207fa3b0d88407dadca38a0",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501"
+  },
+  "parent_phase_input_sha256": {
+    "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs": "df086cfc2a6c567a318196b4ad636ebd391793dbcdaecd01a8bc4b9d7aa64c50",
+    "scripts/pd10-v2-story-owned-paths.txt": "225c55d5b63ba75fe6f0fb25d730ad910cb1f182166702f3c3d0821875b7604a",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml": "7e2a6327078d8f6dbf6c0822829f5116bc1bc93e2e01f8c741346014cb20f7c5"
+  },
+  "changes": {
+    "production_test_sdk_source_or_selected_producer_changed": false,
+    "service_timeout_retry_order_policy_or_proof_changed": false,
+    "private_diagnostic_storage_estimate_only": true,
+    "all_existing_parent_and_platform_changes_preserved": true,
+    "git_package_pin_publication_or_deployment_change": false
+  },
+  "preflight": {
+    "ram_abort_threshold_bytes": 2147483648,
+    "ram_free_floor_bytes": 4294967296,
+    "minimum_system_available_bytes": 8589934592,
+    "actual_ram_available_bytes": 42976374784,
+    "actual_system_available_bytes": 74974064640,
+    "selector_functions_unchanged": true,
+    "guard_is_polled": true
+  },
+  "capture": {
+    "selector_functions_unchanged": true,
+    "validated_selector_control_count": 11,
+    "stop_trigger_seconds": 8,
+    "recognized_eventstore_stops": 3,
+    "capture_triggered": false,
+    "capture_attempts": 0,
+    "heap_files_created": 0,
+    "process_suspension_occurred": false,
+    "larger_capture_size_estimate_exercised": false,
+    "analysis_performed": false,
+    "precise_limit": "No recognized target remained eligible for collection eight seconds after its observed shutdown. No long stop or usable heap was obtained in this one bounded run.",
+    "generic_await_or_telemetry_cause_inferred": false,
+    "new_probe_or_run_launched_afterward": false
+  },
+  "strict_diagnostic": {
+    "command": "python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds 900 -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml <private-receipts>/strict-ram2-stop-diagnostic-private.xml",
+    "observer_opt_out": "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED=true",
+    "temporary_storage": "Short private RAM TMPDIR through the existing temp-file seam.",
+    "exit_code": 0,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "assembly_seconds": 416.448,
+    "test_body_seconds": 341.201,
+    "all_original_assertions_completed": true,
+    "native_owner_bootstrap_verified": true,
+    "all_six_concerns_verified": true,
+    "interrupted_generation_verified": true,
+    "concurrent_workers_verified": true,
+    "no_space_error_lines": 0,
+    "acceptance_limit": "Explicit timing-perturbing diagnostic handoff/RAM temp environment; this execution is not promoted to production acceptance even though no capture actually triggered."
+  },
+  "producer_audit": {
+    "module_files": 106,
+    "ordinary_generated_source_pe_pdb_and_project_assets_pass": true,
+    "sdk_variant_failures": {},
+    "project_assets_failures": [],
+    "actual_observations": 626,
+    "actual_sdk_observations": 260,
+    "actual_native_tenants_observations": 1,
+    "actual_loaded_issues": [],
+    "outside_scoped_producer": []
+  },
+  "guards": {
+    "parent_frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "parent_frozen_unchanged": true,
+    "three_protected_body_matches": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    }
+  },
+  "drift": {
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": []
+  },
+  "diagnostic_performance": [
+    {
+      "operation": "command_acknowledgement",
+      "samples": 10,
+      "p50_ms": 6732.786,
+      "p95_ms": 8135.412,
+      "p95_budget_ms": 1000,
+      "over_budget": true,
+      "scope": "Diagnostic run only; no production-acceptance promotion."
+    },
+    {
+      "operation": "workers_operational_delivery",
+      "samples": 27,
+      "p50_ms": 107.841,
+      "p95_ms": 314.903,
+      "p95_budget_ms": 1000,
+      "over_budget": false,
+      "scope": "Diagnostic run only; no production-acceptance promotion."
+    },
+    {
+      "operation": "status_read",
+      "samples": 12,
+      "p50_ms": 876.545,
+      "p95_ms": 1109.949,
+      "p95_budget_ms": 500,
+      "over_budget": true,
+      "scope": "Diagnostic run only; no production-acceptance promotion."
+    }
+  ],
+  "cleanup": {
+    "remaining_observed_descendants": 0,
+    "remaining_owned_containers": 0,
+    "remaining_unattributed_containers": 0,
+    "remaining_observed_fixture_directories": 0,
+    "phase_owned_ram_tmpdir_absent": true,
+    "no_heap_or_dump_worker_remains": true,
+    "unrelated_application_command_issued": false,
+    "running_apphosts_at_final_read": 0
+  },
+  "disposition": [
+    "No causal stop await or justified unapplied repair patch exists; absence of a failure in this bounded run does not resolve prior failures.",
+    "The failed final-producer qualification and the 512 MiB aborted capture remain preserved with their exact scopes.",
+    "Generic SDK shutdown/performance/policy repair retains the existing requirement for a demonstrated owner/file/regression proposal and further scope decision.",
+    "Full-CI disk blocker, retained SM4 failures, governance and independent whole-story review remain separate."
+  ],
+  "private_storage_filesystem": "RAM (/dev/shm)",
+  "private_receipt_directory_name": "h12d2-n56r5pj1",
+  "private_artifact_hashes": {
+    "sizing-preflight-private.json": {
+      "bytes": 292,
+      "sha256": "b0c76c1f95bf2d287b5717a37bacc33fe2ccaffc220c05190224e78db7cd9bb1"
+    },
+    "pre-live-producer-audit-summary.json": {
+      "bytes": 959,
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6"
+    },
+    "pre-live-producer-pdb-audit.json": {
+      "bytes": 7401080,
+      "sha256": "47f2f35f68ddb049bda8a24d4e0a9aaeba841df3c1e57fb913e5abd8c4976a8b"
+    },
+    "post-live-producer-audit-summary.json": {
+      "bytes": 959,
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6"
+    },
+    "strict-ram2-stop-diagnostic-receipt.json": {
+      "bytes": 2443,
+      "sha256": "374aa576cc02ac6babe428ff940d2d5cc86e0b5a13e4a5bea97c96e90b3e4d9c"
+    },
+    "strict-ram2-stop-diagnostic-private.log": {
+      "bytes": 85323642,
+      "sha256": "c7b31c63d3b1aad54a4f7303523f7347cccc3f91a9623503417bdc002605ce05"
+    },
+    "strict-ram2-stop-diagnostic-private.xml": {
+      "bytes": 4893,
+      "sha256": "bcded353a8da7584503d154f398f852b98d96b62aaf9afd06633628c981b3b27"
+    },
+    "strict-ram2-stop-diagnostic-stop-observations-private.json": {
+      "bytes": 509,
+      "sha256": "cca27deb4a527ed041b89e337b6e84de2844459cc8167677bcc0b9d3ed1d84f0"
+    },
+    "strict-ram2-stop-diagnostic-actual-loaded-audit.json": {
+      "bytes": 151455,
+      "sha256": "67e88687b66e95f0ec11585b30274901c665cd3bc0ff8a2e9102dfcfaa520f05"
+    },
+    "private-temp-cleanup.json": {
+      "bytes": 169,
+      "sha256": "5e310a1c21eae68f0bd1795505d01fa0b12f5acec617a779b7bc04e954a603be"
+    }
+  },
+  "privacy": "Metadata only; no heap/object values or raw logs/XML, credentials, grants or private absolute paths enter repository evidence.",
+  "all_prior_packets_preserved": true,
+  "outputs_released": true,
+  "private_packet_seal": {
+    "filename": "seal.json",
+    "file_count": 31,
+    "sha256": "c9c3bab037b255ae659db567154da958bd1c7835e8c8ce41e79a3bed57a6b03e"
+  }
+}

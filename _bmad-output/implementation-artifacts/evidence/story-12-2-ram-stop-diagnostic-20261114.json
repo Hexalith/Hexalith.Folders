@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T02:54:20.799379+00:00",
+  "qualification": "One bounded RAM-backed EventStore stop diagnostic; capture exceeds storage estimate and yields no usable heap",
+  "diagnostic_only": true,
+  "production_acceptance_claimed": false,
+  "causal_shutdown_wait_identified": false,
+  "repair_or_unapplied_product_patch_proposed": false,
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "repository_heads": {
+    ".": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "2f4f1cf9ae4889f8d96b4af3ceb01442163d1215",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.EventStore": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "references/Hexalith.FrontComposer": "0623f3acca3cc6d8b8151b99636458beaa8dd34a",
+    "references/Hexalith.McpCli": "edd15cfe372ba7ecdd0c835966fa93073a072fae",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.Platform": "2a1a343c35d58e6368cd4c34288dc3f9c567f8b9",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "9c804569031eee647207fa3b0d88407dadca38a0",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501"
+  },
+  "changes": {
+    "production_test_or_sdk_source_changed": false,
+    "selected_producer_or_package_pins_changed": false,
+    "timeout_retry_order_service_policy_or_body_changed": false,
+    "private_monitor_storage_and_tmpdir_only": true,
+    "parent_changes_preserved": true
+  },
+  "parent_phase_input_sha256": {
+    "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs": "df086cfc2a6c567a318196b4ad636ebd391793dbcdaecd01a8bc4b9d7aa64c50",
+    "scripts/pd10-v2-story-owned-paths.txt": "225c55d5b63ba75fe6f0fb25d730ad910cb1f182166702f3c3d0821875b7604a",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml": "7e2a6327078d8f6dbf6c0822829f5116bc1bc93e2e01f8c741346014cb20f7c5"
+  },
+  "producer_audit": {
+    "files": 106,
+    "pre_and_post_source_pe_pdb_assets_pass": true,
+    "one_sdk_variant_per_assembly": true,
+    "project_only_hexalith_assets": true,
+    "actual_observations": 285,
+    "actual_sdk_observations": 110,
+    "actual_native_tenants_observations": 1,
+    "actual_loaded_mismatches": 0,
+    "unscoped_observations": []
+  },
+  "guards": {
+    "parent_frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "parent_frozen_unchanged": true,
+    "three_protected_body_matches": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    }
+  },
+  "strict_diagnostic": {
+    "command": "python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds 900 -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml <private-receipts>/strict-ram-stop-diagnostic-private.xml",
+    "observer_opt_out": "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED=true",
+    "temp_storage": "Short private RAM TMPDIR through the existing temp-file seam.",
+    "exit_code": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "assembly_seconds": 298.549,
+    "test_body_seconds": 228.449,
+    "failure_type": "System.InvalidOperationException",
+    "failure": "Task-owned resource eventstore command stop failed.",
+    "failure_site": "RequireAllConcernRebuildAndRecoveryAsync:567 -> RestartHostsAsync:524 -> ResourceCommandAsync:561",
+    "native_owner_bootstrap_verified": true,
+    "six_concern_marker": true,
+    "interrupted_generation_marker": false,
+    "concurrent_workers_marker": false,
+    "new_complete_sm4_report_reached": false,
+    "no_space_error_lines": 0
+  },
+  "capture": {
+    "selector_functions_identical_to_eleven_control_qualified_version": true,
+    "target_resource": "eventstore",
+    "fixture_binding_current_start_identity_ancestry_and_mapped_host_checked": true,
+    "trigger_seconds": 8,
+    "attempts": 1,
+    "heap_completed": false,
+    "process_suspension_may_change_timing": true,
+    "ram_storage": true,
+    "minimum_ram_free_bytes": 1073741824,
+    "ram_free_before_bytes": 42827771904,
+    "target_rss_kib": 407332,
+    "threshold_bytes": 536870912,
+    "observed_partial_bytes": 550985728,
+    "polling_guard_overshoot_bytes": 14114816,
+    "guard_kind": "Polling threshold, not a kernel file-size hard limit.",
+    "abort_reason": "file_size_cap",
+    "collection_exit_code": -15,
+    "collection_seconds": 0.5001666469979682,
+    "partial_sha256": "b2f2d9a1adbc3d6573f29d6ccb9915d1952a1dbeeb720bc2b47debc88d29ea8f",
+    "partial_heap_removed": true,
+    "only_verified_owned_dump_worker_terminated": true,
+    "managed_thread_or_async_analysis_performed": false,
+    "analysis_limit": "The partial heap was removed after crossing the storage threshold; no usable heap or causal await evidence was obtained. RSS did not bound heap file size.",
+    "next_capture_automatically_launched": false
+  },
+  "environment_overlap": {
+    "parent_reported_reclaimed_bytes": 217579520,
+    "parent_reported_removed_ignored_release_directories": 8,
+    "parent_reported_106_debug_module_pair_mismatches": 0,
+    "parent_reported_root_available_bytes_after": 1502277632,
+    "source_debug_head_or_cache_change_reported": false,
+    "diagnostic_launch_preceded_hold_message": true,
+    "no_build_or_test_overlap_reported": true
+  },
+  "drift": {
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": []
+  },
+  "cleanup": {
+    "all_observed_owned_process_container_and_fixture_directory_remainders_zero": true,
+    "partial_heap_absent": true,
+    "phase_owned_ram_tmpdir_absent": true,
+    "unrelated_apphost_stop_command_issued": false,
+    "previously_observed_unrelated_apphost_no_longer_running_at_final_read": true,
+    "external_stop_cause_or_actor_attributed": false
+  },
+  "disposition": [
+    "No causal stop wait or product correction established; no speculative repair patch authored.",
+    "Current final-producer strict acceptance remains failed; this timing-perturbing diagnostic cannot establish production acceptance.",
+    "All earlier pass/failure packets remain unchanged; SM4, full-CI disk blocker, governance and whole-story review retain separate scope.",
+    "Generic SDK shutdown/performance/policy repair remains excluded without a demonstrated concrete proposal and further scope decision.",
+    "Parent owns the next bounded storage-estimate correction and will append its handoff before any new run."
+  ],
+  "private_storage_filesystem": "RAM (/dev/shm)",
+  "private_receipt_directory_name": "h12d-xn_fjevn",
+  "private_artifact_hashes": {
+    "pre-live-producer-audit-summary.json": {
+      "bytes": 959,
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6"
+    },
+    "pre-live-producer-pdb-audit.json": {
+      "bytes": 7401080,
+      "sha256": "47f2f35f68ddb049bda8a24d4e0a9aaeba841df3c1e57fb913e5abd8c4976a8b"
+    },
+    "post-live-producer-audit-summary.json": {
+      "bytes": 959,
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6"
+    },
+    "strict-ram-stop-diagnostic-receipt.json": {
+      "bytes": 2437,
+      "sha256": "51d0ff1e8b2804e882321a7201b21b52ab1eb95da0f65146cfb3eb45567c0ca3"
+    },
+    "strict-ram-stop-diagnostic-private.log": {
+      "bytes": 42023078,
+      "sha256": "1c113ca0b1dbdcfad4230343d003d38a4a71df267b0544093b401087bf14e316"
+    },
+    "strict-ram-stop-diagnostic-private.xml": {
+      "bytes": 4560,
+      "sha256": "92151d5e86135e18dd09593191e2a9ddd09a45551c7d50973a08170b3eb545bd"
+    },
+    "strict-ram-stop-diagnostic-capture-receipt-private.json": {
+      "bytes": 566,
+      "sha256": "dca45202bfb928b6a63992653f4cbf0e04e6d616fd22370b0ac7c4eb0fbec2a4"
+    },
+    "strict-ram-stop-diagnostic-actual-loaded-audit.json": {
+      "bytes": 68817,
+      "sha256": "7058d3daedc8ab791bd8534eeea1e984566f8e430490e7b8358c7588a5c466a4"
+    },
+    "selector-reuse-private.json": {
+      "bytes": 287,
+      "sha256": "0c479451e5c21ea572bfee3896206c29adec6c3f5acc29b942ff97d90e8e22e9"
+    },
+    "parent-reclamation-overlap-private.json": {
+      "bytes": 379,
+      "sha256": "f8e99f61ab2c2aa049ba713cae1b8ee3073e52065863d3d2561fdea7d70ae6e3"
+    },
+    "private-temp-cleanup.json": {
+      "bytes": 279,
+      "sha256": "5a7ff5c60ec477d21bda8aebd21f59062c84bdea88fa640a6bc95ab7bc8b0310"
+    }
+  },
+  "privacy": "Metadata only; heap/object values, raw stack/log/XML data, credentials, grants and private absolute paths stay private. The partial heap was deleted.",
+  "all_prior_packets_preserved": true,
+  "outputs_released": true,
+  "private_packet_seal": {
+    "filename": "seal.json",
+    "file_count": 33,
+    "sha256": "90a926f0d833889b25a58b484db0658ea727bd6059a3fd0bf5ce4e60b3d452ba"
+  }
+}

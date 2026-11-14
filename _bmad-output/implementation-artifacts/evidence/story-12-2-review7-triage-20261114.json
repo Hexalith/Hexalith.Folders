@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "review_round": 7,
+  "completed_correction_iteration": 6,
+  "review_loop_iteration": 7,
+  "approved_review_loop_iteration": 6,
+  "status": "halted-at-review-loop-limit",
+  "findings": [
+    {
+      "id": "blind-1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "summary": "Historical nonterminal task authority",
+      "location": "EventStoreOperationalStatusReadModel.cs:314",
+      "evidence": "Parent existing-assembly probe: after native acquire/release and task B, restoring task A\u2019s earlier row/evidence/applicability returns Available/locked instead of the source-derived Available/ready. Native release creates no TaskCompletion; schema 4 retains only task B\u2019s digest, leaving the historical task without independent current authority."
+    },
+    {
+      "id": "blind-2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "summary": "Historical duplicate acknowledgement",
+      "location": "OperationalStatusProjectionWriter.cs:217",
+      "evidence": "Parent probe closes task A, advances to workspace/task B, restores A\u2019s preclosure row/evidence/applicability and redelivers A\u2019s original acquisition. Writer returns AlreadyCompleted while the durable reader returns Unavailable. RequireCurrentViewsAsync never consults A\u2019s independently retained completion."
+    },
+    {
+      "id": "blind-3",
+      "verdict": "medium",
+      "route": "patch",
+      "summary": "Expired checkpoint-boundary conflict",
+      "location": "OperationalStatusProjectionWriter.cs:62",
+      "evidence": "At day 401, parent probe redelivers the checkpoint\u2019s exact retained sequence with a different MessageId. Writer returns AlreadyCompleted despite retaining the original tail MessageId/EventDigest. Check the existing tail identity before the expired-replay shortcut, preserving legitimate expired duplicate acknowledgement and original TTLs."
+    },
+    {
+      "id": "blind-4",
+      "verdict": "false",
+      "route": "reject",
+      "summary": "Embedded delivery header mismatch",
+      "location": "OperationalStatusProjectionWriter.cs:109",
+      "evidence": "Production writer and SDK DomainProjectionDispatcher construct payload and delivery headers from the same event. Dispatcher validates positive/contiguous/increasing positions; SharedProjectionEpochCoordinator hashes headers with payload and verifies that digest during restoration. No production mismatch path was demonstrated; reviewer withdrew the defensive-asymmetry claim after caller tracing."
+    },
+    {
+      "id": "blind-5",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "summary": "Unknown rejection in primary replay",
+      "location": "FolderEventReplay.cs:83",
+      "evidence": "Parent probe passes a normalized future_command/UnsupportedCommandType rejection to the production legacy classifier and gets Unclassifiable Folders rejection event. The same finite mapper is used in actor-owned FoldFolder/FoldOrganization, which FolderDomainProcessor primes before ordinary command processing; new operational/Workers acceptance does not repair primary reconstruction."
+    },
+    {
+      "id": "blind-6",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "summary": "Unknown provider rejection in live intake",
+      "location": "FoldersProviderBindingEventProcessor.cs:47",
+      "evidence": "Parent probe classifies the normalized rejection as ProviderBinding and gets true from the named complete-prefix recognizer, but the actual provider Worker processor throws Provider configuration rejection is invalid. Its extra ConfigureProviderBinding-only check, repeated by folder-permission intake, makes live and supported named handling diverge."
+    },
+    {
+      "id": "blind-7",
+      "verdict": "medium",
+      "route": "patch",
+      "summary": "Success codes treated as rejections",
+      "location": "FoldersRejectionSource.cs:56",
+      "evidence": "Parent probes show Created, IdempotentReplay and AlreadyApplied accepted by ReadOwner and persisted as Completed by the actual operational writer. FolderDomainProcessor explicitly classifies those three plus Accepted as successes; rejection guards currently exclude only Accepted. Reject all four existing success codes consistently without a new public contract."
+    },
+    {
+      "id": "blind-8",
+      "verdict": "false",
+      "route": "reject",
+      "summary": "Optional file-context continuation",
+      "location": "AuthoritativeWorkspaceFileContextSource.cs:113",
+      "evidence": "PaginationMetadata/FileSearchPaginationMetadata make cursor issuance optional, including truncated results. No valid issued cursor is rejected because this implementation issues none; request echo support does not require issuance. Owning Story 12.3 B7 records the same refutation, and the reviewer withdrew this claim."
+    },
+    {
+      "id": "blind-9",
+      "verdict": "high",
+      "route": "defer (moot on loopback)",
+      "summary": "Content disclosure after final source await",
+      "location": "AuthoritativeWorkspaceFileContextSource.cs:106",
+      "evidence": "Range and collection paths await source.ReadAsync after their last authorization-bearing store call and return after only Folder-head/policy checks. WorkspaceContentStateReader performs authenticated workload source reconstruction, with no final human organization/tenant reauthorization, so revocation during that await can escape the disclosure check. This pre-existing authoritative-content implementation belongs to Story 12.3 and is expressly excluded by 12.2\u2019s frozen intent; preserve it for that owner, without changing it in this cycle."
+    },
+    {
+      "id": "blind-10",
+      "verdict": "low",
+      "route": "reject",
+      "summary": "Client ownerFileId validation",
+      "location": "Oq2WireObjectConverter.cs:194",
+      "evidence": "Parent existing-assembly probe confirms numeric ownerFileId is coerced to string and a 129-character value is accepted by incoming and outgoing validation. This affects malformed content-client objects, is outside ordinary valid generated-owner use, and server owner matching still rejects an invalid target. Additional validation branches/tests exceed a direct correction for this negligible, content-owned case; no 12.2 patch is introduced."
+    },
+    {
+      "id": "edge-1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "summary": "Expired MessageId reuse across positions",
+      "location": "OperationalStatusProjectionWriter.cs:129",
+      "evidence": "Retained isolated probe: initial positions 1/2 complete; after day 401 and expiry of position 1\u2019s receipt/message evidence, new position 3 reuses its MessageId and completes with checkpoint 3. The identical full source then throws Operational source sequence gap. Compaction retains only the tail identity and SDK journal guards bind positions/payloads without a MessageId uniqueness index; C3 must not make live and rebuild identity validation disagree."
+    },
+    {
+      "id": "verification-1",
+      "verdict": "medium",
+      "route": "patch",
+      "summary": "Organization unknown-rejection route coverage",
+      "location": "WorkersOrganizationAclRouteTests.cs",
+      "evidence": "Pre-verified gap accepted as filed: unknown-command cases cover Folder owners only, while organization route/inventory/non-Folder cases use known commands. Add an authenticated organization-owner unknown rejection prefix, duplicate acknowledgement, persisted LastSequence and next-sequence baseline success; no production semantics need change."
+    }
+  ],
+  "bad_spec_entries": [
+    "blind-1",
+    "blind-2",
+    "blind-5",
+    "blind-6",
+    "edge-1"
+  ],
+  "surviving_patches": [
+    "blind-3",
+    "blind-7",
+    "verification-1"
+  ],
+  "keep": [
+    "Preserve original baseline c22b13137202f7bf8c60b80c095a69748435bd6e, existing user changes, approved_review_loop_iteration=6 and the review-loop history. No physical revert, clean, stage, commit, push, dependency/gitlink update or publication.",
+    "Preserve frozen SHA256 ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f and all three protected acceptance bodies, fixed deadlines/retries/restart order, 100-operation/1MiB manifest/256KiB mutation caps and public-v2 disablement.",
+    "Keep schema 4 bounded active task/workspace digests, per-view source-derived applicability and original source-time+400-day TTL. Do not solve rollback or identity uniqueness with an unbounded checkpoint map, another self-attesting row copy, retention extension or a domain-owned storage protocol.",
+    "Keep paired row/evidence absence and positively expired views as the approved safe NotFound; maintain stale/unavailable precedence and surviving-proof refusal. Preserve original independent task-completion authority and no task resurrection.",
+    "Keep all corrected non-Folder owner/version/scope validation, lawful normalized unknown Folder rejections, known wrong-owner refusals, authenticated subscription composition and indexing behavior.",
+    "Keep all three causally demonstrated SDK shutdown corrections and their exact-source red/green transport regressions: actual task/catalog/fence/work ownership remains until actual completion, caller cancellation stays independent, and ambiguous durable ownership is retained.",
+    "Preserve the current exact-source green evidence: 5704 consumer passes, 626 affected SDK passes, issuer 11+5,500 package/contract passes with its explicit input-reuse limit, all 106 producer pairs and final tracing-off strict 1/1. These remain historical evidence for this exact producer; any changed runtime must be requalified before a new pass claim.",
+    "Preserve every failed attempt, sealed private evidence, SM4 open timing gaps, source bytes, authority and confidentiality boundaries. Content/12.3, release consumption, owner enrollment and governance gates remain independently owned."
+  ],
+  "proposed_correction_plan": [
+    {
+      "area": "Historical view authority",
+      "instruction": "Add independently source-bound latest applicability for historical nonterminal/native-release/failed tasks, while keeping each record and checkpoint bounded. A coherent old row/proof/applicability triple must not attest itself. Add source\u2192persisted reader controls for historical native release and failed transitions."
+    },
+    {
+      "area": "Duplicate completion validation",
+      "instruction": "Use retained original completion/source authority when validating historical required task/workspace rows before duplicate acknowledgement. Test the demonstrated writer AlreadyCompleted/reader Unavailable split, preserving frozen paired absence and expiry."
+    },
+    {
+      "area": "Primary replay classification",
+      "instruction": "Carry scope-derived normalized-unknown rejection handling into actor/source reconstruction and legacy classification, preserving all known wrong-kind and scope refusals. Cover legitimate prevalidation/unknown rejection prefixes and subsequent commands for each supported owner."
+    },
+    {
+      "area": "Provider live classification",
+      "instruction": "Remove the remaining known-command-only divergence in provider and permission intake after validated owner classification. Prove real authenticated ordinary intake matches named non-Folder prefix handling and permits subsequent valid configuration."
+    },
+    {
+      "area": "Identity after C3",
+      "instruction": "Reconcile new-position MessageId uniqueness with complete replay through existing SDK/source authority. Keep original receipt expiry and bounded metadata; do not mint uniqueness from an absent expired record, extend C3 or retain an unbounded local ledger. Qualify the demonstrated 401-day history through live intake and named rebuild."
+    },
+    {
+      "area": "Surviving patches",
+      "instruction": "Check retained tail identity before expired replay acknowledgement; reject Accepted/Created/IdempotentReplay/AlreadyApplied as rejections consistently; add the pre-verified organization unknown-prefix route case. Keep these three patches in the next derivation."
+    },
+    {
+      "area": "Verification",
+      "instruction": "Run focused regressions first, then the affected consumer/SDK/package/inventory checks with explicit input bindings. Re-audit producer/source/PDB identities and rerun unchanged tracing-off live acceptance for changed runtime. Preserve the five frozen matrix rows, failures, exact loaded identities, cleanup and record-only SM4 results."
+    }
+  ],
+  "source_changes_after_review": false,
+  "frozen_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f"
+}

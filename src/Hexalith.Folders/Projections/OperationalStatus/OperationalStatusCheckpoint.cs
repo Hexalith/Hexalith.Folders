@@ -18,10 +18,10 @@ public sealed record OperationalStatusCheckpoint(int SchemaVersion, string Manag
     /// <summary>Gets the unique retained message at each source position.</summary>
     public IReadOnlyDictionary<long, string> MessageIds { get; init; } = new Dictionary<long, string>();
 
-    /// <summary>Gets canonical source-derived evidence for every workspace view.</summary>
+    /// <summary>Gets source-derived workspace evidence; compact anchors retain only the active workspace.</summary>
     public IReadOnlyDictionary<string, string> WorkspaceEvidence { get; init; } = new Dictionary<string, string>(StringComparer.Ordinal);
 
-    /// <summary>Gets canonical source-derived evidence for every task view.</summary>
+    /// <summary>Gets source-derived task evidence; compact anchors retain only the active task.</summary>
     public IReadOnlyDictionary<string, string> TaskEvidence { get; init; } = new Dictionary<string, string>(StringComparer.Ordinal);
 
     /// <summary>Gets canonical integrity evidence binding the fold and view evidence to the source prefix.</summary>

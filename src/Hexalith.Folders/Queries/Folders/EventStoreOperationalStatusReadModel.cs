@@ -62,7 +62,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
                 value => value.SchemaVersion == 1 && value.Workspace.ManagedTenantId == request.ManagedTenantId && value.Workspace.FolderId == request.FolderId && value.Workspace.WorkspaceId == request.WorkspaceId && value.Lock.ManagedTenantId == request.ManagedTenantId && value.Lock.FolderId == request.FolderId && value.Lock.WorkspaceId == request.WorkspaceId && value.Cleanup.ManagedTenantId == request.ManagedTenantId && value.Cleanup.FolderId == request.FolderId && value.Cleanup.WorkspaceId == request.WorkspaceId,
                 value => value.Lock.FolderId!, value => value.Lock.Freshness, cancellationToken,
                 requireKnownView: checkpoint => KnownWorkspace(checkpoint, request.WorkspaceId),
-                sourceEvidence: WorkspaceEvidence).ConfigureAwait(false);
+                sourceEvidence: WorkspaceEvidence, completionTask: value => value.Workspace.AcceptedCommandState?.TaskId).ConfigureAwait(false);
             if (status == "missing") return WorkspaceLockStatusReadModelResult.NotFound(freshness);
             if (status == "stale") return new(WorkspaceLockStatusReadModelStatus.Stale, null, freshness);
             if (value is null) return WorkspaceLockStatusReadModelResult.Unavailable("read_model_unavailable", clock.UtcNow);
@@ -96,7 +96,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
                 value => value.SchemaVersion == 1 && value.Workspace.ManagedTenantId == request.ManagedTenantId && value.Workspace.FolderId == request.FolderId && value.Workspace.WorkspaceId == request.WorkspaceId && value.Lock.ManagedTenantId == request.ManagedTenantId && value.Lock.FolderId == request.FolderId && value.Lock.WorkspaceId == request.WorkspaceId && value.Cleanup.ManagedTenantId == request.ManagedTenantId && value.Cleanup.FolderId == request.FolderId && value.Cleanup.WorkspaceId == request.WorkspaceId,
                 value => value.Workspace.FolderId!, value => value.Workspace.Freshness, cancellationToken,
                 requireKnownView: checkpoint => KnownWorkspace(checkpoint, request.WorkspaceId),
-                sourceEvidence: WorkspaceEvidence).ConfigureAwait(false);
+                sourceEvidence: WorkspaceEvidence, completionTask: value => value.Workspace.AcceptedCommandState?.TaskId).ConfigureAwait(false);
             if (status == "missing") return WorkspaceStatusReadModelResult.NotFound(freshness);
             if (status == "stale") return new(WorkspaceStatusReadModelStatus.Stale, null, freshness);
             if (value is null) return WorkspaceStatusReadModelResult.Unavailable("read_model_unavailable", clock.UtcNow);
@@ -135,7 +135,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
                 value => value.SchemaVersion == 1 && value.Workspace.ManagedTenantId == request.ManagedTenantId && value.Workspace.FolderId == request.FolderId && value.Workspace.WorkspaceId == request.WorkspaceId && value.Lock.ManagedTenantId == request.ManagedTenantId && value.Lock.FolderId == request.FolderId && value.Lock.WorkspaceId == request.WorkspaceId && value.Cleanup.ManagedTenantId == request.ManagedTenantId && value.Cleanup.FolderId == request.FolderId && value.Cleanup.WorkspaceId == request.WorkspaceId,
                 value => value.Cleanup.FolderId!, value => value.Cleanup.Freshness, cancellationToken,
                 requireKnownView: checkpoint => KnownWorkspace(checkpoint, request.WorkspaceId),
-                sourceEvidence: WorkspaceEvidence).ConfigureAwait(false);
+                sourceEvidence: WorkspaceEvidence, completionTask: value => value.Workspace.AcceptedCommandState?.TaskId).ConfigureAwait(false);
             if (status == "missing") return WorkspaceCleanupStatusReadModelResult.NotFound(freshness);
             if (status == "stale") return new(WorkspaceCleanupStatusReadModelStatus.Stale, null, freshness);
             if (value is null) return WorkspaceCleanupStatusReadModelResult.Unavailable("read_model_unavailable", clock.UtcNow);
@@ -178,7 +178,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
                 value => value.ManagedTenantId == request.ManagedTenantId && value.TaskId == request.TaskId && value.FolderId == request.AuthorizedFolderId,
                 value => value.FolderId!, value => value.Freshness, cancellationToken,
                 requireKnownView: checkpoint => checkpoint.TaskEvidence.ContainsKey(request.TaskId),
-                sourceEvidence: TaskEvidence).ConfigureAwait(false);
+                sourceEvidence: TaskEvidence, completionTask: value => value.TaskId).ConfigureAwait(false);
             if (status == "missing") return TaskStatusReadModelResult.NotFound(freshness);
             if (status == "stale") return new(TaskStatusReadModelStatus.Stale, null, freshness);
             if (value is null) return TaskStatusReadModelResult.Unavailable("read_model_unavailable", clock.UtcNow);
@@ -206,6 +206,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
 
     private static bool WorkspaceEvidence(OperationalWorkspaceStatus value, OperationalStatusCheckpoint checkpoint)
     {
+        if (checkpoint.SchemaVersion >= 4) return OperationalStatusFold.MatchesCurrentWorkspace(checkpoint, value);
         if (value.Sequence < 1 || value.Sequence > checkpoint.Sequence) return false;
         string watermark = value.Sequence.ToString(CultureInfo.InvariantCulture);
         if (value.Lock.Freshness.ProjectionWatermark != watermark
@@ -226,15 +227,17 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         string tenantId, string? folderId, Func<T, bool> identity, Func<T, string> folder,
         Func<T, FolderLifecycleFreshness> sourceFreshness, CancellationToken cancellationToken, bool requireView = false,
         Func<OperationalStatusCheckpoint, bool>? requireKnownView = null, bool requireCurrentSequence = false,
-        Func<T, OperationalStatusCheckpoint, bool>? sourceEvidence = null) where T : class
+        Func<T, OperationalStatusCheckpoint, bool>? sourceEvidence = null, Func<T, string?>? completionTask = null) where T : class
     {
         FolderLifecycleFreshness absent = new("eventually_consistent", clock.UtcNow, null, false, null);
         if (folderId is null) return (null, absent, "missing");
         SharedProjectionScope scope = OperationalStatusGeneration.Scope(tenantId);
         string checkpointKey = OperationalStatusKeys.Checkpoint(tenantId, folderId);
         string evidenceKey = OperationalStatusKeys.Evidence(key);
-        SharedProjectionReadResult<IReadOnlyDictionary<string, JsonObject?>> first;
-        try { first = await ReadSelectedAsync(scope, [key, checkpointKey, evidenceKey], checkpointKey, cancellationToken).ConfigureAwait(false); }
+        string applicabilityKey = OperationalStatusKeys.Applicability(key);
+        string[] keys = [key, checkpointKey, evidenceKey];
+        SharedProjectionReadResult<IReadOnlyDictionary<string, JsonNode?>> first;
+        try { first = await ReadSelectedAsync(scope, keys, checkpointKey, cancellationToken).ConfigureAwait(false); }
         catch (InvalidOperationException exception) when (exception.Message == "The shared projection has no epoch state.")
         {
             long emptyHead = await sequenceReader.GetCurrentSequenceAsync(tenantId, folderId, cancellationToken).ConfigureAwait(false);
@@ -244,10 +247,24 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
             throw new OperationalStatusUnavailableException();
         OperationalStatusViewEvidence? evidence = first.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(WireJson);
         string? receiptKey = evidence is null ? null : OperationalStatusKeys.Receipt(tenantId, folderId, evidence.Sequence);
+        T? firstRow = first.Value[key]?.Deserialize<T>(WireJson);
+        if (firstRow is not null && !identity(firstRow)) throw new InvalidOperationException("Foreign operational view.");
+        bool requireApplicability = !requireCurrentSequence && firstRow is not null
+            && clock.UtcNow - sourceFreshness(firstRow).ObservedAt < OperationalStatusKeys.Retention;
+        string? completionTaskId = requireApplicability ? completionTask?.Invoke(firstRow!) : null;
+        string? completionKey = completionTaskId is null ? null : OperationalStatusKeys.TaskCompletion(tenantId, folderId, completionTaskId);
+        List<string> selectedKeys = [.. keys];
+        if (receiptKey is not null)
+        {
+            selectedKeys.Add(receiptKey);
+            if (requireApplicability) selectedKeys.Add(applicabilityKey);
+            if (completionKey is not null) selectedKeys.Add(completionKey);
+        }
         var selected = receiptKey is null ? first : await ReadSelectedAsync(
-            scope, [key, checkpointKey, evidenceKey, receiptKey], checkpointKey, cancellationToken).ConfigureAwait(false);
+            scope, selectedKeys.ToArray(), checkpointKey, cancellationToken).ConfigureAwait(false);
         if (!selected.IsAvailable || selected.IsStale || selected.IsDegraded || selected.Value is null
-            || selected.Generation != first.Generation)
+            || selected.Generation != first.Generation
+            || first.Value[checkpointKey]?.ToJsonString() != selected.Value[checkpointKey]?.ToJsonString())
             throw new OperationalStatusUnavailableException();
         T? row = selected.Value[key]?.Deserialize<T>(WireJson);
         OperationalStatusCheckpoint? anchor = selected.Value[checkpointKey]?.Deserialize<OperationalStatusCheckpoint>(WireJson);
@@ -283,44 +300,77 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
             || (requireCurrentSequence
                 ? !OperationalStatusFold.MatchesLifecycle(checkpoint, (FolderLifecycleStatusReadModelSnapshot)(object)row)
                 : evidence is null || receipt is null || !receipt.Valid() || evidence.Sequence != sequence || receipt.Sequence != sequence
-                    || evidence.SourceDigest != receipt.SourceDigest || evidence.ValueDigest != OperationalStatusIntegrity.Digest(row))
+                    || evidence.SourceDigest != receipt.SourceDigest || evidence.ValueDigest != OperationalStatusIntegrity.Digest(row)
+                    || checkpoint.SchemaVersion == 1 && sourceEvidence is not null && !sourceEvidence(row, checkpoint))
             || freshness.ObservedAt - clock.UtcNow > ClockSkewTolerance)
             throw new InvalidOperationException("Operational view is invalid.");
         if (clock.UtcNow - freshness.ObservedAt >= OperationalStatusKeys.Retention)
             return (null, freshness, "missing");
+        if (!requireCurrentSequence)
+        {
+            var applicability = selected.Value[applicabilityKey]?.Deserialize<OperationalStatusViewApplicability>(WireJson);
+            if (evidence is null || applicability is null || !applicability.Matches(key, checkpoint.Sequence, evidence))
+                throw new InvalidOperationException("Operational view applicability is unavailable.");
+            bool currentView = row is OperationalWorkspaceStatus workspace && workspace.Workspace.WorkspaceId == checkpoint.State.WorkspaceId
+                || row is TaskStatusReadModelSnapshot task && task.TaskId == checkpoint.State.WorkspaceTaskId;
+            if (currentView && checkpoint.SchemaVersion >= 4
+                && (sourceEvidence is null || !sourceEvidence(row, checkpoint)))
+                throw new InvalidOperationException("Operational view contradicts the current source fold.");
+            var completion = completionKey is null || !selected.Value.TryGetValue(completionKey, out JsonNode? completionNode)
+                ? null : completionNode?.Deserialize<OperationalStatusTaskCompletion>(WireJson);
+            if (completion is not null && (completionTask?.Invoke(row) is not { } taskId
+                || !completion.Valid(tenantId, folderId, taskId, checkpoint.Sequence)))
+                throw new InvalidOperationException("Operational completion authority is invalid.");
+            if (row is TaskStatusReadModelSnapshot taskValue)
+            {
+                if (completion is not null
+                    ? !completion.Valid(tenantId, folderId, taskValue.TaskId, checkpoint.Sequence)
+                        || OperationalStatusIntegrity.Digest(completion.Restore(taskValue)) != OperationalStatusIntegrity.Digest(taskValue)
+                    : taskValue.TerminalState is "ready" or "committed" || currentView && checkpoint.SchemaVersion is 2 or 3)
+                    throw new InvalidOperationException("Operational task contradicts its source completion authority.");
+            }
+            else if (row is OperationalWorkspaceStatus workspaceValue)
+            {
+                if (currentView && checkpoint.SchemaVersion is 2 or 3
+                    || completion is not null && completion.Closure.WorkspaceId == workspaceValue.Workspace.WorkspaceId
+                        && workspaceValue.Sequence < completion.Sequence)
+                    throw new InvalidOperationException("Operational workspace contradicts its source authority.");
+            }
+        }
         if (head > checkpoint.Sequence)
             return (null, absent with { Stale = true, ReasonCode = "projection_stale" }, "stale");
         return (row, freshness, "available");
     }
 
-    private async Task<SharedProjectionReadResult<IReadOnlyDictionary<string, JsonObject?>>> ReadSelectedAsync(
+    private async Task<SharedProjectionReadResult<IReadOnlyDictionary<string, JsonNode?>>> ReadSelectedAsync(
         SharedProjectionScope scope, string[] keys, string checkpointKey, CancellationToken cancellationToken)
     {
-        try { return await coordinator.ReadManyAsync<JsonObject>(scope, keys, cancellationToken).ConfigureAwait(false); }
+        try { return await coordinator.ReadManyAsync<JsonNode>(scope, keys, cancellationToken).ConfigureAwait(false); }
         catch (SharedProjectionReadUnavailableException exception) when (exception.InnerException is InvalidOperationException
         { Message: "A selected copy-on-write value is missing." or "An inherited copy-on-write value is missing." })
         {
             // The SDK retains copy-on-write pointers after physical TTL expiry. Read the same selected
             // generation, preserving checkpoint and full-row evidence checks and rejecting promotion races.
-            var before = await coordinator.ReadManyAsync<JsonObject>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
+            var before = await coordinator.ReadManyAsync<JsonNode>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
             if (!before.IsAvailable || before.IsStale || before.IsDegraded || before.Value is null)
                 throw new OperationalStatusUnavailableException();
-            Dictionary<string, JsonObject?> values = new(StringComparer.Ordinal);
+            Dictionary<string, JsonNode?> values = new(StringComparer.Ordinal);
             foreach (string key in keys)
             {
                 try
                 {
-                    values[key] = (await coordinator.ReadGenerationAsync<JsonObject>(scope, before.Generation,
+                    values[key] = (await coordinator.ReadGenerationAsync<JsonNode>(scope, before.Generation,
                         key, cancellationToken).ConfigureAwait(false)).Value;
                 }
                 catch (SharedProjectionReadUnavailableException missing) when (key != checkpointKey
+                    && !key.Contains(":task-completion:", StringComparison.Ordinal)
                     && missing.InnerException is InvalidOperationException
                     { Message: "A selected copy-on-write value is missing." or "An inherited copy-on-write value is missing." })
                 {
                     values[key] = null;
                 }
             }
-            var after = await coordinator.ReadManyAsync<JsonObject>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
+            var after = await coordinator.ReadManyAsync<JsonNode>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
             if (!after.IsAvailable || after.IsStale || after.IsDegraded || after.Value is null
                 || after.Generation != before.Generation
                 || before.Value[checkpointKey]?.ToJsonString() != after.Value[checkpointKey]?.ToJsonString())

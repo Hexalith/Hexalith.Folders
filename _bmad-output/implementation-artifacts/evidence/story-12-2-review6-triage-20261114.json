@@ -1,0 +1,237 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "review_round": 6,
+  "created_utc": "2026-11-14T10:32:47.705914+00:00",
+  "baseline_commit_preserved": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "review_layers": [
+    "blind-hunter",
+    "edge-case-hunter",
+    "verification-gap"
+  ],
+  "skipped_layers": [],
+  "coverage_limit": "Each reviewer streamed/indexed the complete cumulative artifact and traced selected behavioral code/tests; none claims exhaustive semantic review of all historical source/evidence.",
+  "artifact_index": {
+    "canonical_diff_sha256": "4122ef5b91a5e013a071bf9d9a92fbf9d3790aa12952d64d9187fc1b7f65be6a",
+    "canonical_diff_bytes": 1788748446,
+    "canonical_sections": 10443,
+    "runtime_view": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review6-20261114/story-12-2-runtime-and-tests.diff",
+    "runtime_view_sha256": "59fca55a136a30f7b14d46afeac7d22a58fafe209eb126c98a262675d31989d5",
+    "runtime_view_bytes": 4650235,
+    "runtime_view_sections": 731,
+    "baseline_unchanged": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+    "limit": "Supplementary indexed source/test view only; canonical cumulative diff remains the review input. Historical docs/evidence are not claimed exhaustively reviewed."
+  },
+  "findings": [
+    {
+      "id": "blind-1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "group": "current-view-authority",
+      "evidence": "Reader accepts coherent older task row and evidence beside newer closure. Parent probe returns Available/locked/nonterminal for seq7 after seq8 ready closure. Same old receipt is genuine but is insufficient current-view authority; distinct from prior paired-absence/dead-callback triage.",
+      "location": "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:280"
+    },
+    {
+      "id": "blind-2",
+      "verdict": "medium",
+      "route": "patch",
+      "group": "terminal-repair",
+      "evidence": "Writer preserves a forged LastOperationId from a ready row with missing evidence, then writes fresh proof after a lawful next event. Parent probe returns Completed/forged-operation. Existing source-derived completion can restore the row; prior terminal state alone must not override it.",
+      "location": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs:176"
+    },
+    {
+      "id": "blind-3",
+      "verdict": "false",
+      "route": "reject",
+      "group": "frozen-expiry",
+      "evidence": "The frozen 2026-10-20 decision explicitly permits not-found when view and evidence are both absent; round-five instructions also preserve paired absence at a current checkpoint. Requiring an independent expiry timestamp would change that decision.",
+      "location": "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:266"
+    },
+    {
+      "id": "blind-4",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "group": "worker-rejection-intake",
+      "evidence": "FolderDomainProcessor emits normalized unknown-command UnsupportedCommandType rejections. Folder permission processing calls the strict command-name classifier before operational persistence and throws for that lawful position. Parent classifier probe confirms the refusal; later source positions can remain stale.",
+      "location": "src/Hexalith.Folders.Workers/FoldersRejectedCommandClassifier.cs:47"
+    },
+    {
+      "id": "blind-5",
+      "verdict": "maybe-false",
+      "route": "carried-defer",
+      "group": "provider-history-growth",
+      "evidence": "carried 5/blind-5: same Messages append/validation and direct single-value store path remain. No new lawful-history measurement against actual transport/store limits was supplied. Retain potential medium unverified disposition; do not duplicate its patch or defer.",
+      "location": "src/Hexalith.Folders/Queries/ProviderReadiness/EventStoreProviderReadinessBindingReadModel.cs:72"
+    },
+    {
+      "id": "blind-6",
+      "verdict": "medium",
+      "route": "reject-out-of-scope",
+      "group": "sm4-ack",
+      "evidence": "Acknowledgment p95 8642.996ms exceeds 1000ms and remains an open gate. Existing instructions require recording rather than general performance redesign; the full retry-wrapper metric does not attribute cost to an approved native/bootstrap subpath. No passing SM4 claim is made.",
+      "location": "_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-implementation-20261114.json"
+    },
+    {
+      "id": "blind-7",
+      "verdict": "medium",
+      "route": "reject-out-of-scope",
+      "group": "sm4-read",
+      "evidence": "Status p95 1291.141ms exceeds 500ms and remains open. Preserve this real finding under the same explicit record-only/general-redesign exclusion; Workers timing does not close it.",
+      "location": "_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-implementation-20261114.json"
+    },
+    {
+      "id": "blind-8",
+      "verdict": "false",
+      "route": "reject",
+      "group": "ci-submodule",
+      "evidence": "The specialized job explicitly runs git submodule update --init --checkout, rather than a strategy-free update. Git documents that --checkout overrides submodule.<name>.update; update=none therefore does not establish this predicted failure. No submodule was changed to verify it.",
+      "location": ".github/workflows/ci.yml:94"
+    },
+    {
+      "id": "blind-9",
+      "verdict": "maybe-false",
+      "route": "defer",
+      "group": "issuer-ci-automation",
+      "evidence": "No checked-in invocation was found in Root/Platform workflow sources, and the default CI whitelist is explicit. The current producer separately executes all 11+5 issuer cases. A mandatory automatic-gate requirement or the external owner automation/policy would settle whether this deliberate manual/component partition creates a false-green defect; potential medium remains unverified.",
+      "location": ".github/workflows/ci.yml:25"
+    },
+    {
+      "id": "blind-10",
+      "verdict": "low",
+      "route": "patch-artifact",
+      "group": "review-artifact-volume",
+      "evidence": "The canonical preserved-baseline diff is 1788748446 bytes/10443 sections, chiefly historical evidence. A supplementary 4650235-byte runtime/test view and immutable index/hash were retained for human use without changing the original baseline or pretending exhaustive historical review.",
+      "location": ".artifacts/story-12-2-review6-20261114/review-artifact-index.json"
+    },
+    {
+      "id": "edge-1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "group": "nonfolder-named-intake",
+      "evidence": "Operational handler is registered for the whole folders domain, but no-ops only three ACL contracts. A valid configured provider-binding partition reaches Unknown operational source event; parent probe validates the provider command then reproduces this refusal. Workers already skip the reserved binding owner.",
+      "location": "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs:93"
+    },
+    {
+      "id": "edge-2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "group": "nonfolder-named-intake",
+      "evidence": "A lawful organization FolderCommandRejected alone is not recognized as ACL and reaches FolderStreamName tenant==folder rejection; parent probe reproduces InvalidFolderId. Mixed ACL/rejection histories also fail the three-contract-only loop. Validate legitimate non-Folder prefixes before an empty fold without weakening bad-scope refusal.",
+      "location": "src/Hexalith.Folders.Server/OrganizationAclOperationalSource.cs:23"
+    },
+    {
+      "id": "edge-3",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "group": "current-view-authority",
+      "evidence": "Same verified coherent rollback as blind-1. Independent old evidence and receipt only prove a former valid value; ReadAsync never applies the supplied sourceEvidence predicate or retained task completion authority to reject the rolled-back nonterminal row.",
+      "location": "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs:280"
+    },
+    {
+      "id": "verification-1",
+      "verdict": "medium",
+      "route": "patch",
+      "group": "successful-dispatch-shutdown-test",
+      "evidence": "Pre-verified gap accepted as filed: new host-stop test forces Retryable admission and independently holds only the early completion call. Successful dispatch cleanup at line1186 lacks a held-call cancellation assertion. Add that case without changing production semantics or relaxing actual-call/fence/work ownership.",
+      "location": "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Projections/NamedProjectionDispatchCoordinator.cs:1186"
+    }
+  ],
+  "parent_probes": [
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/hexalith-job.RurlRjFu/claims-probe/Probe.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "source_sha256": "8272d4b3a535f5543fadb5c5f7034c271ad489e1da7b70e6e19a7d2b2fa18340",
+      "stdout_sha256": "03be2f5ec7cb17f6bfd4b053a10bf56876b73f4c31c5f76b2dc8faf52e6b8c36",
+      "linked_helpers_unchanged": true,
+      "repository_mutations": false,
+      "receipt_path": ".artifacts/story-12-2-review6-20261114/claims-probe.receipt.json",
+      "source_path": ".artifacts/story-12-2-review6-20261114/claims-probe.Program.cs",
+      "log_path": ".artifacts/story-12-2-review6-20261114/claims-probe.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/hexalith-job.yQgiub5s/source-scope-probe/Probe.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "source_sha256": "bc500a3fbb3ec0dc0aa140f7d3bbfea9b70e23bcfc67860dd67ae54c783b4182",
+      "stdout_sha256": "00088f2b50deae4ddd65948e010e66ef3150f5a4f599f702e38b0b0a8fde8b99",
+      "repository_mutations": false,
+      "earlier_attempts_retained": true,
+      "receipt_path": ".artifacts/story-12-2-review6-20261114/source-scope-probe-v3.receipt.json",
+      "source_path": ".artifacts/story-12-2-review6-20261114/source-scope-probe-v3.Program.cs",
+      "log_path": ".artifacts/story-12-2-review6-20261114/source-scope-probe-v3.log"
+    }
+  ],
+  "repository_code_mutations_by_review": false,
+  "groups": {
+    "bad_spec": [
+      {
+        "id": "current-view-authority",
+        "members": [
+          "blind-1",
+          "edge-3"
+        ]
+      },
+      {
+        "id": "worker-rejection-intake",
+        "members": [
+          "blind-4"
+        ]
+      },
+      {
+        "id": "nonfolder-named-intake",
+        "members": [
+          "edge-1",
+          "edge-2"
+        ]
+      }
+    ],
+    "patches": [
+      "blind-2",
+      "verification-1"
+    ],
+    "artifact_response": [
+      "blind-10"
+    ],
+    "carried_defer": [
+      "blind-5"
+    ],
+    "unverified_defer": [
+      "blind-9"
+    ],
+    "rejected": [
+      "blind-3",
+      "blind-6",
+      "blind-7",
+      "blind-8"
+    ]
+  },
+  "cascading_disposition": "Bad-spec groups require re-derivation; lower code patches and defers are moot until loopback. No feature code reverted or repaired during review.",
+  "required_human_decision": "The rendered workflow permits at most five loopbacks; existing counter5 becomes6 before this next loopback, requiring HALT and human escalation. Approval is needed only to continue one additional correction/review cycle within existing intent.",
+  "git_submodule_refutation_source": "https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt---checkout",
+  "runtime_acceptance_preserved": {
+    "passed": 1,
+    "failed": 0,
+    "assembly_seconds": 443.78,
+    "sdk_tests_passed": 571,
+    "consumer_tests_passed": 5673,
+    "package_cases_passed": 500,
+    "issuer_cases_passed": 16
+  },
+  "open_performance_findings": {
+    "ack_p95_ms": 8642.996,
+    "status_p95_ms": 1291.141
+  }
+}

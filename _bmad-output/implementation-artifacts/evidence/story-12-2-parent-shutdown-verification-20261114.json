@@ -1,0 +1,27 @@
+{
+  "seal_artifacts": 2252,
+  "symlinks": 1401,
+  "producer_pairs": 106,
+  "changed_sources": 17,
+  "strict_xml_verified": true,
+  "matrix_rows_verified": 5,
+  "errors": [],
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "implementation_evidence_sha256": "0dbb29c64426a52791c084297e1ef831e2b0e7868d766c2a082b74287af27de8",
+  "coverage_matrix_sha256": "9a5468048bc32422bb45c515f4bf34a7f4a1ad2fdde7e213d18577435f5d63c8",
+  "protected_bodies_match": true,
+  "approved_frozen_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "whitespace_checks": [
+    "Folders",
+    "EventStore",
+    "Platform"
+  ],
+  "baseline_commit_preserved": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "submodule_history_diff_attempt": {
+    "command": "git diff --no-ext-diff --no-textconv --binary c22b13137202f7bf8c60b80c095a69748435bd6e --",
+    "exit_code": 128,
+    "result": "Unavailable/mismatched Memories submodule history; no repository change/repair performed. Complete root diff uses explicit standard gitlink rendering, with dirty EventStore and Platform working/untracked diffs appended."
+  },
+  "scope": "Independent metadata/source/producer/raw-XML/matrix verification; no new build/test/topology. Review and whole-story disposition remain pending."
+}

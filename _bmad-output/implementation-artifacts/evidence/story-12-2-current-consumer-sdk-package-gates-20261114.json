@@ -1,0 +1,1054 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T02:25:46.644095+00:00",
+  "qualification": "Current consumer/core SDK and focused Release/package gates; framework probe scaffold correction",
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "selected_repository_heads": {
+    ".": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "2f4f1cf9ae4889f8d96b4af3ceb01442163d1215",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.EventStore": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "references/Hexalith.FrontComposer": "0623f3acca3cc6d8b8151b99636458beaa8dd34a",
+    "references/Hexalith.McpCli": "edd15cfe372ba7ecdd0c835966fa93073a072fae",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.Platform": "2a1a343c35d58e6368cd4c34288dc3f9c567f8b9",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "9c804569031eee647207fa3b0d88407dadca38a0",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501"
+  },
+  "source_mode": {
+    "configuration": "Debug",
+    "UseHexalithProjectReferences": true,
+    "UseNuGetDeps": false,
+    "HexalithEventStoreVersion": "5.0.1",
+    "VersionSuffix": "story12-2-qualification",
+    "target_framework": "net11.0"
+  },
+  "production_source_changed": false,
+  "sdk_source_changed": false,
+  "test_scaffold_correction": {
+    "path": "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs",
+    "sha256": "df086cfc2a6c567a318196b4ad636ebd391793dbcdaecd01a8bc4b9d7aa64c50",
+    "change": "Compile the generated nested-helper probe for the actual test-host framework rather than net10.0; preserve all null/presence/hash assertions."
+  },
+  "consumer_suites": [
+    {
+      "label": "consumer-Tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Tests/bin/Debug/net11.0/Hexalith.Folders.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-Tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 54.913,
+      "log_sha256": "85d27d35bfeeb6c660959e44200be5c1f42167973554422102fa636511381cf8",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "2419",
+          "skipped": "2",
+          "time": "54.580",
+          "total": "2421"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "5c07b60a63daca5240d0e32d3a0d7805237d02d0780c682fdda105dacfb01724"
+    },
+    {
+      "label": "consumer-Server.Tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0/Hexalith.Folders.Server.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-Server.Tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 163.59,
+      "log_sha256": "683136cbde1672108d9dff6f3d0e22892176addf515b2490119e28ed933bbe2c",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "11",
+          "passed": "1426",
+          "skipped": "0",
+          "time": "163.301",
+          "total": "1437"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "7b6553ed17e451a2fea3b7c46d67d6669acaa11c9306eadb18b5acbbeb9e238e"
+    },
+    {
+      "label": "consumer-Workers.Tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net11.0/Hexalith.Folders.Workers.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-Workers.Tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 4.635,
+      "log_sha256": "133b729ae520caee2e2058a9bcfc4601d3a9338c2a0fd65e55cf8a6c7db64493",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "162",
+          "skipped": "0",
+          "time": "4.435",
+          "total": "162"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "0b413bfa354c059b18d551e382624fcc891acc193b00b5e04f770b5f87a716ed"
+    },
+    {
+      "label": "consumer-IntegrationTests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0/Hexalith.Folders.IntegrationTests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-IntegrationTests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 35.598,
+      "log_sha256": "6d4f59db74dea85c5a639aebeeb03359b403964183ff776d0d95e4f60416ceb5",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "854",
+          "skipped": "0",
+          "time": "35.372",
+          "total": "854"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "ad6060fe395e74af0d3800440a35e1d77b2cd4bed2b8f6c85200d591d7f52dda"
+    },
+    {
+      "label": "consumer-Contracts.Tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-Contracts.Tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 75.504,
+      "log_sha256": "99f3154e06630c7d668232f4bf948ebedaed81262d9d5489627fe69de0c94934",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "689",
+          "skipped": "0",
+          "time": "75.272",
+          "total": "689"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "6861133f209a6dafc82d206d421a496e4af988130203fbeb505ea1c2313c1903"
+    },
+    {
+      "label": "consumer-EventStore.Tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net11.0/Hexalith.Folders.EventStore.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/consumer-EventStore.Tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "seconds": 3.946,
+      "log_sha256": "8078bbee9a8537e2213b9f3b1477e821c848122a6488a6734fb6afb79fc3fb92",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "123",
+          "skipped": "0",
+          "time": "3.760",
+          "total": "123"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "4c67cb95d2b358753703ba13e1fea5961bff023e7e8dff8cd86403c54a5e118d"
+    }
+  ],
+  "sdk_core_suites": [
+    {
+      "label": "sdk-Client-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 6.27,
+      "log_sha256": "d0b14d3440273b3c0b3d360f07e57ea29735fb87f424cc76e6cc1d849efb8e6f"
+    },
+    {
+      "label": "sdk-Client-tests",
+      "command": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net11.0/Hexalith.EventStore.Client.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/sdk-Client-tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 43.395,
+      "log_sha256": "7a2558f5897c71eb23218be70f66fcaed72574311fed9ef3baa4b160fed855ba",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "2392",
+          "skipped": "2",
+          "time": "43.046",
+          "total": "2394"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "cc804ffb9e0394fde49b2cf366b563685abd48524dc4f4b3b3669307fd839c5a"
+    },
+    {
+      "label": "sdk-DomainService-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 3.389,
+      "log_sha256": "8cc2d9de0a988e9f41eeb10861b6d96a24efc7ad6852be1546f3ba7c1b6e65f7"
+    },
+    {
+      "label": "sdk-DomainService-tests",
+      "command": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net11.0/Hexalith.EventStore.DomainService.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/sdk-DomainService-tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 216.15,
+      "log_sha256": "1b25fe931371afa4664a6b36a6541d8d3b05076cf2bfcf16c726679386adecc7",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "1402",
+          "skipped": "1",
+          "time": "215.904",
+          "total": "1403"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "0d41801a7036a78dd24bc13d2520671f442ef854cd1564c5c50a863067252a8e"
+    },
+    {
+      "label": "sdk-ServiceDefaults-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.EventStore.ServiceDefaults.Tests/Hexalith.EventStore.ServiceDefaults.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 1.843,
+      "log_sha256": "ff7602bc4dbbe8026722753b7476705a3470d98cde0c89700dfffee283e46ee2"
+    },
+    {
+      "label": "sdk-ServiceDefaults-tests",
+      "command": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.ServiceDefaults.Tests/bin/Debug/net11.0/Hexalith.EventStore.ServiceDefaults.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/sdk-ServiceDefaults-tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 1.094,
+      "log_sha256": "ed1ac3695e15115e6d656e3ea5237cae466c1c2589e829690b03b0a67dc6b511",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "157",
+          "skipped": "0",
+          "time": "0.910",
+          "total": "157"
+        }
+      ],
+      "failing_tests": [],
+      "xml_sha256": "e9993074b0cff80d4cb473ccc79ace94081e468eac2bbc6d4f06c730468c9a9e"
+    },
+    {
+      "label": "sdk-Server-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 0,
+      "seconds": 11.465,
+      "log_sha256": "b5c8dbd7f09689d490421275d7bd1a4a2d3caed6544c8e95802c63eefac24af7"
+    },
+    {
+      "label": "sdk-Server-tests",
+      "command": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/Hexalith.EventStore.Server.Tests.dll",
+        "-result-xml",
+        "<private-receipts>/sdk-Server-tests.xml",
+        "-noLogo",
+        "-noColor"
+      ],
+      "cwd": "references/Hexalith.EventStore",
+      "exit_code": 1,
+      "seconds": 497.597,
+      "log_sha256": "da5c2e809a48dec1640ca830ea842dbaa02f7660c44c9ed72a713c170285c05b",
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "1",
+          "not-run": "0",
+          "passed": "8075",
+          "skipped": "25",
+          "time": "496.980",
+          "total": "8101"
+        }
+      ],
+      "failing_tests": [
+        {
+          "type": "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+          "method": "AuthenticPublicTenantSevenConstructsOriginalDeclarationsAgainstExtendedContracts"
+        }
+      ],
+      "xml_sha256": "3d31950047b024e294980b54222c2e25d62588f05395df9c536b651689094e76"
+    }
+  ],
+  "sdk_scope_limit": "Four relevant core projects only; no claim that every owner SDK project or optional/red-phase lane ran.",
+  "published_peer_requalification": {
+    "package": "Hexalith.Tenants.Contracts",
+    "version": "7.0.0",
+    "initial_selected_sha256": "81a33bb7562507004d4dfb8da2365cdea1fb874ff53798787bff110c0d9573ef",
+    "initial_signature_entry_present": false,
+    "official_download": {
+      "source": "https://api.nuget.org/v3-flatcontainer/hexalith.tenants.contracts/7.0.0/hexalith.tenants.contracts.7.0.0.nupkg",
+      "expected_sha256": "e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc",
+      "actual_sha256": "e21f5ac7b5f332f1921f70a249ab2032b9978d56ffdd6641a0a4b94d04850bdc",
+      "matches": true,
+      "signature_entry_present": true,
+      "bytes": 61147
+    },
+    "global_cache_changed": false,
+    "expected_hash_or_pin_changed": false,
+    "method": "Use the existing CopyPublishedTenantQuerySelectorFixture target with a private exact-version package root; rerun all three authenticity/ABI/materialization controls.",
+    "results": [
+      {
+        "label": "authentic-peer-materialization",
+        "command": [
+          "dotnet",
+          "msbuild",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "-t:CopyPublishedTenantQuerySelectorFixture",
+          "-p:NuGetPackageRoot=<private-receipts>/authentic-peer-cache/",
+          "-p:RestorePackagesPath=<private-receipts>/authentic-peer-cache/",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-p:OutDir=references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/",
+          "-m:1",
+          "-nodeReuse:false",
+          "-v:quiet"
+        ],
+        "exit_code": 0,
+        "seconds": 0.59,
+        "log_sha256": "8d6606a0115fa0b9f70517984e949990f66ab11526ccdf81b13285d680fdeb60"
+      },
+      {
+        "label": "authentic-peer-abi-controls",
+        "command": [
+          "dotnet",
+          "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/Hexalith.EventStore.Server.Tests.dll",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+          "-result-xml",
+          "<private-receipts>/authentic-peer-abi-controls.xml",
+          "-noLogo",
+          "-noColor"
+        ],
+        "exit_code": 0,
+        "seconds": 1.95,
+        "log_sha256": "e9007cb65205db4393312ca0353074bbb536cfe87a1cb568df6a55a0a80edc79",
+        "assemblies": [
+          {
+            "errors": "0",
+            "failed": "0",
+            "not-run": "0",
+            "passed": "3",
+            "skipped": "0",
+            "time": "1.454",
+            "total": "3"
+          }
+        ],
+        "failing_tests": [],
+        "xml_sha256": "ad3ac6a1466dc561c276199f1df02cb7c5377c6895085f074d42098d8da733bd"
+      }
+    ]
+  },
+  "release_gate": {
+    "broad_command": "pwsh -NoProfile -File tests/tools/run-contract-spine-gates.ps1",
+    "broad_result": "Failed MSB3026 while copying native test dependencies: No space left on device.",
+    "initial_debug_restore_result": "Failed NuGet restore due to No space left on device; preserved separately.",
+    "owned_output_recovery": {
+      "removed_directories": 25,
+      "allocated_bytes_reclaimed": 1416540160,
+      "only_phase_created_ignored_release_outputs": true,
+      "preexisting_outputs_sources_and_shared_caches_preserved": true
+    },
+    "narrow_fallback": [
+      {
+        "label": "release-focused-contract-build",
+        "command": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+          "-c",
+          "Release",
+          "-p:UseNuGetDeps=true",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "seconds": 1.799,
+        "log_sha256": "213e2171f84afa9503d5652429346cbaedd05ed9a59911e4b993b72c53698932"
+      },
+      {
+        "label": "release-focused-client-build",
+        "command": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+          "-c",
+          "Release",
+          "-p:UseNuGetDeps=true",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "seconds": 1.935,
+        "log_sha256": "397759b320722d31c10a1d16bdae6f321c9249f2a93e2f09f363d95179d5afe0"
+      },
+      {
+        "label": "release-focused-contract-conformance",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-File",
+          "tests/tools/run-contract-spine-gates.ps1",
+          "-NoRestore"
+        ],
+        "cwd": ".",
+        "exit_code": 1,
+        "seconds": 94.075,
+        "log_sha256": "f65c7672706308f66a453e1c6787b63eb64c455ae31cc97f0ebd431d9b0f499b"
+      },
+      {
+        "label": "restore-coherent-debug-source",
+        "command": [
+          "dotnet",
+          "build",
+          "Hexalith.Folders.slnx",
+          "-c",
+          "Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "seconds": 34.267,
+        "log_sha256": "92d991737fec6e226c1d28e2d20714dc0a2540ea1b7cbd86d04adb32f2a64fb5"
+      },
+      {
+        "label": "explicit-issuer-consumer-components",
+        "command": [
+          "python3",
+          "-B",
+          "infrastructure/keycloak-workload-binding/verify_component.py",
+          "--sdk-assembly",
+          "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0/Hexalith.Folders.Server.Tests.dll",
+          "--apphost-assembly",
+          "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll"
+        ],
+        "cwd": "references/Hexalith.Platform",
+        "exit_code": 0,
+        "seconds": 23.557,
+        "log_sha256": "9d4db10f21f365f46baa05a11164c5da65ecc9e3e27c2a317a5557356d537285"
+      }
+    ],
+    "initial_fallback_failures": {
+      "contracts": 61,
+      "client_generation": 1,
+      "cause": "Missing prebuilt Release parity generator in the narrow fallback; one probe compiled for net10.0 against the net11.0 client."
+    },
+    "final_results": [
+      {
+        "label": "release-contracts-final",
+        "command": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+          "-c",
+          "Release",
+          "-p:UseNuGetDeps=true",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "exit_code": 0,
+        "seconds": 1.926,
+        "log_sha256": "d7ab6aede3c2d814b67f5174175d003e4f23beba925022009f889cd02e4a8403"
+      },
+      {
+        "label": "release-client-final",
+        "command": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+          "-c",
+          "Release",
+          "-p:UseNuGetDeps=true",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "exit_code": 0,
+        "seconds": 10.155,
+        "log_sha256": "8336dc04cce5ecc0ad3868152d3c302e5385c64fdb4c79fab2fdb62503cd7ec1"
+      },
+      {
+        "label": "release-parity-tool-final",
+        "command": [
+          "dotnet",
+          "build",
+          "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
+          "-c",
+          "Release",
+          "-p:UseNuGetDeps=true",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "exit_code": 0,
+        "seconds": 1.66,
+        "log_sha256": "7470474f3b71fba1506080ef45ff130822c5dbed0e0bba80b4650f5e261db601"
+      },
+      {
+        "label": "release-contract-conformance-final",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-File",
+          "tests/tools/run-contract-spine-gates.ps1",
+          "-NoRestore"
+        ],
+        "exit_code": 0,
+        "seconds": 108.07,
+        "log_sha256": "1e574d971633bcddcc8b70928385741d5e289d2019c5e8c04df2f621c964e0bc"
+      },
+      {
+        "label": "debug-source-final",
+        "command": [
+          "dotnet",
+          "build",
+          "Hexalith.Folders.slnx",
+          "-c",
+          "Debug",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-p:HexalithEventStoreVersion=5.0.1",
+          "-p:VersionSuffix=story12-2-qualification",
+          "-m:1",
+          "-nr:false",
+          "-v:quiet"
+        ],
+        "exit_code": 0,
+        "seconds": 25.491,
+        "log_sha256": "1e929519801fa49576459042c67432aab84027d7cf96bdd285cc5307dcc603e0"
+      },
+      {
+        "label": "debug-client-generation-final",
+        "command": [
+          "dotnet",
+          "tests/Hexalith.Folders.Client.Tests/bin/Debug/net11.0/Hexalith.Folders.Client.Tests.dll",
+          "-class",
+          "Hexalith.Folders.Client.Tests.ClientGenerationTests",
+          "-result-xml",
+          "<private-receipts>/debug-client-generation-final.xml",
+          "-noLogo",
+          "-noColor"
+        ],
+        "exit_code": 0,
+        "seconds": 41.074,
+        "log_sha256": "8546b8e17dfd405187e44c7090332f1fba8a46627ec1fcedf1abe8c1c1701e1a",
+        "assemblies": [
+          {
+            "errors": "0",
+            "failed": "0",
+            "not-run": "0",
+            "passed": "75",
+            "skipped": "0",
+            "time": "40.847",
+            "total": "75"
+          }
+        ],
+        "failing_tests": [],
+        "xml_sha256": "e7e0307880b8e67973522170c22d5672095df934ae88ca7fb948223eaed47ec1"
+      },
+      {
+        "label": "pending-inventory-final",
+        "command": [
+          "dotnet",
+          "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+          "-class",
+          "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+          "-result-xml",
+          "<private-receipts>/pending-inventory-final.xml",
+          "-noLogo",
+          "-noColor"
+        ],
+        "exit_code": 0,
+        "seconds": 7.711,
+        "log_sha256": "6441caaaefd6cac766ee3f1f45aa84434b3fd580dad16f5638ae1bb32b51211d",
+        "assemblies": [
+          {
+            "errors": "0",
+            "failed": "0",
+            "not-run": "0",
+            "passed": "21",
+            "skipped": "0",
+            "time": "7.499",
+            "total": "21"
+          }
+        ],
+        "failing_tests": [],
+        "xml_sha256": "cd47b19da399d396963a7963bf7247f7175062174c518aa661e95d4eacdf8190"
+      }
+    ],
+    "final_conformance_counts": [
+      {
+        "assembly": "Hexalith.Folders.Contracts.Tests",
+        "total": 425,
+        "passed": 425,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      },
+      {
+        "assembly": "Hexalith.Folders.Client.Tests",
+        "total": 75,
+        "passed": 75,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      }
+    ],
+    "full_ci_solution_build_complete": false
+  },
+  "explicit_component_controls": {
+    "issuer_source_proof_passed": 11,
+    "consumer_enrollment_passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "qualification": "disposable-component-only",
+    "owner_enrollment_qualified": false,
+    "command_result": {
+      "label": "explicit-issuer-consumer-components",
+      "command": [
+        "python3",
+        "-B",
+        "infrastructure/keycloak-workload-binding/verify_component.py",
+        "--sdk-assembly",
+        "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0/Hexalith.Folders.Server.Tests.dll",
+        "--apphost-assembly",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "exit_code": 0,
+      "seconds": 23.557,
+      "log_sha256": "9d4db10f21f365f46baa05a11164c5da65ecc9e3e27c2a317a5557356d537285"
+    }
+  },
+  "pending_inventory": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+    "artifact_count": 1616,
+    "candidate_set_sha256": "806c1e98318bebce64b285da13bdba9212deb85719199b09841aae29ed7a0ca9",
+    "new_owned_path": "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs",
+    "a6b_exposure_and_closure_flags_preserved": true,
+    "older_immutable_inventories_unchanged": true
+  },
+  "runtime_scope": "The earlier pass packet stays immutable. A newly rebuilt native Tenants module requires the separate final-producer audit and strict qualification; these test results do not silently requalify its identity.",
+  "remaining_gates": [
+    "Full CI solution build remains environment-blocked by filesystem capacity; passing focused Release conformance is separate.",
+    "SM4 over-budget observations, PD10/A6b governance, external prerequisite disposition and independent whole-story review stay open."
+  ],
+  "private_receipt_directory_name": "story12-2-final-validation-20261114-z8scqn4k",
+  "privacy": "Commands, file names, counts, timings and hashes only. Raw logs/XML, component signer/credentials, source bodies and temporary context remain private.",
+  "private_artifacts": {
+    "authentic-peer-abi-controls.log": {
+      "sha256": "e9007cb65205db4393312ca0353074bbb536cfe87a1cb568df6a55a0a80edc79",
+      "bytes": 403
+    },
+    "authentic-peer-abi-controls.xml": {
+      "sha256": "ad3ac6a1466dc561c276199f1df02cb7c5377c6895085f074d42098d8da733bd",
+      "bytes": 3431
+    },
+    "authentic-peer-download.json": {
+      "sha256": "885da8c486ce53059ab7506272d2c0b954132c0724589f614c345a34ec7d52ba",
+      "bytes": 377
+    },
+    "authentic-peer-materialization.log": {
+      "sha256": "8d6606a0115fa0b9f70517984e949990f66ab11526ccdf81b13285d680fdeb60",
+      "bytes": 55
+    },
+    "consumer-Contracts.Tests.log": {
+      "sha256": "99f3154e06630c7d668232f4bf948ebedaed81262d9d5489627fe69de0c94934",
+      "bytes": 406
+    },
+    "consumer-Contracts.Tests.xml": {
+      "sha256": "6861133f209a6dafc82d206d421a496e4af988130203fbeb505ea1c2313c1903",
+      "bytes": 480512
+    },
+    "consumer-EventStore.Tests.log": {
+      "sha256": "8078bbee9a8537e2213b9f3b1477e821c848122a6488a6734fb6afb79fc3fb92",
+      "bytes": 14797
+    },
+    "consumer-EventStore.Tests.xml": {
+      "sha256": "4c67cb95d2b358753703ba13e1fea5961bff023e7e8dff8cd86403c54a5e118d",
+      "bytes": 89697
+    },
+    "consumer-IntegrationTests.log": {
+      "sha256": "6d4f59db74dea85c5a639aebeeb03359b403964183ff776d0d95e4f60416ceb5",
+      "bytes": 524122
+    },
+    "consumer-IntegrationTests.xml": {
+      "sha256": "ad6060fe395e74af0d3800440a35e1d77b2cd4bed2b8f6c85200d591d7f52dda",
+      "bytes": 687894
+    },
+    "consumer-Server.Tests.log": {
+      "sha256": "683136cbde1672108d9dff6f3d0e22892176addf515b2490119e28ed933bbe2c",
+      "bytes": 2070528
+    },
+    "consumer-Server.Tests.xml": {
+      "sha256": "7b6553ed17e451a2fea3b7c46d67d6669acaa11c9306eadb18b5acbbeb9e238e",
+      "bytes": 992228
+    },
+    "consumer-Tests.log": {
+      "sha256": "85d27d35bfeeb6c660959e44200be5c1f42167973554422102fa636511381cf8",
+      "bytes": 770
+    },
+    "consumer-Tests.xml": {
+      "sha256": "5c07b60a63daca5240d0e32d3a0d7805237d02d0780c682fdda105dacfb01724",
+      "bytes": 1913747
+    },
+    "consumer-Workers.Tests.log": {
+      "sha256": "133b729ae520caee2e2058a9bcfc4601d3a9338c2a0fd65e55cf8a6c7db64493",
+      "bytes": 159361
+    },
+    "consumer-Workers.Tests.xml": {
+      "sha256": "0b413bfa354c059b18d551e382624fcc891acc193b00b5e04f770b5f87a716ed",
+      "bytes": 114346
+    },
+    "debug-client-generation-final.log": {
+      "sha256": "8546b8e17dfd405187e44c7090332f1fba8a46627ec1fcedf1abe8c1c1701e1a",
+      "bytes": 390
+    },
+    "debug-client-generation-final.xml": {
+      "sha256": "e7e0307880b8e67973522170c22d5672095df934ae88ca7fb948223eaed47ec1",
+      "bytes": 46433
+    },
+    "debug-source-final.log": {
+      "sha256": "1e929519801fa49576459042c67432aab84027d7cf96bdd285cc5307dcc603e0",
+      "bytes": 76
+    },
+    "explicit-issuer-consumer-components.log": {
+      "sha256": "9d4db10f21f365f46baa05a11164c5da65ecc9e3e27c2a317a5557356d537285",
+      "bytes": 16716
+    },
+    "extra-results.json": {
+      "sha256": "638723f0396adf563640626bfbc997d39103f722740e1f7958b74553deff7c51",
+      "bytes": 2566
+    },
+    "final-results.json": {
+      "sha256": "736ee028d7cccc04484c04155064ac4b935de94d02fb86f1879dd9ed96a1d6a7",
+      "bytes": 3995
+    },
+    "memories-final-source-restore.log": {
+      "sha256": "87e9298d2b462600a9eb598e124d0a3deafc72ba63216f0c98a2c049abf0f70a",
+      "bytes": 76
+    },
+    "owned-release-output-cleanup.json": {
+      "sha256": "9d3c4e778afdd7d9553693bd492f92c9f87122bc85bf8c63509eb554fcf78431",
+      "bytes": 3936
+    },
+    "peer-results.json": {
+      "sha256": "41467234156e0ac3f9651210e8523617083d6fd274fdfbe529c0f6815b3dbffc",
+      "bytes": 1934
+    },
+    "pending-inventory-final.log": {
+      "sha256": "6441caaaefd6cac766ee3f1f45aa84434b3fd580dad16f5638ae1bb32b51211d",
+      "bytes": 404
+    },
+    "pending-inventory-final.xml": {
+      "sha256": "cd47b19da399d396963a7963bf7247f7175062174c518aa661e95d4eacdf8190",
+      "bytes": 15743
+    },
+    "post-validation-runtime-hash-check.json": {
+      "sha256": "77418a05f37a0094123ff8b79564c15653a09e7935d823619472713a2c36af34",
+      "bytes": 499
+    },
+    "release-client-final.log": {
+      "sha256": "8336dc04cce5ecc0ad3868152d3c302e5385c64fdb4c79fab2fdb62503cd7ec1",
+      "bytes": 76
+    },
+    "release-contract-conformance-final.log": {
+      "sha256": "1e574d971633bcddcc8b70928385741d5e289d2019c5e8c04df2f621c964e0bc",
+      "bytes": 796
+    },
+    "release-contract-gate.log": {
+      "sha256": "030175fa84b0b32f429f0db45b5fd78648e2e6d825107e54be3e993bc264d14b",
+      "bytes": 12288
+    },
+    "release-contracts-final.log": {
+      "sha256": "d7ab6aede3c2d814b67f5174175d003e4f23beba925022009f889cd02e4a8403",
+      "bytes": 76
+    },
+    "release-focused-client-build.log": {
+      "sha256": "397759b320722d31c10a1d16bdae6f321c9249f2a93e2f09f363d95179d5afe0",
+      "bytes": 76
+    },
+    "release-focused-contract-build.log": {
+      "sha256": "213e2171f84afa9503d5652429346cbaedd05ed9a59911e4b993b72c53698932",
+      "bytes": 76
+    },
+    "release-focused-contract-conformance.log": {
+      "sha256": "f65c7672706308f66a453e1c6787b63eb64c455ae31cc97f0ebd431d9b0f499b",
+      "bytes": 123427
+    },
+    "release-parity-tool-final.log": {
+      "sha256": "7470474f3b71fba1506080ef45ff130822c5dbed0e0bba80b4650f5e261db601",
+      "bytes": 76
+    },
+    "restore-coherent-debug-source.log": {
+      "sha256": "92d991737fec6e226c1d28e2d20714dc0a2540ea1b7cbd86d04adb32f2a64fb5",
+      "bytes": 76
+    },
+    "restore-final-debug-source.log": {
+      "sha256": "1485409271f5abc8de5940ccf06762d1b0848a29ffed2c3813965e500fbf38bf",
+      "bytes": 666
+    },
+    "results.json": {
+      "sha256": "096285db7c0229029a6aa46793886e8783bb505fd72527b9a4700b088d22973d",
+      "bytes": 12210
+    },
+    "sdk-Client-build.log": {
+      "sha256": "d0b14d3440273b3c0b3d360f07e57ea29735fb87f424cc76e6cc1d849efb8e6f",
+      "bytes": 76
+    },
+    "sdk-Client-tests.log": {
+      "sha256": "7a2558f5897c71eb23218be70f66fcaed72574311fed9ef3baa4b160fed855ba",
+      "bytes": 35179
+    },
+    "sdk-Client-tests.xml": {
+      "sha256": "cc804ffb9e0394fde49b2cf366b563685abd48524dc4f4b3b3669307fd839c5a",
+      "bytes": 1728451
+    },
+    "sdk-DomainService-build.log": {
+      "sha256": "8cc2d9de0a988e9f41eeb10861b6d96a24efc7ad6852be1546f3ba7c1b6e65f7",
+      "bytes": 76
+    },
+    "sdk-DomainService-tests.log": {
+      "sha256": "1b25fe931371afa4664a6b36a6541d8d3b05076cf2bfcf16c726679386adecc7",
+      "bytes": 484009
+    },
+    "sdk-DomainService-tests.xml": {
+      "sha256": "0d41801a7036a78dd24bc13d2520671f442ef854cd1564c5c50a863067252a8e",
+      "bytes": 1014660
+    },
+    "sdk-Server-build.log": {
+      "sha256": "b5c8dbd7f09689d490421275d7bd1a4a2d3caed6544c8e95802c63eefac24af7",
+      "bytes": 76
+    },
+    "sdk-Server-tests.log": {
+      "sha256": "da5c2e809a48dec1640ca830ea842dbaa02f7660c44c9ed72a713c170285c05b",
+      "bytes": 898425
+    },
+    "sdk-Server-tests.xml": {
+      "sha256": "3d31950047b024e294980b54222c2e25d62588f05395df9c536b651689094e76",
+      "bytes": 6135858
+    },
+    "sdk-ServiceDefaults-build.log": {
+      "sha256": "ff7602bc4dbbe8026722753b7476705a3470d98cde0c89700dfffee283e46ee2",
+      "bytes": 76
+    },
+    "sdk-ServiceDefaults-tests.log": {
+      "sha256": "ed1ac3695e15115e6d656e3ea5237cae466c1c2589e829690b03b0a67dc6b511",
+      "bytes": 450
+    },
+    "sdk-ServiceDefaults-tests.xml": {
+      "sha256": "e9993074b0cff80d4cb473ccc79ace94081e468eac2bbc6d4f06c730468c9a9e",
+      "bytes": 118298
+    },
+    "tenants-final-source-restore.log": {
+      "sha256": "81cd3028792da0e629c5c101d4f28b9fdade4ea0048809204d41c449f564367f",
+      "bytes": 76
+    },
+    "owned-final-release-output-cleanup.json": {
+      "sha256": "b8bc2efb00bfe2eb4059ab5ee53499412fc3a85b75343f54c859f323ea341dcc",
+      "bytes": 185730
+    },
+    "post-cleanup-final-producer-hash-check.json": {
+      "sha256": "4cba8c12dde023d83d73ad343304e870238d1cb8d3b8dddd7a9b1a7c83baf7a6",
+      "bytes": 131
+    }
+  },
+  "final_producer_qualification": {
+    "path": "story-12-2-final-producer-qualification-20261114.json",
+    "producer_modules": 106,
+    "actual_observations": 288,
+    "sdk_observations": 112,
+    "strict_passed": 0,
+    "strict_failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "assembly_seconds": 411.136,
+    "failure_phase": "First EventStore stop after all six-concern rebuild checks",
+    "source_head_status_runtime_drift": false,
+    "owned_cleanup_empty": true,
+    "earlier_pass_not_promoted_to_this_producer": true
+  },
+  "later_ram_diagnostics": [
+    {
+      "path": "story-12-2-ram-stop-diagnostic-20261114.json",
+      "result": "failed at the stop; 512 MiB capture estimate exceeded, partial removed; no usable heap"
+    },
+    {
+      "path": "story-12-2-ram-stop-sizing-recheck-20261114.json",
+      "result": "diagnostic pass with no long-stop trigger, collection or suspension; no causal finding and no promotion to ordinary acceptance"
+    }
+  ],
+  "scope_decision_proposal": {
+    "path": "../proposal-12-2-sdk-shutdown-stage-tracing.md",
+    "status": "human decision pending; both patches unapplied",
+    "preparation_evidence": "story-12-2-sdk-shutdown-tracing-proposal-20261114.json",
+    "private_overlay_builds_passed": 4,
+    "private_overlay_controls_passed": 11,
+    "actual_sdk_source_or_outputs_changed": false
+  },
+  "owned_final_release_output_cleanup": {
+    "directories": 8,
+    "allocated_bytes_reclaimed": 217579520,
+    "only_phase_created_ignored_release_outputs": true,
+    "selected_debug_producer_files_checked": 106,
+    "selected_debug_producer_mismatches": [],
+    "inventory": "owned-final-release-output-cleanup.json"
+  }
+}

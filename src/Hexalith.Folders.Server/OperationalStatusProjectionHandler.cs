@@ -62,7 +62,7 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
         cancellationToken.ThrowIfCancellationRequested();
-        if (OrganizationAclOperationalSource.IsCompletePrefix(request))
+        if (OrganizationAclOperationalSource.IsCompletePrefix(request, requireCompletePrefix: true))
             throw new InvalidOperationException("Organization ACL source has no Folder operations; use bounded shared partition transport.");
         OperationalStatusEvent[] events = Read(request, cancellationToken);
         // The SDK verifies original global positions against the sealed capture before invoking us.
@@ -123,7 +123,7 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         ArgumentNullException.ThrowIfNull(aggregateHistory);
         if (aggregateHistory.TenantId != identity.TenantId || aggregateHistory.Domain != Domain)
             throw new InvalidOperationException("Operational rebuild partition scope conflicts.");
-        if (OrganizationAclOperationalSource.IsCompletePrefix(aggregateHistory))
+        if (OrganizationAclOperationalSource.IsCompletePrefix(aggregateHistory, requireCompletePrefix: true))
         {
             cancellationToken.ThrowIfCancellationRequested();
             return [JsonSerializer.SerializeToUtf8Bytes(Array.Empty<SharedProjectionMutation>())];
@@ -196,6 +196,10 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         return request.Events.Select(item =>
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (item.EventTypeName == typeof(FolderCommandRejected).FullName
+                && FoldersRejectionSource.ReadOwner(item.Payload, request.TenantId, request.AggregateId,
+                    item.CorrelationId) != FoldersSourceOwnerKind.Folder)
+                throw new InvalidOperationException("Non-Folder rejection targets a folder operational source.");
             return OperationalStatusEventReader.ReadEffective(item);
         }).ToArray();
     }

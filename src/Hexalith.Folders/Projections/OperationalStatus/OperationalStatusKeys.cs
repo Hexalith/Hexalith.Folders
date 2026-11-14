@@ -29,6 +29,8 @@ public static class OperationalStatusKeys
     public static string Message(string tenantId, string folderId, string messageId) => Key("message", tenantId, folderId, messageId);
     /// <summary>Gets full-row integrity evidence independently of view retention.</summary>
     public static string Evidence(string viewKey) => Key("evidence", viewKey);
+    /// <summary>Gets the latest source-derived applicability of a workspace/task view, with that view's original C3 deadline.</summary>
+    public static string Applicability(string viewKey) => Key("applicability", viewKey);
     /// <summary>Hashes a length-preserving encoding of components.</summary>
     internal static string Digest(params string[] components)
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(components))));

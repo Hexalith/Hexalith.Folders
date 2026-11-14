@@ -53,6 +53,9 @@ public sealed class OperationalStatusProjectionWriter
             cancellationToken.ThrowIfCancellationRequested();
             ProjectionEventDto source = item.Source ?? throw new InvalidOperationException("Original operational source metadata is missing.");
             OperationalStatusEvent verified = OperationalStatusEventReader.ReadStored(source);
+            if (source.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
+                && FoldersRejectionSource.ReadOwner(source.Payload, tenantId, folderId, source.CorrelationId) != FoldersSourceOwnerKind.Folder)
+                throw new InvalidOperationException("Non-Folder rejection targets a folder operational stream.");
             if (verified.Digest != item.Digest || verified.MessageId != item.MessageId || verified.Sequence != item.Sequence)
                 throw new InvalidOperationException("Operational source identity conflict.");
             if (source.GlobalPosition <= 0) throw new InvalidOperationException("Original operational source position is missing.");
@@ -137,12 +140,13 @@ public sealed class OperationalStatusProjectionWriter
             await RequireCurrentViewsAsync(scope, generation, current!, receipt.RequiredViews, cancellationToken).ConfigureAwait(false);
             return [];
         }
-        if (current is { SchemaVersion: < 3 })
+        if (current is { SchemaVersion: < 4 })
             throw new OperationalStatusUnavailableException(); // Old compacted anchors have no complete retained closure inventory; rebuild from source.
         if (receipt is not null || message is not null) throw new InvalidOperationException("Operational message identity is reused.");
         if (source.Event is null && current is not null)
             await RequireCurrentViewsAsync(scope, generation, current, null, cancellationToken).ConfigureAwait(false);
         OperationalStatusFoldResult next = OperationalStatusFold.Apply(tenantId, folderId, current, [source], bounded: true);
+        Dictionary<string, string> taskEvidence = new(next.Checkpoint.TaskEvidence, StringComparer.Ordinal);
         List<ReadModelBatchOperation> operations = [];
         if (next.Lifecycle is not null) AddView(OperationalStatusKeys.Lifecycle(tenantId, folderId),
             next.Lifecycle, next.Checkpoint.Sequence, next.Checkpoint.SourceDigest, next.Lifecycle.Freshness.ObservedAt, operations);
@@ -172,13 +176,31 @@ public sealed class OperationalStatusProjectionWriter
                 }
             }
             if (completion is not null) task = completion.Restore(task);
+            taskEvidence[taskId] = OperationalStatusIntegrity.Digest(task);
             if (Expired(task.Freshness.ObservedAt)) continue;
             OperationalStatusViewEvidence? evidence = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation,
                 OperationalStatusKeys.Evidence(key), cancellationToken).ConfigureAwait(false)).Value;
             TaskStatusReadModelSnapshot? prior = (await ReadAsync<TaskStatusReadModelSnapshot>(scope, generation, key, cancellationToken).ConfigureAwait(false)).Value;
             if (evidence is not null && (prior is null || evidence.ValueDigest != OperationalStatusIntegrity.Digest(prior)))
                 throw new InvalidOperationException("Operational task requires source repair.");
-            if (prior?.TerminalState is "ready" or "committed") task = prior;
+            if (prior?.TerminalState is "ready" or "committed" && evidence is not null)
+            {
+                var applicability = (await ReadAsync<OperationalStatusViewApplicability>(scope, generation,
+                    OperationalStatusKeys.Applicability(key), cancellationToken).ConfigureAwait(false)).Value;
+                var priorReceipt = (await ReadAsync<OperationalStatusReceipt>(scope, generation,
+                    OperationalStatusKeys.Receipt(tenantId, folderId, evidence.Sequence), cancellationToken).ConfigureAwait(false)).Value;
+                if (applicability is null || !applicability.Matches(key, next.Checkpoint.Sequence, evidence)
+                    || priorReceipt is null || !priorReceipt.Valid() || priorReceipt.Sequence != evidence.Sequence
+                    || priorReceipt.SourceDigest != evidence.SourceDigest || completion is null
+                    || OperationalStatusIntegrity.Digest(prior) != OperationalStatusIntegrity.Digest(task)
+                    || current?.State.WorkspaceTaskId == taskId && current.SchemaVersion >= 4
+                        && (!current.TaskEvidence.TryGetValue(taskId, out string? currentDigest) || currentDigest != evidence.ValueDigest))
+                    throw new OperationalStatusUnavailableException();
+                task = prior;
+                taskEvidence[taskId] = OperationalStatusIntegrity.Digest(task);
+            }
+            else if (prior?.TerminalState is "ready" or "committed" && completion is null)
+                throw new OperationalStatusUnavailableException();
             long position = long.Parse(task.Freshness.ProjectionWatermark!, CultureInfo.InvariantCulture);
             string prefix = completion?.SourceDigest ?? (position == source.Sequence ? next.Checkpoint.SourceDigest : evidence!.SourceDigest);
             AddView(key, task, position, prefix, task.Freshness.ObservedAt, operations);
@@ -187,7 +209,8 @@ public sealed class OperationalStatusProjectionWriter
             next.RequiredViews[source.Sequence]);
         AddRetained(OperationalStatusKeys.Receipt(tenantId, folderId, source.Sequence), original, SourceTime(source, next.Checkpoint.ObservedAt), operations);
         AddRetained(OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), original, SourceTime(source, next.Checkpoint.ObservedAt), operations);
-        operations.Add(Write(OperationalStatusKeys.Checkpoint(tenantId, folderId), OperationalStatusCompaction.Compact(next.Checkpoint)));
+        operations.Add(Write(OperationalStatusKeys.Checkpoint(tenantId, folderId),
+            OperationalStatusCompaction.Compact(next.Checkpoint with { TaskEvidence = taskEvidence })));
         return operations;
     }
 
@@ -214,6 +237,8 @@ public sealed class OperationalStatusProjectionWriter
             var proof = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation,
                 OperationalStatusKeys.Evidence(key), cancellationToken).ConfigureAwait(false)).Value;
             if (value is null && proof is null) continue; // Paired C3 expiry is safe absence.
+            var applicability = (await ReadAsync<OperationalStatusViewApplicability>(scope, generation,
+                OperationalStatusKeys.Applicability(key), cancellationToken).ConfigureAwait(false)).Value;
             string? actual = value is null ? null : key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceTaskId ?? "")
                 || originalTask is not null && key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, originalTask)
                 ? OperationalStatusIntegrity.Digest(value.Deserialize<TaskStatusReadModelSnapshot>(WireJson))
@@ -222,8 +247,15 @@ public sealed class OperationalStatusProjectionWriter
                 generation, OperationalStatusKeys.Receipt(checkpoint.ManagedTenantId, checkpoint.FolderId, proof.Sequence),
                 cancellationToken).ConfigureAwait(false)).Value;
             if (value is null || proof is null || proof.ValueDigest != actual || receipt is null
+                || applicability is null || !applicability.Matches(key, checkpoint.Sequence, proof)
                 || !receipt.Valid() || proof.Sequence < 1 || proof.Sequence > checkpoint.Sequence || receipt.Sequence != proof.Sequence
                 || receipt.SourceDigest != proof.SourceDigest)
+                throw new OperationalStatusUnavailableException();
+            if (checkpoint.SchemaVersion >= 4
+                && (key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceTaskId ?? "")
+                    ? !checkpoint.TaskEvidence.TryGetValue(checkpoint.State.WorkspaceTaskId ?? "", out string? taskDigest) || taskDigest != actual
+                    : key == OperationalStatusKeys.Workspace(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceId ?? "")
+                        && (!checkpoint.WorkspaceEvidence.TryGetValue(checkpoint.State.WorkspaceId ?? "", out string? workspaceDigest) || workspaceDigest != actual)))
                 throw new OperationalStatusUnavailableException();
         }
 
@@ -348,8 +380,12 @@ public sealed class OperationalStatusProjectionWriter
     private void AddView<T>(string key, T value, long position, string digest, DateTimeOffset observedAt,
         List<ReadModelBatchOperation> operations) where T : class
     {
+        OperationalStatusViewEvidence evidence = new(position, digest, OperationalStatusIntegrity.Digest(value));
         AddRetained(key, value, observedAt, operations);
-        AddRetained(OperationalStatusKeys.Evidence(key),
-            new OperationalStatusViewEvidence(position, digest, OperationalStatusIntegrity.Digest(value)), observedAt, operations);
+        AddRetained(OperationalStatusKeys.Evidence(key), evidence, observedAt, operations);
+        // Applicability is domain metadata written in the same SDK batch/generation. It expires
+        // at the identical source deadline; it never extends C3 or replaces closure authority.
+        if (value is OperationalWorkspaceStatus or TaskStatusReadModelSnapshot)
+            AddRetained(OperationalStatusKeys.Applicability(key), OperationalStatusViewApplicability.Create(key, evidence), observedAt, operations);
     }
 }

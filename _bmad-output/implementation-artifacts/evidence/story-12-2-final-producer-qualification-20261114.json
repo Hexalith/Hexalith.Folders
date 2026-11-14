@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T02:34:53.968303+00:00",
+  "qualification": "Final consumer/package producer: audited unchanged strict attempt fails at EventStore stop",
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "current_final_producer_strict_pass": false,
+  "prior_pass_reused_for_changed_binary": false,
+  "baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "selected_repository_heads": {
+    ".": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "2f4f1cf9ae4889f8d96b4af3ceb01442163d1215",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.EventStore": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "references/Hexalith.FrontComposer": "0623f3acca3cc6d8b8151b99636458beaa8dd34a",
+    "references/Hexalith.McpCli": "edd15cfe372ba7ecdd0c835966fa93073a072fae",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.Platform": "2a1a343c35d58e6368cd4c34288dc3f9c567f8b9",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "9c804569031eee647207fa3b0d88407dadca38a0",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501"
+  },
+  "source_mode": {
+    "configuration": "Debug",
+    "UseHexalithProjectReferences": true,
+    "UseNuGetDeps": false,
+    "HexalithEventStoreVersion": "5.0.1",
+    "VersionSuffix": "story12-2-qualification",
+    "target_framework": "net11.0"
+  },
+  "changes": {
+    "production_test_or_sdk_source_changed_by_this_handoff": false,
+    "existing_parent_framework_and_inventory_changes_preserved": true,
+    "existing_platform_seven_changes_preserved": true,
+    "git_mutation_dependency_update_publication_or_deployment": false
+  },
+  "parent_phase_input_sha256": {
+    "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs": "df086cfc2a6c567a318196b4ad636ebd391793dbcdaecd01a8bc4b9d7aa64c50",
+    "scripts/pd10-v2-story-owned-paths.txt": "225c55d5b63ba75fe6f0fb25d730ad910cb1f182166702f3c3d0821875b7604a",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml": "7e2a6327078d8f6dbf6c0822829f5116bc1bc93e2e01f8c741346014cb20f7c5"
+  },
+  "prior_pass_packet": "story-12-2-latest-checkout-stop-qualification-20261114.json",
+  "parent_consumer_package_receipt_directory_name": "story12-2-final-validation-20261114-z8scqn4k",
+  "binary_pair_changes_from_prior_pass": [
+    {
+      "path": "references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net11.0/Hexalith.Tenants.dll",
+      "before_dll_sha256": "30ea701f083db819af051537531503e88f027f2ad4051205cc13ccc4e44a0191",
+      "before_pdb_sha256": "89d348998b6038ab4282dacd607504da0653a8ed8e91af37aa914f431d7845cd",
+      "final_dll_sha256": "5e10023d10bff3da8808d33f43a2911f5a17d8f7c4e2715791832f500a4aba00",
+      "final_pdb_sha256": "936a5efc470b2c8bed5eaeb5341f20b2f1024d1d07743fe99e1704a154c9a3ba"
+    }
+  ],
+  "other_prior_module_pairs_identical_after_hex_normalization": 102,
+  "producer_audit": {
+    "required_prior_files": 103,
+    "required_prior_files_all_present": true,
+    "additional_ui_dependency_copies": 3,
+    "audited_module_files": 106,
+    "all_ordinary_generated_source_pe_pdb_checks_passed": true,
+    "sdk_variants_match": true,
+    "project_only_hexalith_assets_including_native_tenants": true,
+    "post_live_producer_audit_passed": true,
+    "actual_scoped_observations": 288,
+    "actual_sdk_observations": 112,
+    "actual_native_tenants_observations": 1,
+    "actual_loaded_issues": [],
+    "remaining_outside_scope": []
+  },
+  "protected_guards": {
+    "parent_frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "parent_frozen_unchanged": true,
+    "three_protected_body_matches": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    },
+    "deadlines_order_retries_body_and_sampling_unchanged": true
+  },
+  "strict_attempt": {
+    "command": "python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds 900 -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml <private-receipts>/strict-final-producer-private.xml",
+    "observer_opt_out": "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED=true",
+    "exit_code": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "assembly_seconds": 411.136,
+    "test_body_seconds": 335.046,
+    "wrapper_elapsed_seconds": 417.308,
+    "failure_type": "System.InvalidOperationException",
+    "failure": "Task-owned resource eventstore command stop failed.",
+    "failure_site": "OperationalStatusDurabilityAcceptanceTests.RequireAllConcernRebuildAndRecoveryAsync:567 -> FolderDurabilityAcceptanceFixture.RestartHostsAsync:524 -> ResourceCommandAsync:561",
+    "first_eventstore_stop": {
+      "application_shutting_down_utc": "2026-11-14T02:31:02.806Z",
+      "dcp_stop_timeout_utc": "2026-11-14T02:31:14.805Z",
+      "observed_interval_seconds": 11.999
+    },
+    "native_owner_bootstrap_verified": true,
+    "six_concern_rebuild_marker": true,
+    "interrupted_generation_marker": false,
+    "concurrent_workers_marker": false,
+    "all_remaining_strict_assertions_completed": false,
+    "live_dump_or_suspension": false,
+    "no_space_error_line_count": 0,
+    "partial_assertion_evidence_only": true
+  },
+  "drift": {
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": []
+  },
+  "cleanup": {
+    "remaining_observed_descendants": 0,
+    "remaining_owned_containers": 0,
+    "remaining_unattributed_containers": 0,
+    "remaining_observed_directories": 0,
+    "aspire_running_apphosts": 0
+  },
+  "storage": {
+    "available_bytes_preflight_approximately": 1300000000,
+    "minimum_observed_available_bytes": 184221696,
+    "headroom_recovered_without_deletion_by_this_handoff": true,
+    "deletion_of_unrelated_or_prior_receipts": false,
+    "no_space_error_observed_in_this_run": false
+  },
+  "performance": {
+    "complete_sm4_report_reached": false,
+    "new_sm4_measurement_claimed": false,
+    "prior_over_budget_findings_preserved": true,
+    "performance_redesign_or_sampling_change": false
+  },
+  "remaining": [
+    "Current final-producer strict qualification remains failed at the first EventStore stop. No stop cause or causal repair is established.",
+    "The earlier 423.055-second pass remains bound to its prior native Tenants binary/PDB identity; it does not qualify this changed pair.",
+    "Parent full-CI ENOSPC blocker, retained SM4 over-budget results, PD10/A6b governance, external owner-enrollment scope and independent whole-story review retain separate dispositions.",
+    "Generic SDK shutdown/performance repair and policy changes remain outside current scope; any demonstrated crossing correction requires a concrete owner/file/regression/unchanged-strict proposal and further human decision."
+  ],
+  "private_receipt_directory_name": "story12-2-final-producer-qualification-20261114-awjio8x3",
+  "private_artifact_hashes": {
+    "final-producer-audit-summary.json": {
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6",
+      "bytes": 959
+    },
+    "final-producer-pdb-audit.json": {
+      "sha256": "47f2f35f68ddb049bda8a24d4e0a9aaeba841df3c1e57fb913e5abd8c4976a8b",
+      "bytes": 7401080
+    },
+    "final-producer-assets-audit.json": {
+      "sha256": "a07247010e2e289b09a30da92f7b4e14a47b7ff08a0704e7b5a5feb6b222d71f",
+      "bytes": 14064
+    },
+    "strict-final-producer-receipt.json": {
+      "sha256": "ddb4a5bd08e5f92df1f0a11b48ef06e9835fc704450b1cd8bddae76f9a422937",
+      "bytes": 2539
+    },
+    "strict-final-producer-private.log": {
+      "sha256": "0d5026bf50556579aa9300b4ad39659bcd7b296a8850a3162f14b25d096b42b5",
+      "bytes": 45570042
+    },
+    "strict-final-producer-private.xml": {
+      "sha256": "1e2764f95f1fd6a08d8dbab50df0d542e1c68a10cee8daff4c29892464bd7b3c",
+      "bytes": 4560
+    },
+    "strict-final-producer-actual-loaded-audit.json": {
+      "sha256": "a142cd4be1746be1b9c5b5ff9fe3ca9af52c6c2e18fc4a70a7323024d1d13365",
+      "bytes": 69552
+    },
+    "post-live-final-producer-audit-summary.json": {
+      "sha256": "f878f710ef8ad8334ba406b4ba5b7966f8dee3062276eab400290165476280f6",
+      "bytes": 959
+    },
+    "parent-phase-input-guards-before.json": {
+      "sha256": "c8f4f706db8afd63a5f73231c6eb2d1c5fc9a6ceb48fed9daba064e507f09da8",
+      "bytes": 445
+    },
+    "parent-phase-input-guards-after.json": {
+      "sha256": "c8f4f706db8afd63a5f73231c6eb2d1c5fc9a6ceb48fed9daba064e507f09da8",
+      "bytes": 445
+    }
+  },
+  "privacy": "Metadata only: commands, hashes, counts, timings, source/identity outcomes and owned cleanup. Raw logs/XML, protected bodies, grants, credentials and private absolute paths remain private.",
+  "all_prior_packets_preserved": true,
+  "outputs_released": true,
+  "private_packet_seal": {
+    "filename": "seal.json",
+    "sha256": "78cd058acebba90bed184d8482e1db23ef3bb20a9d1eda7859b617b3374324f5",
+    "file_count": 37
+  }
+}

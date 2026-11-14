@@ -27,6 +27,68 @@ namespace Hexalith.Folders.Workers.Tests;
 public sealed class WorkersOrganizationAclRouteTests
 {
     [Theory]
+    [InlineData("future_unknown_command")]
+    [InlineData("arbitrary invalid command")]
+    public async Task UnknownCommandRejectionPrefixPersistsBeforeAcknowledgmentAndLaterCreationAsync(string command)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        var rejection = Hexalith.Folders.Server.FolderCommandRejected.Create("UnsupportedCommandType", command,
+            null, null, null, null, "correlation-a", "task-a", "rejected-key");
+        var envelope = Envelope("unknown-rejection", 1, rejection) with { AggregateId = "folder-a" };
+        byte[] original = envelope.Payload.ToArray();
+        var coordinator = new SharedProjectionEpochCoordinator(store, store);
+        foreach (var delivery in new[] { envelope, envelope })
+        {
+            using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", delivery, token);
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var checkpoint = await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+                OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token);
+            checkpoint.Value.ShouldNotBeNull().Sequence.ShouldBe(1);
+            checkpoint.Value.State.IsCreated.ShouldBeFalse();
+        }
+        var created = Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Created() with { OccurredAt = DateTimeOffset.UtcNow };
+        var creation = Envelope("created-after-rejection", 2, created) with { AggregateId = "folder-a" };
+        using (HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", creation, token))
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var current = await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token);
+        current.Value.ShouldNotBeNull().Sequence.ShouldBe(2);
+        current.Value.State.IsCreated.ShouldBeTrue();
+        var permissions = (await store.GetAsync<FolderPermissionProjection>("statestore",
+            "projection:folders:folder-permissions:tenant-a:folder-a", token)).Value!;
+        permissions.IsCreated.ShouldBeTrue();
+        permissions.LastSequence.ShouldBe(2);
+        envelope.Payload.ShouldBe(original);
+        await app.StopAsync(token);
+    }
+
+    [Theory]
+    [InlineData("Accepted", "future_unknown_command", "tenant-a", 1)]
+    [InlineData("999", "future_unknown_command", "tenant-a", 1)]
+    [InlineData("UnsupportedCommandType", "future_unknown_command", "tenant-b", 1)]
+    [InlineData("ValidationFailed", "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal", "tenant-a", 1)]
+    [InlineData("UnsupportedCommandType", "future_unknown_command", "tenant-a", 2)]
+    public async Task InvalidUnknownOrWrongOwnerRejectionsHaveNoProtectedEffectsAsync(string code, string command, string tenant, int version)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        var envelope = Envelope("invalid-rejection", 1, new { Code = code, CommandType = command, ManagedTenantId = tenant }) with
+        { AggregateId = "folder-a", EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected", PayloadVersion = version };
+        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", envelope, token);
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        (await store.GetAsync<FolderPermissionProjection>("statestore", "projection:folders:folder-permissions:tenant-a:folder-a", token)).Value.ShouldBeNull();
+        (await store.GetAsync<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value.ShouldBeNull();
+        await app.StopAsync(token);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(bool writeConflict)

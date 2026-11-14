@@ -1,0 +1,380 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-14T01:32:31.652706+00:00",
+  "qualification": "Latest selected checkout: unchanged strict success after a retained stop failure",
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "shutdown_cause_identified": false,
+  "shutdown_fix_applied": false,
+  "baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "selected_repository_heads": {
+    ".": "b915d3ec5180f45c4c477cbeffb9b98df91082d0",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "2f4f1cf9ae4889f8d96b4af3ceb01442163d1215",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.EventStore": "51dd68b86a690ffe9e11c565dccec49b2d401a94",
+    "references/Hexalith.FrontComposer": "0623f3acca3cc6d8b8151b99636458beaa8dd34a",
+    "references/Hexalith.McpCli": "edd15cfe372ba7ecdd0c835966fa93073a072fae",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.Platform": "2a1a343c35d58e6368cd4c34288dc3f9c567f8b9",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "9c804569031eee647207fa3b0d88407dadca38a0",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501"
+  },
+  "source_mode": {
+    "configuration": "Debug",
+    "UseHexalithProjectReferences": true,
+    "UseNuGetDeps": false,
+    "HexalithEventStoreVersion": "5.0.1",
+    "VersionSuffix": "story12-2-qualification",
+    "target_framework": "net11.0"
+  },
+  "changes": {
+    "production_source_changed": false,
+    "test_source_changed": false,
+    "sdk_source_changed": false,
+    "platform_existing_changes_preserved": true,
+    "private_diagnostic_tooling_only": true,
+    "git_mutation_or_dependency_pin_change": false
+  },
+  "source_bindings": {
+    "src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs": {
+      "sha256": "a2aeac673522de0fd80f9334036fd07eec6c1860f18ec2e557cba4f2747433b4",
+      "matches_prior_bound_source": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": {
+      "sha256": "17d82532cad9f597200635b724a0901e128daa2c6de2f221aebd0a3d01aecbd4",
+      "matches_prior_bound_source": true
+    },
+    "tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentComponentTests.cs": {
+      "sha256": "367d1759a97e01a98cf16b8a10069d1e76fb63ed247c962c022feddade471a8a",
+      "matches_prior_bound_source": true
+    },
+    "tests/Hexalith.Folders.Contracts.Tests/McpCli/PackedContractsClosureTests.cs": {
+      "sha256": "2ff7758c7f931c2707a590ad0e5007a6dffa7bf1360d390f3387e302cf3fc03e",
+      "matches_prior_bound_source": true
+    },
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.ReportTests.cs": {
+      "sha256": "7df5c061a865c8230d2ba8b6af2ce82c8d958ca3e9fcee45312e08bb3c707c03",
+      "matches_prior_bound_source": true
+    },
+    "tests/fixtures/pattern-example-manifest.yaml": {
+      "sha256": "da233aa3b6614ba414f5a713a5c857ab001c8645cb71521e2e216f6ed40a3013",
+      "matches_prior_bound_source": true
+    },
+    "tests/load/Hexalith.Folders.LoadTests.csproj": {
+      "sha256": "376361269d5d81b8d6dd940cea8a6242c6cf8286ebbbae08294e2246ebc67725",
+      "matches_prior_bound_source": true
+    },
+    "scripts/pd10-v2-story-owned-paths.txt": {
+      "sha256": "eaa4206e4e4a5a97a36ec36454606403db1e639be492236810bd850216414168",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/docs/security/workload-binding-enrollment.md": {
+      "sha256": "b8bd0fdef261f69d1d81d2f6532e2a65eebc90ecd0c5c2b653db4cafef6d5e5c",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py": {
+      "sha256": "df6824607e75ff2cf004b7d58946d9e1643dfedf63c6ecc4d144324129265d2d",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned_component.py": {
+      "sha256": "435591d4b76e6342050191e71bb5e8343ddedfe6e0b06496c9188cc0e090ae5c",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/test_run_owned.py": {
+      "sha256": "af2af7914b5a3d2305e732b6acaa75ef53514ff5359947020cd2b50b481ec2d6",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs": {
+      "sha256": "088e2c90707ebc34468b74d14f34a4922848d3cf8438f1609657d0ffa2fbcf39",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollmentInventory.cs": {
+      "sha256": "cc71a5f042ec163f64e3ba7bf5c34f29345b7e639d0ae125b03a934281370126",
+      "matches_prior_bound_source": true
+    },
+    "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformRunOwnedWorkloadEnrollmentTests.cs": {
+      "sha256": "ef3d747b40236e5bb48c44c9b35435761079dc7fd4827fd20410af14b9275bb3",
+      "matches_prior_bound_source": true
+    }
+  },
+  "source_snapshot": {
+    "repositories": 13,
+    "captured_technical_inputs": 26275,
+    "scope_extensions": [
+      "Previously bound eight Folders and seven Platform inputs independently match retained hashes."
+    ],
+    "head_or_source_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": []
+  },
+  "builds": [
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.0.1 -p:VersionSuffix=story12-2-qualification -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "command": "dotnet build references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.0.1 -p:VersionSuffix=story12-2-qualification -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "protected_guards": {
+    "parent_frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "parent_frozen_unchanged": true,
+    "all_three_protected_test_bodies_match": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    },
+    "timeouts_order_retries_and_sampling_unchanged": true
+  },
+  "strict_command": "python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds 900 -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml <private-receipts>/<attempt>-private.xml",
+  "attempts": [
+    {
+      "label": "strict-stop-diagnostic",
+      "exit_code": 1,
+      "assembly_seconds": 302.545,
+      "passed": 0,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failure": "First supported EventStore stop command timed out after all six-concern rebuild assertions.",
+      "capture_triggered": false,
+      "capture_limit": "Initial private matcher failed to recognize the actual launcher argument shape. No suspension occurred.",
+      "owned_cleanup_empty": true,
+      "source_or_head_drift": []
+    },
+    {
+      "label": "strict-stop-capture-recheck",
+      "exit_code": 0,
+      "assembly_seconds": 423.055,
+      "test_body_seconds": 351.412,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "launched_as_diagnostic": true,
+      "capture_triggered": false,
+      "live_process_suspension_occurred": false,
+      "recognized_eventstore_stops": 3,
+      "capture_threshold_seconds": 8,
+      "max_capture_bytes": 536870912,
+      "minimum_free_bytes": 1073741824,
+      "all_original_strict_assertions_completed": true,
+      "owned_cleanup_empty": true
+    }
+  ],
+  "diagnostics": {
+    "matcher_controls": {
+      "passed": 11,
+      "failed": 0,
+      "bound_to_actual_fixture_resource_process_mapping": true,
+      "pid_reuse_unowned_and_wrong_host_refused": true
+    },
+    "capture_preflight": {
+      "direct_native_attach_refused": true,
+      "supported_client_heap_capture_passed": true,
+      "synthetic_heap_bytes": 64749568,
+      "old_analyzer_runtime_version_refusal_preserved": true,
+      "private_current_analyzer_version": "10.0.750501",
+      "current_analyzer_passed": true,
+      "runtime_async_stack_completeness_warning_retained": true,
+      "full_live_dump_created": false
+    },
+    "provider_probe": {
+      "normal_and_canceled_cases_completed": true,
+      "cancellation_can_leave_logger_unclaimed": true,
+      "actual_later_disposal_budget_ms": 5000,
+      "unbounded_disposal_hypothesis_established": false,
+      "strict_failure_causality_established": false,
+      "all_probe_gates_released": true
+    }
+  },
+  "producer_audit": {
+    "pre_live_selected_module_files": 99,
+    "additional_observed_metadata_module_files": 4,
+    "complete_observed_module_files": 103,
+    "all_ordinary_generated_source_pdb_and_pe_identity_checks_passed": true,
+    "selected_hexalith_assets_project_only": true,
+    "sdk_variant_failures": {},
+    "post_live_selected_producer_audit_passed": true,
+    "additional_metadata_modules_qualified_after_live": [
+      "Hexalith.Folders.UI",
+      "Hexalith.FrontComposer.Contracts",
+      "Hexalith.FrontComposer.Contracts.UI",
+      "Hexalith.FrontComposer.Shell"
+    ],
+    "actual_observations": 572,
+    "sdk_observations": 232,
+    "actual_loaded_identity_mismatches": 0,
+    "remaining_outside_selected_producer_scope": [],
+    "actual_observer_module_observations": 8,
+    "observer_visibility_limit": "Selected observer source/output is audited; no actual loaded identity is inferred where no observation was saved."
+  },
+  "performance": [
+    {
+      "operation": "command_acknowledgement",
+      "count": 10,
+      "p50_ms": 6527.249,
+      "p95_ms": 9641.575,
+      "budget_p95_ms": 1000,
+      "over_budget": true
+    },
+    {
+      "operation": "workers_operational_delivery",
+      "count": 27,
+      "p50_ms": 111.688,
+      "p95_ms": 264.381,
+      "budget_p95_ms": 1000,
+      "over_budget": false
+    },
+    {
+      "operation": "status_read",
+      "count": 12,
+      "p50_ms": 752.982,
+      "p95_ms": 908.407,
+      "budget_p95_ms": 500,
+      "over_budget": true
+    }
+  ],
+  "performance_scope": {
+    "command_measurement": "Entire successful MutateAsync HTTP/retry wrapper, including eligible retries and their delays; the explicit one-second pre-call delay and owner bootstrap are outside this stopwatch.",
+    "gateway_pipeline_success_durations_ms": {
+      "BindRepository": 9166.2268,
+      "PrepareWorkspace": 7946.5825,
+      "ConfigureProviderBinding": 7208.961
+    },
+    "bind_repository_actor_summary_ms": 4080.4375,
+    "exact_p95_sample_to_command_binding_retained": false,
+    "retry_delay_split_retained": false,
+    "native_authority_or_bootstrap_bottleneck_established": false,
+    "no_missing_retry_evidence_treated_as_zero": true,
+    "disposition": "Record over-budget command/status findings. Preserve sampling and all budgets; do not redesign. Existing metadata does not justify assigning the dominant delay to the approved native authority/bootstrap subpaths."
+  },
+  "remaining_partition": {
+    "authorized_validation_work_now": [
+      {
+        "work": "Run current consumer projects individually and any affected 10,001/32,769 production-handler histories whose exact runtime evidence cannot be reused.",
+        "authority": "Parent spec Tasks & Acceptance: Final correction verification; Verification; Review-five focused handoff."
+      },
+      {
+        "work": "Run current full SDK and Release/package consumption gates, keeping failures distinct and without changing pins or publishing.",
+        "authority": "Parent spec current qualification and latest continuation retain those unqualified gates; repository baseline requires all existing/new tests before story completion."
+      },
+      {
+        "work": "Run independent whole-story review through the parent workflow and reconcile the external prerequisite disposition using actual bounded fixture evidence.",
+        "authority": "Parent spec Tasks & Acceptance and latest continuation; parent bmad-build workflow."
+      },
+      {
+        "work": "Continue bounded source/receipt diagnosis of intermittent stop failures if warranted; no demonstrated SDK shutdown correction is currently available.",
+        "authority": "Latest-checkout continuation authorizes bounded diagnostics before correction and requires a concrete proposal if a correction crosses generic SDK shutdown scope."
+      }
+    ],
+    "exact_current_failures": [
+      {
+        "gate": "SM4 command acknowledgment",
+        "p95_ms": 9641.575,
+        "budget_ms": 1000
+      },
+      {
+        "gate": "SM4 status read",
+        "p95_ms": 908.407,
+        "budget_ms": 500
+      }
+    ],
+    "broad_gate_result_limits": [
+      "No full SDK, full current consumer-suite or Release/package run executed in this diagnostic phase. Earlier results remain bound to their recorded producer.",
+      "The retained ordinary Platform test-project 57-error analyzer blocker was not rerun here; do not promote it to a newly executed current result."
+    ],
+    "human_or_external_prerequisites": [
+      {
+        "work": "PD10/A6b approval and exposure governance.",
+        "limit": "Exact pending candidate approvals remain with Product, Architecture and Security; public v2 stays disabled."
+      },
+      {
+        "work": "Any demonstrated generic SDK shutdown/performance correction or policy change.",
+        "limit": "Latest-checkout continuation preserves its explicit exclusion; prepare an owner/file/regression/unchanged-strict proposal before seeking a further scope decision. No causal repair is identified or proposed by this phase."
+      },
+      {
+        "work": "Owner enrollment outside the disposable fixture.",
+        "limit": "Platform Story 10.1 staging/owner authority remains separate; run-owned fixture proof does not establish owner enrollment."
+      }
+    ]
+  },
+  "private_receipt_directory_name": "story12-2-stop-diagnosis-20261114-6lxi9ef6",
+  "private_artifact_hashes": {
+    "source-build-private.log": {
+      "sha256": "5e2c53fe6153908d6281f7bf82e71d959e5fe6b3cd76d1cff30b333e2b324921",
+      "bytes": 76
+    },
+    "memories-build-private.log": {
+      "sha256": "2a9723d374d42552d54ccf2b235c497ad684bd02f23ce0d12ff3163b5f60e97b",
+      "bytes": 76
+    },
+    "current-producer-audit-summary.json": {
+      "sha256": "d87233201d0e485ab93816066c8c967acd8a2d615df961c630a9e5a8875659f1",
+      "bytes": 958
+    },
+    "final-producer-audit-summary.json": {
+      "sha256": "d87233201d0e485ab93816066c8c967acd8a2d615df961c630a9e5a8875659f1",
+      "bytes": 958
+    },
+    "complete-observed-producer-pdb-audit.json": {
+      "sha256": "b6a32646bb49a9157c6eb268d859471985369629207ec1445f74b81c4c990f40",
+      "bytes": 7351936
+    },
+    "strict-stop-diagnostic-receipt.json": {
+      "sha256": "8269db35280238dd8c9f3af9f4c14d03b1202712d67da7f36f7720ad82727a4e",
+      "bytes": 2499
+    },
+    "strict-stop-diagnostic-private.xml": {
+      "sha256": "90fa2006a048f52576bdb51409ee5b2ffff361c7b59b82e64c660a9f3bd0032c",
+      "bytes": 4560
+    },
+    "strict-stop-diagnostic-private.log": {
+      "sha256": "88ce36d1b6eb3247b999f63fee018d9c1627184b45a23fec8c35021d1ad0dac3",
+      "bytes": 41907514
+    },
+    "strict-stop-capture-recheck-receipt.json": {
+      "sha256": "58b1481dfcf2fd30e79404f4fef3ae084ac3fa85c8f243e6231018b62c94e44f",
+      "bytes": 2515
+    },
+    "strict-stop-capture-recheck-private.xml": {
+      "sha256": "21c17e155ea96c83c72f053b9eef0b32750a25b0cf8bfe31414d33d782b26ff6",
+      "bytes": 4892
+    },
+    "strict-stop-capture-recheck-private.log": {
+      "sha256": "5ea90e7fa20199003d64da2648a4a7df6f69c3103baa10a493d34e1d82108a22",
+      "bytes": 85909072
+    },
+    "strict-stop-capture-recheck-actual-loaded-audit.json": {
+      "sha256": "3dff746e09a433adab9da6f29cbdb3ad455d3c8c4d796ee9ea1209b5966aa808",
+      "bytes": 138398
+    },
+    "matcher-controls-private.json": {
+      "sha256": "6d3bd9c6d3e24c54c63514dac7cdb509f090f9c85226b891db5031f6e9a9a885",
+      "bytes": 500
+    },
+    "current-provider-probes-private.json": {
+      "sha256": "ef069a1121c77c1eaf31de152831422a7bcda94f1896e96ebc34da49acc4845a",
+      "bytes": 1394
+    },
+    "createdump-preflight-private.log": {
+      "sha256": "7090e34c0ec1a5d6f7d0480faa7754148f8888337eee7110970b58c55d24313a",
+      "bytes": 196
+    },
+    "dump-current-preflight-private.log": {
+      "sha256": "393be33ddada85b3260b96642d41f87bac92fbf47605ba32b166284cc61f3fd5",
+      "bytes": 512
+    }
+  },
+  "privacy": "Repository evidence contains commands, names, counts, timing, hashes and cleanup metadata only; raw logs/XML, bodies, identities, grants, keys and heap data remain private.",
+  "outputs_released": true
+}

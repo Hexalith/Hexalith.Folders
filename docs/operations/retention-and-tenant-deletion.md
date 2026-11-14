@@ -165,3 +165,15 @@ The content administrative transport requires current `manage_folder_access` aut
 folder and workspace; it delegates hold/release/abandon/apply to the SDK. It does not expose v2 or execute Git.
 Source qualification and live Folders acceptance evidence are recorded with Story 12.3; this policy record
 alone claims no runtime completion or deployment.
+
+
+## Operational schema 4 current-view authority
+
+Before resuming live operational delivery from a schema 2 or 3 compact checkpoint, run the existing
+authorized named `/project/rebuild/shared/v1` complete-source rebuild. Schema 4 retains only the
+active workspace/task digests in its bounded checkpoint and validates historical results against
+per-key applicability and original task completion. The source rebuild preserves valid source
+conflicts, earliest closure and the original source-time 400-day deadline. Applicability records
+expire at that same deadline; they never extend status or evidence retention. Paired absent status
+and evidence still return the existing safe not-found at a current checkpoint. Do not manually
+change storage or retained source bytes to migrate or repair a checkpoint.

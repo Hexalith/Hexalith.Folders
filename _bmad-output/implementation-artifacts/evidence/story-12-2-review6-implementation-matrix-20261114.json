@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "review_iteration": 6,
+  "evidence": "story-12-2-review6-implementation-20261114.json",
+  "scope": "Current six approved correction tasks and unchanged frozen five-row matrix; prior matrices are immutable. Whole-story acceptance remains open.",
+  "frozen_io_rows": [
+    {
+      "scenario": "Delivery/replay",
+      "current_executed_classes": {
+        "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests": {
+          "Pass": 11
+        },
+        "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests": {
+          "Pass": 11
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests": {
+          "Pass": 23
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests": {
+          "Pass": 18
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.NonFolderOperationalSourceTests": {
+          "Pass": 8
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests": {
+          "Pass": 9
+        }
+      },
+      "unchanged_strict_coverage": "real-source, repeated SDK rebuild, two-process delivery",
+      "strict_result": "Pass on final current5 audited producer"
+    },
+    {
+      "scenario": "Task closure",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "Pass": 35
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "Pass": 42
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        }
+      },
+      "unchanged_strict_coverage": "real-provider task pipeline, equivalent replay and closed-binding denial",
+      "strict_result": "Pass on final current5 audited producer"
+    },
+    {
+      "scenario": "Conflict/crash",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests": {
+          "Pass": 17
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests": {
+          "Pass": 7
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests": {
+          "Pass": 3
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.ProjectionRebuildProductionPathTests": {
+          "Pass": 102
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.NonFolderOperationalSourceTests": {
+          "Pass": 8
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests": {
+          "Pass": 9
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        }
+      },
+      "unchanged_strict_coverage": "interrupted SDK generation, changed writer PID and original-session resume",
+      "strict_result": "Pass on final current5 audited producer"
+    },
+    {
+      "scenario": "Denial/storage",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "Pass": 35
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "Pass": 42
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        }
+      },
+      "unchanged_strict_coverage": "safe-failure, bound-target denial and exact source/checkpoint preservation",
+      "strict_result": "Pass on final current5 audited producer"
+    },
+    {
+      "scenario": "Retention",
+      "current_executed_classes": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests": {
+          "Pass": 7
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        }
+      },
+      "unchanged_strict_coverage": "persisted source-relative retention and rebuild checks",
+      "strict_result": "Pass on final current5 audited producer"
+    }
+  ],
+  "new_regressions": {
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.NonFolderOperationalSourceTests": {
+      "Pass": 8
+    },
+    "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+      "Pass": 15
+    },
+    "Hexalith.EventStore.Server.Tests.Projections.NamedProjectionDispatchCoordinatorTests": {
+      "Pass": 231
+    },
+    "Hexalith.EventStore.Server.Tests.Actors.EventReplayProjectionActorTests": {
+      "Pass": 53
+    }
+  },
+  "remaining_independent_gates": [
+    "Parent independent review",
+    "SM4 record-only over-budget results",
+    "PD10/A6b/public-v2 exposure and closure authority",
+    "External production owner enrollment and separately authorized SDK release/package consumption"
+  ]
+}

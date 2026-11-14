@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Queries.ProviderReadiness;
+using Hexalith.Folders.Projections.OperationalStatus;
 
 namespace Hexalith.Folders.Workers;
 
@@ -38,6 +39,9 @@ public sealed class FoldersProviderBindingEventProcessor(EventStoreProviderReadi
         else if (envelope.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
             && envelope.PayloadVersion is null or 1)
         {
+            if (FoldersRejectionSource.ReadOwner(envelope.Payload, envelope.TenantId, envelope.AggregateId,
+                envelope.CorrelationId) != FoldersSourceOwnerKind.ProviderBinding)
+                throw new InvalidOperationException("Provider configuration rejection owner is invalid.");
             using JsonDocument json = JsonDocument.Parse(envelope.Payload);
             JsonElement root = json.RootElement;
             if (root.ValueKind != JsonValueKind.Object
