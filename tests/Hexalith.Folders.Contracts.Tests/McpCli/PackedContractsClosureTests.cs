@@ -67,11 +67,11 @@ public sealed class PackedContractsClosureTests
 
             JsonNode assets = JsonNode.Parse(File.ReadAllText(Directory.EnumerateFiles(artifacts,
                 "project.assets.json", SearchOption.AllDirectories).Single()))!;
-            assets["project"]!["frameworks"]!["net10.0"]!["frameworkReferences"]!.AsObject()
+            assets["project"]!["frameworks"]!["net11.0"]!["frameworkReferences"]!.AsObject()
                 .Select(item => item.Key).ShouldBe(["Microsoft.NETCore.App"]);
             assets["libraries"]!.AsObject().Select(item => item.Key)
                 .ShouldBe(["Hexalith.McpCli.Abstractions/2.0.1"]);
-            ZipArchiveEntry assembly = package.GetEntry("lib/net10.0/Hexalith.Folders.Contracts.dll")!;
+            ZipArchiveEntry assembly = package.GetEntry("lib/net11.0/Hexalith.Folders.Contracts.dll")!;
             assembly.ShouldNotBeNull();
             using Stream assemblyStream = assembly.Open();
             using var image = new MemoryStream();

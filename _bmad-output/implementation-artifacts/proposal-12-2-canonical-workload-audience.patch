@@ -1,0 +1,39 @@
+--- a/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollmentInventory.cs
++++ b/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollmentInventory.cs
+@@ -52,2 +52,2 @@
+-                Probe(AppId("eventstore"), "eventstore:command-submit", []);
+-                Probe(AppId("eventstore"), "eventstore:stream-read", []);
++                Probe("eventstore", "eventstore:command-submit", []);
++                Probe("eventstore", "eventstore:stream-read", []);
+@@ -56 +56 @@
+-                Probe(AppId("eventstore"), "eventstore:stream-read", new() { [BindingPrefix + "tenant"] = tenant, [BindingPrefix + "domain"] = "folders" });
++                Probe("eventstore", "eventstore:stream-read", new() { [BindingPrefix + "tenant"] = tenant, [BindingPrefix + "domain"] = "folders" });
+@@ -104 +104 @@
+-        string gatewayAudience = AppId(cohort.Single(resource => resource.Name == "eventstore"));
++        const string gatewayAudience = "eventstore";
+--- a/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs
++++ b/src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs
+@@ -133 +133 @@
+-                    .WithEnvironment("Authentication__WorkloadJwtBearer__Audience", receiver.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar
++                    .WithEnvironment("Authentication__WorkloadJwtBearer__Audience", receiver.Name == "eventstore" ? "eventstore" : receiver.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar
+--- a/infrastructure/keycloak-workload-binding/run_owned.py
++++ b/infrastructure/keycloak-workload-binding/run_owned.py
+@@ -175 +175 @@
+-            expected = [(workloads["eventstore"], operation, {}) for operation in ("eventstore:command-submit", "eventstore:stream-read")]
++            expected = [("eventstore", operation, {}) for operation in ("eventstore:command-submit", "eventstore:stream-read")]
+@@ -177 +177 @@
+-            expected = [(workloads["eventstore"], "eventstore:stream-read", {"eventstore:bound-tenant": tenant, "eventstore:bound-domain": "folders"})]
++            expected = [("eventstore", "eventstore:stream-read", {"eventstore:bound-tenant": tenant, "eventstore:bound-domain": "folders"})]
+--- a/infrastructure/keycloak-workload-binding/run_owned_component.py
++++ b/infrastructure/keycloak-workload-binding/run_owned_component.py
+@@ -51 +51 @@
+-                probe(workloads["eventstore"], operation, {})
++                probe("eventstore", operation, {})
+@@ -53 +53 @@
+-            probe(workloads["eventstore"], "eventstore:stream-read", {"eventstore:bound-tenant": tenant, "eventstore:bound-domain": "folders"})
++            probe("eventstore", "eventstore:stream-read", {"eventstore:bound-tenant": tenant, "eventstore:bound-domain": "folders"})
+--- a/tests/Hexalith.Platform.Composition.Tests/PlatformRunOwnedWorkloadEnrollmentTests.cs
++++ b/tests/Hexalith.Platform.Composition.Tests/PlatformRunOwnedWorkloadEnrollmentTests.cs
+@@ -44 +44 @@
+-                if (operation.StartsWith("eventstore:", StringComparison.Ordinal)) audience.ShouldBe(Caller("eventstore"));
++                if (operation.StartsWith("eventstore:", StringComparison.Ordinal)) audience.ShouldBe("eventstore");

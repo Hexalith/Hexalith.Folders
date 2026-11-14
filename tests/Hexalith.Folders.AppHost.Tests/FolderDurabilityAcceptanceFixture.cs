@@ -368,7 +368,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         if (retryBudget is not null)
         {
             client.Timeout = Timeout.InfiniteTimeSpan;
-            await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+            await RefreshWorkloadTokensAsync().ConfigureAwait(false);
         }
         List<(string AggregateId, ProjectionEventDto[] Events)> owners = [(aggregateId, events)];
         if (additionalOwners is not null) owners.AddRange(additionalOwners);
@@ -383,7 +383,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         observe?.Invoke($"TASK36 operation={dispatchId} capture={capture} sourceHashes={string.Join(",", owners.Select(owner => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(owner.Events)))))}");
         async Task<DomainSharedProjectionRebuildResponse> StepAsync(DomainSharedProjectionRebuildRequest body)
         {
-            if (retryBudget is not null) await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+            await RefreshWorkloadTokensAsync().ConfigureAwait(false);
             using HttpRequestMessage request = new(HttpMethod.Post, "/project/rebuild/shared/v1") { Content = JsonContent.Create(body) };
             request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, _projectWorkloadToken);
             BindCommittedCatalog(request);
@@ -439,6 +439,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 
     private async Task<string> DiscoverNamedProjectionAsync(HttpClient client)
     {
+        await RefreshWorkloadTokensAsync().ConfigureAwait(false);
         using HttpRequestMessage request = new(HttpMethod.Post, "/admin/operational-index-metadata")
         {
             Content = JsonContent.Create(new AdminOperationalIndexMetadata.Request(["folders"])
@@ -461,7 +462,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Delivers an original capacity-test source through the authenticated SDK named dispatcher.</summary>
     public async Task<ProjectionDispatchOutcome> NamedDeliveryAsync(string aggregateId, ProjectionEventDto source)
     {
-        await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+        await RefreshWorkloadTokensAsync().ConfigureAwait(false);
         using HttpClient client = App.CreateHttpClient("folders", "http");
         string catalog = _namedCatalogFingerprint ?? await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
         ProjectionDispatchRequest body = new(new(TenantId, "folders", aggregateId, [source]),
@@ -1368,9 +1369,10 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         return assertion;
     }
 
-    private async Task RefreshCapacityWorkloadTokensAsync()
+    private async Task RefreshWorkloadTokensAsync()
     {
-        DateTime refreshBefore = DateTime.UtcNow.AddMinutes(1);
+        // Keep the original 75-second action budget within one unchanged assertion's validity.
+        DateTime refreshBefore = DateTime.UtcNow.AddSeconds(90);
         if (new JsonWebToken(_projectWorkloadToken).ValidTo <= refreshBefore)
             _projectWorkloadToken = await IssueWorkloadAsync("project", EventStoreWorkloadOperations.DomainServiceProject).ConfigureAwait(false);
         if (new JsonWebToken(_metadataWorkloadToken).ValidTo <= refreshBefore)

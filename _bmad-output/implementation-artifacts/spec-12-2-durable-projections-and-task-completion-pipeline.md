@@ -2838,3 +2838,154 @@ Platform Story 10.1 in staging. The new pending external node
 `EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY` is a prerequisite of 12.2. The previously failed
 strict run's canceled 403 control is not attributed to enrollment and remains open. Strict
 bodies, deadlines, retries and budgets are unchanged. The parent and child remain in-progress.
+
+### Selected latest source focused qualification — 2026-11-13
+
+The user selected **keep latest** after the changing-checkout checkpoint. Qualification resumes on
+clean root `6fed61e27f316a41a63d9810de1f8936a929acea`, with Platform
+`a7f901ae79ed5fd7ad2f04f0779b21108a4cdee9` and EventStore
+`fd07d0ab33858818d836e43bf8c112c5d4827534`. The run-owned producer, final-cohort fixture adoption,
+unchanged enrollment consumer and receipt-refusal controls are already present. No product or test
+source correction was required in this focused phase. Existing pins and the original story baseline
+are preserved.
+
+Five individual Debug/source test-project builds pass with zero warnings/errors, using both source
+flags, current `HexalithEventStoreVersion=5.0.1`, `VersionSuffix=story12-2-qualification` and the
+selected graph's `net11.0` target. Direct assembly selections pass 81 AppHost configuration/scope/
+maintenance/observer controls, 163 Domain operational/task-query controls, 68 Server source/composition/
+observer controls and 162 Workers cases, all with zero failures/errors/skips. The Domain selection
+executes both 10,001/32,769-position production-handler histories.
+
+The initial current pending-inventory selection has 19 passes and two failures from stale metadata
+for 15 existing selected inputs. Its existing deterministic generator refreshes only the mutable
+2026-11-12 pending manifest; the 1,610 paths are unchanged. The final selection passes 21/21 with zero
+failures/errors/skips. Both older immutable inventories, pending A6b/disabled exposure/false closure
+flags, strict d29, companion/capacity bodies, mutation budget and frozen497c remain unchanged.
+
+[Metadata-only focused evidence](evidence/story-12-2-latest-source-focused-20261113.json) binds commands,
+results, source/repository guards and selected output hashes. All 22,038 captured technical inputs
+and 13 repository heads remain stable. Exact receipts, raw logs/XML and the output inventory remain
+private under the directory named in that evidence. No live topology or run-owned authority was
+launched, so no new enrollment, strict acceptance, loaded-runtime or SM4 result is claimed. Source
+and outputs are released without an active build/test/topology; the parent owns coherent runtime/
+Memories qualification, actual loaded-identity audit, unchanged strict execution and owned cleanup.
+Whole-story/sprint, SDK privacy, package/governance, SM4 and independent review retain their separate
+open dispositions. Earlier sealed evidence remains unchanged.
+
+### Latest runtime qualification and pending audience correction — 2026-11-13
+
+Qualification continues on the user's selected latest dependency graph. A solution build first
+fails because the load-test project explicitly targets net10.0 while its references target net11.0;
+removing that stale override restores the full Debug/source build. Memories builds independently,
+and the current provider's 23 policy tests pass. Six broad consumer assemblies execute: five pass;
+Contracts records 683 passes/six failures from obsolete net10 package paths, pattern metadata and
+the governance report fixture. Updating those current-framework inputs yields 239/239 affected
+contract/governance/inventory passes. Earlier failing results are retained, not relabeled.
+
+The loaded-module audit then identifies four old net10 metadata artifacts loaded by
+`FoldersDevelopmentCatalog.Load`. It now derives the target framework directory from the selected
+AppHost build, retaining the existing configuration, existence and hash checks. The composition
+control and 81 existing fixture controls pass. Three newly owned configuration/runtime inputs
+are added explicitly to the mutable pending inventory, producing 1,613 paths; its 21 controls pass.
+The older inventories, pending A6b, disabled exposure and false closure flags remain intact.
+The unchanged current SDK source privacy scanner now passes 286/286, zero failures/skips; this
+supersedes the old-source scanner failure only for that executed selection, not full SDK regression.
+
+The final producer audit passes for 99 assemblies, matching ordinary/generated sources, PDBs,
+project assets and SDK variants. The current actual-loaded audit matches every scoped observation,
+including all 24 observed SDK copies. The prior strict attempt's seven observations from old net10
+metadata artifacts retain their failed qualification scope; they are not used as current runtime proof.
+
+Real run-owned consumer controls pass for eight physical resources and six workloads. The unchanged
+d29 strict scenario still fails 1/1, zero skips, in 142.301 seconds during owner-bootstrap observation;
+its original deadline cancels before the scenario body, original 403 control, task/restart/rebuild
+proof and SM4 measurements. Verified enrollment is observed. No source/head/runtime/status drift
+occurs during that run, and observed owned descendants, containers and directories are all absent
+after cleanup. No provider success or source zero is inferred from the failure.
+
+An independent run-owned issuer probe accepts the configured physical gateway audience (HTTP 200)
+but refuses the native SDK's logical `eventstore` audience (HTTP 400), using the same actual caller,
+operation and binding set. The [canonical-audience proposal](proposal-12-2-canonical-workload-audience.md)
+contains a five-file Platform patch and required real-SDK regression/strict qualification. Its
+applicability check passes; it has not been applied. Frozen child intent requires an unchanged
+consumer, so the audience-selection correction awaits explicit approval. Platform Story 2.12 is
+still in-progress; no external prerequisite or whole-story acceptance is declared complete.
+
+[Metadata-only runtime evidence](evidence/story-12-2-latest-runtime-20261113.json) retains exact
+commands, phases, source/output identities, failures and cleanup. Root changed externally from
+`6fed61e27f316a41a63d9810de1f8936a929acea` to
+`db40bda8a107fcb03405e074810be16c0d47c85f` after live qualification; that commit changes only
+README migration-inventory citations and is preserved separately. Dependency heads remain stable.
+The original story baseline, frozen497c, all three protected acceptance bodies and every budget
+remain unchanged. Story/sprint stay in-progress for the pending audience decision/current strict
+failure, separately unqualified full SDK/Release-package gates, PD10/governance, SM4 and independent
+whole-story review. No commit, push, dependency update or deployment was performed by this workflow.
+
+### Approved audience continuation and remaining stop failure — 2026-11-14
+
+Jerome's “approve” authorized the bounded canonical gateway-audience correction in the
+[proposal](proposal-12-2-canonical-workload-audience.md). The selected latest checkouts are
+preserved, including root `db40bda8a107fcb03405e074810be16c0d47c85f` and Platform
+`a7f901ae79ed5fd7ad2f04f0779b21108a4cdee9`. The correction is applied in Platform's working tree:
+gateway grants and receiver expect exactly the native SDK audience `eventstore`, while actual
+caller/client IDs, physical Dapr targets, callback audiences, exact operations/bindings and
+grant counts stay unchanged. The earlier pending-approval notes are historical and superseded
+by this approval. The child frozen intent has only the approved exception; this parent frozen
+block remains SHA-256 `497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422`.
+
+The [focused evidence](evidence/story-12-2-canonical-audience-focused-20261113.json) records
+passing provider/Python, native SDK issuance and physical-audience substitution refusal controls,
+including the actual run-owned authority, independent assertion validation, exact source bindings
+and existing RSA source proofs. Final counts are 23 provider, 44 Python, 36 Platform inventory/
+refusal, one Platform live, one bridge-cancellation, one Folders live, 11 existing actual-issuer
+SDK, five consumer, ten enrollment-model and 23 source-boundary cases. The ordinary Platform
+test-project build retains an unrelated 57-error analyzer blocker; focused selection preserves
+normal analyzers and generated/package registrations without suppression.
+
+The [current runtime evidence](evidence/story-12-2-canonical-audience-runtime-20261114.json)
+binds the full Folders and Memories Debug/source builds (zero warnings/errors), 286 unchanged
+SDK privacy cases, 21 pending-inventory cases and 82 fixture controls. It retains all earlier
+attempts with their exact source scope. The latest 99-assembly source/PDB/assets audit passes;
+all 116 actual SDK observations in the decisive live run match its saved producer. No source,
+head, working-tree status or runtime-file drift occurs during that run. The mutable inventory
+now binds 1,615 inputs; A6b approval, production exposure and closure flags remain pending/disabled.
+
+The first post-audience strict run fails after 271.290 seconds at discovery with an expired
+cached fixture assertion, after real bootstrap, the original 403 denial control and terminal-ready
+workflow assertions pass. The fixture now renews the same assertion before ordinary discovery
+and each new shared-rebuild action, using its existing issuer/helper. A 90-second preflight
+window protects the unchanged 75-second action; issuer maximum remains 120 seconds, authority
+lease remains 900 seconds, and retries never renew headers or retry 401. A subsequent 291.099-second
+attempt fails with two recorded filesystem/console `No space left on device` errors and canceled
+status polling; sole causality is not inferred. No unrelated disk resources were removed.
+
+The fresh final invocation is the unchanged strict class under the disposable authority wrapper:
+
+```text
+python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds 900 -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml <private-receipts>/strict-refreshed-recheck-private.xml
+```
+
+Result: exit 1, one failed test, zero errors/skips, **474.271 seconds**. There are no storage
+errors in this attempt. The original provider 403 control, prepare/lock/clean-release/terminal-ready
+flow, all six concerns' integrity and complete-source rebuild, source-time retention TTLs,
+interrupted sealed-generation recovery across changed PIDs, resumed promotion/replay and two
+concurrent Workers' exact convergence pass before failure. The first complete four-host restart
+succeeds; the second restart's EventStore stop command returns false after DCP reports
+`timed out waiting for process to stop`. Existing command-result validation rejects that failure.
+Later restart/fault controls and complete SM4 qualification are not reached. This is partial
+assertion evidence in a failed test, not a current strict pass.
+
+The supported fixture-only lifecycle observer opt-out is retained. Read-only SDK inspection
+confirms logger-provider registration; an isolated synthetic host stops/disposes successfully,
+but does not identify the full EventStore/DCP shutdown cause. The existing scope says:
+“It does not authorize generic SDK shutdown/performance repair or policy changes.” No SDK
+shutdown source, command timeout, order, retry, telemetry policy, strict body or acceptance
+budget was changed. All observed owned descendants, containers and temporary paths are absent
+after each run; no owner-enrollment qualification is claimed.
+
+Child approved frozen SHA-256 remains
+`a31c07d7cb62a688a0ab1e0999a790800f5f9213588663215763230b5adecb03`; all three protected test
+body hashes remain unchanged. No commit, push, dependency update or deployment was performed.
+Story/sprint remain **in-progress at step 03**. Current strict acceptance, the external
+prerequisite disposition, full SDK/Release-package gates, PD10/A6b governance, complete SM4 and
+independent whole-story review remain open.

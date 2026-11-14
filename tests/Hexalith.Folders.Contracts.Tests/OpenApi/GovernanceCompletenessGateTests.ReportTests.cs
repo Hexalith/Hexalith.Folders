@@ -28,7 +28,7 @@ public sealed partial class GovernanceCompletenessGateTests
         {
             Directory.CreateDirectory(Path.GetDirectoryName(script)!);
             File.Copy(GateScriptPath, script);
-            string assembly = Path.Combine(directory, "tests", "Hexalith.Folders.Contracts.Tests", "bin", "Release", "net10.0", "Hexalith.Folders.Contracts.Tests.dll");
+            string assembly = Path.Combine(directory, "tests", "Hexalith.Folders.Contracts.Tests", "bin", "Release", ReadRootTargetFramework(), "Hexalith.Folders.Contracts.Tests.dll");
             Directory.CreateDirectory(Path.GetDirectoryName(assembly)!);
             File.WriteAllText(assembly, string.Empty);
             Directory.CreateDirectory(reportDirectory);

@@ -1,0 +1,1353 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "created_utc": "2026-11-13T22:01:40.230378+00:00",
+  "phase": "Latest Debug/source runtime, catalog correction and run-owned enrollment qualification",
+  "story_status": "in-progress",
+  "whole_story_complete": false,
+  "preserved_story_baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "selected_root_head": "6fed61e27f316a41a63d9810de1f8936a929acea",
+  "repository_heads": {
+    ".": "db40bda8a107fcb03405e074810be16c0d47c85f",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.Memories": "c4ee997702ede948ada5f99eeae7b3782e92003b",
+    "references/Hexalith.Platform": "a7f901ae79ed5fd7ad2f04f0779b21108a4cdee9",
+    "references/Hexalith.EventStore": "fd07d0ab33858818d836e43bf8c112c5d4827534",
+    "references/Hexalith.Tenants": "401d926eb7d51bdf332696ed3f0fe39a812b3501",
+    "references/Hexalith.Parties": "4eca9e8fbad451a602a9ec7d2d6384345b6b0e4e",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Builds": "4c1bf138368968cb4565a3aaef894353ffcf6038",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.McpCli": "a92a2969db6903b8c6cca7e437446167e135ec9d",
+    "references/Hexalith.Projects": "f913c04dddddda074e65c6a9553381042fcc5046",
+    "references/Hexalith.FrontComposer": "19418a0c29daf38eef03b0891958cd8aa93c59bf"
+  },
+  "head_drift": {
+    ".": "db40bda8a107fcb03405e074810be16c0d47c85f"
+  },
+  "source_build_properties": {
+    "Configuration": "Debug",
+    "TargetFramework": "net11.0",
+    "UseHexalithProjectReferences": "true",
+    "UseNuGetDeps": "false",
+    "HexalithEventStoreVersion": "5.0.1",
+    "VersionSuffix": "story12-2-qualification"
+  },
+  "changes": [
+    {
+      "path": "src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs",
+      "sha256": "a2aeac673522de0fd80f9334036fd07eec6c1860f18ec2e557cba4f2747433b4"
+    },
+    {
+      "path": "tests/load/Hexalith.Folders.LoadTests.csproj",
+      "sha256": "376361269d5d81b8d6dd940cea8a6242c6cf8286ebbbae08294e2246ebc67725"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Contracts.Tests/McpCli/PackedContractsClosureTests.cs",
+      "sha256": "2ff7758c7f931c2707a590ad0e5007a6dffa7bf1360d390f3387e302cf3fc03e"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.ReportTests.cs",
+      "sha256": "7df5c061a865c8230d2ba8b6af2ce82c8d958ca3e9fcee45312e08bb3c707c03"
+    },
+    {
+      "path": "tests/fixtures/pattern-example-manifest.yaml",
+      "sha256": "da233aa3b6614ba414f5a713a5c857ab001c8645cb71521e2e216f6ed40a3013"
+    },
+    {
+      "path": "scripts/pd10-v2-story-owned-paths.txt",
+      "sha256": "0d251de8c639114e9ff8c9abbf407188499660e1be1583ace43d6c4589a9fddd"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+      "sha256": "ca1ee3a11ad0c63f348f8d40e8ef23bce3858e0e8ebdd51c814398becb31bfdb"
+    }
+  ],
+  "commands": [
+    {
+      "label": "parent-source-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.slnx",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 1,
+      "seconds": 5.103,
+      "log_sha256": "33106a3848fa13fa25bc3b04160d54058434d0c85eb8a45a4cb29a3e2c669095"
+    },
+    {
+      "label": "parent-source-build-aligned",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.slnx",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 24.371,
+      "log_sha256": "5e48930d5ac9b15aa9f511a5f3dc798938b115975811b70ed44ad66b27fe237f"
+    },
+    {
+      "label": "parent-memories-build",
+      "command": [
+        "dotnet",
+        "build",
+        "references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 10.006,
+      "log_sha256": "8d97fb34c2a4da352be7f17eb21324188097d5f865dbfc450eb1a0aa053fb08d"
+    },
+    {
+      "label": "parent-provider-build",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "-f",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/pom.xml",
+        "package"
+      ],
+      "exit_code": 0,
+      "seconds": 4.529,
+      "log_sha256": "bcc18f34391d7680e025f111c99e852efdbee2df2bc7e5aca7ea1f8ea39239c2"
+    },
+    {
+      "label": "parent-contracts-rebuild",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 6.35,
+      "log_sha256": "0207037d895d40dfab7be630f26ad98469299736d92145b25a7fa6a3ef93eb3c"
+    },
+    {
+      "label": "parent-contracts-targeted",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.McpCli.PackedContractsClosureTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-result-xml",
+        "<private-receipts>/parent/contracts-targeted-private.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 7.226,
+      "log_sha256": "92e8527a45535548c01db6ed482e388bfff30d57e60eaedd1a69c22eaf0d2cac"
+    },
+    {
+      "label": "parent-runtime-rebuild",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 23.117,
+      "log_sha256": "f50096fcf6c02a122e71a9d3958f6b777e019c2e903eb60fab1b401b4894a908"
+    },
+    {
+      "label": "parent-sdk-privacy-build",
+      "command": [
+        "dotnet",
+        "build",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 19.295,
+      "log_sha256": "4bfc7edb429d016a459f4347f099c1b84ea2e89f219cec2547e188c6495ce7fb"
+    },
+    {
+      "label": "parent-sdk-privacy",
+      "command": [
+        "dotnet",
+        "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/Hexalith.EventStore.Server.Tests.dll",
+        "-class",
+        "Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests",
+        "-result-xml",
+        "<private-receipts>/parent/sdk-privacy-private.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 7.357,
+      "log_sha256": "72e406abfcf6871d3c35ce8dba08264d1cbe94aa2de923aaafd2bf9955a2410c"
+    },
+    {
+      "label": "parent-catalog-runtime-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "-p:HexalithEventStoreVersion=5.0.1",
+        "-p:VersionSuffix=story12-2-qualification",
+        "-m:1",
+        "-nr:false",
+        "-v:quiet"
+      ],
+      "exit_code": 0,
+      "seconds": 10.776,
+      "log_sha256": "c488f4671e5aac599a9fe194c7b9dbb929ae52f73b3275e570eb4f46ecf8fb2c"
+    },
+    {
+      "label": "parent-catalog-controls",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FoldersDevelopmentCatalogCompositionTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.WorkloadEnrollmentConfigurationTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityGatewayScopeTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityTenantMaintenanceTests",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.FolderDurabilityObserverConfigurationTests",
+        "-result-xml",
+        "<private-receipts>/parent/catalog-controls-private.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 1.143,
+      "log_sha256": "cc528046dc81632aea5e44ffc08fef403c174a1199406ad2630288a093a6f916"
+    },
+    {
+      "label": "parent-inventory-catalog-refresh",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--repository-root",
+        "/home/administrator/projects/hexalith/folders"
+      ],
+      "exit_code": 0,
+      "seconds": 0.143,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "parent-inventory-catalog-controls",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-result-xml",
+        "<private-receipts>/parent/inventory-catalog-private.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 5.797,
+      "log_sha256": "8b922b9afd9840e6e48812300fea8654a876b759830c51df1f2d0375550a7ff6"
+    }
+  ],
+  "consumer_suites": {
+    "contracts-broad-private": {
+      "assemblies": [
+        {
+          "total": "689",
+          "passed": "683",
+          "failed": "6",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "77.023"
+        }
+      ],
+      "failures": [
+        "ReleasePackageDependsOnlyOnMcpCliAbstractionsAndTheNetRuntimeAsync",
+        "PatternExampleManifestIsOptInAndCompilableProjectIsInSolution",
+        "GovernanceReportPublicationPreservesExitCodesAndRejectsStaleResultsAsync",
+        "GovernanceReportPublicationPreservesExitCodesAndRejectsStaleResultsAsync",
+        "GovernanceReportPublicationPreservesExitCodesAndRejectsStaleResultsAsync",
+        "GovernanceReportPublicationPreservesExitCodesAndRejectsStaleResultsAsync"
+      ],
+      "xml_sha256": "1f2d4252007d0e098b2377772e357b76d52aa385a9f87c5c565d9899fa18637c"
+    },
+    "domain-broad-private": {
+      "assemblies": [
+        {
+          "total": "2421",
+          "passed": "2419",
+          "failed": "0",
+          "skipped": "2",
+          "not-run": "0",
+          "errors": "0",
+          "time": "62.485"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "3152636943f7e1366aeff60d739b620896e325baf103cd8f52b627bf3b25c364"
+    },
+    "gateway-broad-private": {
+      "assemblies": [
+        {
+          "total": "123",
+          "passed": "123",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "4.206"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "6b8c9730fdfdbf24a0e4b4e0ac67f1a31df99d4ae2368258cc48cc91eb965179"
+    },
+    "integration-broad-private": {
+      "assemblies": [
+        {
+          "total": "854",
+          "passed": "854",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "36.148"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "4ac026d637a3d924c7ca0b26bea571346106952e636fdf0c0029ddbbbe3c41ea"
+    },
+    "server-broad-private": {
+      "assemblies": [
+        {
+          "total": "1437",
+          "passed": "1426",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "11",
+          "errors": "0",
+          "time": "197.010"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "e209e6fa77c6cbea2b847474aaa1de08c37198f242788e5abadb1b2664ce6630"
+    },
+    "workers-broad-private": {
+      "assemblies": [
+        {
+          "total": "162",
+          "passed": "162",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "4.512"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "edd29a18ce166e6fb621ff98b767e384fbe7a207b00d897f9ca648382158c94a"
+    },
+    "contracts-targeted": {
+      "assemblies": [
+        {
+          "total": "239",
+          "passed": "239",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "7.045"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "5f6f1f20b63633ca8a602280707037ab5ffe3b4cf53c452d832c342620f29227"
+    },
+    "catalog-controls": {
+      "assemblies": [
+        {
+          "total": "82",
+          "passed": "82",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "0.936"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "10f6be6d35638a36afa5da20d9c04753da49d24fb8c55a16ed3132d779816c42"
+    },
+    "inventory-catalog": {
+      "assemblies": [
+        {
+          "total": "21",
+          "passed": "21",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "5.599"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "937b9a667117854dff8dec581dc64ffd816d9982b195be958cd06d1330bbdf80"
+    },
+    "sdk-privacy": {
+      "assemblies": [
+        {
+          "total": "286",
+          "passed": "286",
+          "failed": "0",
+          "skipped": "0",
+          "not-run": "0",
+          "errors": "0",
+          "time": "6.853"
+        }
+      ],
+      "failures": [],
+      "xml_sha256": "1a2b4f8d05ba729e2c705044a08fa03fb1d6ba10c49aacca1bf431ce978eb13e"
+    }
+  },
+  "provider_policy": {
+    "tests": 23,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_audit": {
+    "modules": 99,
+    "source_or_pdb_issues": [],
+    "sdk_variant_failures": {},
+    "asset_failures": [],
+    "bodies_match_approved_expectations": {
+      "OperationalStatusDurabilityAcceptanceTests.cs": true,
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    },
+    "approved_strict_body_transition": {
+      "owner_reply": "approve",
+      "date": "2026-11-04",
+      "before_sha256": "f5743f9fa2b33803c8a3a29f9a55e5751b5bcce9a31897d1982a1ccd99316b90",
+      "approved_after_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "actual_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82"
+    },
+    "companion_bodies_unchanged": {
+      "FolderDurabilityAcceptanceTests.cs": true,
+      "OperationalStatusBoundedHistoryAcceptanceTests.cs": true
+    },
+    "frozen_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "frozen_unchanged": true
+  },
+  "actual_loaded_audit": {
+    "observations": [
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.EventStore.Client",
+        "pid": 1351404,
+        "sha256": "0e078a68f22bd57502ce60cdb423d87be9f5095f2c7ed8ec24bead4c7b9a9e20",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.EventStore.Contracts",
+        "pid": 1351404,
+        "sha256": "a9f0e36906026f9ee27a1ea05cf4fae6dd6401c0e1dcc15fdcc2e8d649a7f5a1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.AppHost.Tests",
+        "pid": 1351404,
+        "sha256": "166b4d81c43ff85882275f08682daea085c3e3cc6e01112a58cd6ef2ed8d92da",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Builds.Tooling",
+        "pid": 1351404,
+        "sha256": "1fd741e8801f71b9607d734336570bcbfbcfa172134ceb576c0bf32826a3b1c6",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.EventStore.Aspire",
+        "pid": 1351404,
+        "sha256": "11f7fa18546bc7c8c2ee9a6e4761c5765b0693b42ade6585987f2c88f0676827",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.AppHost",
+        "pid": 1351404,
+        "sha256": "f48bb5e493f23347a1fb638294ba5b75e9866cb74a877db4fc538ec8ab48e609",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.Aspire",
+        "pid": 1351404,
+        "sha256": "c35a73f0464d93ef0798c5565edb5376532fbed475d50846f76f358fa1fdc03c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Memories.Aspire",
+        "pid": 1351404,
+        "sha256": "cc1d74058e5f38eff93f70373c258732fc2536ef11c21e44c05a1a5ea37065e3",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Tenants.Aspire",
+        "pid": 1351404,
+        "sha256": "23824332b7fe3af4db7193b23327d2dc748d31173e849e62faa24854f7043371",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Tenants.Contracts",
+        "pid": 1351404,
+        "sha256": "13f83f694593dfc55c3971fd3ede7157fd4030eab173dbfc8f73e86577a03a9b",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Tenants.Server",
+        "pid": 1351404,
+        "sha256": "2bf88437b473bd03214762a98ed800e8db5eb696848de836081c536b91e7157e",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.EventStore",
+        "pid": 1351404,
+        "sha256": "4fa3dd2af5fb3309956d2b74b5eec01f793a28768d3caf265c4a1dbf5c417cd1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.Server",
+        "pid": 1351404,
+        "sha256": "d10859aeb8d50fcdfc426f8c1439fedc011e46e8fc21a78fcdd79d973313a5d8",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.EventStore.DomainService",
+        "pid": 1351404,
+        "sha256": "15c8dd65fefd833999814d5c88829f5d751acadc42e69c37e2c5addc8bc21b47",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.EventStore.ServiceDefaults",
+        "pid": 1351404,
+        "sha256": "3ccd9c884ffeb1561ec45bacb80ca661623e73a7ff3f3ccb4dc6389773d126ea",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders.Contracts",
+        "pid": 1351404,
+        "sha256": "409310cfa101e68bc60e85005d7f6f9d03c356fccd23c2d7953dae4f38e1750c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.Folders",
+        "pid": 1351404,
+        "sha256": "27db2f64b6b55c413c32d06dc43128df3e76b5a9dd948a221d17314414e78782",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "poll_observations",
+        "assembly": "Hexalith.McpCli.Abstractions",
+        "pid": 1351404,
+        "sha256": "d0c993addb36721c768af3e9156a2499b2d79860e326162eed588a691740f7a5",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Commons.UniqueIds",
+        "pid": 1367588,
+        "sha256": "f3da6aa8cbb7690bee1222be15bd8dd2c10942123d40efcfe9ea4e9d587c6b60",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Client",
+        "pid": 1367588,
+        "sha256": "0e078a68f22bd57502ce60cdb423d87be9f5095f2c7ed8ec24bead4c7b9a9e20",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Contracts",
+        "pid": 1367588,
+        "sha256": "a9f0e36906026f9ee27a1ea05cf4fae6dd6401c0e1dcc15fdcc2e8d649a7f5a1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.DomainService",
+        "pid": 1367588,
+        "sha256": "15c8dd65fefd833999814d5c88829f5d751acadc42e69c37e2c5addc8bc21b47",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.ServiceDefaults",
+        "pid": 1367588,
+        "sha256": "3ccd9c884ffeb1561ec45bacb80ca661623e73a7ff3f3ccb4dc6389773d126ea",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Contracts",
+        "pid": 1367588,
+        "sha256": "409310cfa101e68bc60e85005d7f6f9d03c356fccd23c2d7953dae4f38e1750c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Server",
+        "pid": 1367588,
+        "sha256": "d10859aeb8d50fcdfc426f8c1439fedc011e46e8fc21a78fcdd79d973313a5d8",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.ServiceDefaults",
+        "pid": 1367588,
+        "sha256": "968339534b055f41b49dfedc60e279feb522add28398a003f0884bad6e9ba288",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders",
+        "pid": 1367588,
+        "sha256": "27db2f64b6b55c413c32d06dc43128df3e76b5a9dd948a221d17314414e78782",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Memories.Client.Rest",
+        "pid": 1367588,
+        "sha256": "87595799d5905b20449a9671100a8f55d7c51bb33adbfb7b3e1959938b7fe15a",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Memories.Contracts",
+        "pid": 1367588,
+        "sha256": "d8c050b82420e84c9224ab9cbae08666b3f8e56d854c945bba5dbbbe03751cb3",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Client",
+        "pid": 1367588,
+        "sha256": "16177b45ef5d00dddc53e6fe03297463a05fc621161750f0c912338359016b6a",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Contracts",
+        "pid": 1367588,
+        "sha256": "13f83f694593dfc55c3971fd3ede7157fd4030eab173dbfc8f73e86577a03a9b",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Client",
+        "pid": 1367621,
+        "sha256": "0e078a68f22bd57502ce60cdb423d87be9f5095f2c7ed8ec24bead4c7b9a9e20",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Contracts",
+        "pid": 1367621,
+        "sha256": "a9f0e36906026f9ee27a1ea05cf4fae6dd6401c0e1dcc15fdcc2e8d649a7f5a1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.DomainService",
+        "pid": 1367621,
+        "sha256": "15c8dd65fefd833999814d5c88829f5d751acadc42e69c37e2c5addc8bc21b47",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.ServiceDefaults",
+        "pid": 1367621,
+        "sha256": "3ccd9c884ffeb1561ec45bacb80ca661623e73a7ff3f3ccb4dc6389773d126ea",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.ServiceDefaults",
+        "pid": 1367621,
+        "sha256": "968339534b055f41b49dfedc60e279feb522add28398a003f0884bad6e9ba288",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Workers",
+        "pid": 1367621,
+        "sha256": "c62d9e50d2c9136a6845c1df9c60bd310c927f4aa804da467171025b69bcb81c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders",
+        "pid": 1367621,
+        "sha256": "27db2f64b6b55c413c32d06dc43128df3e76b5a9dd948a221d17314414e78782",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Client",
+        "pid": 1367621,
+        "sha256": "16177b45ef5d00dddc53e6fe03297463a05fc621161750f0c912338359016b6a",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Contracts",
+        "pid": 1367621,
+        "sha256": "13f83f694593dfc55c3971fd3ede7157fd4030eab173dbfc8f73e86577a03a9b",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Client",
+        "pid": 1362523,
+        "sha256": "0e078a68f22bd57502ce60cdb423d87be9f5095f2c7ed8ec24bead4c7b9a9e20",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Contracts",
+        "pid": 1362523,
+        "sha256": "a9f0e36906026f9ee27a1ea05cf4fae6dd6401c0e1dcc15fdcc2e8d649a7f5a1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.DomainService",
+        "pid": 1362523,
+        "sha256": "15c8dd65fefd833999814d5c88829f5d751acadc42e69c37e2c5addc8bc21b47",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.ServiceDefaults",
+        "pid": 1362523,
+        "sha256": "3ccd9c884ffeb1561ec45bacb80ca661623e73a7ff3f3ccb4dc6389773d126ea",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.ServiceDefaults",
+        "pid": 1362523,
+        "sha256": "968339534b055f41b49dfedc60e279feb522add28398a003f0884bad6e9ba288",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Workers",
+        "pid": 1362523,
+        "sha256": "c62d9e50d2c9136a6845c1df9c60bd310c927f4aa804da467171025b69bcb81c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders",
+        "pid": 1362523,
+        "sha256": "27db2f64b6b55c413c32d06dc43128df3e76b5a9dd948a221d17314414e78782",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Client",
+        "pid": 1362523,
+        "sha256": "16177b45ef5d00dddc53e6fe03297463a05fc621161750f0c912338359016b6a",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Contracts",
+        "pid": 1362523,
+        "sha256": "13f83f694593dfc55c3971fd3ede7157fd4030eab173dbfc8f73e86577a03a9b",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Contracts",
+        "pid": 1367519,
+        "sha256": "13f83f694593dfc55c3971fd3ede7157fd4030eab173dbfc8f73e86577a03a9b",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Tenants.Server",
+        "pid": 1367519,
+        "sha256": "2bf88437b473bd03214762a98ed800e8db5eb696848de836081c536b91e7157e",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Commons.UniqueIds",
+        "pid": 1367519,
+        "sha256": "f3da6aa8cbb7690bee1222be15bd8dd2c10942123d40efcfe9ea4e9d587c6b60",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Admin.Abstractions",
+        "pid": 1367519,
+        "sha256": "f08aee8226fd7825e3defa6a10ffbb692d5ed063e7c1cff10757c2be37505bcb",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Client",
+        "pid": 1367519,
+        "sha256": "0e078a68f22bd57502ce60cdb423d87be9f5095f2c7ed8ec24bead4c7b9a9e20",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Contracts",
+        "pid": 1367519,
+        "sha256": "a9f0e36906026f9ee27a1ea05cf4fae6dd6401c0e1dcc15fdcc2e8d649a7f5a1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.DomainService",
+        "pid": 1367519,
+        "sha256": "15c8dd65fefd833999814d5c88829f5d751acadc42e69c37e2c5addc8bc21b47",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Gateway",
+        "pid": 1367519,
+        "sha256": "09ede2f5216a554820669dd53a4e59930d5d6e962b316e6d53939640e52a5ff5",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.Server",
+        "pid": 1367519,
+        "sha256": "fbf9b4cfa72e59568b67da2636c5407f705f308ea0b9a137a5a506600f775e26",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.EventStore.ServiceDefaults",
+        "pid": 1367519,
+        "sha256": "3ccd9c884ffeb1561ec45bacb80ca661623e73a7ff3f3ccb4dc6389773d126ea",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Contracts",
+        "pid": 1367519,
+        "sha256": "409310cfa101e68bc60e85005d7f6f9d03c356fccd23c2d7953dae4f38e1750c",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.EventStore",
+        "pid": 1367519,
+        "sha256": "4fa3dd2af5fb3309956d2b74b5eec01f793a28768d3caf265c4a1dbf5c417cd1",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders",
+        "pid": 1367519,
+        "sha256": "27db2f64b6b55c413c32d06dc43128df3e76b5a9dd948a221d17314414e78782",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.McpCli.Abstractions",
+        "pid": 1367519,
+        "sha256": "d0c993addb36721c768af3e9156a2499b2d79860e326162eed588a691740f7a5",
+        "matches_audited_producer": true
+      },
+      {
+        "kind": "fixture_bindings",
+        "assembly": "Hexalith.Folders.Server",
+        "pid": 1367519,
+        "sha256": "d10859aeb8d50fcdfc426f8c1439fedc011e46e8fc21a78fcdd79d973313a5d8",
+        "matches_audited_producer": true
+      }
+    ],
+    "issues": [],
+    "all_scoped_observations_match": true,
+    "sdk_observations": 24,
+    "outside_selected_producer_scope": [],
+    "scope": "Saved process mappings and fixture observations for assemblies selected in the pre-live producer audit only."
+  },
+  "live_qualifications": [
+    {
+      "label": "run-owned-component",
+      "argv": [
+        "python3",
+        "-B",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/verify_component.py",
+        "--run-owned",
+        "--apphost-assembly",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-13T21:35:15.743862+00:00",
+      "utc_end": "2026-11-13T21:35:35.755867+00:00",
+      "exit_code": 0,
+      "environment_selection": {},
+      "private_log": {
+        "path": "<private-receipts>/parent/run-owned-component-private.log",
+        "sha256": "91e8cf011e983ff7beeaf224e3ac6dc7aa0734650e529dff2c3dee71311523ae"
+      },
+      "private_xml": null,
+      "summary": null,
+      "source_or_head_drift": [],
+      "working_tree_status_changes": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "runtime_module_observations": 125,
+      "fixture_module_observations": 0,
+      "verified_workload_enrollment_observed": true,
+      "bootstrap_completed_observed": false,
+      "authority_summaries": [
+        {
+          "qualification": "run-owned enrollment",
+          "provisioned": true,
+          "serverVersion": "26.6.4",
+          "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+          "providerSha256": "2C01D3DD5A81BA17A9E305866237B9B6E0CBCCB0ED6332CE02BA2DB9A193BB46",
+          "resourceCount": 8,
+          "workloadCount": 6,
+          "administrativeIdentity": false,
+          "startupImport": true,
+          "observedRemainingContainers": 0,
+          "observedRemainingTemporaryPaths": 0
+        }
+      ]
+    },
+    {
+      "label": "run-owned-component-final",
+      "argv": [
+        "python3",
+        "-B",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/verify_component.py",
+        "--run-owned",
+        "--apphost-assembly",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-13T21:36:54.956272+00:00",
+      "utc_end": "2026-11-13T21:37:13.659476+00:00",
+      "exit_code": 0,
+      "environment_selection": {},
+      "private_log": {
+        "path": "<private-receipts>/parent/run-owned-component-final-private.log",
+        "sha256": "5f31c49768139e2f71b356a14b963f1afd80d5d16f5c2002c28a5abf6ffe3bfe"
+      },
+      "private_xml": null,
+      "summary": null,
+      "source_or_head_drift": [],
+      "working_tree_status_changes": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "runtime_module_observations": 129,
+      "fixture_module_observations": 0,
+      "verified_workload_enrollment_observed": true,
+      "bootstrap_completed_observed": false,
+      "authority_summaries": [
+        {
+          "qualification": "run-owned enrollment",
+          "provisioned": true,
+          "serverVersion": "26.6.4",
+          "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+          "providerSha256": "2C01D3DD5A81BA17A9E305866237B9B6E0CBCCB0ED6332CE02BA2DB9A193BB46",
+          "resourceCount": 8,
+          "workloadCount": 6,
+          "administrativeIdentity": false,
+          "startupImport": true,
+          "observedRemainingContainers": 0,
+          "observedRemainingTemporaryPaths": 0
+        }
+      ]
+    },
+    {
+      "label": "audience-probe",
+      "argv": [
+        "python3",
+        "-B",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py",
+        "--owner",
+        "disposable-folders-acceptance",
+        "--lifetime-seconds",
+        "180",
+        "--",
+        "python3",
+        "-B",
+        "<private-receipts>/parent/audience_probe.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-13T21:45:39.032698+00:00",
+      "utc_end": "2026-11-13T21:45:56.524150+00:00",
+      "exit_code": 0,
+      "environment_selection": {},
+      "private_log": {
+        "path": "<private-receipts>/parent/audience-probe-private.log",
+        "sha256": "20dc8ae6d9a6a6e0465717d20e28b732631a56929527f4fa3f9dcdcb09ff9a01"
+      },
+      "private_xml": null,
+      "summary": null,
+      "source_or_head_drift": [],
+      "working_tree_status_changes": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "runtime_module_observations": 0,
+      "fixture_module_observations": 0,
+      "verified_workload_enrollment_observed": false,
+      "bootstrap_completed_observed": false,
+      "authority_summaries": [
+        {
+          "qualification": "run-owned enrollment",
+          "probe": "bootstrap-audience",
+          "sdkAudience": "eventstore",
+          "physicalAudienceDiffers": true,
+          "physicalAudienceHttpStatus": 200,
+          "sdkAudienceHttpStatus": 400
+        },
+        {
+          "qualification": "run-owned enrollment",
+          "provisioned": true,
+          "serverVersion": "26.6.4",
+          "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+          "providerSha256": "2C01D3DD5A81BA17A9E305866237B9B6E0CBCCB0ED6332CE02BA2DB9A193BB46",
+          "resourceCount": 8,
+          "workloadCount": 6,
+          "administrativeIdentity": false,
+          "startupImport": true,
+          "observedRemainingContainers": 0,
+          "observedRemainingTemporaryPaths": 0
+        }
+      ]
+    },
+    {
+      "label": "strict-current",
+      "argv": [
+        "python3",
+        "-B",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py",
+        "--owner",
+        "disposable-folders-acceptance",
+        "--lifetime-seconds",
+        "900",
+        "--",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-result-xml",
+        "<private-receipts>/parent/strict-current-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-13T21:37:40.739633+00:00",
+      "utc_end": "2026-11-13T21:40:03.888398+00:00",
+      "exit_code": 1,
+      "environment_selection": {
+        "Folders__EventStoreDaprHttpPort": 56995,
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+      },
+      "private_log": {
+        "path": "<private-receipts>/parent/strict-current-private.log",
+        "sha256": "352629287c0962324f73fa3675ef80739cb74a8421770eeee451d89e39228e35"
+      },
+      "private_xml": {
+        "path": "<private-receipts>/parent/strict-current-private.xml",
+        "sha256": "76cf59e5610745faacfe855a74513db0dada9c997a1866f96a4d2fd8b63936b5"
+      },
+      "summary": {
+        "assemblies": [
+          {
+            "name": "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-13",
+            "run-time": "21:37:41",
+            "errors": "0",
+            "failed": "1",
+            "passed": "0",
+            "skipped": "0",
+            "time": "141.069",
+            "total": "1"
+          }
+        ],
+        "tests": [
+          {
+            "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+            "result": "Fail",
+            "time": "0",
+            "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+            "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures"
+          }
+        ]
+      },
+      "source_or_head_drift": [],
+      "working_tree_status_changes": [],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "runtime_module_observations": 167,
+      "fixture_module_observations": 47,
+      "verified_workload_enrollment_observed": true,
+      "bootstrap_completed_observed": false,
+      "authority_summaries": [
+        {
+          "qualification": "run-owned enrollment",
+          "provisioned": true,
+          "serverVersion": "26.6.4",
+          "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+          "providerSha256": "2C01D3DD5A81BA17A9E305866237B9B6E0CBCCB0ED6332CE02BA2DB9A193BB46",
+          "resourceCount": 7,
+          "workloadCount": 6,
+          "administrativeIdentity": false,
+          "startupImport": true,
+          "observedRemainingContainers": 0,
+          "observedRemainingTemporaryPaths": 0
+        }
+      ],
+      "failure_phase": "Class-fixture initialization: ObserveOwnerBootstrapAsync; original deadline canceled.",
+      "strict_scenario_body_reached": false,
+      "original_403_control_reached": false
+    },
+    {
+      "label": "strict-catalog-current",
+      "argv": [
+        "python3",
+        "-B",
+        "references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py",
+        "--owner",
+        "disposable-folders-acceptance",
+        "--lifetime-seconds",
+        "900",
+        "--",
+        "dotnet",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+        "-class",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+        "-showLiveOutput",
+        "-result-xml",
+        "<private-receipts>/parent/strict-catalog-current-private.xml"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "utc_start": "2026-11-13T21:52:07.445620+00:00",
+      "utc_end": "2026-11-13T21:54:32.232071+00:00",
+      "exit_code": 1,
+      "environment_selection": {
+        "Folders__EventStoreDaprHttpPort": 35395,
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+      },
+      "private_log": {
+        "path": "<private-receipts>/parent/strict-catalog-current-private.log",
+        "sha256": "94e379e851201b13aa6fe2445c73e87be08a6ed19e4ba5f58b26144c3f33fb03"
+      },
+      "private_xml": {
+        "path": "<private-receipts>/parent/strict-catalog-current-private.xml",
+        "sha256": "1fea6d2e634de13bf7dc7c64b0c5410f1c13c1fb9652553fbd82c887ed550bff"
+      },
+      "summary": {
+        "assemblies": [
+          {
+            "name": "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-13",
+            "run-time": "21:52:07",
+            "errors": "0",
+            "failed": "1",
+            "passed": "0",
+            "skipped": "0",
+            "time": "142.301",
+            "total": "1"
+          }
+        ],
+        "tests": [
+          {
+            "name": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures",
+            "result": "Fail",
+            "time": "0",
+            "type": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+            "method": "RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures"
+          }
+        ]
+      },
+      "source_or_head_drift": [],
+      "working_tree_status_changes": [
+        "/home/administrator/projects/hexalith/folders"
+      ],
+      "runtime_file_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": [],
+        "remaining_owned_containers": [],
+        "remaining_unattributed_containers": [],
+        "remaining_observed_directories": []
+      },
+      "runtime_module_observations": 166,
+      "fixture_module_observations": 47,
+      "verified_workload_enrollment_observed": true,
+      "bootstrap_completed_observed": false,
+      "authority_summaries": [
+        {
+          "qualification": "run-owned enrollment",
+          "provisioned": true,
+          "serverVersion": "26.6.4",
+          "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+          "providerSha256": "2C01D3DD5A81BA17A9E305866237B9B6E0CBCCB0ED6332CE02BA2DB9A193BB46",
+          "resourceCount": 7,
+          "workloadCount": 6,
+          "administrativeIdentity": false,
+          "startupImport": true,
+          "observedRemainingContainers": 0,
+          "observedRemainingTemporaryPaths": 0
+        }
+      ],
+      "failure_phase": "Class-fixture initialization: ObserveOwnerBootstrapAsync; original deadline canceled.",
+      "strict_scenario_body_reached": false,
+      "original_403_control_reached": false
+    }
+  ],
+  "preserved_test_body_sha256": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+  },
+  "pending_inventory": {
+    "artifact_count": 1613,
+    "added_paths": [
+      "src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs",
+      "tests/load/Hexalith.Folders.LoadTests.csproj",
+      "tests/fixtures/pattern-example-manifest.yaml"
+    ],
+    "governance_status": "candidate-awaiting-a6b",
+    "approval_status": "pending-a6b",
+    "production_exposure": "disabled",
+    "story_closure_claimed": false
+  },
+  "source_guards": {
+    "frozen_parent_sha256": "497cba1a5e7c3670502f2c49e396ac77fbfa66a337ae199aafaeab6313226422",
+    "frozen_parent_unchanged": true,
+    "prior_inventory_sha256": "08ea78bcbcffa422632fd7d944b745a1d1a65c93120c80be8cc2c793e83b0c70",
+    "dated_pd10_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286"
+  },
+  "pending_decision": {
+    "proposal": "proposal-12-2-canonical-workload-audience.md",
+    "patch": "proposal-12-2-canonical-workload-audience.patch",
+    "patch_sha256": "82e6126364060aad32b0b248f3bc2f474238b4e6a7248e4f52d226a73a831359",
+    "applied": false,
+    "git_apply_check_exit_code": 0,
+    "reason": "Frozen approved intent requires unchanged consumer; proposed canonical receiver/grant audience selection changes that consumer."
+  },
+  "remaining_gates": [
+    "Approval and qualification of the bounded canonical-audience correction; Platform Story 2.12 remains in progress.",
+    "Current unchanged strict acceptance failed during bootstrap; task/restart/rebuild/403 and SM4 observations were not reached.",
+    "Full SDK regression and full Release/package consumption have not been requalified in this phase.",
+    "PD10/A6b governance approval and independent whole-story review remain separate."
+  ],
+  "owner_enrollment_qualified": false,
+  "new_sm4_measurements": false,
+  "private_receipt_directory_name": "story12-2-latest-20261113-o906ys83",
+  "privacy": "Metadata only. Raw logs/XML, requests, credentials, grants, keys and private absolute paths remain outside this artifact.",
+  "external_head_transition_after_live": {
+    "before": "6fed61e27f316a41a63d9810de1f8936a929acea",
+    "after": "db40bda8a107fcb03405e074810be16c0d47c85f",
+    "paths": [
+      "README.md"
+    ],
+    "disposition": "External documentation-only commit preserved; live before/after snapshots have no head drift."
+  },
+  "proposal_input_source_hashes": {
+    "src/Hexalith.Platform.Composition/PlatformWorkloadEnrollmentInventory.cs": "19958adaf2c2fdf050fb25ed2f2bbb4810b92a8844cbf5b2a67533417df9a676",
+    "src/Hexalith.Platform.Composition/PlatformWorkloadEnrollment.cs": "db9723f2e9ff3a584e8ac73c054689b580f3f0fe22ded6b1c9bdac5152931b60",
+    "infrastructure/keycloak-workload-binding/run_owned.py": "59001cb85dfc9540f4b4ea0971e33678c66e0d66038e3cdc9d67ea6275ae2d54",
+    "infrastructure/keycloak-workload-binding/run_owned_component.py": "40ceeb7a26e2052b307bd83a209de1badd0968af108d4514bf31316ff4439627",
+    "tests/Hexalith.Platform.Composition.Tests/PlatformRunOwnedWorkloadEnrollmentTests.cs": "d6ef0f173353bfa024e23856ac12373ef64ebeacdc8c1cf12e64c8fe37e317a5"
+  }
+}

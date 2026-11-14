@@ -7,7 +7,7 @@ included_document_globs:
 excluded_document_globs:
   - docs/_site/**
   - src/**/Generated/**
-target_framework: net10.0
+target_framework: net11.0
 compilable_examples_project: tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj
 examples:
   - example_id: governance-completeness-criterion-record

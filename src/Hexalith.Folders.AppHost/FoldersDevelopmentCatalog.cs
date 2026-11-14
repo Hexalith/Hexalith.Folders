@@ -59,10 +59,11 @@ public static class FoldersDevelopmentCatalog
     private static Assembly Load(ProjectResource project, string artifact)
     {
         string directory = Path.GetDirectoryName(project.GetProjectMetadata().ProjectPath)!;
-        string? configuration = new DirectoryInfo(Path.GetDirectoryName(typeof(FoldersDevelopmentCatalog).Assembly.Location)!).Parent?.Name;
+        DirectoryInfo buildDirectory = new(Path.GetDirectoryName(typeof(FoldersDevelopmentCatalog).Assembly.Location)!);
+        string? configuration = buildDirectory.Parent?.Name;
         if (configuration is not ("Debug" or "Release"))
             throw new InvalidOperationException("The selected AppHost build configuration is unavailable.");
-        string target = Path.Combine(directory, "bin", configuration, "net10.0", artifact);
+        string target = Path.Combine(directory, "bin", configuration, buildDirectory.Name, artifact);
         if (!File.Exists(target)) throw new InvalidOperationException("Build the selected source catalog owner before composing its runtime: " + target);
         Assembly loaded = Assembly.LoadFile(target);
         if (!SHA256.HashData(File.ReadAllBytes(loaded.Location)).AsSpan().SequenceEqual(SHA256.HashData(File.ReadAllBytes(target))))

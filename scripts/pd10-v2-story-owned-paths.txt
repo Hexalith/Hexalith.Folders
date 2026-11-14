@@ -25,6 +25,7 @@ scripts/pd10-v2-coverage-roots.txt
 scripts/pd10-v2-story-owned-paths.txt
 scripts/prepare-ci-topology-projects.sh
 scripts/tests/test_prepare_ci_topology_projects.py
+src/Hexalith.Folders.AppHost/FoldersDevelopmentCatalog.cs
 src/Hexalith.Folders.Cli/CliApplication.cs
 src/Hexalith.Folders.Cli/Commands/Audit/AuditCommand.cs
 src/Hexalith.Folders.Cli/Commands/CommandFactory.cs
@@ -1121,12 +1122,14 @@ src/shared/AdapterCore/QuerySourcing.cs
 src/shared/AdapterCore/RequestBodyParser.cs
 src/shared/AdapterCore/SafeBearerTokenHandler.cs
 src/shared/AdapterCore/UnsafeBearerTransportException.cs
+tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfiguration.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilitySourceReadConfigurationTests.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentComponentTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
 tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
@@ -1567,7 +1570,9 @@ tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
 tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml
+tests/fixtures/pattern-example-manifest.yaml
 tests/fixtures/previous-spine.yaml
+tests/load/Hexalith.Folders.LoadTests.csproj
 tests/shared/EventStore/RecordingDaprClient.cs
 tests/shared/NativeContent/NativeContentAuthority.cs
 tests/shared/NativeContent/NativeContentClock.cs

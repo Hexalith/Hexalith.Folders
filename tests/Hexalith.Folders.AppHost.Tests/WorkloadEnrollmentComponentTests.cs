@@ -1,4 +1,7 @@
+using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using Aspire.Hosting;
@@ -6,9 +9,18 @@ using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
 using CommunityToolkit.Aspire.Hosting.Dapr;
 
+using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.Contracts.Identity;
+using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Platform.Composition;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Shouldly;
 using Xunit;
@@ -69,6 +81,7 @@ public sealed class WorkloadEnrollmentComponentTests
                     after["Authentication__WorkloadIssuer__EnableResourceBindingRequests"].ShouldBe(fault == "none" ? "true" : "false");
                     if (fault == "none")
                     {
+                        after["Authentication__WorkloadJwtBearer__Audience"].ShouldBe(resource.Name == "eventstore" ? "eventstore" : PlatformWorkloadEnrollmentInventory.Workload(resource));
                         after["Authentication__WorkloadJwtBearer__Issuer"].ShouldBe(manifest["issuer"]!.GetValue<string>());
                         after["Authentication__WorkloadJwtBearer__RequireHttpsMetadata"].ShouldBe("true");
                         after["Authentication__WorkloadIssuer__ClientSecret"].ShouldBeOfType<ParameterResource>().Secret.ShouldBeTrue();
@@ -148,6 +161,7 @@ public sealed class WorkloadEnrollmentComponentTests
         JsonObject original = JsonNode.Parse(manifestBytes)!.AsObject();
         JsonArray clients = original["clients"]!.AsArray();
         clients.Count.ShouldBe(8);
+        clients.Sum(client => client!["probes"]!.AsArray().Count).ShouldBe(19);
         clients.Select(client => client!["workload"]!.GetValue<string>()).Distinct().Count().ShouldBe(6);
         string Workload(string name) => clients.Single(client => client!["resource"]!.GetValue<string>() == name)!["workload"]!.GetValue<string>();
         Workload("folders-workers-replica").ShouldBe(Workload("folders-workers"));
@@ -155,10 +169,13 @@ public sealed class WorkloadEnrollmentComponentTests
         Secret("folders").ShouldBe(Secret("folders-replica"));
         Secret("folders-workers").ShouldBe(Secret("folders-workers-replica"));
         new[] { Secret("folders-workers"), Secret("folders-workers-proof-a"), Secret("folders-workers-proof-b") }.Distinct().Count().ShouldBe(3);
-        foreach (string fault in new[] { "probe", "signer", "tls", "permissions", "expiry", "cohort", "tenant" })
+        foreach (string fault in new[] { "probe", "signer", "tls", "permissions", "expiry", "cohort", "tenant", "physical-audience" })
         {
             JsonObject changed = JsonNode.Parse(manifestBytes)!.AsObject();
             if (fault == "probe") changed["clients"]![0]!["probes"]![0]!["revision"] = 2;
+            if (fault == "physical-audience")
+                foreach (JsonNode? client in changed["clients"]!.AsArray().Where(client => client!["resource"]!.GetValue<string>() != "eventstore"))
+                    foreach (JsonNode? probe in client!["probes"]!.AsArray()) probe!["audience"] = Workload("eventstore");
             if (fault == "signer") changed["signingPublicKeySha256"] = new string('0', 64);
             if (fault == "permissions") changed["clients"]![0]!["probes"]!.AsArray().RemoveAt(0);
             if (fault == "expiry") changed["expiresAt"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 1;
@@ -181,9 +198,92 @@ public sealed class WorkloadEnrollmentComponentTests
             Dictionary<string, object> values = await EnvironmentAsync(builder, resource);
             values["SSL_CERT_FILE"].ShouldBe(trust);
             values["Authentication__WorkloadIssuer__EnableResourceBindingRequests"].ShouldBe("true");
+            values["Authentication__WorkloadJwtBearer__Audience"].ShouldBe(resource.Name == "eventstore" ? "eventstore" : Workload(resource.Name));
             (values["Authentication__BoundStreamRead__PrivateKey"] is string actualProof && actualProof == proofs[resource.Name]).ShouldBeTrue("Independent RSA proof remains unchanged.");
         }
-        Console.WriteLine("RUN_OWNED_CONSUMER_CONTROLS resources=8 workloads=6 proofCallers=2 controls=missing-trust,foreign-receipt,expiry,child,directory,probe,signer,tls,permissions,cohort,tenant");
+        using JsonDocument sdkManifest = JsonDocument.Parse(manifestBytes);
+        foreach (string name in new[] { "tenants", "folders", "folders-workers-proof-a" })
+        {
+            ProjectResource resource = PlatformWorkloadEnrollmentInventory.Cohort(builder).Single(resource => resource.Name == name);
+            JsonElement client = sdkManifest.RootElement.GetProperty("clients").EnumerateArray().Single(client => client.GetProperty("resource").GetString() == name);
+            await VerifyNativeSdkAsync(await EnvironmentAsync(builder, resource), client, sdkManifest.RootElement, Workload("eventstore"));
+        }
+        Console.WriteLine("RUN_OWNED_CONSUMER_CONTROLS resources=8 workloads=6 proofCallers=2 controls=missing-trust,foreign-receipt,expiry,child,directory,probe,signer,tls,permissions,cohort,tenant,physical-audience,sdk-physical-audience,sdk-altered-bindings assertions=real-sdk-tenants-command-and-source,real-sdk-folders-bound-source,physical-dapr-target,independent-rsa-proof,no-transport-on-refusal");
+    }
+
+    private static async Task VerifyNativeSdkAsync(Dictionary<string, object> environment, JsonElement client, JsonElement manifest, string physicalGateway)
+    {
+        var configuration = new Dictionary<string, string?>(StringComparer.Ordinal);
+        foreach ((string name, object value) in environment.Where(pair => pair.Key.StartsWith("Authentication__Workload", StringComparison.Ordinal)
+            || pair.Key == "Authentication__BoundStreamRead__PrivateKey"))
+            configuration[name.Replace("__", ":", StringComparison.Ordinal)] = value is IValueProvider parameter
+                ? await parameter.GetValueAsync(TestContext.Current.CancellationToken).ConfigureAwait(true) : value.ToString();
+        configuration["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500";
+        configuration["EventStore:Gateway:AppId"] = physicalGateway;
+        string authority = manifest.GetProperty("authority").GetString()!;
+        using HttpClient http = new(new HttpClientHandler { AllowAutoRedirect = false });
+        using JsonDocument metadata = JsonDocument.Parse(await http.GetStringAsync(authority + "/.well-known/openid-configuration", TestContext.Current.CancellationToken).ConfigureAwait(true));
+        using JsonDocument jwks = JsonDocument.Parse(await http.GetStringAsync(metadata.RootElement.GetProperty("jwks_uri").GetString(), TestContext.Current.CancellationToken).ConfigureAwait(true));
+        string kid = manifest.GetProperty("signingKeyId").GetString()!;
+        JsonElement key = jwks.RootElement.GetProperty("keys").EnumerateArray().Single(key => key.GetProperty("kid").GetString() == kid);
+        static byte[] Decode(string value) => Convert.FromBase64String(value.Replace('-', '+').Replace('_', '/') + new string('=', (4 - value.Length % 4) % 4));
+        using RSA signer = RSA.Create();
+        signer.ImportParameters(new RSAParameters { Modulus = Decode(key.GetProperty("n").GetString()!), Exponent = Decode(key.GetProperty("e").GetString()!) });
+        (Convert.ToHexString(SHA256.HashData(signer.ExportSubjectPublicKeyInfo())) == manifest.GetProperty("signingPublicKeySha256").GetString())
+            .ShouldBeTrue("Fresh SDK assertions use the independently pinned signer.");
+        void Verify(string token, JsonElement probe)
+            => typeof(PlatformWorkloadEnrollment).GetMethod("VerifyToken", BindingFlags.NonPublic | BindingFlags.Static)!
+                .Invoke(null, [token, signer, kid, authority, client.GetProperty("workload").GetString()!, probe, manifest.GetProperty("expiresAt").GetInt64()]);
+        WebApplicationBuilder host = WebApplication.CreateBuilder();
+        host.Logging.ClearProviders();
+        host.Configuration.AddInMemoryCollection(configuration);
+        host.Services.AddEventStoreWorkloadAssertionIssuer();
+        WebApplication app = host.Build();
+        await using var appCleanup = app.ConfigureAwait(true);
+        IWorkloadAssertionIssuer sdk = app.Services.GetRequiredService<IWorkloadAssertionIssuer>();
+        sdk.CanBindResources.ShouldBeTrue();
+        foreach (JsonElement probe in client.GetProperty("probes").EnumerateArray())
+        {
+            string audience = probe.GetProperty("audience").GetString()!, operation = probe.GetProperty("operation").GetString()!;
+            audience.ShouldBe("eventstore");
+            audience.ShouldNotBe(physicalGateway);
+            Dictionary<string, string> bindings = probe.GetProperty("bindings").EnumerateObject()
+                .ToDictionary(binding => binding.Name, binding => binding.Value.GetString()!, StringComparer.Ordinal);
+            string? token = await sdk.IssueAsync(new(audience, operation, bindings), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            if (token is null) throw new InvalidOperationException("Native SDK refused canonical enrolled assertion.");
+            Verify(token, probe);
+            (await sdk.IssueAsync(new(physicalGateway, operation, bindings), TestContext.Current.CancellationToken).ConfigureAwait(true) is null)
+                .ShouldBeTrue("A physical gateway audience has no enrolled grant.");
+            Dictionary<string, string> altered = new(bindings, StringComparer.Ordinal) { ["eventstore:bound-tenant"] = "foreign-tenant" };
+            (await sdk.IssueAsync(new(audience, operation, altered), TestContext.Current.CancellationToken).ConfigureAwait(true) is null)
+                .ShouldBeTrue("Altered bindings refuse without fallback.");
+            if (bindings.Count == 0) continue;
+            using RSA proof = RSA.Create();
+            proof.ImportPkcs8PrivateKey(Convert.FromBase64String(configuration["Authentication:BoundStreamRead:PrivateKey"]!), out _);
+            foreach (string fault in new[] { "none", "physical-audience", "tenant", "domain" })
+            {
+                WebApplicationBuilder sourceHost = WebApplication.CreateBuilder();
+                sourceHost.Logging.ClearProviders();
+                sourceHost.Configuration.AddInMemoryCollection(configuration);
+                using var transport = new RecordingDurabilityHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.ServiceUnavailable));
+                sourceHost.Services.AddEventStoreGatewayNativeSourceMetadataReader("folders", fault == "physical-audience" ? physicalGateway : "eventstore")
+                    .ConfigurePrimaryHttpMessageHandler(() => transport);
+                WebApplication sourceApp = sourceHost.Build();
+                await using var sourceCleanup = sourceApp.ConfigureAwait(true);
+                INativeSourceMetadataReader source = sourceApp.Services.GetRequiredService<INativeSourceMetadataReader>();
+                var identity = new AggregateIdentity(fault == "tenant" ? "foreign-tenant" : bindings["eventstore:bound-tenant"], fault == "domain" ? "other" : "folders", "component-source");
+                (await source.ReadAsync(identity, TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldBeNull();
+                transport.Requests.Count.ShouldBe(fault == "none" ? 1 : 0);
+                if (fault != "none") continue;
+                var sent = transport.Requests.Single();
+                sent.Headers["dapr-app-id"].ShouldBe(physicalGateway);
+                new Uri(sent.Uri).AbsolutePath.ShouldBe("/api/v1/streams/read/workload");
+                Verify(sent.Headers[EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName], probe);
+                StreamReadRequest request = JsonSerializer.Deserialize<StreamReadRequest>(sent.Body, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+                BoundStreamReadProof.Verify(sent.Headers[BoundStreamReadProof.HeaderName], request, client.GetProperty("workload").GetString()!,
+                    Convert.ToBase64String(proof.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
+            }
+        }
     }
 
     private static async Task<Dictionary<string, object>> EnvironmentAsync(IDistributedApplicationTestingBuilder builder, ProjectResource resource)
