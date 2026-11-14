@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "recorded_utc": "2026-11-14T22:52:05.988686+00:00",
+  "purpose": "Continuation verification of the two still-open review-seven owner prerequisites; no new runtime correction or acceptance claim.",
+  "spec": {
+    "path": "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "sha256": "371d23b465bcf053d5aa38324d62fedf7f28fc4c33ac51d32ff1e4881b197884"
+  },
+  "required_context_count": 17,
+  "required_context_inputs": {
+    "path": ".artifacts/story-12-2-continuation-authority-20261114/required-context-inputs.json",
+    "sha256": "0d1d6309d206ca8c6a215a68d4af2ec42364739520ffe86cb4fc5b9f5f4d011f"
+  },
+  "heads": {
+    ".": "cf69a6a46ee1bfc23faf9d1224480a2f217f4993",
+    "references/Hexalith.Tenants": "d89f234c4f020373aaabe0e3699ecdb5097b1079",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.EventStore": "749d162538b321e80401a4b69a7f706ba656c9e0",
+    "references/Hexalith.FrontComposer": "366de54c995cfd29b51f73e1dfafe8256753f5fe",
+    "references/Hexalith.Memories": "2c2e9b58990638ededf22e8e67ff5c12de75b434",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.Builds": "99f7c86072ca7b35e3fbbaee4606a559a847805a",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "fe7a8430cb765e5f262eb74938aa032741eea0a6",
+    "references/Hexalith.Platform": "9ccbd4c7f8f3b6143e7b4f7b20a0e192de932ac1",
+    "references/Hexalith.McpCli": "4ffb33e84fd12a2642deb19b3492ce67ae670cee",
+    "references/Hexalith.Parties": "0911387de9edaefbeb8a93437ce760e8e9a366f1"
+  },
+  "changes": {
+    "production_code": false,
+    "tests": false,
+    "spec_or_frozen_intent": false,
+    "selected_outputs": false,
+    "metadata_only_receipt": true
+  },
+  "command": "run-with-temp python3 .artifacts/story-12-2-continuation-authority-20261114/run.py",
+  "command_exit_code": 0,
+  "current_producer_binding": {
+    "unchanged_dll_pdb_pairs": 106,
+    "unchanged_asset_files": 11,
+    "unchanged_input_dlls_per_probe": 131,
+    "post_check_binary_drift": 0,
+    "source_pdb_audit": {
+      "path": ".artifacts/story-12-2-continuation-authority-20261114/producer-preflight.json",
+      "sha256": "d62c203e3b08cb7f004297c728bab73e27cfe8fc63f1c5d4ff9c1c433af00c1c"
+    },
+    "ordinary_source_changes_since_producer": 26,
+    "source_change_owners": {
+      "Hexalith.Tenants": 12,
+      "Hexalith.FrontComposer": 14
+    },
+    "scope": "Root and EventStore operational/deadline sources remain bound to preserved producer. Full current graph is not qualified after external Tenants/FrontComposer changes. Existing PDB embedded/generated-source audits are reused only for unchanged PDBs; no new extraction is claimed."
+  },
+  "executed_probes": [
+    {
+      "name": "notification-historical-native-authority-probe",
+      "observation": "Available/ready before rollback; Available/locked after restoring coherent old row/evidence/applicability; no original task completion exists.",
+      "compile_exit_code": 0,
+      "run_exit_code": 0,
+      "program_unchanged": true,
+      "source": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-historical-native-authority-probe/Program.cs",
+        "sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d"
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-historical-native-authority-probe/receipt.json",
+        "sha256": "cfb66bd11252accbc0fa161ef2ac2f3bdd6f57730049f88d60fd084a07f1ee96"
+      },
+      "inputs": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-historical-native-authority-probe/input-hashes.json",
+        "sha256": "02ece0de1f7dd13c3be052d36cee4223d035a61ae2e36a66be0ae75c2deb27e1"
+      },
+      "output": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-historical-native-authority-probe/stdout.log",
+        "sha256": "0bd48b4abf042a48da81a0548a73ee54b6e2cbde3e80e0a0d5a7b9f414f56362"
+      },
+      "interpretation": "Defect reproduced; exit 0 qualifies probe execution only."
+    },
+    {
+      "name": "notification-expired-message-authority-probe",
+      "observation": "Live writer accepts MessageId reuse at new position 3 after day-401 receipt expiry; identical complete reconstruction throws Operational source sequence gap.",
+      "compile_exit_code": 0,
+      "run_exit_code": 0,
+      "program_unchanged": true,
+      "source": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-expired-message-authority-probe/Program.cs",
+        "sha256": "4ecc9312fc83558104c7d53a7c2bbdc2c3f47fd8795f767ff0e82d3afaa51ddf"
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-expired-message-authority-probe/receipt.json",
+        "sha256": "cf93964dd0ca2e93f3e9c9c16312deb2f3b935946486868472063ddf4283628d"
+      },
+      "inputs": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-expired-message-authority-probe/input-hashes.json",
+        "sha256": "02ece0de1f7dd13c3be052d36cee4223d035a61ae2e36a66be0ae75c2deb27e1"
+      },
+      "output": {
+        "path": ".artifacts/story-12-2-continuation-authority-20261114/notification-expired-message-authority-probe/stdout.log",
+        "sha256": "5fcad968f6fb1a5c7105dce97493bd838e788a7663a826890feb62fa47750bd0"
+      },
+      "interpretation": "Defect reproduced; exit 0 qualifies probe execution only."
+    }
+  ],
+  "focused_preserved_producer_tests": {
+    "passed": 17,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "receipt": {
+      "path": ".artifacts/story-12-2-continuation-authority-20261114/focused-preserved-producer-receipt.json",
+      "sha256": "86164c7082cf6b7894e7d1d82540bc18b8fa3383d893a3d27c0d495314522883"
+    },
+    "xml": {
+      "path": ".artifacts/story-12-2-continuation-authority-20261114/focused-preserved-producer.xml",
+      "sha256": "fd41978c164d1f72d3bb080e1046f2499e23407262becf895fbd8a27134e2e1f"
+    },
+    "scope": "OperationalStatusRoundSevenTests (8) and PermissionProjectionDeadlineCleanupTests (9); passing independent corrections do not establish either missing source-authority guarantee."
+  },
+  "remaining_prerequisite": {
+    "path": "_bmad-output/implementation-artifacts/proposal-12-2-historical-source-authority-prerequisite.md",
+    "sha256": "7f76caaf89b3916cbffd9a26cbe84b3c8111094df8b05420b098d16ff38d1a70"
+  },
+  "missing_authority": [
+    "Independent latest source applicability for an exact historical native-release/nonterminal/failed task or workspace at one verified current revision.",
+    "Independent whether a candidate MessageId already belongs to another source sequence after derived receipt expiry."
+  ],
+  "existing_api_limits": [
+    "NativeSourceObservation supplies committed prefix proof and observation time, without historical task facts or MessageId lookup.",
+    "Actual Server/Workers metadata-only receiver enrollment rejects event ranges before actor observation.",
+    "AuthoritativeEventStreamReader complete observations remain capped at 10000 events and 16 MiB; required 10001/32769 histories exceed that bound.",
+    "Shared projection generation, applied-delivery and active-capture proofs authenticate original position/delivery, without latest historical-key or cross-position identity queries."
+  ],
+  "owner_handoff": "EventStore/platform owner must select and qualify a bounded supported source-fact contract and enroll each actual Server/Workers caller for its exact operation/resource scope. Folders consumption and full qualification follow that prerequisite.",
+  "whole_story_complete": false,
+  "matrix_acceptance_complete": false,
+  "full_current_graph_qualified": false,
+  "strict_rerun": false,
+  "strict_scope": "Earlier 1/1 pass in 434.997 seconds remains exact-producer historical evidence; no new live pass is claimed.",
+  "sm4": "Open, record-only: prior producer command acknowledgment p95 9237.965ms/1000ms and status read p95 999.025ms/500ms; Workers p95 222.652ms/1000ms.",
+  "all_five_frozen_matrix_rows_remain_incomplete": true,
+  "cleanup": {
+    "wrapper_scratch": "/tmp/hexalith-job.BeoU3spR",
+    "wrapper_scratch_absent": true,
+    "all_direct_children_waited": true,
+    "topology_started": false,
+    "container_operations": false,
+    "selected_output_mutations": false
+  },
+  "cleanup_receipt": {
+    "path": ".artifacts/story-12-2-continuation-authority-20261114/cleanup.json",
+    "sha256": "1ada026a20ccacaf124fe2cdcd9226ef2fdddd5bea4a16a53054546be32f7281"
+  },
+  "summary": {
+    "path": ".artifacts/story-12-2-continuation-authority-20261114/summary.json",
+    "sha256": "0afeaa209f2b9f06bb429f45093413c8856d4a4a48e7b8a0462cc9c15661b074"
+  },
+  "scope_exclusions_preserved": [
+    "No source-byte replacement, new deadline/retry, retention extension, unbounded ledger or local storage protocol.",
+    "No dependency/gitlink/pin update, Git mutation, publication, deployment or public v2 exposure."
+  ]
+}
