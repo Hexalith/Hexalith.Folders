@@ -68,7 +68,10 @@ public sealed class OperationalStatusProjectionWriter
                     if (retained.IsAvailable && !retained.IsStale && !retained.IsDegraded
                         && retained.Value is { } anchor && OperationalStatusFold.Valid(anchor, tenantId, folderId)
                         && anchor.Sequence >= source.SequenceNumber)
+                    {
+                        RequireTailIdentity(anchor, item);
                         continue; // C3-expired replay must not refresh rows, receipts, or SDK writer metadata.
+                    }
                 }
                 catch (InvalidOperationException exception) when (exception.Message == "The shared projection has no epoch state.") { }
             }
@@ -132,6 +135,7 @@ public sealed class OperationalStatusProjectionWriter
             OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), cancellationToken).ConfigureAwait(false)).Value;
         if (source.Sequence <= (current?.Sequence ?? 0))
         {
+            RequireTailIdentity(current!, source);
             if (Expired(SourceTime(source, source.Timestamp))) return [];
             if (receipt is null || message != receipt || receipt.EventDigest != source.Digest
                 || receipt.MessageId != source.MessageId || receipt.Sequence != source.Sequence || !receipt.Valid())
@@ -239,10 +243,12 @@ public sealed class OperationalStatusProjectionWriter
             if (value is null && proof is null) continue; // Paired C3 expiry is safe absence.
             var applicability = (await ReadAsync<OperationalStatusViewApplicability>(scope, generation,
                 OperationalStatusKeys.Applicability(key), cancellationToken).ConfigureAwait(false)).Value;
-            string? actual = value is null ? null : key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceTaskId ?? "")
-                || originalTask is not null && key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, originalTask)
-                ? OperationalStatusIntegrity.Digest(value.Deserialize<TaskStatusReadModelSnapshot>(WireJson))
-                : OperationalStatusIntegrity.Digest(value.Deserialize<OperationalWorkspaceStatus>(WireJson));
+            bool isTask = key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceTaskId ?? "")
+                || originalTask is not null && key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, originalTask);
+            TaskStatusReadModelSnapshot? taskValue = isTask ? value?.Deserialize<TaskStatusReadModelSnapshot>(WireJson) : null;
+            OperationalWorkspaceStatus? workspaceValue = isTask ? null : value?.Deserialize<OperationalWorkspaceStatus>(WireJson);
+            string? actual = value is null ? null : isTask ? OperationalStatusIntegrity.Digest(taskValue)
+                : OperationalStatusIntegrity.Digest(workspaceValue);
             OperationalStatusReceipt? receipt = proof is null ? null : (await ReadAsync<OperationalStatusReceipt>(scope,
                 generation, OperationalStatusKeys.Receipt(checkpoint.ManagedTenantId, checkpoint.FolderId, proof.Sequence),
                 cancellationToken).ConfigureAwait(false)).Value;
@@ -257,8 +263,38 @@ public sealed class OperationalStatusProjectionWriter
                     : key == OperationalStatusKeys.Workspace(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceId ?? "")
                         && (!checkpoint.WorkspaceEvidence.TryGetValue(checkpoint.State.WorkspaceId ?? "", out string? workspaceDigest) || workspaceDigest != actual)))
                 throw new OperationalStatusUnavailableException();
+            if (taskValue is not null)
+            {
+                var completion = (await ReadAsync<OperationalStatusTaskCompletion>(scope, generation,
+                    OperationalStatusKeys.TaskCompletion(checkpoint.ManagedTenantId, checkpoint.FolderId, taskValue.TaskId),
+                    cancellationToken).ConfigureAwait(false)).Value;
+                if (completion is not null
+                    ? !completion.Valid(checkpoint.ManagedTenantId, checkpoint.FolderId, taskValue.TaskId, checkpoint.Sequence)
+                        || OperationalStatusIntegrity.Digest(completion.Restore(taskValue)) != actual
+                    : taskValue.TerminalState is "ready" or "committed")
+                    throw new OperationalStatusUnavailableException();
+            }
+            else
+            {
+                if (workspaceValue?.Workspace.AcceptedCommandState?.TaskId is { } taskId)
+                {
+                    var completion = (await ReadAsync<OperationalStatusTaskCompletion>(scope, generation,
+                        OperationalStatusKeys.TaskCompletion(checkpoint.ManagedTenantId, checkpoint.FolderId, taskId),
+                        cancellationToken).ConfigureAwait(false)).Value;
+                    if (completion is not null && (!completion.Valid(checkpoint.ManagedTenantId, checkpoint.FolderId, taskId, checkpoint.Sequence)
+                        || completion.Closure.WorkspaceId == workspaceValue.Workspace.WorkspaceId && workspaceValue.Sequence < completion.Sequence))
+                        throw new OperationalStatusUnavailableException();
+                }
+            }
         }
 
+    }
+
+    private static void RequireTailIdentity(OperationalStatusCheckpoint checkpoint, OperationalStatusEvent source)
+    {
+        if (source.Sequence == checkpoint.Sequence && (checkpoint.MessageIds[source.Sequence] != source.MessageId
+            || checkpoint.EventDigests[source.Sequence] != source.Digest))
+            throw new InvalidOperationException("Operational source identity conflict.");
     }
 
     /// <summary>Builds logical operations from complete authoritative source, preserving valid prefix conflicts.</summary>

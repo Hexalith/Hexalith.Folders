@@ -91,7 +91,7 @@ public static class OperationalStatusEventReader
             JsonElement root = json.RootElement;
             if (!(root.TryGetProperty("Code", out JsonElement code) || root.TryGetProperty("code", out code))
                 || code.ValueKind != JsonValueKind.String || !Enum.TryParse<FolderResultCode>(code.GetString(), out FolderResultCode resultCode) || !Enum.IsDefined(resultCode)
-                || resultCode == FolderResultCode.Accepted
+                || !FoldersRejectionSource.IsRejectionCode(resultCode)
                 || !(root.TryGetProperty("CommandType", out JsonElement command) || root.TryGetProperty("commandType", out command))
                 || command.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(command.GetString()))
             {

@@ -1274,6 +1274,7 @@ tests/Hexalith.Folders.Server.Tests/FolderOwnerReadQueryHandlerTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderOwnerReadStore.cs
 tests/Hexalith.Folders.Server.Tests/FolderProblemDetailsFactoryTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderRejectionEventTests.cs
+tests/Hexalith.Folders.Server.Tests/FolderRejectionReplayTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderReplayAuditTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderRepositoryStartupAssertionTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderSensitiveDiagnosticDetectorTests.cs
@@ -1463,6 +1464,7 @@ tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTe
 tests/Hexalith.Folders.Tests/Authorization/GatewayOrganizationStreamSequenceReaderTests.cs
 tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
 tests/Hexalith.Folders.Tests/Authorization/OwnerMetadataReaderStub.cs
+tests/Hexalith.Folders.Tests/Authorization/PermissionProjectionDeadlineCleanupTests.cs
 tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
 tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
@@ -1490,6 +1492,7 @@ tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRead
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReviewThreeTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundFiveTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundSevenTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRoundSixTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/RoundFiveOperationalHistory.cs
 tests/Hexalith.Folders.Tests/Projections/SemanticIndexing/SemanticIndexingBridgeProjectionTests.cs

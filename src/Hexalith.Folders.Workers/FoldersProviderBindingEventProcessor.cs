@@ -42,16 +42,6 @@ public sealed class FoldersProviderBindingEventProcessor(EventStoreProviderReadi
             if (FoldersRejectionSource.ReadOwner(envelope.Payload, envelope.TenantId, envelope.AggregateId,
                 envelope.CorrelationId) != FoldersSourceOwnerKind.ProviderBinding)
                 throw new InvalidOperationException("Provider configuration rejection owner is invalid.");
-            using JsonDocument json = JsonDocument.Parse(envelope.Payload);
-            JsonElement root = json.RootElement;
-            if (root.ValueKind != JsonValueKind.Object
-                || !root.TryGetProperty("CommandType", out JsonElement type) && !root.TryGetProperty("commandType", out type)
-                || type.GetString() != "Hexalith.Folders.Commands.ConfigureProviderBinding"
-                || !root.TryGetProperty("Code", out JsonElement code) && !root.TryGetProperty("code", out code)
-                || code.ValueKind != JsonValueKind.String
-                || !Enum.TryParse(code.GetString(), out FolderResultCode resultCode) || !Enum.IsDefined(resultCode)
-                || resultCode == FolderResultCode.Accepted)
-                throw new InvalidOperationException("Provider configuration rejection is invalid.");
         }
         else throw new InvalidOperationException("Provider configuration source type is unsupported.");
         string digest = Convert.ToHexString(SHA256.HashData(

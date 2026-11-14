@@ -54,7 +54,7 @@ public static class FoldersRejectionSource
         if (command is null || command.Length is 0 or > 128
             || command.Any(character => !char.IsAsciiLetterOrDigit(character) && character is not ('.' or '_' or '-'))
             || !Enum.TryParse(code, out FolderResultCode result) || !Enum.IsDefined(result)
-            || result == FolderResultCode.Accepted || code != result.ToString()
+            || !IsRejectionCode(result) || code != result.ToString()
             || OrganizationCommands.Contains(command) && owner != FoldersSourceOwnerKind.Organization
             || FolderCommands.Contains(command) && owner != FoldersSourceOwnerKind.Folder
             || command == "Hexalith.Folders.Commands.ConfigureProviderBinding" && owner != FoldersSourceOwnerKind.ProviderBinding)
@@ -65,6 +65,11 @@ public static class FoldersRejectionSource
         RequireHint(root, "CorrelationId", "correlationId", correlationId);
         return owner;
     }
+
+    /// <summary>Excludes every successful command outcome from retained rejection evidence.</summary>
+    internal static bool IsRejectionCode(FolderResultCode code)
+        => Enum.IsDefined(code) && code is not (FolderResultCode.Accepted or FolderResultCode.Created
+            or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied);
 
     private static string? Text(JsonElement root, string name, string camelName)
         => root.ValueKind == JsonValueKind.Object && (root.TryGetProperty(name, out JsonElement value)

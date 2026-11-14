@@ -20,6 +20,11 @@ internal static class PermissionProjectionCatchUp
 
         long started = Stopwatch.GetTimestamp();
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var notificationCompleted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        // Cancellation callbacks run in reverse registration order. This first registration
+        // completes after the source registrations, including when the timer already owns cancellation.
+        using CancellationTokenRegistration notification = deadline.Token.UnsafeRegister(
+            static state => ((TaskCompletionSource)state!).TrySetResult(), notificationCompleted);
         deadline.CancelAfter(Budget);
         EffectivePermissionsReadModelResult? stale = null;
         try
@@ -30,7 +35,7 @@ internal static class PermissionProjectionCatchUp
                 TimeSpan remaining = Budget - Stopwatch.GetElapsedTime(started);
                 if (remaining <= TimeSpan.Zero)
                 {
-                    return Exhausted();
+                    return await ExhaustedAsync().ConfigureAwait(false);
                 }
 
                 EffectivePermissionsReadModelResult result = await read(deadline.Token)
@@ -39,7 +44,7 @@ internal static class PermissionProjectionCatchUp
                 remaining = Budget - Stopwatch.GetElapsedTime(started);
                 if (remaining <= TimeSpan.Zero)
                 {
-                    return Exhausted();
+                    return await ExhaustedAsync().ConfigureAwait(false);
                 }
 
                 if (result.Status != EffectivePermissionsReadModelStatus.Stale)
@@ -54,22 +59,30 @@ internal static class PermissionProjectionCatchUp
         }
         catch (TimeoutException)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            return Exhausted();
-        }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            throw;
+            return await ExhaustedAsync().ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
-            return Exhausted();
+            return await ExhaustedAsync().ConfigureAwait(false);
         }
 
         // Preserve a completed stale classification, which denies mutations. A read that never
         // completed supplies no evidence; in particular, late available authority cannot escape.
-        EffectivePermissionsReadModelResult Exhausted()
-            => stale ?? EffectivePermissionsReadModelResult.Unavailable("permission_projection_catch_up_timeout", observedAt);
+        async Task<EffectivePermissionsReadModelResult> ExhaustedAsync()
+        {
+            // WaitAsync can win before the owned timer. Disposing that timer alone would
+            // strand the actual source calls with an uncanceled token after exhaustion.
+            try { await deadline.CancelAsync().ConfigureAwait(false); }
+            catch (AggregateException)
+            {
+                // CancelAsync has observed every callback. A callback failure cannot
+                // replace the already selected safe result or caller cancellation.
+            }
+            // CancelAsync does not join a notification that the timer already started.
+            // Keep the registrations alive until that notification reaches our last callback.
+            await notificationCompleted.Task.ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return stale ?? EffectivePermissionsReadModelResult.Unavailable("permission_projection_catch_up_timeout", observedAt);
+        }
     }
 }

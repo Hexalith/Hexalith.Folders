@@ -16,8 +16,10 @@ namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
 /// <summary>Exercises all legitimate non-Folder owners on the domain-wide production projection.</summary>
 public sealed class NonFolderOperationalSourceTests
 {
-    [Fact]
-    public async Task ProviderAndOrganizationPrefixesPassLiveBoundedRebuildAndCatchUpWithoutFolderRowsAsync()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProviderAndOrganizationPrefixesPassLiveBoundedRebuildAndCatchUpWithoutFolderRowsAsync(bool unknownCommands)
     {
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
@@ -30,6 +32,13 @@ public sealed class NonFolderOperationalSourceTests
             new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User, "reader", "read_metadata",
                 "correlation-a", "task-a", "grant", "grant-fingerprint"), Reject("Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal")];
         object[] binding = [Reject("Hexalith.Folders.Commands.ConfigureProviderBinding"), provider, Reject("Hexalith.Folders.Commands.ConfigureProviderBinding")];
+        if (unknownCommands)
+        {
+            organization[0] = Reject("future_command");
+            organization[^1] = Reject("future_other_command");
+            binding[0] = Reject("future_command");
+            binding[^1] = Reject("future_other_command");
+        }
         var owners = new[] { (Id: "tenant-a", Events: Sources(organization, 100)), (Id: actor, Events: Sources(binding, 200)) };
         foreach (var owner in owners)
         {

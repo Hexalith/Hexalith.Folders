@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "story": "12.2",
+  "recordedAtUtc": "2026-11-14T17:43:45Z",
+  "human": "Jerome",
+  "responseVerbatim": "approve",
+  "decision": "Authorize one additional correction/review cycle under review-12-2-round7-disposition.md and its preservation constraints, followed by verification and independent review.",
+  "reviewLoopIteration": 7,
+  "approvedReviewLoopIteration": 7,
+  "baselineCommit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "entryHead": "70172410b0e6994a2235b3a9bc083214f64973b1",
+  "frozenIntentSha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "scope": [
+    "Five distinct round-seven correction areas and three surviving patches",
+    "Affected exact-source qualification, matrix audit and independent review",
+    "Preserve all recorded KEEP instructions and earlier evidence"
+  ],
+  "exclusions": [
+    "Further correction-loop exceptions",
+    "Physical rollback, staging, commits, pushes or dependency/gitlink changes",
+    "Publication, deployment or public v2 exposure",
+    "Content-owned Story 12.3 changes",
+    "Retention extension, unbounded domain identity ledger or local storage protocol",
+    "General performance or policy redesign and weakened acceptance"
+  ]
+}

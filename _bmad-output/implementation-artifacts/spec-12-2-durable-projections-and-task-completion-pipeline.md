@@ -2,11 +2,11 @@
 title: 'Story 12.2: Durable projections and task-completion pipeline'
 type: 'feature'
 created: '2026-10-18'
-status: 'in-review'
+status: 'in-progress'
 baseline_commit: 'c22b13137202f7bf8c60b80c095a69748435bd6e'
 route: 'dispatch'
 review_loop_iteration: 7
-approved_review_loop_iteration: 6
+approved_review_loop_iteration: 7
 enrollment_baseline_commit: '91c0b89801a114962433f6dc6efd54d308d9a548'
 context:
   - '_bmad-output/implementation-artifacts/epic-12-context.md'
@@ -24,6 +24,8 @@ context:
   - '_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-shutdown-scope-approval-20261114.json'
   - '_bmad-output/implementation-artifacts/review-12-2-round6-disposition.md'
   - '_bmad-output/implementation-artifacts/evidence/story-12-2-review6-continuation-approval-20261114.json'
+  - '_bmad-output/implementation-artifacts/review-12-2-round7-disposition.md'
+  - '_bmad-output/implementation-artifacts/evidence/story-12-2-review7-continuation-approval-20261114.json'
 ---
 
 <frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
@@ -283,7 +285,61 @@ The first five rows are complete on the current source graph, with broad contrac
   Release every owned process/container/scratch and provide new metadata-only evidence for parent
   diff/matrix/identity verification and the following independent review.
 
+**Review-seven corrections — one additional cycle approved 2026-11-14 (current):**
+
+- [ ] `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs`,
+  `src/Hexalith.Folders/Projections/OperationalStatus/` and persistence/read regressions:
+  establish independently source-bound current applicability for historical nonterminal,
+  native-release and failed tasks. Restoring an older coherent row/evidence/applicability triple
+  after task B must not return task A's obsolete locked state. Use existing SDK/source authority
+  with bounded records/checkpoints; no self-attesting extra copy, unbounded checkpoint map or
+  retention extension. Cover actual native release, failed transitions, historical reads,
+  generation inheritance/interleaving and authorized complete-source repair.
+- [x] `OperationalStatusProjectionWriter.cs` and durable duplicate regressions: validate original
+  retained task completion/source authority for every historical required view before returning
+  AlreadyCompleted. Reproduce task A closure, task B advancement, rollback of A's preclosure triple
+  and redelivery of A's original acquisition. The writer must not acknowledge a required view the
+  durable reader finds unavailable. Preserve lawful older rows, paired absence and positive expiry.
+- [x] `src/Hexalith.Folders.Server/FolderEventReplay.cs`, actor-owned Folder/Organization folds and
+  source-reconstruction tests: accept normalized unknown-command rejection prefixes using validated
+  owner scope, consistently with operational intake. Cover subsequent ordinary commands for each
+  supported owner; retain known wrong-owner, malformed scope, code, version and position refusals.
+- [x] `src/Hexalith.Folders.Workers/FoldersProviderBindingEventProcessor.cs`, folder-permission intake
+  and actual authenticated subscription tests: remove remaining known-command-only rejection
+  divergence after validated owner classification. Provider/organization accepted and lawful unknown
+  rejection prefixes must agree between live and named processing and permit subsequent valid
+  configuration, with no fabricated provider/Folder output or durable acknowledgement on refusal.
+- [ ] `OperationalStatusProjectionWriter.cs`, bounded source identity validation and C3/named rebuild
+  regressions: reject reuse of an old MessageId at a new source position after its 400-day derived
+  receipt expires. Reconcile live and complete-source reconstruction through existing SDK/source
+  authority; absence of expired evidence never proves uniqueness. Preserve original expiry,
+  bounded metadata and SDK limits; do not add an unbounded domain ledger or local storage protocol.
+  If the existing public SDK cannot supply the required authority, finish independent corrections
+  and report the exact missing capability and concrete owner prerequisite without weakening behavior.
+- [x] Apply the three surviving patches: compare retained checkpoint-tail MessageId/EventDigest
+  before the expired-replay shortcut in `OperationalStatusProjectionWriter.cs`; consistently reject
+  Accepted/Created/IdempotentReplay/AlreadyApplied as rejection codes in `FoldersRejectionSource.cs`
+  and relevant callers; add authenticated organization-owner unknown rejection prefix, duplicate,
+  persisted LastSequence and next-sequence baseline coverage in
+  `tests/Hexalith.Folders.Workers.Tests/WorkersOrganizationAclRouteTests.cs`.
+- [x] Requalify affected Debug/source runtime with normal analyzers and the existing both-source
+  flags, version 5.0.1 and story12-2-qualification suffix. Run focused red/green regressions first,
+  affected consumer/SDK/capacity/issuer/package/inventory gates individually, and unchanged
+  tracing-off strict real-provider acceptance after current producer/source/PDB preflight. Bind
+  reused evidence explicitly to unchanged inputs. Audit all five frozen matrix rows, preserve
+  failures/SM4 record-only results and all three protected strict bodies, release owned
+  processes/containers/scratch and retain new metadata-only evidence for independent parent review.
+
+- [x] Current qualification cancellation correction: `PermissionProjectionCatchUp.cs` must request
+  cancellation of its owned deadline on exhaustion before disposing it. The current actual-model
+  diagnostic observes four of 72 unavailable outcomes with both source tokens still uncanceled
+  and both final drain signals absent. Preserve the two-second enabled budget, every existing
+  outcome/source check, caller behavior and actual read ownership; qualify exact-source red/green
+  controls, the unchanged permission class, ordinary Server suite and final producer/runtime.
+
+
 **Acceptance Criteria:**
+
 - Given authorized source events, when delivery, duplicates, restart and empty-checkpoint rebuild run, then all six status concerns converge with truthful freshness and unchanged retained hashes.
 - Given clean release, when the real authenticated path closes a task, then terminal evidence survives restart and later non-replay mutation is denied. Given retained commit-success evidence, when folded, then status reports `committed`; real provider execution remains Story 12.4.
 - Given conflicting, unsupported, denied or failed input, when processing runs, then neither view completion nor checkpoint falsely advances; reads return canonical metadata-only outcomes.
@@ -329,6 +385,18 @@ The first five rows are complete on the current source graph, with broad contrac
 
 ## Spec Change Log
 
+- 2026-11-14 current review-seven qualification: the unchanged permission cancellation case fails
+  at its final **two-second source-drain wait**, line 172, after the five-second pending wait and
+  unavailable/reason assertions have completed. Two ordinary full Server runs and one serialized
+  diagnostic retain this failure; the focused nine-case class passes. A private actual-model
+  reproduction uses the existing budgets and records four of 72 exhausted results with both
+  actual source input tokens cancelable but uncanceled and both stop signals absent; all stores
+  remain unchanged, and diagnostic cleanup starts only after outcome capture. The parent authorized
+  the smallest owned-deadline cancellation correction within existing source-call ownership and
+  verification requirements. This is a cancellation correctness repair, not a deadline, authority,
+  performance-policy or review-loop change. Preserve all failures, source/PDB bindings, current
+  iteration 7 and both independent source-authority prerequisites.
+
 - 2026-11-04 review-five loopback (`review_loop_iteration: 5`): every final finding from the three
   independent layers is recorded separately in Review Triage Log. Reproduced native history makes
   a306073-byte checkpoint exceed the existing256KiB SDK value bound; malformed native acquisition
@@ -373,6 +441,20 @@ The first five rows are complete on the current source graph, with broad contrac
 - 2026-11-14 parent review six: current source/runtime/matrix verification and the strict pass are retained. Four runtime correction areas plus the successful-dispatch shutdown test gap remain; all 14 findings are triaged before grouping. The next loop exceeds the rendered limit, so no code is reverted or re-derived pending the human decision.
 
 - 2026-11-14 review-six continuation: the user answered yes to one additional correction/review cycle beyond the five-loop guard. Iteration 6 is authorized once; preserve its counter and the original baseline. Re-derive affected functions in place under the logged KEEP constraints, without a physical rollback of approved work. The four runtime correction areas and successful-dispatch shutdown test patch are specified above; captured intent/frozen matrix stay unchanged. A further bad-spec/intent-gap loop is not implicitly authorized.
+
+- 2026-11-14 review-seven continuation: Jerome answered "approve" to the concrete request for one
+  additional correction/review cycle under [the round-seven plan](review-12-2-round7-disposition.md).
+  [The approval receipt](evidence/story-12-2-review7-continuation-approval-20261114.json) authorizes
+  iteration 7 once; preserve review_loop_iteration=7 and the original c22b baseline. Seven current
+  tasks above address five separate demonstrated authority/adoption defects, the three surviving
+  patches and exact-source qualification. Re-derive only affected functions in place, with no
+  physical rollback of committed/user work. KEEP every round-seven preservation instruction,
+  frozen intent/matrix/body hash, bounded SDK protocol, original C3 deadline, source bytes,
+  authorization and prior successful shutdown correction. Avoid coherent historical rollback,
+  false duplicate acknowledgement, legitimate unknown-prefix refusal and post-expiry MessageId
+  reuse; add no unbounded ledger or self-attesting authority. A missing SDK capability requires a
+  precise owner prerequisite, not a local substitute. Content/12.3 remains separately owned.
+  No release/Git/public-v2/performance authority or further loop exception is inferred.
 
 ## Review Triage Log
 
@@ -3768,3 +3850,51 @@ p95=1277.472ms exceeds 500ms; Workers operational delivery p95=220.032ms is with
 retry, restart order, protected assertion, authorization, source proof, public-v2, package/gitlink/pin,
 Git or deployment change is made. PD10/A6b/governance/exposure/closure, production owner enrollment,
 separately authorized SDK release consumption and whole-story acceptance remain independent gates.
+
+
+### Approved review-seven correction handoff — 2026-11-14
+
+Jerome's latest "approve" authorizes the concrete additional correction/review cycle requested
+after review seven. The new [approval receipt](evidence/story-12-2-review7-continuation-approval-20261114.json)
+and seven current Review-seven tasks in Tasks & Acceptance are authoritative. This supersedes
+earlier halt/approval-needed notes only for iteration 7 and its following independent review.
+Keep review_loop_iteration=7, approved_review_loop_iteration=7 and the original c22b baseline.
+The skill has already been rendered; do not rerender it or reset review history. Re-derive the
+demonstrated defects in place without physical rollback, preserving every KEEP constraint in
+[the disposition](review-12-2-round7-disposition.md). Earlier checked tasks/passes remain exact-source
+history; they do not qualify changed runtime. Story/sprint remain in-progress.
+
+The prior parent probes, source inputs, logs and assembly bindings remain useful results in
+`.artifacts/story-12-2-review7-20261114/` at the repository root. The sealed phase and earlier
+receipt directories remain intact. Inspect existing phase scripts/receipts before reusing them;
+never assume an old named /tmp helper survives. Check actual source/output/head identity before
+reusing the proven production AppHost baseline. Honor the baseline Aspire preflight using the
+matching lifecycle skill when a topology is needed; use only owned exact-target isolated resources.
+Ad hoc disposable verification jobs use run-with-temp with copies, feeds and outputs under its
+TMPDIR. Useful logs/results stay outside, with raw logs/private data excluded from tracked evidence.
+Root disk has 542 GiB available at handoff; preserve unrelated caches, outputs and applications.
+
+The implementation agent owns sources and selected outputs serially until it releases them.
+The parent performs no competing source/output mutation, builds, tests or topology during this
+handoff. Preserve default-off tracing and all three causal SDK shutdown corrections, actual task/
+remote-call/catalog/fence/work ownership, original source/lease/security guarantees, frozen
+ba0f8873...f183f and all three protected acceptance bodies. No source-byte replacement, retention
+extension, SDK limit relaxation, unbounded local ledger, guessed success, new deadline/retry,
+changed restart order, release/Git/pin/deployment/public-v2 operation or general performance
+redesign is authorized. Content-owned findings stay with 12.3. If existing public source APIs
+cannot establish the required bounded authority, complete all independent work and report a
+precise capability/prerequisite blocker, preserving expected behavior and all evidence.
+
+Return exact changed files, red/green commands/results, final input-bound producer/loaded identities,
+five-row matrix coverage, failures/SM4 limits and cleanup with new metadata-only evidence. Then
+release sources/selected outputs for the parent's actual-diff audit and required independent review.
+
+- Review-seven cleanup follow-up (2026-11-14): the final 72-case actual-model run had **71 drained and one undrained**, correcting the earlier provisional 72-pass claim. A subsequent controlled actual-timer probe captured the deadline in `NotifyingState` while both dependent source tokens remained live: .NET 11 `CancelAsync` does not join an already-started timer notification, and disposal cleared its pending registrations. The bounded correction registers an owned completion signal before source callbacks and awaits it before exhausting/disposal; the two-second budget, original caller priority and safe stale/unavailable outcomes remain unchanged. Previous passing suites/strict receipts remain bound to their previous producer and do not qualify this correction.
+
+Review-seven final notification qualification preflight (2026-11-14): the owned deadline now also joins an already-running timer notification and performs the same cleanup before preserving original-caller cancellation. New notification/caller-first controls are red6/3 and green9/9; the unchanged permission class is9/9, the unchanged72-case actual-model program has72 fully canceled/drained outcomes, and the identical controlled timer program fails against recovered historical red bytes then passes against current source. All four historical Core/ServerTests DLL/PDB hashes were recovered exactly and independently source/PDB audited. The previous71/72 final attempt and earlier strict pass remain superseded evidence, with their original bindings retained.
+
+The refreshed ordinary consumer suites pass5747 cases (Domain2461, Server1434, Workers186, Integration854, Contracts689, EventStore123), zero failures/errors, two unchanged optional Domain skips and11 default issuer NotRun. The actual issuer component separately passes11 Server plus5 AppHost cases; fixture configuration passes10, package/CI passes500, and72 unchanged SDK input files bind the prior626/30/5/22/3 capacity/native/catalog/admin-index/ABI cases. Root/Memories normal-analyzer source builds and106 producer PE/PDB/assets pairs pass. Current source still reproduces both unchecked authority defects; the [concrete owner prerequisite](proposal-12-2-historical-source-authority-prerequisite.md) records exact existing APIs, grants, bounds and safe handoff. No matrix row or whole-story completion follows from these executed positive checks. Final tracing-off strict qualification is pending at this preflight.
+
+Final review-seven notification qualification — 2026-11-14: the unchanged tracing-off strict class passes1/1, zero failures/errors/skips,434.997 seconds. All106 post-live PE/PDB/assets pairs and241 scoped SDK loaded observations match the audited current producer, with no observations outside the selected scope. Source/head/runtime drift is zero, the frozen block and three protected bodies remain exact, and all task-owned descendants/containers/directories are gone. The raw cleanup snapshot also records one newly observed, unattributed SDK container; read-only inspection establishes no owner, and it is left untouched. No global-empty cleanup or external-owner claim is made. All preexisting container IDs remain present.
+
+SM4 remains open: command acknowledgment p95=9237.965ms against1000ms; status read p95=999.025ms against500ms; Workers delivery p95=222.652ms against1000ms. These are unchanged-budget record-only results. The [current implementation packet](evidence/story-12-2-review7-implementation-20261114.json) and [five-row matrix](evidence/story-12-2-review7-implementation-matrix-20261114.json) bind executed passing coverage separately from the still-reproduced historical-applicability and post-C3 MessageId authority defects. Both source-authority tasks remain unchecked, every affected acceptance row remains incomplete, and Story12.2/sprint/whole-story closure remain in progress. Prior failed/flaky attempts, the superseded71/72 claim and previous strict producer are preserved explicitly. Parent independent review, owner capability/enrollment, SM4 and the existing governance/release/exposure gates remain open.

@@ -37,14 +37,14 @@ public sealed class FolderEventReplayTests
         List<EventEnvelope> retained = history.Select((item, index) => Envelope(item.GetType().FullName!,
             JsonSerializer.SerializeToUtf8Bytes(item, item.GetType()), index + 1, aggregateId: "tenant-a")).ToList();
         FolderCommandRejected rejection = FolderCommandRejected.Create(nameof(FolderResultCode.ValidationFailed),
-            FoldersServerModule.GrantOrganizationAclPrincipalCommandType, null, null, null, null, "corr", "task", "rejected");
+            FoldersServerModule.GrantOrganizationAclPrincipalCommandType, null, null, null, null, "correlation-a", "task", "rejected");
         retained.Insert(5000, Envelope(typeof(FolderCommandRejected).FullName!,
             JsonSerializer.SerializeToUtf8Bytes(rejection), 5001, aggregateId: "tenant-a"));
         retained = retained.Select((item, index) => Envelope(item.Metadata.EventTypeName, item.Payload,
             index + 1, item.Metadata.PayloadVersion, item.Metadata.AggregateId)).ToList();
         ProjectionRequest request = new("tenant-a", "folders", "tenant-a", retained.Select(item =>
             new ProjectionEventDto(item.Metadata.EventTypeName, item.Payload, "json", item.Metadata.SequenceNumber,
-                OccurredAt, "corr")
+                OccurredAt, "correlation-a")
             { MetadataVersion = 1 }).ToArray());
         FolderEventReplay replay = new(new([typeof(OrganizationAclBaselineInitialized),
             typeof(OrganizationAclPrincipalGranted), typeof(OrganizationAclPrincipalRevoked)], []));
@@ -199,7 +199,7 @@ public sealed class FolderEventReplayTests
         FolderCommandRejected rejection = FolderCommandRejected.Create(
             FolderResultCode.ValidationFailed.ToString(),
             FoldersServerModule.ConfigureProviderBindingCommandType,
-            "tenant-a", "org-a", null, "user-a", "correlation-a", "task-a", "idempotency-a");
+            "tenant-a", "tenant-a", null, "user-a", "correlation-a", "task-a", "idempotency-a");
         ProjectionEventDto item = new(typeof(FolderCommandRejected).FullName!,
             JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt,
             "correlation-a")
@@ -303,7 +303,7 @@ public sealed class FolderEventReplayTests
     public void PersistedRejectionShouldBeSkippedButInvalidStampShouldFailClosed()
     {
         FolderCommandRejected rejection = FolderCommandRejected.Create(
-            FolderResultCode.FolderAclDenied.ToString(), FoldersServerModule.CreateFolderCommandType, "tenant-a", "org-a",
+            FolderResultCode.FolderAclDenied.ToString(), FoldersServerModule.CreateFolderCommandType, "tenant-a", "tenant-a",
             "folder-a", "user-a", "correlation-a", "task-a", "idempotency-b");
         EventEnvelope first = Envelope(Created());
         byte[] rejectionPayload = JsonSerializer.SerializeToUtf8Bytes(rejection);
@@ -628,7 +628,9 @@ public sealed class FolderEventReplayTests
                 JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt, "correlation-a");
             bool organization = mapping.ScopeKind == Hexalith.Folders.Server.Authorization.FolderCommandOperationScopeKind.OrganizationBaseline
                 && type != FoldersServerModule.CreateFolderCommandType;
-            FolderEventReplay.IsOrganizationProjectionEvent(retained).ShouldBe(organization);
+            string aggregate = type == FoldersServerModule.ConfigureProviderBindingCommandType ? ProviderBindingActorId.Create("binding-a")
+                : organization ? "tenant-a" : "folder-a";
+            FolderEventReplay.IsOrganizationProjectionEvent(retained, "tenant-a", aggregate).ShouldBe(organization);
         }
     }
 

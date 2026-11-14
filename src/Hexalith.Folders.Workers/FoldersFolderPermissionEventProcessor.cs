@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.OperationalStatus;
 
 namespace Hexalith.Folders.Workers;
 
@@ -85,11 +86,17 @@ public sealed class FoldersFolderPermissionEventProcessor(
             {
                 throw new InvalidOperationException("Folder rejection payload is unreadable.");
             }
+            JsonElement root = rejection.RootElement;
+            if (!(root.TryGetProperty("Code", out JsonElement code) || root.TryGetProperty("code", out code))
+                || code.ValueKind != JsonValueKind.String || !Enum.TryParse(code.GetString(), out FolderResultCode result)
+                || !FoldersRejectionSource.IsRejectionCode(result) || code.GetString() != result.ToString())
+                throw new InvalidOperationException("Folder rejection outcome is invalid.");
 
             if (ProviderBindingActorId.IsReserved(envelope.AggregateId))
             {
                 if (envelope.EventTypeName != "Hexalith.Folders.Server.FolderCommandRejected"
-                    || !HasProviderBindingCommand(envelope.Payload))
+                    || FoldersRejectionSource.ReadOwner(envelope.Payload, envelope.TenantId, envelope.AggregateId,
+                        envelope.CorrelationId) != FoldersSourceOwnerKind.ProviderBinding)
                 {
                     throw new InvalidOperationException("Non-binding rejection targets a provider-binding actor.");
                 }
@@ -100,11 +107,6 @@ public sealed class FoldersFolderPermissionEventProcessor(
             if (envelope.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
                 && FoldersRejectedCommandClassifier.IsOrganization(envelope))
             {
-                if (HasProviderBindingCommand(envelope.Payload))
-                {
-                    throw new InvalidOperationException("Provider-binding rejection is on a folder actor.");
-                }
-
                 throw new InvalidOperationException("Organization rejection is on a folder actor.");
             }
         }
@@ -117,12 +119,4 @@ public sealed class FoldersFolderPermissionEventProcessor(
             envelope.SequenceNumber, digest, folderEvent, cancellationToken).ConfigureAwait(false);
     }
 
-    private static bool HasProviderBindingCommand(byte[] payload)
-    {
-        using JsonDocument json = JsonDocument.Parse(payload);
-        JsonElement root = json.RootElement;
-        return (root.TryGetProperty("CommandType", out JsonElement type)
-                || root.TryGetProperty("commandType", out type))
-            && type.GetString() == "Hexalith.Folders.Commands.ConfigureProviderBinding";
-    }
 }

@@ -30,6 +30,7 @@ public sealed class FoldersFolderPermissionEventProcessorTests
             JsonSerializer.SerializeToUtf8Bytes(new
             {
                 CommandType = "Hexalith.Folders.Commands.ConfigureProviderBinding",
+                Code = "ValidationFailed",
             }))
         { Domain = "folders", MetadataVersion = 1 };
 
@@ -41,9 +42,13 @@ public sealed class FoldersFolderPermissionEventProcessorTests
         {
             Payload = JsonSerializer.SerializeToUtf8Bytes(new { CommandType = "unknown_command_type" }),
         }, TestContext.Current.CancellationToken));
+        await processor.ProcessAsync(rejected with
+        {
+            Payload = JsonSerializer.SerializeToUtf8Bytes(new { CommandType = "unknown_command_type", Code = "UnsupportedCommandType" }),
+        }, TestContext.Current.CancellationToken);
         await Should.ThrowAsync<InvalidOperationException>(() => processor.ProcessAsync(rejected with
         {
-            Payload = JsonSerializer.SerializeToUtf8Bytes(new { CommandType = "Hexalith.Folders.Commands.CreateFolder" }),
+            Payload = JsonSerializer.SerializeToUtf8Bytes(new { CommandType = "Hexalith.Folders.Commands.CreateFolder", Code = "ValidationFailed" }),
         }, TestContext.Current.CancellationToken));
         (await store.GetAsync<FolderPermissionProjection>("statestore",
             $"projection:folders:folder-permissions:tenant-a:{rejected.AggregateId}",

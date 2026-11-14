@@ -27,6 +27,93 @@ namespace Hexalith.Folders.Workers.Tests;
 public sealed class WorkersOrganizationAclRouteTests
 {
     [Theory]
+    [InlineData("FolderCommandRejected", "Accepted")]
+    [InlineData("FolderCommandRejected", "Created")]
+    [InlineData("FolderCommandRejected", "IdempotentReplay")]
+    [InlineData("FolderCommandRejected", "AlreadyApplied")]
+    [InlineData("DuplicateWorkspaceLockRejected", "Accepted")]
+    [InlineData("DuplicateWorkspaceLockRejected", "Created")]
+    [InlineData("DuplicateWorkspaceLockRejected", "IdempotentReplay")]
+    [InlineData("DuplicateWorkspaceLockRejected", "AlreadyApplied")]
+    [InlineData("WorkspaceTransitionInvalidRejected", "Accepted")]
+    [InlineData("WorkspaceTransitionInvalidRejected", "Created")]
+    [InlineData("WorkspaceTransitionInvalidRejected", "IdempotentReplay")]
+    [InlineData("WorkspaceTransitionInvalidRejected", "AlreadyApplied")]
+    public async Task SuccessCodedRejectionsCannotPersistAnyPermissionOrOperationalPositionAsync(string type, string code)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        var envelope = Envelope("invalid-success-code", 1, new { Code = code, CommandType = "future_command" }) with
+        { AggregateId = "folder-a", EventTypeName = "Hexalith.Folders.Server." + type };
+        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", envelope, token);
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        (await store.GetAsync<FolderPermissionProjection>("statestore", "projection:folders:folder-permissions:tenant-a:folder-a", token)).Value.ShouldBeNull();
+        (await store.GetAsync<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value.ShouldBeNull();
+        await app.StopAsync(token);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NonFolderUnknownRejectionPrefixAndDuplicatePermitNextOwnerEventAsync(bool provider)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        string aggregate = provider ? ProviderBindingActorId.Create("binding-a") : "tenant-a";
+        var rejection = Hexalith.Folders.Server.FolderCommandRejected.Create("UnsupportedCommandType", "future unknown command",
+            null, null, null, null, "correlation-a", "task-a", "unknown-key");
+        var envelope = Envelope("unknown-nonfolder", 1, rejection) with { AggregateId = aggregate };
+        foreach (var delivery in new[] { envelope, envelope })
+        {
+            using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", delivery, token);
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            if (provider)
+            {
+                var binding = (await store.GetAsync<Hexalith.Folders.Queries.ProviderReadiness.ProviderBindingProjection>("statestore",
+                    Hexalith.Folders.Queries.ProviderReadiness.EventStoreProviderReadinessBindingReadModel.Key("tenant-a", aggregate), token)).Value!;
+                binding.LastSequence.ShouldBe(1);
+                binding.Binding.ShouldBeNull();
+            }
+            else
+            {
+                var permissions = (await store.GetAsync<OrganizationPermissionProjection>("statestore",
+                    "projection:folders:organization-permissions:tenant-a", token)).Value!;
+                permissions.LastSequence.ShouldBe(1);
+                permissions.IsInitialized.ShouldBeFalse();
+                permissions.Grants.ShouldBeEmpty();
+            }
+        }
+        EventStoreDomainEventEnvelope next;
+        if (provider)
+        {
+            ProviderBindingConfigured configured = WithRetainedFingerprint(new("tenant-a", "tenant-a", "binding-a", "github",
+                "credential-a", OrganizationProviderBindingPolicy.Empty, OrganizationProviderBindingPolicy.Empty,
+                "correlation-a", "task-a", "configured-key", "fingerprint", "configured", DateTimeOffset.UtcNow));
+            next = Envelope("configured-after-unknown", 2, configured) with { AggregateId = aggregate };
+        }
+        else next = Envelope("baseline-after-unknown", 2, new OrganizationAclBaselineInitialized("tenant-a", "tenant-a",
+            "correlation-a", "task-a", "baseline-key", "baseline-fingerprint"));
+        using (HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", next, token))
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        if (provider)
+            (await store.GetAsync<Hexalith.Folders.Queries.ProviderReadiness.ProviderBindingProjection>("statestore",
+                Hexalith.Folders.Queries.ProviderReadiness.EventStoreProviderReadinessBindingReadModel.Key("tenant-a", aggregate), token))
+                .Value!.LastSequence.ShouldBe(2);
+        else
+            (await store.GetAsync<OrganizationPermissionProjection>("statestore", "projection:folders:organization-permissions:tenant-a", token))
+                .Value!.LastSequence.ShouldBe(2);
+        (await store.GetAsync<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", aggregate), token)).Value.ShouldBeNull();
+        (await store.GetAsync<FolderPermissionProjection>("statestore", "projection:folders:folder-permissions:tenant-a:" + aggregate, token)).Value.ShouldBeNull();
+        await app.StopAsync(token);
+    }
+
+    [Theory]
     [InlineData("future_unknown_command")]
     [InlineData("arbitrary invalid command")]
     public async Task UnknownCommandRejectionPrefixPersistsBeforeAcknowledgmentAndLaterCreationAsync(string command)
@@ -68,6 +155,9 @@ public sealed class WorkersOrganizationAclRouteTests
 
     [Theory]
     [InlineData("Accepted", "future_unknown_command", "tenant-a", 1)]
+    [InlineData("Created", "future_unknown_command", "tenant-a", 1)]
+    [InlineData("IdempotentReplay", "future_unknown_command", "tenant-a", 1)]
+    [InlineData("AlreadyApplied", "future_unknown_command", "tenant-a", 1)]
     [InlineData("999", "future_unknown_command", "tenant-a", 1)]
     [InlineData("UnsupportedCommandType", "future_unknown_command", "tenant-b", 1)]
     [InlineData("ValidationFailed", "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal", "tenant-a", 1)]

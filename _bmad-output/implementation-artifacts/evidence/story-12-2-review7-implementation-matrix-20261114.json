@@ -1,0 +1,254 @@
+{
+  "schema_version": "1.0.0",
+  "story": "12.2",
+  "review_iteration": 7,
+  "whole_story_complete": false,
+  "matrix_acceptance_complete": false,
+  "frozen_io_rows": [
+    {
+      "scenario": "Delivery/replay",
+      "executed_passing_coverage": {
+        "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests": {
+          "Pass": 11
+        },
+        "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests": {
+          "Pass": 11
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests": {
+          "Pass": 23
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests": {
+          "Pass": 18
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.NonFolderOperationalSourceTests": {
+          "Pass": 9
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests": {
+          "Pass": 9
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSevenTests": {
+          "Pass": 8
+        }
+      },
+      "unchanged_live_coverage": "real-source, repeated SDK rebuild, two-process delivery",
+      "strict_qualification": "Pass for exact audited current producer; does not exercise or resolve the separately reproduced defects",
+      "unmet_requirements": [
+        {
+          "task": 1,
+          "state": "open; current producer still returns obsolete locked after coherent historical native task triple rollback",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/receipt.json",
+            "sha256": "5007534e167d27cf79438cc150b6e9946b4194a236d1cfdd432f62331d05a973"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/Program.cs",
+            "sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/stdout.log",
+            "sha256": "0bd48b4abf042a48da81a0548a73ee54b6e2cbde3e80e0a0d5a7b9f414f56362"
+          }
+        },
+        {
+          "task": 5,
+          "state": "open; current live writer still accepts old MessageId at new sequence after derived receipt expiry while complete reconstruction refuses",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/receipt.json",
+            "sha256": "cea44cc6490ef128a1bf64d33ff5be1b5e4cf8f333f90bb7899c8ab59f31e856"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/Program.cs",
+            "sha256": "4ecc9312fc83558104c7d53a7c2bbdc2c3f47fd8795f767ff0e82d3afaa51ddf"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/stdout.log",
+            "sha256": "5fcad968f6fb1a5c7105dce97493bd838e788a7663a826890feb62fa47750bd0"
+          }
+        }
+      ],
+      "acceptance_complete": false
+    },
+    {
+      "scenario": "Task closure",
+      "executed_passing_coverage": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "Pass": 35
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "Pass": 42
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSevenTests": {
+          "Pass": 8
+        }
+      },
+      "unchanged_live_coverage": "real-provider task pipeline, equivalent replay and closed-binding denial",
+      "strict_qualification": "Pass for exact audited current producer; does not exercise or resolve the separately reproduced defects",
+      "unmet_requirements": [
+        {
+          "task": 1,
+          "state": "open; current producer still returns obsolete locked after coherent historical native task triple rollback",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/receipt.json",
+            "sha256": "5007534e167d27cf79438cc150b6e9946b4194a236d1cfdd432f62331d05a973"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/Program.cs",
+            "sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/stdout.log",
+            "sha256": "0bd48b4abf042a48da81a0548a73ee54b6e2cbde3e80e0a0d5a7b9f414f56362"
+          }
+        }
+      ],
+      "acceptance_complete": false
+    },
+    {
+      "scenario": "Conflict/crash",
+      "executed_passing_coverage": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests": {
+          "Pass": 17
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests": {
+          "Pass": 7
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.LegacyReplayShutdownTests": {
+          "Pass": 3
+        },
+        "Hexalith.EventStore.Server.Tests.Projections.ProjectionRebuildProductionPathTests": {
+          "Pass": 102
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.NonFolderOperationalSourceTests": {
+          "Pass": 9
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests": {
+          "Pass": 9
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSevenTests": {
+          "Pass": 8
+        }
+      },
+      "unchanged_live_coverage": "interrupted SDK generation, changed writer PID and original-session resume",
+      "strict_qualification": "Pass for exact audited current producer; does not exercise or resolve the separately reproduced defects",
+      "unmet_requirements": [
+        {
+          "task": 1,
+          "state": "open; current producer still returns obsolete locked after coherent historical native task triple rollback",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/receipt.json",
+            "sha256": "5007534e167d27cf79438cc150b6e9946b4194a236d1cfdd432f62331d05a973"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/Program.cs",
+            "sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/stdout.log",
+            "sha256": "0bd48b4abf042a48da81a0548a73ee54b6e2cbde3e80e0a0d5a7b9f414f56362"
+          }
+        },
+        {
+          "task": 5,
+          "state": "open; current live writer still accepts old MessageId at new sequence after derived receipt expiry while complete reconstruction refuses",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/receipt.json",
+            "sha256": "cea44cc6490ef128a1bf64d33ff5be1b5e4cf8f333f90bb7899c8ab59f31e856"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/Program.cs",
+            "sha256": "4ecc9312fc83558104c7d53a7c2bbdc2c3f47fd8795f767ff0e82d3afaa51ddf"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/stdout.log",
+            "sha256": "5fcad968f6fb1a5c7105dce97493bd838e788a7663a826890feb62fa47750bd0"
+          }
+        }
+      ],
+      "acceptance_complete": false
+    },
+    {
+      "scenario": "Denial/storage",
+      "executed_passing_coverage": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundFiveTests": {
+          "Pass": 35
+        },
+        "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests": {
+          "Pass": 42
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSevenTests": {
+          "Pass": 8
+        },
+        "Hexalith.Folders.Tests.Authorization.PermissionProjectionDeadlineCleanupTests": {
+          "Pass": 9
+        }
+      },
+      "unchanged_live_coverage": "safe-failure, bound-target denial and exact source/checkpoint preservation",
+      "strict_qualification": "Pass for exact audited current producer; does not exercise or resolve the separately reproduced defects",
+      "unmet_requirements": [
+        {
+          "task": 1,
+          "state": "open; current producer still returns obsolete locked after coherent historical native task triple rollback",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/receipt.json",
+            "sha256": "5007534e167d27cf79438cc150b6e9946b4194a236d1cfdd432f62331d05a973"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/Program.cs",
+            "sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-historical-native-authority-probe/stdout.log",
+            "sha256": "0bd48b4abf042a48da81a0548a73ee54b6e2cbde3e80e0a0d5a7b9f414f56362"
+          }
+        }
+      ],
+      "acceptance_complete": false
+    },
+    {
+      "scenario": "Retention",
+      "executed_passing_coverage": {
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests": {
+          "Pass": 7
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSixTests": {
+          "Pass": 15
+        },
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRoundSevenTests": {
+          "Pass": 8
+        }
+      },
+      "unchanged_live_coverage": "persisted source-relative retention and rebuild checks",
+      "strict_qualification": "Pass for exact audited current producer; does not exercise or resolve the separately reproduced defects",
+      "unmet_requirements": [
+        {
+          "task": 5,
+          "state": "open; current live writer still accepts old MessageId at new sequence after derived receipt expiry while complete reconstruction refuses",
+          "probe": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/receipt.json",
+            "sha256": "cea44cc6490ef128a1bf64d33ff5be1b5e4cf8f333f90bb7899c8ab59f31e856"
+          },
+          "source": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/Program.cs",
+            "sha256": "4ecc9312fc83558104c7d53a7c2bbdc2c3f47fd8795f767ff0e82d3afaa51ddf"
+          },
+          "output": {
+            "path": "/home/administrator/projects/hexalith/folders/.artifacts/story-12-2-review7-implementation-20261114/notification-expired-message-authority-probe/stdout.log",
+            "sha256": "5fcad968f6fb1a5c7105dce97493bd838e788a7663a826890feb62fa47750bd0"
+          }
+        }
+      ],
+      "acceptance_complete": false
+    }
+  ],
+  "scope": "Executed positive coverage and exact producer/live qualification are distinguished from unmet frozen behavior. Every affected row remains incomplete.",
+  "owner_prerequisite": "../proposal-12-2-historical-source-authority-prerequisite.md"
+}

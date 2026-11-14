@@ -8,7 +8,7 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
-using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Projections.OperationalStatus;
 
 namespace Hexalith.Folders.Server;
 
@@ -40,7 +40,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName;
 
     /// <summary>Classifies a retained projection event using its registered event or rejection contract.</summary>
-    internal static bool IsOrganizationProjectionEvent(ProjectionEventDto item)
+    internal static bool IsOrganizationProjectionEvent(ProjectionEventDto item, string tenantId, string aggregateId)
     {
         ArgumentNullException.ThrowIfNull(item);
         if (KnownEvents.TryGetValue(item.EventTypeName, out Type? type))
@@ -61,10 +61,10 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
 
         ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
             item.MetadataVersion, item.SerializationFormat, item.Payload);
-        return IsOrganizationRejection(item.EventTypeName, item.Payload);
+        return IsOrganizationRejection(item.EventTypeName, item.Payload, tenantId, aggregateId, item.CorrelationId);
     }
 
-    private static bool IsOrganizationRejection(string eventTypeName, byte[] bytes)
+    private static bool IsOrganizationRejection(string eventTypeName, byte[] bytes, string tenantId, string aggregateId, string correlationId)
     {
         if (eventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
             || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName)
@@ -72,16 +72,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             return false;
         }
 
-        using JsonDocument payload = JsonDocument.Parse(bytes);
-        if (!payload.RootElement.TryGetProperty(nameof(FolderCommandRejected.CommandType), out JsonElement commandType)
-            && !payload.RootElement.TryGetProperty("commandType", out commandType)
-            || commandType.ValueKind != JsonValueKind.String)
-        {
-            throw new InvalidOperationException("Unclassifiable Folders rejection event.");
-        }
-
-        return FolderCommandActionTokenMapper.IsOrganizationStreamCommand(commandType.GetString()!)
-            ?? throw new InvalidOperationException("Unclassifiable Folders rejection event.");
+        return FoldersRejectionSource.ReadOwner(bytes, tenantId, aggregateId, correlationId) != FoldersSourceOwnerKind.Folder;
     }
 
     /// <summary>Folds the command's actor-owned folder stream without querying another store.</summary>
@@ -99,7 +90,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
                     item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
-                if (IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload))
+                if (IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload, tenantId, aggregateId, item.Metadata.CorrelationId))
                 {
                     throw new InvalidOperationException("Organization rejection in folder actor stream.");
                 }
@@ -132,7 +123,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
                     item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
-                if (!IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload))
+                if (!IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload, tenantId, aggregateId, item.Metadata.CorrelationId))
                 {
                     throw new InvalidOperationException("Folder rejection in organization actor stream.");
                 }
@@ -175,6 +166,8 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
                     item.MetadataVersion, item.SerializationFormat, item.Payload);
+                if (IsOrganizationRejection(item.EventTypeName, item.Payload, request.TenantId, request.AggregateId, item.CorrelationId))
+                    throw new InvalidOperationException("Organization rejection in folder projection stream.");
                 continue;
             }
             IFolderEvent value = ReadEffective<IFolderEvent>(item.EventTypeName,
@@ -200,13 +193,8 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
                     item.MetadataVersion, item.SerializationFormat, item.Payload);
-                using JsonDocument rejection = JsonDocument.Parse(item.Payload);
-                JsonElement root = rejection.RootElement;
-                if (!root.TryGetProperty("Code", out JsonElement code) && !root.TryGetProperty("code", out code)
-                    || code.ValueKind != JsonValueKind.String
-                    || !Enum.TryParse(code.GetString(), out FolderResultCode resultCode) || !Enum.IsDefined(resultCode)
-                    || resultCode == FolderResultCode.Accepted)
-                    throw new InvalidOperationException("Provider configuration rejection is invalid.");
+                if (!IsOrganizationRejection(item.EventTypeName, item.Payload, request.TenantId, request.AggregateId, item.CorrelationId))
+                    throw new InvalidOperationException("Folder rejection in organization projection stream.");
                 continue;
             }
             IOrganizationEvent value = ReadEffective<IOrganizationEvent>(item.EventTypeName,
@@ -401,6 +389,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
         {
             throw new InvalidOperationException("Unreadable Folders rejection event.");
         }
+        JsonElement root = document.RootElement;
+        if (!(root.TryGetProperty("Code", out JsonElement code) || root.TryGetProperty("code", out code))
+            || code.ValueKind != JsonValueKind.String || !Enum.TryParse(code.GetString(), out FolderResultCode result)
+            || !FoldersRejectionSource.IsRejectionCode(result) || code.GetString() != result.ToString())
+            throw new InvalidOperationException("Invalid Folders rejection outcome.");
     }
 
     private static T ReadEffective<T>(string typeName, int? metadataVersion,

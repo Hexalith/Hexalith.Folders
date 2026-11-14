@@ -37,9 +37,9 @@ public sealed class FolderDomainProjectionHandler : IDomainProjectionHandler
         bool organization = events.Length == 0
             ? string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
                 || ProviderBindingActorId.IsReserved(request.AggregateId)
-            : FolderEventReplay.IsOrganizationProjectionEvent(events[0]);
+            : FolderEventReplay.IsOrganizationProjectionEvent(events[0], request.TenantId, request.AggregateId);
         if (events.Any(item =>
-                FolderEventReplay.IsOrganizationProjectionEvent(item) != organization)
+                FolderEventReplay.IsOrganizationProjectionEvent(item, request.TenantId, request.AggregateId) != organization)
             || !organization && (string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
                 || ProviderBindingActorId.IsReserved(request.AggregateId))
             || organization && !string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
