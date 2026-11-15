@@ -2,7 +2,7 @@
 title: 'Synchronize and publish a verified current Folders release'
 type: 'bugfix'
 created: '2026-11-15'
-status: 'in-review'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '55ef95362734c0997a6383c4b8dc8675eec8c519'
@@ -44,7 +44,7 @@ The user authorizes implementation, commits, pushes, release dispatch and use of
 - [x] Diagnose current CI failures, repair the demonstrated maintenance defects with existing regression checks, and record unresolved dependency qualification/runtime failures.
 - [x] Validate changes in private workspaces with tooling tests, relevant builds/tests and the five-package dry run.
 - [x] Commit and push changed owners first, then root content and pointers; validate every authored commit message.
-- [ ] Obtain green hosted checks for the exact source, dispatch Release, satisfy authorized production review, and independently verify all five NuGet archives and ten GitHub package/symbol assets.
+- [x] Obtain green hosted checks for the exact source, dispatch Release, satisfy authorized production review, and independently verify all five NuGet archives and ten GitHub package/symbol assets.
 
 **Acceptance Criteria:**
 - Given the official current SDK and live package indexes, when currency is checked, then active pins match the latest supported versions or documented compatibility exceptions.
@@ -107,6 +107,13 @@ McpCli's documented delegated maintenance path supports truthful append-only cur
 McpCli continuation 1.0.13 is reviewed and pushed at 4cf120c410a668d08c6ba70d59962c3a2c031952. It renews exactly five existing allowances, including complete resolver-derived EventStore eight-source and Platform 88-source closures, and adds one explicitly new exact PE06 external Microsoft SDK-container identity in FrontComposer's mutation workflow. All 480 prior policy/evidence files, scanner rules and refusal guards are unchanged. Existing census tests passed 222/222; evidence tests passed 23/23. Corrected partial classification reproduced all six hosted rejections and then reported zero errors and zero rejected surfaces across twelve available roots. Three independent reviewers verified the exact six observations, complete closures, source/authority/mutation bindings and source descriptions. A sequencing wording finding was corrected in the new receipt only: candidate Folders CI can run concurrently with the full hosted census, and both must pass before publication. Receipt/amendment/index hashes were recomputed and independently checked. No prior receipt was altered and no individual human or runtime acceptance is claimed. The five unavailable local roots remain a disclosed local prerequisite; hosted seventeen-root acceptance is still required.
 
 A final remote comparison preserved the concurrent Tenants recovery/audit correction 8aa6f169b3e27f0a831ad6425c4bc1278ca2c445 through a clean fast-forward. All twelve selected dependency commits are clean, remotely verified and available; nested checkouts remain uninitialized. This batch is the final release candidate selection. Run Folders exact-source CI and McpCli's complete census in parallel, then dispatch Release only after both are successful. Memories CI 43751093337 remains under observation for the tested cleanup correction.
+
+
+Publication completed. Folders release source 209dacbdb42fcde728d9e190781b69945bccc93b passed CI 43752798975, contract-spine 43752798766, CodeQL 43752798982 and Commitlint 43752798967. McpCli 4cf120c410a668d08c6ba70d59962c3a2c031952 passed the complete seventeen-root census in run 43752669619 with zero errors and zero rejected surfaces. Builds 04bdcaf9 and Memories 61a2caef completed their full CI successfully. All three current Platform workflows also passed after its upstream fixes.
+
+Release 43755274209 succeeded. Its exact-main guard passed, and the existing production gate was approved through the configured jpiquot reviewer account under the user's explicit delegation; no protection rule was changed. Semantic Release created v2.0.0 and published it at 2026-11-15T20:03:11Z. The tag resolves exactly to 209dacbdb42fcde728d9e190781b69945bccc93b. NuGet accepted five package and five symbol uploads at its official endpoints, and GitHub contains all ten manifest assets. After indexing completed, independent public verification at 2026-11-15T20:15:56Z downloaded all five NuGet archives and their GitHub counterparts. Every ID/version, repository commit and net11.0 assembly matched; all uncompressed archive payload members matched after excluding only NuGet's added repository signature. Both raw archive hashes are retained per package in `.codex/sync-release-2026-11-15/publication-verification.json`. Release: https://github.com/Hexalith/Hexalith.Folders/releases/tag/v2.0.0 .
+
+The release-readiness acceptance criteria are satisfied. External qualification constraints remain explicitly separate: EventStore Phase4 still lacks thirteen actual human attestations, and its PayloadProtection source setup needs a coherent net10/net11 owner/toolchain tuple. Parties' latest run 43744173102 refuses an untagged recorded Platform identity and tool5.2.2 outside its accepted range; its SDK4.2 catalog test also refuses an unreadable complete compiled declaration inventory. Those gates and historical evidence remain unchanged. McpCli's census, build, discovery, conformance and release-automation checks passed; its longer live Aspire hook was still running at the final observation. No ecosystem-wide all-green claim is made. All twelve selected worktrees match the committed gitlinks, are clean, and have no initialized nested checkout. This final documentation update records verification after the immutable release source.
 
 ## Spec Change Log
 
