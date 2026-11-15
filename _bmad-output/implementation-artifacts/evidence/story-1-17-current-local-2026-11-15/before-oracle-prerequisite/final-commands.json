@@ -1,0 +1,117 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "-p:Configuration=Release",
+      "--configfile",
+      "/tmp/hexalith-job.MMBALlwu/nuget.config",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 1.13,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:57:43Z",
+    "label": "final-contracts-restore",
+    "log": "before-oracle-prerequisite/final-contracts-restore.log",
+    "log_sha256": "3f38bc1e9ffedd3e1272b183c85745be8885134062bbecdc238c53384b8956e3",
+    "started_utc": "2026-11-15T10:57:42Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "--configuration",
+      "Release",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 8.67,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:57:52Z",
+    "label": "final-contracts-build",
+    "log": "before-oracle-prerequisite/final-contracts-build.log",
+    "log_sha256": "51c47868c64c0ab906a4019a2eb88a6020b75a86ff6bbd384c0bbf63c0902cca",
+    "started_utc": "2026-11-15T10:57:43Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 6.42,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:57:58Z",
+    "label": "final-conformance",
+    "log": "before-oracle-prerequisite/final-conformance.log",
+    "log_sha256": "c5811b6b85f476ac4c9590db96682cee4783e1d64751815ac557c54e409a71a4",
+    "started_utc": "2026-11-15T10:57:52Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 1.57,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:58:00Z",
+    "label": "final-contract-behavior",
+    "log": "before-oracle-prerequisite/final-contract-behavior.log",
+    "log_sha256": "f704e7a3e7a0b8d91f0a89e90d4d3072bbfce15735d62ec3c13bfb9a5943e944",
+    "started_utc": "2026-11-15T10:57:58Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "tests/tools/run-contract-parity-ci-gates.ps1",
+      "-SkipRestoreBuild",
+      "-OutputReportPath",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-local-2026-11-15/final-parity-report.json"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 20.11,
+    "exit_code": 1,
+    "finished_utc": "2026-11-15T10:58:20Z",
+    "label": "final-parity",
+    "log": "before-oracle-prerequisite/final-parity.log",
+    "log_sha256": "3f670bae8dabbd2a6be1a2960bbdcd8ea44e0b7d6a35be9f3e39bccb2ed82441",
+    "started_utc": "2026-11-15T10:58:00Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "tests/tools/run-governance-completeness-gates.ps1",
+      "-SkipRestoreBuild"
+    ],
+    "cwd": "/tmp/hexalith-job.MMBALlwu/folders",
+    "elapsed_seconds": 9.11,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:58:29Z",
+    "label": "final-governance",
+    "log": "before-oracle-prerequisite/final-governance.log",
+    "log_sha256": "b338d77fd1da9f37d7644cd6835f28920b972f9e05453ad1e7adca69a08aed3c",
+    "started_utc": "2026-11-15T10:58:20Z"
+  }
+]

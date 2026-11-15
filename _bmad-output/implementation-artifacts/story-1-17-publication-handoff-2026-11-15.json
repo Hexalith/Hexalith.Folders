@@ -1,0 +1,325 @@
+{
+  "artifactIndices": [
+    {
+      "path": "source-runtime-artifacts.json",
+      "sha256": "0a4dc9b6252eae73d814890c2c75bfbfcaca87164697f411eef53d2168919a94"
+    },
+    {
+      "path": "final-contracts-artifacts.json",
+      "sha256": "c9f1bafcbcbddd07367d8fb33fb387b96e87b8d4e817a73bff8cb08e2c6fd62c"
+    }
+  ],
+  "cachedReleasedPair": [
+    {
+      "archive": "retained-packages/hexalith.folders.client.1.4.0.nupkg",
+      "archive_sha256": "5ff508f4a42e1b6540329bbf6cd9e091c3fc1c10acd7d21e1477daa74e04ea26",
+      "dlls": [
+        {
+          "member": "lib/net10.0/Hexalith.Folders.Client.dll",
+          "sha256": "a571d5e5cf7d88667d9e7dcf1ba8bfb974583a9c416da648558e66b016f6f706"
+        }
+      ],
+      "id": "Hexalith.Folders.Client",
+      "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation",
+      "repository": {
+        "commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.Folders"
+      },
+      "signature_present": true,
+      "version": "1.4.0"
+    },
+    {
+      "archive": "retained-packages/hexalith.folders.contracts.1.4.0.nupkg",
+      "archive_sha256": "492dd508739678c0fbb761d76d3b0247e775ac586966dae61576247323eaf83e",
+      "dlls": [
+        {
+          "member": "lib/net10.0/Hexalith.Folders.Contracts.dll",
+          "sha256": "c798046407d298e175d7a4ac6ee581255aaeb5cd2455a518744bd3e29d8857aa"
+        }
+      ],
+      "id": "Hexalith.Folders.Contracts",
+      "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation",
+      "repository": {
+        "commit": "f9808ddecaae791a9802561e7c513da21a61b473",
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.Folders"
+      },
+      "signature_present": true,
+      "version": "1.4.0"
+    }
+  ],
+  "candidate": {
+    "after_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "approval": "pending-a6b; source identity qualification pending; no production authority",
+    "before_sha256": "0c0368212d2b778e5960ffc61276ab76dfcf6a54151b10034e2379c17f8815e5",
+    "changed_rows": [
+      "tests/tools/run-adr-runbook-docs-gates.ps1",
+      "tests/tools/run-consumer-docs-gates.ps1",
+      "tests/tools/run-dapr-policy-conformance-gates.ps1",
+      "tests/tools/run-operations-audit-docs-gates.ps1",
+      "tests/tools/run-production-observability-gates.ps1",
+      "tests/tools/run-provider-error-docs-gates.ps1"
+    ],
+    "command": "python3 scripts/generate-pd10-v2-conformance-set.py --output $TMPDIR/{first,second}.yaml",
+    "generation_hashes": [
+      "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+      "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+    ],
+    "header_controls_preserved": true,
+    "ordered_set_sha256": "6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022",
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+    "root_revision": "ee74564477176a698971b9cddea084335a94fe29",
+    "rows": 1635,
+    "status": "pass"
+  },
+  "commandIndices": [
+    {
+      "path": "release-commands.json",
+      "sha256": "1babd23ac2f0fefb1b963b2dcb104bfc2179ce8bc9006b5f648dd60084a74b0a"
+    },
+    {
+      "path": "source-commands.json",
+      "sha256": "bd04355c0aa61dc2976176080c24cad27ed38492f92cfd4a9b65d5977bc09c31"
+    },
+    {
+      "path": "final-commands.json",
+      "sha256": "7b94a2a7141d5cc5eed6deeb673b934c52d17f5a199bf70d6880022b3f292e68"
+    },
+    {
+      "path": "offline-proposal-commands.json",
+      "sha256": "4d4a031fdad6953f8c4bb793ffb21033a9d39684010e95b7a6d285b3ff5b30c1"
+    },
+    {
+      "path": "package-inspection-commands.json",
+      "sha256": "c1011c297768dc403db65bd3260159937d47c68db77cad32c2d970b86dd0e6e1"
+    }
+  ],
+  "effectiveSelections": {
+    "buildCatalogSha256": "253c5d1d7530ee9f6b17ecdfa0f4e49c1f30356e075e1111c2c3c803623ef683",
+    "foldersCatalogSha256": "c8351c554ea90792eae487eadd8d6a08faeb0719e62341a929d81f7f44fdcd08",
+    "foldersEventStorePackage": "5.1.0",
+    "projectsCatalogSha256": "724709a0abc414a19b77681d5ddbc87bc52e13e0079506f3ba43b049148b3585",
+    "projectsConversationsPairRequested": "2.0.0",
+    "projectsFoldersPairRequested": "1.4.0",
+    "projectsFoldersPairRestoreSucceeded": false,
+    "restoredFoldersPackages": {
+      "path": "folders-resolved-packages.json",
+      "sha256": "d556cf706403b5de49e2b8d4ea19ea02d8d6179ada98f8c4c5b3f49bc2c2b383"
+    }
+  },
+  "localChecks": {
+    "currentOfflineProposal": "failed:24 stale source bindings and two failing binding-test methods;64 fixture mutation methods pass",
+    "debugSourceComposedRouting": "19/19",
+    "debugSourceConformance": "21/21",
+    "debugSourceContractBehavior": "18/18",
+    "debugSourceProductionAuthority": "20/20",
+    "foldersReleaseSolution": "failed:5 CS0246 missing native scan API types",
+    "projectsReleaseSolution": "blocked:offline NU1102 for Conversations2.0.0",
+    "releaseConformance": "21/21",
+    "releaseContractBehavior": "18/18",
+    "releaseGovernance": "217/217 +7/7 +3/3",
+    "releaseParity": "5/12 categories; seven missing runtime/consumer assemblies after the package build failure",
+    "restorePolicy": "Private local feed from1435 cached archives; no network source or new vulnerability-feed audit. No audit-disable property used.",
+    "sourceBuilds": "Focused Server/Integration/Contracts Debug builds pass with0 warnings/errors; no full Debug solution or new topology run claimed"
+  },
+  "operationalControls": {
+    "activationAuthority": null,
+    "firstInstallActivation": null,
+    "migrationT0": null,
+    "parentStatus": "in-progress",
+    "routeMode": "V1Only",
+    "stagingChecksExecuted": 0,
+    "storyClosureClaimed": false,
+    "trackerStatus": "backlog"
+  },
+  "packageCapabilityInput": {
+    "archive": "retained-packages/hexalith.eventstore.client.5.1.0.nupkg",
+    "archive_sha256": "a3d0de6ff9f9d8eaafaa39a5faa9798ee9dd87c8721b9a9445a3a17c2abbdb40",
+    "dlls": [
+      {
+        "member": "lib/net11.0/Hexalith.EventStore.Client.dll",
+        "sha256": "786cbb4bebd8d3720300afd775b0c38ccafdd1a73e8f1c1ccd79ef931ab5cbc2"
+      }
+    ],
+    "id": "Hexalith.EventStore.Client",
+    "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation",
+    "repository": {
+      "commit": "49084f66f8d6545cae442875355a7066d5f5e73d",
+      "type": "git",
+      "url": "https://github.com/Hexalith/Hexalith.EventStore"
+    },
+    "signature_present": true,
+    "version": "5.1.0"
+  },
+  "portableEvidence": {
+    "directory": "evidence/story-1-17-current-local-2026-11-15",
+    "limits": "Rehashes retained diagnostics and result summaries. It does not rerun deployed services, execute the retained binaries, establish release trust or grant operational authority.",
+    "replay": [
+      "python3 verify.py",
+      "python3 -O verify.py",
+      "run-with-temp python3 test_verify.py"
+    ],
+    "workspaceReplay": "python3 verify.py --workspace /absolute/path/to/folders"
+  },
+  "qualification": "HOLD",
+  "remainingOwnerInputs": [
+    {
+      "evidence": {
+        "path": "server-build.log",
+        "sha256": "998c2320a46517e3d1fff6e410af54768c332458baf8f77e1ed856bc3e3b9945"
+      },
+      "gate": "Release/package build",
+      "owner": "EventStore release owner, then Builds catalog owner",
+      "required": "Publish and qualify the native scan API capability (INativeSourceScanner and INativeSourceScanFold<T>) and adopt a compatible package through the owning catalog. Do not substitute source in Release."
+    },
+    {
+      "evidence": {
+        "path": "projects-restore.log",
+        "sha256": "d31480068223f4e39525b7ad847f9b0121061f44dcb46726c8f08d5a5f30addb"
+      },
+      "gate": "Current Projects package build and consumer artifact",
+      "owner": "Conversations release/distribution owner and Projects build owner",
+      "required": "Provide the already selected Conversations Client/Contracts2.0.0 packages to an authorized restore lane or this offline feed; then build/test the exact Folders1.4.0 pair and record immutable Projects artifacts. Cache absence is not feed absence."
+    },
+    {
+      "evidence": {
+        "path": "platform-mapping-status.json",
+        "sha256": "c252a7780abdfd6ce2568261d8552ee4962b4ea1d0fc4ed180a8b50e47ae1260"
+      },
+      "gate": "Current Platform executable-source mapping and graph qualification",
+      "owner": "Platform owner with direct module owners",
+      "required": "Supply a mapping decision for the current Platform/direct-owner revisions, or qualified exact roots accepted under that decision. The retained November2 approval expressly excludes later integration bases. Equal declaration bytes do not approve executable source."
+    },
+    {
+      "evidence": {
+        "path": "offline-proposal-tests.log",
+        "sha256": "80b862a9e04273c7c88f19dd425de31bf3cf81a921aef1a5eb6181ba8e0a0f0e"
+      },
+      "gate": "Current source proposal, exact signed release and immutable hosted artifacts",
+      "owner": "Folders candidate and release owner with Projects and Platform intake owners",
+      "required": "Reconcile substantive drift in the old52-input proposal, clear the package/parity gates, qualify actual tool/catalog/composition and module intake, and publish through the existing lane under its authorization. Current1.4.0 archives predate changed Client/Contracts source."
+    },
+    {
+      "evidence": {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      },
+      "gate": "Operational entry and closure",
+      "owner": "Platform qualified deployment/operator and data owners; Jerome for closure/tracker decision",
+      "required": "Supply attempt-locked target/consumer/data disposition, hosted identity/delegation, exact artifacts, owners/UTC slots/thresholds, fourteen staging results, observation and applicable recovery. Use the original migration clocks only if an existing-v1 branch is established."
+    }
+  ],
+  "schema": "hexalith.folders.story117.publication-handoff.v2026-11-15",
+  "scope": "Current local pending inventory consistency; broader parent tasks remain open. No publication or deployment command ran.",
+  "sourceSnapshot": {
+    "limits": "These are inspected/copied source/build inputs, not a claim that full current release/compiler/composition qualification passed.",
+    "packageSnapshot": {
+      "path": "before.json",
+      "sha256": "08681f0c712e0587a1bccf258799cc0420316f8ae9bfe65674f661e55678c64a"
+    },
+    "packageToSourceInputComparison": {
+      "path": "package-to-source-input-comparison.json",
+      "sha256": "6f04451488628029b96d38b37c5c395676c89c9e6ea3b576d6fcb18d64b7b9a7"
+    },
+    "repositories": {
+      ".": {
+        "branch": "main",
+        "head": "ee74564477176a698971b9cddea084335a94fe29",
+        "index_entries_sha256": "82968ff4802ab49fd4783ad1f96a554b69fe141284742d8b3b234be2f54fd65c",
+        "root_gitlink": null,
+        "tracked_status": ""
+      },
+      "references/Hexalith.AI.Tools": {
+        "branch": "main",
+        "head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+        "index_entries_sha256": "96b78954b43227656b257f9a3a263f8a423d387f444622d66e2e89838d09dc28",
+        "root_gitlink": "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Builds": {
+        "branch": "main",
+        "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+        "index_entries_sha256": "4fdcaa9477ef55f58e3fe166bbe0d81373f3b698222a074c79f68f43f487d11c",
+        "root_gitlink": "160000 commit 73e60af8a1fcdf3f06726d5d1b6e1199cce778ee\treferences/Hexalith.Builds",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Commons": {
+        "branch": "main",
+        "head": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+        "index_entries_sha256": "2e3afbd3b887f02d549135ace0e8487da36e84dc1eda40a530c4cc8c819df3b3",
+        "root_gitlink": "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+        "tracked_status": ""
+      },
+      "references/Hexalith.EventStore": {
+        "branch": "main",
+        "head": "fdb59895975e86a1e234325a01237f259cdbd53b",
+        "index_entries_sha256": "bd880b94c16e55e65160c9b8713b87eaf275eb748790f075d409214debf9f580",
+        "root_gitlink": "160000 commit fdb59895975e86a1e234325a01237f259cdbd53b\treferences/Hexalith.EventStore",
+        "tracked_status": ""
+      },
+      "references/Hexalith.FrontComposer": {
+        "branch": "main",
+        "head": "bca9dff291ce42c57516598732340a80703dfb6d",
+        "index_entries_sha256": "3c78812b5b7605777e88096365d6f324e0d7ddbf333d074d6ac656055c797c0d",
+        "root_gitlink": "160000 commit bca9dff291ce42c57516598732340a80703dfb6d\treferences/Hexalith.FrontComposer",
+        "tracked_status": ""
+      },
+      "references/Hexalith.McpCli": {
+        "branch": "main",
+        "head": "28bcbbb898b6530838a7872f2ba450c34e56cc70",
+        "index_entries_sha256": "211ff4a1b4afec0d560f619281536f6acf74b08e82f22cf1b41743f2849c7534",
+        "root_gitlink": "160000 commit 28bcbbb898b6530838a7872f2ba450c34e56cc70\treferences/Hexalith.McpCli",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Memories": {
+        "branch": "main",
+        "head": "b7e195031cab96b38949b90317ea8033797027b8",
+        "index_entries_sha256": "d5208f12ae2aeb737a8cacd582446accc55992b0d82ba321e03ace78e6acec99",
+        "root_gitlink": "160000 commit b7e195031cab96b38949b90317ea8033797027b8\treferences/Hexalith.Memories",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Parties": {
+        "branch": "main",
+        "head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+        "index_entries_sha256": "17b0140c69a65cc5bc72bc3a1ccb925df51b6bb24f01f0e3c47da838b5feec86",
+        "root_gitlink": "160000 commit cb9ba9ecfb76125efd407d294d3d01b62e8af687\treferences/Hexalith.Parties",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Platform": {
+        "branch": "main",
+        "head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+        "index_entries_sha256": "46a70e64e69f614cf294045fd3de6bde27c0ea2a7d9fb0636ded3a97a5fd779f",
+        "root_gitlink": "160000 commit 695463c5eed801e96dbd9efc6a8cef4b70e900f9\treferences/Hexalith.Platform",
+        "tracked_status": ""
+      },
+      "references/Hexalith.PolymorphicSerializations": {
+        "branch": "main",
+        "head": "e97b56930e213f674b64c157551f499b0473ec43",
+        "index_entries_sha256": "750dc4720d16f66391c92415f85b07212eb2c1b99c0833cdd679453637b016fa",
+        "root_gitlink": "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Projects": {
+        "branch": "main",
+        "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+        "index_entries_sha256": "7d1201830661ad52b5316ea92e25c6e3536b9d1269a24db1af8c7e48166b9e92",
+        "root_gitlink": "160000 commit fc58cefde69d72d7d3daa574b5022f73f830a85e\treferences/Hexalith.Projects",
+        "tracked_status": ""
+      },
+      "references/Hexalith.Tenants": {
+        "branch": "main",
+        "head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+        "index_entries_sha256": "500f7ef2c7ff731a7b1120d44f418c8fc0c4faaaaf9a99f67226cc5083c50fad",
+        "root_gitlink": "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants",
+        "tracked_status": ""
+      }
+    },
+    "rootRevision": "ee74564477176a698971b9cddea084335a94fe29",
+    "sourceAndBuildInputCount": 24111,
+    "sourceInputIndex": {
+      "path": "source-copied-inputs.json",
+      "sha256": "02302be0b43ef64a9e579fb2c80c6e5b4051fa94bb3d4dc9021c62567fb7d490"
+    }
+  }
+}

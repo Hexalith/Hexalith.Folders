@@ -1,0 +1,50 @@
+{
+  "approved_platform": "3d344e850471b6a21fc4649df7ede9a0390689b1",
+  "current_platform": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+  "mapping_sha256": "46a4bef075af48791ec3f0bc4e4336de8597c36406ccad2f3ab5183e438b41cd",
+  "owners": [
+    {
+      "actual_declaration_sha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "actual_root_checkout": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "declarationSha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495",
+      "identity": "Hexalith.EventStore",
+      "platform_head_gitlink": "160000 commit df976e0051b9e2eaa9d3592b3054a0317d83d0cb\treferences/Hexalith.EventStore",
+      "platform_index_gitlink": "160000 df976e0051b9e2eaa9d3592b3054a0317d83d0cb 0\treferences/Hexalith.EventStore",
+      "revision": "7c93a1234d14c66f5ee85ed48caaee1d30a671f3",
+      "root_head_gitlink": "160000 commit fdb59895975e86a1e234325a01237f259cdbd53b\treferences/Hexalith.EventStore"
+    },
+    {
+      "actual_declaration_sha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "actual_root_checkout": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+      "declarationSha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522",
+      "identity": "Hexalith.Tenants",
+      "platform_head_gitlink": "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants",
+      "platform_index_gitlink": "160000 2ec938397c5b330cf1e694e8cc442cb4ad022f2b 0\treferences/Hexalith.Tenants",
+      "revision": "a01e89854f711d1a93ae15695b438424c1ed4f0f",
+      "root_head_gitlink": "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants"
+    },
+    {
+      "actual_declaration_sha256": "288d990c92ac8cce5bc7a35ae737188795f9ddbc2e44923bf789fdabdf983162",
+      "actual_root_checkout": "b7e195031cab96b38949b90317ea8033797027b8",
+      "declarationSha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "identity": "Hexalith.Memories",
+      "platform_head_gitlink": "160000 commit f20e8b8145a6c00310a2aed3d0c8758844b65fdc\treferences/Hexalith.Memories",
+      "platform_index_gitlink": "160000 f20e8b8145a6c00310a2aed3d0c8758844b65fdc 0\treferences/Hexalith.Memories",
+      "revision": "e8956eb5c1bd49297f86702f9606eb9b013bc2f1",
+      "root_head_gitlink": "160000 commit b7e195031cab96b38949b90317ea8033797027b8\treferences/Hexalith.Memories"
+    },
+    {
+      "actual_declaration_sha256": "dfb03b6e397944c4f24737f4ac9278fba033399a0efa30a80447c9112709efee",
+      "actual_root_checkout": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+      "declarationSha256": "86002eeb916c77bd753a3c618ce394125794baf421315604c9f551b762624504",
+      "identity": "Hexalith.Parties",
+      "platform_head_gitlink": "160000 commit a494093da3e2656c49e539392284cd1b10f799b3\treferences/Hexalith.Parties",
+      "platform_index_gitlink": "160000 a494093da3e2656c49e539392284cd1b10f799b3 0\treferences/Hexalith.Parties",
+      "revision": "f4285584dce0dfa08e3336fca3c203a1b5e748c6",
+      "root_head_gitlink": "160000 commit cb9ba9ecfb76125efd407d294d3d01b62e8af687\treferences/Hexalith.Parties"
+    }
+  ],
+  "platform_parent": "f6f85032598865b9123f16364448bfd02c0ff5b0",
+  "qualification": "HOLD",
+  "reason": "Owner approval explicitly requires a new mapping decision and qualification for integration into a newer base."
+}

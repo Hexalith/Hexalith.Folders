@@ -1,0 +1,119 @@
+{
+  "broaderTasksComplete": false,
+  "candidate": {
+    "after_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "before_sha256": "0c0368212d2b778e5960ffc61276ab76dfcf6a54151b10034e2379c17f8815e5",
+    "changed_rows": [
+      "tests/tools/run-adr-runbook-docs-gates.ps1",
+      "tests/tools/run-consumer-docs-gates.ps1",
+      "tests/tools/run-dapr-policy-conformance-gates.ps1",
+      "tests/tools/run-operations-audit-docs-gates.ps1",
+      "tests/tools/run-production-observability-gates.ps1",
+      "tests/tools/run-provider-error-docs-gates.ps1"
+    ],
+    "command": "python3 scripts/generate-pd10-v2-conformance-set.py --output $TMPDIR/{first,second}.yaml",
+    "generation_hashes": [
+      "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+      "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+    ],
+    "header_controls_preserved": true,
+    "ordered_set_sha256": "6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022",
+    "root_revision": "ee74564477176a698971b9cddea084335a94fe29",
+    "rows": 1635,
+    "status": "pass"
+  },
+  "handoff": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-publication-handoff-2026-11-15.json",
+    "sha256": "28ca3e06fb478caecc2abee6c1b6b70c94ccf537ef4950b0b093440f1426c510"
+  },
+  "historicalPrefixesPreserved": true,
+  "operationalControls": {
+    "activationAuthority": null,
+    "firstInstallActivation": null,
+    "migrationT0": null,
+    "parentStatus": "in-progress",
+    "routeMode": "V1Only",
+    "stagingChecksExecuted": 0,
+    "storyClosureClaimed": false,
+    "trackerStatus": "backlog"
+  },
+  "originalSourceChanged": false,
+  "preGenerationGates": [
+    "source-server-tests-behavior",
+    "source-integrationtests-behavior",
+    "source-contracts-tests-behavior"
+  ],
+  "protectedInputs": 235,
+  "protectedSourceSnapshot": {
+    "path": "source-before.json",
+    "sha256": "ab34bc037db0253123f6c37f1a7f87591f96d2525111b228c37b2c822d30391c"
+  },
+  "qualification": "HOLD",
+  "remainingOwnerInputs": [
+    {
+      "evidence": {
+        "path": "server-build.log",
+        "sha256": "998c2320a46517e3d1fff6e410af54768c332458baf8f77e1ed856bc3e3b9945"
+      },
+      "gate": "Release/package build",
+      "owner": "EventStore release owner, then Builds catalog owner",
+      "required": "Publish and qualify the native scan API capability (INativeSourceScanner and INativeSourceScanFold<T>) and adopt a compatible package through the owning catalog. Do not substitute source in Release."
+    },
+    {
+      "evidence": {
+        "path": "projects-restore.log",
+        "sha256": "d31480068223f4e39525b7ad847f9b0121061f44dcb46726c8f08d5a5f30addb"
+      },
+      "gate": "Current Projects package build and consumer artifact",
+      "owner": "Conversations release/distribution owner and Projects build owner",
+      "required": "Provide the already selected Conversations Client/Contracts2.0.0 packages to an authorized restore lane or this offline feed; then build/test the exact Folders1.4.0 pair and record immutable Projects artifacts. Cache absence is not feed absence."
+    },
+    {
+      "evidence": {
+        "path": "platform-mapping-status.json",
+        "sha256": "c252a7780abdfd6ce2568261d8552ee4962b4ea1d0fc4ed180a8b50e47ae1260"
+      },
+      "gate": "Current Platform executable-source mapping and graph qualification",
+      "owner": "Platform owner with direct module owners",
+      "required": "Supply a mapping decision for the current Platform/direct-owner revisions, or qualified exact roots accepted under that decision. The retained November2 approval expressly excludes later integration bases. Equal declaration bytes do not approve executable source."
+    },
+    {
+      "evidence": {
+        "path": "offline-proposal-tests.log",
+        "sha256": "80b862a9e04273c7c88f19dd425de31bf3cf81a921aef1a5eb6181ba8e0a0f0e"
+      },
+      "gate": "Current source proposal, exact signed release and immutable hosted artifacts",
+      "owner": "Folders candidate and release owner with Projects and Platform intake owners",
+      "required": "Reconcile substantive drift in the old52-input proposal, clear the package/parity gates, qualify actual tool/catalog/composition and module intake, and publish through the existing lane under its authorization. Current1.4.0 archives predate changed Client/Contracts source."
+    },
+    {
+      "evidence": {
+        "path": "eng/story117-platform-qualification-current/staging-checks.json",
+        "sha256": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51"
+      },
+      "gate": "Operational entry and closure",
+      "owner": "Platform qualified deployment/operator and data owners; Jerome for closure/tracker decision",
+      "required": "Supply attempt-locked target/consumer/data disposition, hosted identity/delegation, exact artifacts, owners/UTC slots/thresholds, fourteen staging results, observation and applicable recovery. Use the original migration clocks only if an existing-v1 branch is established."
+    }
+  ],
+  "schema": "hexalith.folders.story117.local-reconciliation-receipt.v2026-11-15",
+  "setupDiagnostics": [
+    "Private setup first refused duplicate Git branch-config keys; tolerant private-copy parsing corrected it.",
+    "Two private feed-construction attempts refused noncanonical/duplicate cached nupkg names; one canonical archive per ID/version corrected it. No build ran in those attempts.",
+    "The first final parity replay lacked the separately built oracle executable; its original results remain under before-oracle-prerequisite. The final replay builds that executable."
+  ],
+  "verificationCommands": [
+    {
+      "path": "release-commands.json",
+      "sha256": "1babd23ac2f0fefb1b963b2dcb104bfc2179ce8bc9006b5f648dd60084a74b0a"
+    },
+    {
+      "path": "source-commands.json",
+      "sha256": "bd04355c0aa61dc2976176080c24cad27ed38492f92cfd4a9b65d5977bc09c31"
+    },
+    {
+      "path": "final-commands.json",
+      "sha256": "7b94a2a7141d5cc5eed6deeb673b934c52d17f5a199bf70d6880022b3f292e68"
+    }
+  ]
+}

@@ -1,0 +1,2305 @@
+[
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Memories.Contracts.pdb",
+    "sha256": "d33d98ca10da03ab615dabe5bbe6942a5b31a778125bfee5ebfb9295e3426553",
+    "bytes": 675808,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.AspNetCore.TestHost.dll",
+    "sha256": "80c1f5d700e68de19eeca35034b49ae1376b339548afc0bdab7bfbe83a25a54f",
+    "bytes": 85288,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.Actors.AspNetCore.dll",
+    "sha256": "26656e0171954775486419425d488218ddb13f48dd83817398296d1fa40b768e",
+    "bytes": 26624,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.DomainService.pdb",
+    "sha256": "3a9e3e73b5ac0a72350ed3fbdcd8ea0f442e29f4f6fba5bbfb6f1e6b0bbe4892",
+    "bytes": 324728,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Memories.Contracts.dll",
+    "sha256": "b229827b08a4eccfe15fb59b331426d0759e11eebc6665429d5a25de3eaa6600",
+    "bytes": 1448448,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Client.pdb",
+    "sha256": "6902369c3626de076f575d7fb98a63574215b3fb9eac4fa341e3152294ecf30d",
+    "bytes": 360720,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Telemetry.Abstractions.dll",
+    "sha256": "14945518327874d148cd5a8727f095ebdac081d8a072dfd01b73975c6056746b",
+    "bytes": 59192,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Grpc.Net.Client.dll",
+    "sha256": "f884d8444feb888656cbb7de87ee8f53a50811329bb32c6e7a7a81cb1de008ef",
+    "bytes": 359064,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Commons.UniqueIds.pdb",
+    "sha256": "8a3a79657cd03ec86125fc5351d6f7c11176427d859dbe9e9473894e45632cb5",
+    "bytes": 16420,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.ApplicationInsights.dll",
+    "sha256": "bf9a4b88c7f94267e1cc7ed0700c575d3eb3266ff25bcb76e4f40f1b0fba022d",
+    "bytes": 386080,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Testing.Extensions.MSBuild.dll",
+    "sha256": "6cbf459486417339e63241a3d1112e312fad308511cde2494db0fdfa4aa92c0b",
+    "bytes": 116064,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Testing.Extensions.TrxReport.Abstractions.dll",
+    "sha256": "bc14f3b514a4cd5ca4e50127485766ab2a3e7775d1d69cef9742796f3a8ae554",
+    "bytes": 22368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "MediatR.dll",
+    "sha256": "33260f34f4acb3b0aa6554aaed6ce468b85321aeaf450d227e4448074a23f622",
+    "bytes": 114176,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+    "sha256": "cf37440c96bd178f2676867b77fa651df001b56b2f42be99b08e5226b3ab4918",
+    "bytes": 137008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.ServiceDiscovery.dll",
+    "sha256": "c8bf860581cffed0520c68ca31b1d516519f67eecfb898cba4065f52767a7213",
+    "bytes": 77112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.staticwebassets.runtime.json",
+    "sha256": "2c6564c818ba8a52603ddb798d6221d6b4c15499118498e4d3d63ee810ad6afb",
+    "bytes": 1840,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "c1b24cb7dca378cb4d725c83e01982de0d8b3d5c1d9aba4bc5c35b7f5be267f1",
+    "bytes": 719360,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Google.Api.CommonProtos.dll",
+    "sha256": "329cf0f2b66c5cbf675321f0d6b33c17d1092e5761f32d3d2c1307a110c0dbbd",
+    "bytes": 450048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Octokit.dll",
+    "sha256": "6a48642d6ae464b43a6cb50292618af6c73ada8d726644e50d4fa44a1783f638",
+    "bytes": 1399296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.TestPlatform.Utilities.dll",
+    "sha256": "94dd571445ca0a6e106b661a4d950ad0d84d31de1a1a04ee4ceac49c3bdc049a",
+    "bytes": 69432,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.Common.dll",
+    "sha256": "42ead0caec1046de7f504c4ae860652a41c7a62331563bc1580bfa0094646674",
+    "bytes": 78848,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.runner.utility.netcore.dll",
+    "sha256": "db6d7eee323f428f4a5e9a20ff55c0957827975b3c4b4b80f93bcf4eb4f8117e",
+    "bytes": 160520,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Instrumentation.Runtime.dll",
+    "sha256": "d40584bbecaa8b43444e4cc146b341bf29482484e5a0f7d6c80afb430bf0f870",
+    "bytes": 10752,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "JsonSchema.Net.dll",
+    "sha256": "9c74bb4aefbb185741d6707edf5d2e94a30d3eb20e7afc294dc343d8a86d4713",
+    "bytes": 310272,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.DependencyModel.dll",
+    "sha256": "2385bfbc9344e03acb2ff44f1ed21a3770fbafdf1ba4be2dbcacd42027b8c3bd",
+    "bytes": 84776,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Json.More.dll",
+    "sha256": "eafc1a24d8937f6e429de13ff348638dd27e5ae880bf78a3b9798a4c731410ae",
+    "bytes": 54272,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Compliance.Redaction.dll",
+    "sha256": "7d6b3985360000276169efaad3815b61e332de7536efa89c931cb368c47e4c69",
+    "bytes": 54072,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.ServiceDefaults.dll",
+    "sha256": "19f20f76af94cb56ec5c031204966e70c9aec66ff99dfd2455702617d5588e4c",
+    "bytes": 22016,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.DependencyInjection.AutoActivation.dll",
+    "sha256": "bcbf39152f18fb37198538a965879f578f61dda1d95482864f730047ac571f69",
+    "bytes": 33592,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.staticwebassets.endpoints.json",
+    "sha256": "fcb15042ec61cb46387a2b37f57979938d6145c71f74482cdbee187c032afdc7",
+    "bytes": 18901,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Http.Diagnostics.dll",
+    "sha256": "06b841979c1e764d8b6e2c025ea807b5f01a8b84d5af3113dce7b9a63b312459",
+    "bytes": 118072,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.TestPlatform.PlatformAbstractions.dll",
+    "sha256": "f7a0ee54ef6340e13a3bff85cec0ba6f77151b06f49cc92edbf4419355bc99b9",
+    "bytes": 53048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Contracts.pdb",
+    "sha256": "922b5447587d0ad3ce3a86ea8c47e139858af24dc1aa6e32a9a601f0fa21c4a9",
+    "bytes": 42368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.TestPlatform.CommunicationUtilities.dll",
+    "sha256": "2b869a478c6a18ddf19ff77dde1c6608c031983336f528b7d6d68b2db33f5e84",
+    "bytes": 531296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Testing.pdb",
+    "sha256": "0e4cc1304890d572bdcbaedb39cc6703147b8390410ae3e982cb4d574dadeb8a",
+    "bytes": 35892,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.ServiceDefaults.pdb",
+    "sha256": "aa270c66bac1549cc880277744e082702f5e00990ac7be0e078291e66bfcc37c",
+    "bytes": 181680,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.CodeCoverage.Core.dll",
+    "sha256": "6a332099c9b4940dcb2876d507527988f5911bf68478089e73694b2d23b26a0c",
+    "bytes": 532792,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Tenants.Client.pdb",
+    "sha256": "72dc82390ae6002e3a916c46353201aa97b3ab22356f35c1f345716fedfe745e",
+    "bytes": 31364,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Contracts.dll",
+    "sha256": "e46934f92199d67e17c5c3db2bd41644c0924099e115f91ab8086d83125d6f5c",
+    "bytes": 183296,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Contracts.dll"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.DomainService.dll",
+    "sha256": "995cf61f0e5e33a74af91a1710121ef78e3a6215c46f8de81f10d7156b5b7589",
+    "bytes": 1391616,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Contracts.pdb",
+    "sha256": "d4dd7d431845410ba6da7482716f828b1b2629ada528e499436a72dfc95598a9",
+    "bytes": 275112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.core.dll",
+    "sha256": "6196dee053836007683a157ef0da77a40e5346812db479229b77e131d1f2eb8e",
+    "bytes": 649992,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.pdb",
+    "sha256": "a39ab6282eb153a66eaa0d98191a3808d879abfa910cc7d77ddb12926c34407e",
+    "bytes": 230168,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Commons.UniqueIds.dll",
+    "sha256": "10cb5aef7e92e46fee90185aa7ae6ec4573ba662be355392a86ad4a683629f7a",
+    "bytes": 9728,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.DiaSymReader.dll",
+    "sha256": "b954800a263122a383573c8698bb28629fb2af7fe3ef8a2621522a7fae979440",
+    "bytes": 345384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Testing.Extensions.CodeCoverage.dll",
+    "sha256": "d4c5b20901c33cbc7a162d6720754faafff94d39a37dccc0ad0261a464430504",
+    "bytes": 105784,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.AmbientMetadata.Application.dll",
+    "sha256": "0802c48b5a383d78e0dd2fa768a58c70c8adafcbe7a288020d390bc36fc940eb",
+    "bytes": 34656,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "LibGit2Sharp.dll",
+    "sha256": "86d84b0b82344d0089af06f7bb89246039185ef9228f1f811bbb53db6a361744",
+    "bytes": 514560,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Instrumentation.AspNetCore.dll",
+    "sha256": "efdfff3d5266b4ae9574c382db2ef686a5349c3d4deb3b59547092444816ff23",
+    "bytes": 76800,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.Logging.dll",
+    "sha256": "90b6fa70f28a3b7711fe95aa30a0c5551f1e6aa28565187aa7b3681194215c84",
+    "bytes": 38192,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.JsonWebTokens.dll",
+    "sha256": "b48515aeaa4a8fadc5fcacb45978c808a4d5bbffaf74f8894cc57c0769a9fb9e",
+    "bytes": 174384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.dll",
+    "sha256": "e2e3fb99a877819ead8401e62b871a23a112e4f0a1ec97e3b18abfc94b48c5e1",
+    "bytes": 2471936,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Grpc.Core.Api.dll",
+    "sha256": "5674c1203706b5a261e8bbd3499147d94fc80b5f077bf45f9934ca28a9c8574b",
+    "bytes": 70296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Task36FoldObserver.pdb",
+    "sha256": "80200b43d92f106406c76d417516948bf8ef971d794c13e3605f055b52a33088",
+    "bytes": 35180,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.runner.common.dll",
+    "sha256": "62b199a24d1f9e40f0a06e5aa11e8645f76f88e9acd30befd90513c1e5333a94",
+    "bytes": 1091848,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Mono.Cecil.Mdb.dll",
+    "sha256": "28cb367972bdc1cd43e4006306af2fd96d37f4ed4b239ee90e1dc7237a93af7f",
+    "bytes": 39936,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.TestPlatform.CoreUtilities.dll",
+    "sha256": "7aaaef512d4efb122ccc89eea54a9f0a737481424d174d6ba2477c674a3f2e7e",
+    "bytes": 102712,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Testing.pdb",
+    "sha256": "90f89030f87ae058a36a7f335420a96e2391d3c2164e621a5f9ba865c2b50819",
+    "bytes": 106788,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.Tokens.dll",
+    "sha256": "84409b8c3a52313fe4f4f621fce39544f42074109e870ac2631e627c8b70210f",
+    "bytes": 416024,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
+    "sha256": "954816d202190a5c4e861548f1319ee612b898cb56ad24fcd0ef1de921a10eb2",
+    "bytes": 355640,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Telemetry.dll",
+    "sha256": "0c02f0fa89959f59985d0ff3308e2a740cbc2f39672c65cb7d40cc9db2ae4e9b",
+    "bytes": 152416,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "System.Management.dll",
+    "sha256": "4dc4d6846a3142087bf258e5923abf303c0a4c19e4bb212b066ad7ab8e6de859",
+    "bytes": 72824,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Testing.dll",
+    "sha256": "9eaa02dc209f07c0defe41ecd68ebdd0faaf515336082ce303e45c51bf16f205",
+    "bytes": 51712,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.deps.json",
+    "sha256": "3cc0bdbe3eb112d16275ed2f2c78463a794047561f731f04b523c3f0965920d1",
+    "bytes": 46759,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Resilience.dll",
+    "sha256": "6c03ca54c4b674ab9760a9dda4d8ec528e4c9463a03a092ed0b1463f75cb3472",
+    "bytes": 33592,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Testing.Platform.dll",
+    "sha256": "3b924a66fe318d1ec1d48f4e253c42ecc355fd412114b628d803def002f6d6a3",
+    "bytes": 1490272,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.McpCli.Abstractions.dll",
+    "sha256": "f4c0b4a8434ffb743eedf000a7a27099549de072bd88db181e0977fad57e7923",
+    "bytes": 10752,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Compliance.Abstractions.dll",
+    "sha256": "a3dd0a66ac79d17e49dd339cab24a1e9d92ae594e10a1f38dec141cbea8ea3d0",
+    "bytes": 43832,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.Tests.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.Protocols.dll",
+    "sha256": "dd8823215cada7e1c7fe5d2a3b06395fb906baa5f79ec00411ad6a1f80585f60",
+    "bytes": 54064,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.runtimeconfig.json",
+    "sha256": "be8d471079cf6a13d3a4515f3f70f46cf092019967abbd940cdef1b19abfb903",
+    "bytes": 401,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Mono.Cecil.Pdb.dll",
+    "sha256": "a332332633fbcb20e8d50e49b4db7bd1557721417122cf0c5f4c42f2332391d0",
+    "bytes": 90112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.AspNetCore.dll",
+    "sha256": "23296cbea1e2a97d81a4a335ee249238e349ebea70c8e8233dfe9a92106f3986",
+    "bytes": 57344,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Server.dll",
+    "sha256": "e717b2df45571d7215793c9b1376b50fd178906be97c5b8803bbdab79c6d3430",
+    "bytes": 4888576,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.dll",
+    "sha256": "404e7ef4de39c4aa3688cb262c8bfcfab324294dcc7781848d50da23485cf189",
+    "bytes": 1020928,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.dll"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Instrumentation.Http.dll",
+    "sha256": "8551f9a95170a72a975837f458ca40486f625e80077ad59955590ebf0ba01980",
+    "bytes": 69632,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Memories.Client.Rest.dll",
+    "sha256": "bc5bda6219d90d8e5f1101b2b18a3df90384cfe28216c83af7e5104fd3645800",
+    "bytes": 104448,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.IdentityModel.Abstractions.dll",
+    "sha256": "46f14d67dfc1894eb24d80282895526db25a854af227eee2fa06a0383fd09e4c",
+    "bytes": 19264,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.Tests.pdb",
+    "sha256": "e9c7ce551b4ccbdf241a109a647359582bea42642922bc87ed1d96ae5e734354",
+    "bytes": 429216,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.pdb"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Testing.dll",
+    "sha256": "136fe5667547a82429607e513f5653927e9a494dbe74b757c44d66291792dc35",
+    "bytes": 322048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.VisualStudio.CodeCoverage.Shim.dll",
+    "sha256": "30d1b68b025cde0f5653475b1602c02c5ef089cb43bdc035fc726ce7675c3711",
+    "bytes": 16184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.runner.inproc.console.dll",
+    "sha256": "322d5e7e1810bae1eba32405db8c08948bfe64397c1b39c58783ea63ef2bd7d5",
+    "bytes": 82184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Tenants.Contracts.pdb",
+    "sha256": "321dd9a042c625e0220c4c41e09052fb414392fe06f2809d0375b7ee52147a0c",
+    "bytes": 37584,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Http.Resilience.dll",
+    "sha256": "72acd3aaf3c7dfbcf81ca4feded23f83a168b62ec668b66391b4b4f78d4d53c6",
+    "bytes": 149304,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.McpCli.Abstractions.pdb",
+    "sha256": "b51771eede7fc94f7b79ca8a2bfb3dab4fd4cf2a8ffe49f071139cf60204ca95",
+    "bytes": 15116,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Client.dll",
+    "sha256": "3b955ffe12d6ac03cf30a6a80e004593b87809ccb76259d65aa8029e54979bb5",
+    "bytes": 980992,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Client.dll"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Google.Protobuf.dll",
+    "sha256": "e9b892ac667931162ffefa411ef8dc3eae777d634d8bfe8beddc28b1de95a612",
+    "bytes": 501400,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.mtp-v2.dll",
+    "sha256": "45d435d005721fc5aeb04b1e84116a86979a9dc56d3fc9254517cd6368ce6f97",
+    "bytes": 133384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Bcl.AsyncInterfaces.dll",
+    "sha256": "5705d245072d3eb78400547b32147dbb6e2c8b02ba8bda76729798f5efdeaecb",
+    "bytes": 16000,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Polly.Extensions.dll",
+    "sha256": "8adac7a20cd056b9a8623efb6e6f9b99a82e18d3c7b7f6c788f7fc4b20ce5f18",
+    "bytes": 57120,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Testing.Extensions.Telemetry.dll",
+    "sha256": "87f4f67d876a05617cc280e3c56f80156d4a2e12b45a023f1c72a83651517af9",
+    "bytes": 37688,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "System.CodeDom.dll",
+    "sha256": "bfb75074ac26c7632bbe9ffc1063ceca9a56aae86ac4913481d6bba88c4c4a34",
+    "bytes": 184944,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Client.dll",
+    "sha256": "3cdf40e17156eeb0ac914052572d0b5d512ae162c9c704b46f3a9d99e3cd87e2",
+    "bytes": 1456640,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.EventStore.Client.dll"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.TestPlatform.CrossPlatEngine.dll",
+    "sha256": "53eb59bd28a22c6af9d0e85c8fc4eb0d65809ae1906e757a67fc03685b377b8a",
+    "bytes": 735032,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.CodeCoverage.Instrumentation.dll",
+    "sha256": "2956072ce225f43c6f55ea13269e95a7499edc8bfce54131910f96f35c415b12",
+    "bytes": 261944,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.Tests.dll",
+    "sha256": "da961028538ab2234a6a48f83cf2275e05f80751c4ca45536ca7ef3983bbbb7d",
+    "bytes": 2196480,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.dll"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Shouldly.dll",
+    "sha256": "498dad657f324ab068e800d5711ae36feb4af4ba9a572eb941197e2fb677549d",
+    "bytes": 292864,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Contracts.dll",
+    "sha256": "803874398aee1f06b756662f45227b9f39ae0fa966b5c6f4521a295854f5d60a",
+    "bytes": 1051136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Tenants.Contracts.dll",
+    "sha256": "a4c3be57619a38fb17c709075dd104b95ca6952975f9ba4ace69a2942b81d7fd",
+    "bytes": 123392,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.ServiceDiscovery.Abstractions.dll",
+    "sha256": "70952f1049cb8f834ad149108d116e6488523607addbeada94ddfb536c233327",
+    "bytes": 28984,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Newtonsoft.Json.dll",
+    "sha256": "a28c251dfe36d881e9e2462e171441b8b0ec156fe3f452602c9149b1b9efe05b",
+    "bytes": 723368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.abstractions.dll",
+    "sha256": "3166dc70323fb30ccf1cedb0fe86f2ad122c46d254542342d90386efc4c9285c",
+    "bytes": 21928,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.Client.dll",
+    "sha256": "642947396b012bd55a241243f4b16bf5e48aa25f72c7a19f98b29eb3ca357400",
+    "bytes": 200704,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Extensions.Hosting.dll",
+    "sha256": "85e2f175fa5d4ba855142e89450104248ce7c3b85d126c654f16333bf742b8fd",
+    "bytes": 16384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.dll",
+    "sha256": "7e764903e54fbe5528639cb53e15955f77b00d682fb30c2d93b257b94c9c7923",
+    "bytes": 366080,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.pdb",
+    "sha256": "d1264d7c8c28115c4c04f0f550f7682a46bc6bfe7e61d9b06494d1f6c9496128",
+    "bytes": 580844,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Client.pdb",
+    "sha256": "6eb20fbd51137660976853eb78e93b0d56eaa3d522cfce2637fcf246cd82837f",
+    "bytes": 206116,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.CodeCoverage.Instrumentation.Core.dll",
+    "sha256": "b47729f86fe70c502b8c8525d800419928f2ea6ca8d4128cabf4c453d1a88022",
+    "bytes": 35680,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+    "sha256": "43a9817496e14f895b08f11dcafe5f485c36ea2c00be9d21be83326b79afa356",
+    "bytes": 24576,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "DiffEngine.dll",
+    "sha256": "0c6b99a47c609a4263b80feaed95a357e30be3ad5a1cda79355663e407682aa7",
+    "bytes": 109568,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Mono.Cecil.dll",
+    "sha256": "831dca77470d85cb6ffbea3072daa7a3df5b7c9fcfd9c3f43674a9be99d4bfcf",
+    "bytes": 361472,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.VisualStudio.TestPlatform.Common.dll",
+    "sha256": "42194c3073cfce7166a8aeb59c75fc2e69a2c917f8054b8da7e7cd098834a8a6",
+    "bytes": 252768,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Polly.RateLimiting.dll",
+    "sha256": "afe3042cd4062438857d42880623845f32575375f460fd1ac07f705ea0211804",
+    "bytes": 28208,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Task36FoldObserver.dll",
+    "sha256": "412c301679ec1e03c5a5925d37e4a681ac7947612328b6bb419967c929320e20",
+    "bytes": 62464,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+    "sha256": "54039387636c21ee47f27255653ab474ef1c50624db5bd66490b44b31cafd3da",
+    "bytes": 52008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Memories.Client.Rest.pdb",
+    "sha256": "bc2c48a356d814d76d41f3c279b222e462fc7fdacb3156c1ee029baa5fd40ab5",
+    "bytes": 30844,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Bcl.Cryptography.dll",
+    "sha256": "91c6bab93638c268569a38bc87770a5e3ef9932676f5b7a6d47aef4208062925",
+    "bytes": 19248,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.CodeCoverage.Interprocess.dll",
+    "sha256": "562d1db168d56d9068a8be0213e53c22915d595843733c8c0a8ffd4411df6092",
+    "bytes": 152928,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Api.dll",
+    "sha256": "55498c2eaf6b2159faef431d6662d259a8356db919cbf7dffe081c1ff6bf1035",
+    "bytes": 84480,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.assert.dll",
+    "sha256": "a6e10cb96281815060f9c89122649a3fd599e73fc8484d5415a4a487ed368878",
+    "bytes": 217864,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.Tests.runtimeconfig.json",
+    "sha256": "b372101e8f97eec12a83f861d5270e17fc14d054aebad3ea15a6e85a79470219",
+    "bytes": 416,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.runtimeconfig.json"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "MediatR.Contracts.dll",
+    "sha256": "c2601304aa9d15c51a543e1c3300368c64ac38633e7277bb835a04f68ddf6a61",
+    "bytes": 6656,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.runner.visualstudio.testadapter.dll",
+    "sha256": "ab3e8b088bd82e55963eedf765f87f6a3bffbe8ccd866d3e15a5f40be5c473a4",
+    "bytes": 1358336,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Polly.Core.dll",
+    "sha256": "37762ea6fcf05154685b0a616461705c837c2f07d98e4037dc3a0e4b4c186ea5",
+    "bytes": 242736,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Grpc.Net.Common.dll",
+    "sha256": "fdff383bbd8e5015f3c4aaaa7508b769228f33c92ba14fec4e59d35c5d78e6ae",
+    "bytes": 22168,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "ByteAether.Ulid.dll",
+    "sha256": "fc4f3d99e88023ffbd37eea2941ddd81f604611fc967fedb116a4daaf9ae4590",
+    "bytes": 29696,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.Server.Tests.deps.json",
+    "sha256": "d32b103f73fe8aa8989319a024bf71c87dbef74f38d8833accea2ad8a10e0e41",
+    "bytes": 113172,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.deps.json"
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.Protos.dll",
+    "sha256": "5e20423ef76ce02296cefe9ef5c37ec490742996fa458f4c812204984af2a299",
+    "bytes": 837120,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.EventStore.Server.pdb",
+    "sha256": "52f2d1aa32396120750f1bc5be3b0127d292ff5eed8a939a0125e99eaab2cb03",
+    "bytes": 1181624,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Grpc.Reflection.dll",
+    "sha256": "87795d17c1385e7c05469c447ad8eecc883c3c71b4804319c5918a5a490c8d57",
+    "bytes": 77976,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+    "sha256": "ac13db5e635fb8580a66664ab4fb1a41d32e285a0d564600278d01964bae3566",
+    "bytes": 215552,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "xunit.v3.common.dll",
+    "sha256": "8de9dc6b8fc519d19e8a0e13f37b7790fadb2164030163406524696c76b781bb",
+    "bytes": 201480,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "YamlDotNet.dll",
+    "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a",
+    "bytes": 300032,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "EmptyFiles.dll",
+    "sha256": "d5b63e68b8966567f73df025b449e1a2e3b2306c8cec364fd240310c757b3adc",
+    "bytes": 75264,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Dapr.Actors.dll",
+    "sha256": "9253d66380b77c14634e034157737632dd7c03e57cda565df17b49d72ae52f81",
+    "bytes": 218112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "testhost.dll",
+    "sha256": "3e9ac238400d8d72cba32776182060a5421c7630da7355360c46c0763df9043e",
+    "bytes": 49504,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll",
+    "sha256": "d454ddad56b51c877c5e128636f5cc77609e70df8512cad74626a2b7a3fe4a7a",
+    "bytes": 30008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Mono.Cecil.Rocks.dll",
+    "sha256": "bf992f3dce364ebcc3200fa7832ef07e20b4e2dbc3a8a6213ce44e3d239db984",
+    "bytes": 27136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Folders.ServiceDefaults.pdb",
+    "sha256": "b176c624c086f9c6a20582001bd770e8760c545c821de341b6a1604ed9390592",
+    "bytes": 28724,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Hexalith.Tenants.Client.dll",
+    "sha256": "a8dd1eb301dcbeeabb95daaa87652d19f52925b5c98c6e03e4b3aa18a92b7564",
+    "bytes": 43008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "Humanizer.dll",
+    "sha256": "2769ed8265b691a5482c72506ed274dc52446fa1641997a8c12c66f5b9263d39",
+    "bytes": 643760,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "System.IdentityModel.Tokens.Jwt.dll",
+    "sha256": "593c82287b671e9cceefaf10c51df96793f6db30f9cfa60daabaaf80474670bf",
+    "bytes": 91952,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.Server.Tests",
+    "file": "JsonPointer.Net.dll",
+    "sha256": "1f6fd3d40093bb66ec5269c51d189c506153227a4c9d0b7beca60c64199af1e3",
+    "bytes": 26112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Nerdbank.Streams.dll",
+    "sha256": "e5c90ffcb7a0bd0cedf51ac33e818b9f64045e9839b19701eb73460356631872",
+    "bytes": 222048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Cli.runtimeconfig.json",
+    "sha256": "e8d9d5148dc89addc487ba3afe1c799e7ca919dc4f3fc011f580b5a2594e9e5a",
+    "bytes": 436,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Win32.SystemEvents.dll",
+    "sha256": "ca495bf6c86b7f092d624928101985a941532d149dcd8acfea170f8a53be8850",
+    "bytes": 26224,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Contracts.pdb",
+    "sha256": "d33d98ca10da03ab615dabe5bbe6942a5b31a778125bfee5ebfb9295e3426553",
+    "bytes": 675808,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.AspNetCore.TestHost.dll",
+    "sha256": "80c1f5d700e68de19eeca35034b49ae1376b339548afc0bdab7bfbe83a25a54f",
+    "bytes": 85288,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.Actors.AspNetCore.dll",
+    "sha256": "26656e0171954775486419425d488218ddb13f48dd83817398296d1fa40b768e",
+    "bytes": 26624,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.DomainService.pdb",
+    "sha256": "3a9e3e73b5ac0a72350ed3fbdcd8ea0f442e29f4f6fba5bbfb6f1e6b0bbe4892",
+    "bytes": 324728,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Mcp.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.RuntimeIdentityProbe.deps.json",
+    "sha256": "99e319a2d0cf916267e7d14ce23057890272405bced56b582365ea6eff3ccbe5",
+    "bytes": 492,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Cli.pdb",
+    "sha256": "5cef9364c164ca5dd8c8f502a96c8d6656a9b4558399ce78e44a1bbe9ca3aff7",
+    "bytes": 42496,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Contracts.dll",
+    "sha256": "b229827b08a4eccfe15fb59b331426d0759e11eebc6665429d5a25de3eaa6600",
+    "bytes": 1448448,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Client.pdb",
+    "sha256": "6902369c3626de076f575d7fb98a63574215b3fb9eac4fa341e3152294ecf30d",
+    "bytes": 360720,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Telemetry.Abstractions.dll",
+    "sha256": "14945518327874d148cd5a8727f095ebdac081d8a072dfd01b73975c6056746b",
+    "bytes": 59192,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.Net.Client.dll",
+    "sha256": "a2bdafc8d6a7baa8b8f6c0b39d8a7f859ad84af14380ccae118c2f5316602212",
+    "bytes": 360088,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Commons.UniqueIds.pdb",
+    "sha256": "8a3a79657cd03ec86125fc5351d6f7c11176427d859dbe9e9473894e45632cb5",
+    "bytes": 16420,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.ApplicationInsights.dll",
+    "sha256": "bf9a4b88c7f94267e1cc7ed0700c575d3eb3266ff25bcb76e4f40f1b0fba022d",
+    "bytes": 386080,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Testing.Extensions.MSBuild.dll",
+    "sha256": "6cbf459486417339e63241a3d1112e312fad308511cde2494db0fdfa4aa92c0b",
+    "bytes": 116064,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Testing.Extensions.TrxReport.Abstractions.dll",
+    "sha256": "bc14f3b514a4cd5ca4e50127485766ab2a3e7775d1d69cef9742796f3a8ae554",
+    "bytes": 22368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Aspire.dll",
+    "sha256": "4ddde5ba86bd48973265a2170d497eb01b3415ad72cbfb71972677f360a39136",
+    "bytes": 23040,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+    "sha256": "cf37440c96bd178f2676867b77fa651df001b56b2f42be99b08e5226b3ab4918",
+    "bytes": 137008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.ServiceDiscovery.dll",
+    "sha256": "c8bf860581cffed0520c68ca31b1d516519f67eecfb898cba4065f52767a7213",
+    "bytes": 77112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.staticwebassets.runtime.json",
+    "sha256": "2c6564c818ba8a52603ddb798d6221d6b4c15499118498e4d3d63ee810ad6afb",
+    "bytes": 1840,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.ServiceDefaults.dll",
+    "sha256": "c1b24cb7dca378cb4d725c83e01982de0d8b3d5c1d9aba4bc5c35b7f5be267f1",
+    "bytes": 719360,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Google.Api.CommonProtos.dll",
+    "sha256": "329cf0f2b66c5cbf675321f0d6b33c17d1092e5761f32d3d2c1307a110c0dbbd",
+    "bytes": 450048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Octokit.dll",
+    "sha256": "6a48642d6ae464b43a6cb50292618af6c73ada8d726644e50d4fa44a1783f638",
+    "bytes": 1399296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.TestPlatform.Utilities.dll",
+    "sha256": "94dd571445ca0a6e106b661a4d950ad0d84d31de1a1a04ee4ceac49c3bdc049a",
+    "bytes": 69432,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.Common.dll",
+    "sha256": "42ead0caec1046de7f504c4ae860652a41c7a62331563bc1580bfa0094646674",
+    "bytes": 78848,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.runner.utility.netcore.dll",
+    "sha256": "db6d7eee323f428f4a5e9a20ff55c0957827975b3c4b4b80f93bcf4eb4f8117e",
+    "bytes": 160520,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Instrumentation.Runtime.dll",
+    "sha256": "d40584bbecaa8b43444e4cc146b341bf29482484e5a0f7d6c80afb430bf0f870",
+    "bytes": 10752,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.DependencyModel.dll",
+    "sha256": "2385bfbc9344e03acb2ff44f1ed21a3770fbafdf1ba4be2dbcacd42027b8c3bd",
+    "bytes": 84776,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.RuntimeIdentityProbe.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.RuntimeIdentityProbe.runtimeconfig.json",
+    "sha256": "b2028b7aa40855532efa7b772112f86f38515ec76d4af59455eb786f9f7d455a",
+    "bytes": 369,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Compliance.Redaction.dll",
+    "sha256": "7d6b3985360000276169efaad3815b61e332de7536efa89c931cb368c47e4c69",
+    "bytes": 54072,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.ServiceDefaults.dll",
+    "sha256": "19f20f76af94cb56ec5c031204966e70c9aec66ff99dfd2455702617d5588e4c",
+    "bytes": 22016,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.DependencyInjection.AutoActivation.dll",
+    "sha256": "bcbf39152f18fb37198538a965879f578f61dda1d95482864f730047ac571f69",
+    "bytes": 33592,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.staticwebassets.endpoints.json",
+    "sha256": "fcb15042ec61cb46387a2b37f57979938d6145c71f74482cdbee187c032afdc7",
+    "bytes": 18901,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.AspNetCore.Server.dll",
+    "sha256": "a66e142b1a3cbaf8ed3f0835faac72e0484d4eb8b1295e0d3d1de69d72e575b2",
+    "bytes": 157184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Http.Diagnostics.dll",
+    "sha256": "06b841979c1e764d8b6e2c025ea807b5f01a8b84d5af3113dce7b9a63b312459",
+    "bytes": 118072,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.TestPlatform.PlatformAbstractions.dll",
+    "sha256": "f7a0ee54ef6340e13a3bff85cec0ba6f77151b06f49cc92edbf4419355bc99b9",
+    "bytes": 53048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "MessagePack.Annotations.dll",
+    "sha256": "1e51e087987bc857e55863eb4e986c2f2f0bf17230eb2c243e5dc25c34e7cf86",
+    "bytes": 18432,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Contracts.pdb",
+    "sha256": "922b5447587d0ad3ce3a86ea8c47e139858af24dc1aa6e32a9a601f0fa21c4a9",
+    "bytes": 42368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Aspire.pdb",
+    "sha256": "42bd1b3ad776053ba974630f9788865f8521d0cac4a4df22c3dfceb3a691846f",
+    "bytes": 27096,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Mcp.pdb",
+    "sha256": "558fb4548a3bfcba13192538a5b1b3ea8c65c47e6f94f0a79765edc49044cb4a",
+    "bytes": 38976,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.TestPlatform.CommunicationUtilities.dll",
+    "sha256": "2b869a478c6a18ddf19ff77dde1c6608c031983336f528b7d6d68b2db33f5e84",
+    "bytes": 531296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Testing.pdb",
+    "sha256": "0e4cc1304890d572bdcbaedb39cc6703147b8390410ae3e982cb4d574dadeb8a",
+    "bytes": 35892,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Aspire.dll",
+    "sha256": "f8431d7a2a9a7f7a6b76f99273f98a54699d3337d848c051f9bdfb5b5d56449a",
+    "bytes": 358400,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.ServiceDefaults.pdb",
+    "sha256": "aa270c66bac1549cc880277744e082702f5e00990ac7be0e078291e66bfcc37c",
+    "bytes": 181680,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.CodeCoverage.Core.dll",
+    "sha256": "6a332099c9b4940dcb2876d507527988f5911bf68478089e73694b2d23b26a0c",
+    "bytes": 532792,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "CommunityToolkit.Aspire.Hosting.Dapr.dll",
+    "sha256": "02894c232208a8a6e77ee092e0b62ec7325419babdfd0356f0d342771a1092d9",
+    "bytes": 137544,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Tenants.Client.pdb",
+    "sha256": "72dc82390ae6002e3a916c46353201aa97b3ab22356f35c1f345716fedfe745e",
+    "bytes": 31364,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Mcp.dll",
+    "sha256": "648a8bfd8b486a6a6661402ee349b4017cf2b98d56c662374fbbdc6da5c80804",
+    "bytes": 80896,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Contracts.dll",
+    "sha256": "e46934f92199d67e17c5c3db2bd41644c0924099e115f91ab8086d83125d6f5c",
+    "bytes": 183296,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.Contracts.dll"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.DomainService.dll",
+    "sha256": "995cf61f0e5e33a74af91a1710121ef78e3a6215c46f8de81f10d7156b5b7589",
+    "bytes": 1391616,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.NET.StringTools.dll",
+    "sha256": "887dec541cd0a719b7111458eb90a83b4491d6dd24eff2b16cf03d2782fd26a0",
+    "bytes": 33552,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Contracts.pdb",
+    "sha256": "d4dd7d431845410ba6da7482716f828b1b2629ada528e499436a72dfc95598a9",
+    "bytes": 275112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "ModelContextProtocol.Core.dll",
+    "sha256": "25d2e70a474e1675c27d7d07441153ded7ac9951f0310a229fb2a88dee26fe99",
+    "bytes": 1308672,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.core.dll",
+    "sha256": "6196dee053836007683a157ef0da77a40e5346812db479229b77e131d1f2eb8e",
+    "bytes": 649992,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "MessagePack.dll",
+    "sha256": "a7f8d30a8e6f4a1b445bf6752621a4a7b1f4ff11f5d4dc62dba0d8d7d6995e36",
+    "bytes": 385024,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Fractions.dll",
+    "sha256": "e8407a878af8aec1f485f50a9f356c439371610fff20756d4f2284ac6c995cbf",
+    "bytes": 22016,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "ModelContextProtocol.dll",
+    "sha256": "9e744f19ec28f11093e069085c0165494c45a0a974154a17048171d70b83270a",
+    "bytes": 91136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.pdb",
+    "sha256": "a39ab6282eb153a66eaa0d98191a3808d879abfa910cc7d77ddb12926c34407e",
+    "bytes": 230168,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Commons.UniqueIds.dll",
+    "sha256": "10cb5aef7e92e46fee90185aa7ae6ec4573ba662be355392a86ad4a683629f7a",
+    "bytes": 9728,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Nerdbank.MessagePack.dll",
+    "sha256": "fc086ce3623a9a3f9213159d438c642d225046e371489e8e7f126d4c62f188fa",
+    "bytes": 641024,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "StreamJsonRpc.dll",
+    "sha256": "ddc6a4d60e6cc940aae31faafc1fdcdbe520dfa51bec8dfc7f505449291536d5",
+    "bytes": 647048,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.Drawing.Common.dll",
+    "sha256": "98d07e6b1e7d3641a8608a360b3dc273fe8a0f78926b6e1e5f679a7a074d491f",
+    "bytes": 175216,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.DiaSymReader.dll",
+    "sha256": "b954800a263122a383573c8698bb28629fb2af7fe3ef8a2621522a7fae979440",
+    "bytes": 345384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Testing.Extensions.CodeCoverage.dll",
+    "sha256": "d4c5b20901c33cbc7a162d6720754faafff94d39a37dccc0ad0261a464430504",
+    "bytes": 105784,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.AmbientMetadata.Application.dll",
+    "sha256": "0802c48b5a383d78e0dd2fa768a58c70c8adafcbe7a288020d390bc36fc940eb",
+    "bytes": 34656,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "LibGit2Sharp.dll",
+    "sha256": "86d84b0b82344d0089af06f7bb89246039185ef9228f1f811bbb53db6a361744",
+    "bytes": 514560,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Instrumentation.AspNetCore.dll",
+    "sha256": "efdfff3d5266b4ae9574c382db2ef686a5349c3d4deb3b59547092444816ff23",
+    "bytes": 76800,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.Logging.dll",
+    "sha256": "90b6fa70f28a3b7711fe95aa30a0c5551f1e6aa28565187aa7b3681194215c84",
+    "bytes": 38192,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.JsonWebTokens.dll",
+    "sha256": "b48515aeaa4a8fadc5fcacb45978c808a4d5bbffaf74f8894cc57c0769a9fb9e",
+    "bytes": 174384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.dll",
+    "sha256": "e2e3fb99a877819ead8401e62b871a23a112e4f0a1ec97e3b18abfc94b48c5e1",
+    "bytes": 2471936,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.Core.Api.dll",
+    "sha256": "d9b5751a0988cdcf209f669b166e20b76b6ea3af1bc6601e03f3349e97059385",
+    "bytes": 70296,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.runner.common.dll",
+    "sha256": "62b199a24d1f9e40f0a06e5aa11e8645f76f88e9acd30befd90513c1e5333a94",
+    "bytes": 1091848,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Mono.Cecil.Mdb.dll",
+    "sha256": "28cb367972bdc1cd43e4006306af2fd96d37f4ed4b239ee90e1dc7237a93af7f",
+    "bytes": 39936,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.TestPlatform.CoreUtilities.dll",
+    "sha256": "7aaaef512d4efb122ccc89eea54a9f0a737481424d174d6ba2477c674a3f2e7e",
+    "bytes": 102712,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Cli.dll",
+    "sha256": "b62ee41d798f5a3ed0b04f68670f9378a527fc8a203150d8e887483acd268623",
+    "bytes": 87552,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "QRCoder.dll",
+    "sha256": "2c9a588e08ec91f00fac37a4a43995c8f1966a6cce615e9e8c063eec3d0f145a",
+    "bytes": 195584,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.Tokens.dll",
+    "sha256": "84409b8c3a52313fe4f4f621fce39544f42074109e870ac2631e627c8b70210f",
+    "bytes": 416024,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
+    "sha256": "954816d202190a5c4e861548f1319ee612b898cb56ad24fcd0ef1de921a10eb2",
+    "bytes": 355640,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Telemetry.dll",
+    "sha256": "0c02f0fa89959f59985d0ff3308e2a740cbc2f39672c65cb7d40cc9db2ae4e9b",
+    "bytes": 152416,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.Management.dll",
+    "sha256": "4dc4d6846a3142087bf258e5923abf303c0a4c19e4bb212b066ad7ab8e6de859",
+    "bytes": 72824,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "PolyType.dll",
+    "sha256": "33d30bc1baf80b85ad9b428a388d9999eaf20999d555a6e684aa758f4f679968",
+    "bytes": 323072,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Testing.dll",
+    "sha256": "9eaa02dc209f07c0defe41ecd68ebdd0faaf515336082ce303e45c51bf16f205",
+    "bytes": 51712,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.deps.json",
+    "sha256": "3cc0bdbe3eb112d16275ed2f2c78463a794047561f731f04b523c3f0965920d1",
+    "bytes": 46759,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Resilience.dll",
+    "sha256": "6c03ca54c4b674ab9760a9dda4d8ec528e4c9463a03a092ed0b1463f75cb3472",
+    "bytes": 33592,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "RESPite.dll",
+    "sha256": "a11f2fb73da3916ec37e7650cd11125cc2630c324e5cd0034b318c2d6dbb66eb",
+    "bytes": 116736,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Testing.Platform.dll",
+    "sha256": "3b924a66fe318d1ec1d48f4e253c42ecc355fd412114b628d803def002f6d6a3",
+    "bytes": 1490272,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.McpCli.Abstractions.dll",
+    "sha256": "f4c0b4a8434ffb743eedf000a7a27099549de072bd88db181e0977fad57e7923",
+    "bytes": 10752,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Compliance.Abstractions.dll",
+    "sha256": "a3dd0a66ac79d17e49dd339cab24a1e9d92ae594e10a1f38dec141cbea8ea3d0",
+    "bytes": 43832,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Aspire.pdb",
+    "sha256": "107d8217edb701bb5500845dc9b868be01ef30ccedf58a4c1874e29e28ef7d4c",
+    "bytes": 88748,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Cli.deps.json",
+    "sha256": "1c2032614c7920e0b76bb47cf1e2b66c4904fb2b1af94c29170e1b68cb6c140c",
+    "bytes": 5180,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Mcp.runtimeconfig.json",
+    "sha256": "b2028b7aa40855532efa7b772112f86f38515ec76d4af59455eb786f9f7d455a",
+    "bytes": 369,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.Protocols.dll",
+    "sha256": "dd8823215cada7e1c7fe5d2a3b06395fb906baa5f79ec00411ad6a1f80585f60",
+    "bytes": 54064,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.runtimeconfig.json",
+    "sha256": "be8d471079cf6a13d3a4515f3f70f46cf092019967abbd940cdef1b19abfb903",
+    "bytes": 401,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.IntegrationTests.runtimeconfig.json",
+    "sha256": "2a5ccd60d5e98b842b82bccb71be89751c64609fb6e844b68c191f4391d126de",
+    "bytes": 496,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.runtimeconfig.json"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.IntegrationTests.pdb",
+    "sha256": "c2903fb58d82bd597044b96df3a7f668e8fe70f4f41d9dad6aa4e33a6fd6ca98",
+    "bytes": 178772,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.pdb"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Mono.Cecil.Pdb.dll",
+    "sha256": "a332332633fbcb20e8d50e49b4db7bd1557721417122cf0c5f4c42f2332391d0",
+    "bytes": 90112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.AspNetCore.dll",
+    "sha256": "23296cbea1e2a97d81a4a335ee249238e349ebea70c8e8233dfe9a92106f3986",
+    "bytes": 57344,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Server.dll",
+    "sha256": "404e7ef4de39c4aa3688cb262c8bfcfab324294dcc7781848d50da23485cf189",
+    "bytes": 1020928,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.Server.dll"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Instrumentation.Http.dll",
+    "sha256": "8551f9a95170a72a975837f458ca40486f625e80077ad59955590ebf0ba01980",
+    "bytes": 69632,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "KubernetesClient.dll",
+    "sha256": "1fdb3ddc3db829a3f4015afc328a00d3747fb228c7866df6f765be4cedb800ce",
+    "bytes": 10680320,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Client.Rest.dll",
+    "sha256": "bc5bda6219d90d8e5f1101b2b18a3df90384cfe28216c83af7e5104fd3645800",
+    "bytes": 104448,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.IdentityModel.Abstractions.dll",
+    "sha256": "46f14d67dfc1894eb24d80282895526db25a854af227eee2fa06a0383fd09e4c",
+    "bytes": 19264,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Mcp.deps.json",
+    "sha256": "55c2e5d2d2f0cc081f48b1ff642d5f292ea62b0527ced196bd2406e2c84c59d1",
+    "bytes": 6278,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.CommandLine.dll",
+    "sha256": "04bea8fe9fa1131b87aa9106b19f4136cf8b1b73d5bb145107ae2757566b3233",
+    "bytes": 153400,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.VisualStudio.CodeCoverage.Shim.dll",
+    "sha256": "30d1b68b025cde0f5653475b1602c02c5ef089cb43bdc035fc726ce7675c3711",
+    "bytes": 16184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.runner.inproc.console.dll",
+    "sha256": "322d5e7e1810bae1eba32405db8c08948bfe64397c1b39c58783ea63ef2bd7d5",
+    "bytes": 82184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Tenants.Contracts.pdb",
+    "sha256": "321dd9a042c625e0220c4c41e09052fb414392fe06f2809d0375b7ee52147a0c",
+    "bytes": 37584,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Http.Resilience.dll",
+    "sha256": "72acd3aaf3c7dfbcf81ca4feded23f83a168b62ec668b66391b4b4f78d4d53c6",
+    "bytes": 149304,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.McpCli.Abstractions.pdb",
+    "sha256": "b51771eede7fc94f7b79ca8a2bfb3dab4fd4cf2a8ffe49f071139cf60204ca95",
+    "bytes": 15116,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.VisualStudio.Validation.dll",
+    "sha256": "59cd5e953cce597847e515a73a1c0975cd5a6b94921a7b91e81045fa9922f57c",
+    "bytes": 37392,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Client.dll",
+    "sha256": "3b955ffe12d6ac03cf30a6a80e004593b87809ccb76259d65aa8029e54979bb5",
+    "bytes": 980992,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.Client.dll"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Google.Protobuf.dll",
+    "sha256": "8997a69619b59db587a45e75a03c164a44afb613f82db138d35e1636e4cbdc73",
+    "bytes": 501760,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Aspire.pdb",
+    "sha256": "7c198f4e91b6773d61bea86278d3287c69115f8191d488209c7c5ba84b516225",
+    "bytes": 26732,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Aspire.dll",
+    "sha256": "279ae32ccfbf057ae67926cfc3b897850191e81a5a5b011221b5c65db4027158",
+    "bytes": 12800,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hex1b.dll",
+    "sha256": "1113557a5737e1fac2fdda1f6579737c50eac4620e83fefb3c29fa2ecc9b12bc",
+    "bytes": 7401984,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.mtp-v2.dll",
+    "sha256": "45d435d005721fc5aeb04b1e84116a86979a9dc56d3fc9254517cd6368ce6f97",
+    "bytes": 133384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Bcl.AsyncInterfaces.dll",
+    "sha256": "5705d245072d3eb78400547b32147dbb6e2c8b02ba8bda76729798f5efdeaecb",
+    "bytes": 16000,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Polly.Extensions.dll",
+    "sha256": "8adac7a20cd056b9a8623efb6e6f9b99a82e18d3c7b7f6c788f7fc4b20ce5f18",
+    "bytes": 57120,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Testing.Extensions.Telemetry.dll",
+    "sha256": "87f4f67d876a05617cc280e3c56f80156d4a2e12b45a023f1c72a83651517af9",
+    "bytes": 37688,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.CodeDom.dll",
+    "sha256": "bfb75074ac26c7632bbe9ffc1063ceca9a56aae86ac4913481d6bba88c4c4a34",
+    "bytes": 184944,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Aspire.Hosting.dll",
+    "sha256": "4833f3e80792a88d5b1ebd55366a3362776e8ca1513b8e7e8bb24834f38d5c98",
+    "bytes": 3389280,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Client.dll",
+    "sha256": "3cdf40e17156eeb0ac914052572d0b5d512ae162c9c704b46f3a9d99e3cd87e2",
+    "bytes": 1456640,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.EventStore.Client.dll"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.TestPlatform.CrossPlatEngine.dll",
+    "sha256": "53eb59bd28a22c6af9d0e85c8fc4eb0d65809ae1906e757a67fc03685b377b8a",
+    "bytes": 735032,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.CodeCoverage.Instrumentation.dll",
+    "sha256": "2956072ce225f43c6f55ea13269e95a7499edc8bfce54131910f96f35c415b12",
+    "bytes": 261944,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Shouldly.dll",
+    "sha256": "498dad657f324ab068e800d5711ae36feb4af4ba9a572eb941197e2fb677549d",
+    "bytes": 292864,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.EventStore.Contracts.dll",
+    "sha256": "803874398aee1f06b756662f45227b9f39ae0fa966b5c6f4521a295854f5d60a",
+    "bytes": 1051136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Tenants.Contracts.dll",
+    "sha256": "a4c3be57619a38fb17c709075dd104b95ca6952975f9ba4ace69a2942b81d7fd",
+    "bytes": 123392,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.ServiceDiscovery.Abstractions.dll",
+    "sha256": "70952f1049cb8f834ad149108d116e6488523607addbeada94ddfb536c233327",
+    "bytes": 28984,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Newtonsoft.Json.dll",
+    "sha256": "a28c251dfe36d881e9e2462e171441b8b0ec156fe3f452602c9149b1b9efe05b",
+    "bytes": 723368,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.IO.Hashing.dll",
+    "sha256": "649ad5b26c96c3e4494a0879ffa8d1e7cce296754b40bb207c3ca938e3567a4e",
+    "bytes": 56144,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.abstractions.dll",
+    "sha256": "3166dc70323fb30ccf1cedb0fe86f2ad122c46d254542342d90386efc4c9285c",
+    "bytes": 21928,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "HealthChecks.Redis.dll",
+    "sha256": "3ce9e611ecd44219f4bed786d665712759583b87a1bb9228355e9161ce7ffa52",
+    "bytes": 22528,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.Client.dll",
+    "sha256": "642947396b012bd55a241243f4b16bf5e48aa25f72c7a19f98b29eb3ca357400",
+    "bytes": 200704,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Extensions.Hosting.dll",
+    "sha256": "85e2f175fa5d4ba855142e89450104248ce7c3b85d126c654f16333bf742b8fd",
+    "bytes": 16384,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "HealthChecks.Uris.dll",
+    "sha256": "32f8e0615a70e07c6c37c3e2e0774207c84d2f2695942fba82e7bc3bee1a5708",
+    "bytes": 29184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.dll",
+    "sha256": "7e764903e54fbe5528639cb53e15955f77b00d682fb30c2d93b257b94c9c7923",
+    "bytes": 366080,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.IntegrationTests.dll",
+    "sha256": "da181add1bcf3bd6837ea3610f5c8c7c5a7ead5b392b49e4cfe3b5bf4a5b9246",
+    "bytes": 833024,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.dll"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.pdb",
+    "sha256": "d1264d7c8c28115c4c04f0f550f7682a46bc6bfe7e61d9b06494d1f6c9496128",
+    "bytes": 580844,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Client.pdb",
+    "sha256": "6eb20fbd51137660976853eb78e93b0d56eaa3d522cfce2637fcf246cd82837f",
+    "bytes": 206116,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Semver.dll",
+    "sha256": "a99edcb96efce3d6ff019c667e132d81d879f5a92bc9337591e0b7309d7f493f",
+    "bytes": 72704,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.CodeCoverage.Instrumentation.Core.dll",
+    "sha256": "b47729f86fe70c502b8c8525d800419928f2ea6ca8d4128cabf4c453d1a88022",
+    "bytes": 35680,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Api.ProviderBuilderExtensions.dll",
+    "sha256": "43a9817496e14f895b08f11dcafe5f485c36ea2c00be9d21be83326b79afa356",
+    "bytes": 24576,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "DiffEngine.dll",
+    "sha256": "0c6b99a47c609a4263b80feaed95a357e30be3ad5a1cda79355663e407682aa7",
+    "bytes": 109568,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "StackExchange.Redis.dll",
+    "sha256": "11fe1c748608a8b9fa5777b80796e3186c5d4c481680c448b736bf10f0f8664e",
+    "bytes": 2370560,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Mono.Cecil.dll",
+    "sha256": "831dca77470d85cb6ffbea3072daa7a3df5b7c9fcfd9c3f43674a9be99d4bfcf",
+    "bytes": 361472,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.VisualStudio.TestPlatform.Common.dll",
+    "sha256": "42194c3073cfce7166a8aeb59c75fc2e69a2c917f8054b8da7e7cd098834a8a6",
+    "bytes": 252768,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Polly.RateLimiting.dll",
+    "sha256": "afe3042cd4062438857d42880623845f32575375f460fd1ac07f705ea0211804",
+    "bytes": 28208,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+    "sha256": "54039387636c21ee47f27255653ab474ef1c50624db5bd66490b44b31cafd3da",
+    "bytes": 52008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Memories.Client.Rest.pdb",
+    "sha256": "bc2c48a356d814d76d41f3c279b222e462fc7fdacb3156c1ee029baa5fd40ab5",
+    "bytes": 30844,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.Net.ClientFactory.dll",
+    "sha256": "3e78aed8088e1f83916be34e937d0991fae32a4282b0e8e8577365b7a2847eda",
+    "bytes": 54936,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Bcl.Cryptography.dll",
+    "sha256": "91c6bab93638c268569a38bc87770a5e3ef9932676f5b7a6d47aef4208062925",
+    "bytes": 19248,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.CodeCoverage.Interprocess.dll",
+    "sha256": "562d1db168d56d9068a8be0213e53c22915d595843733c8c0a8ffd4411df6092",
+    "bytes": 152928,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.IntegrationTests.deps.json",
+    "sha256": "890dd5460c346dc684ed9d3ecb5de0db7ea3f501b68d3fb9a1852f6fd7c92801",
+    "bytes": 151913,
+    "retained": "diagnostic-artifacts/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.deps.json"
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Api.dll",
+    "sha256": "55498c2eaf6b2159faef431d6662d259a8356db919cbf7dffe081c1ff6bf1035",
+    "bytes": 84480,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.assert.dll",
+    "sha256": "a6e10cb96281815060f9c89122649a3fd599e73fc8484d5415a4a487ed368878",
+    "bytes": 217864,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.runner.visualstudio.testadapter.dll",
+    "sha256": "ab3e8b088bd82e55963eedf765f87f6a3bffbe8ccd866d3e15a5f40be5c473a4",
+    "bytes": 1358336,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Aspire.Hosting.Keycloak.dll",
+    "sha256": "b39b467d8c795500d1276f2e68e59a11ddbbf6e0461543447e742da3c6eabb29",
+    "bytes": 38752,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.Cli.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Aspire.Hosting.Redis.dll",
+    "sha256": "f63a21f2aa03230b9e90a453fab5f2809cb931b0b0bbbea5c624cea2b31e0233",
+    "bytes": 70968,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Polly.Core.dll",
+    "sha256": "f7f50017ca9f457b854498358ae595c2a8ab69c1fd8b915139d22bed8f7e4f2a",
+    "bytes": 223136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.Net.Common.dll",
+    "sha256": "b2354e7717e4d1b5b23a80d1eaf65ecc128f1b458bf052a7b83334dcbe3f6206",
+    "bytes": 22168,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.AspNetCore.Server.ClientFactory.dll",
+    "sha256": "c57f69775e2b8acda401efb5f152eba6cfd23d0fc9277b7d2e0ed1f1533158e3",
+    "bytes": 21504,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "ByteAether.Ulid.dll",
+    "sha256": "fc4f3d99e88023ffbd37eea2941ddd81f604611fc967fedb116a4daaf9ae4590",
+    "bytes": 29696,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.Protos.dll",
+    "sha256": "5e20423ef76ce02296cefe9ef5c37ec490742996fa458f4c812204984af2a299",
+    "bytes": 837120,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.IntegrationTests.runtimeconfig.dev.json",
+    "sha256": "390b440c4369250a4846d0481f6f5a8d14af4a5160c17535bc03f13a9021fb0d",
+    "bytes": 184,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Grpc.Reflection.dll",
+    "sha256": "87795d17c1385e7c05469c447ad8eecc883c3c71b4804319c5918a5a490c8d57",
+    "bytes": 77976,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+    "sha256": "ac13db5e635fb8580a66664ab4fb1a41d32e285a0d564600278d01964bae3566",
+    "bytes": 215552,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "xunit.v3.common.dll",
+    "sha256": "8de9dc6b8fc519d19e8a0e13f37b7790fadb2164030163406524696c76b781bb",
+    "bytes": 201480,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Castle.Core.dll",
+    "sha256": "9c5762ae27f2afe0913e8ffa494f705ffe9680699aa4fb79c2613344c918ee28",
+    "bytes": 385024,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "YamlDotNet.dll",
+    "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a",
+    "bytes": 300032,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "EmptyFiles.dll",
+    "sha256": "d5b63e68b8966567f73df025b449e1a2e3b2306c8cec364fd240310c757b3adc",
+    "bytes": 75264,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Dapr.Actors.dll",
+    "sha256": "9253d66380b77c14634e034157737632dd7c03e57cda565df17b49d72ae52f81",
+    "bytes": 218112,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "testhost.dll",
+    "sha256": "3e9ac238400d8d72cba32776182060a5421c7630da7355360c46c0763df9043e",
+    "bytes": 49504,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "NSubstitute.dll",
+    "sha256": "a67480457f480fa835ffe8c042b07420e5c78bd3049730d5b10ab834a5832bae",
+    "bytes": 173568,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll",
+    "sha256": "d454ddad56b51c877c5e128636f5cc77609e70df8512cad74626a2b7a3fe4a7a",
+    "bytes": 30008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Mono.Cecil.Rocks.dll",
+    "sha256": "bf992f3dce364ebcc3200fa7832ef07e20b4e2dbc3a8a6213ce44e3d239db984",
+    "bytes": 27136,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Folders.ServiceDefaults.pdb",
+    "sha256": "b176c624c086f9c6a20582001bd770e8760c545c821de341b6a1604ed9390592",
+    "bytes": 28724,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Hexalith.Tenants.Client.dll",
+    "sha256": "a8dd1eb301dcbeeabb95daaa87652d19f52925b5c98c6e03e4b3aa18a92b7564",
+    "bytes": 43008,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.VisualStudio.Threading.dll",
+    "sha256": "138e3548e487152de355b81303ae98e1bb52a31fe5c9107fa81a15f66404f426",
+    "bytes": 441888,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "System.IdentityModel.Tokens.Jwt.dll",
+    "sha256": "593c82287b671e9cceefaf10c51df96793f6db30f9cfa60daabaaf80474670bf",
+    "bytes": 91952,
+    "retained": null
+  },
+  {
+    "project": "Hexalith.Folders.IntegrationTests",
+    "file": "Microsoft.Extensions.AI.Abstractions.dll",
+    "sha256": "a3216886dec2b2528b2d7212c438d21c3d6de2061b500bd2ea505a41f896f8d3",
+    "bytes": 679224,
+    "retained": null
+  }
+]

@@ -1,0 +1,160 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "-p:Configuration=Release",
+      "--configfile",
+      "/tmp/hexalith-job.wQ59L9fl/nuget.config",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 1.02,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:33Z",
+    "label": "final-contracts-restore",
+    "log": "final-contracts-restore.log",
+    "log_sha256": "ec30ff135cf25c390b0b97fc79bbad7905d007ad6a31da8db0d619ab4fed0c8f",
+    "started_utc": "2026-11-15T10:59:32Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "--configuration",
+      "Release",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 5.89,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:39Z",
+    "label": "final-contracts-build",
+    "log": "final-contracts-build.log",
+    "log_sha256": "9993f5994bc03a74c557b00c4a23a59a1953b9bc0a8399e2a777b921d250c317",
+    "started_utc": "2026-11-15T10:59:33Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 5.79,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:45Z",
+    "label": "final-conformance",
+    "log": "final-conformance.log",
+    "log_sha256": "0aa9426229e106f9edef1fb5cc5894b5bfe6165d4c067ff387ea852a6ddf87ed",
+    "started_utc": "2026-11-15T10:59:39Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 1.37,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:46Z",
+    "label": "final-contract-behavior",
+    "log": "final-contract-behavior.log",
+    "log_sha256": "7b006c81f066d2e84d30d17081b61a0b36791efaf921fff76ea6ab2839ca019f",
+    "started_utc": "2026-11-15T10:59:45Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
+      "-p:Configuration=Release",
+      "--configfile",
+      "/tmp/hexalith-job.wQ59L9fl/nuget.config",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 0.97,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:47Z",
+    "label": "final-oracle-restore",
+    "log": "final-oracle-restore.log",
+    "log_sha256": "25be94bdcceff656d41854a7d2c4a561426ab909606ba92dc8c7f1ae227b9767",
+    "started_utc": "2026-11-15T10:59:46Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
+      "--configuration",
+      "Release",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 1.97,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:59:49Z",
+    "label": "final-oracle-build",
+    "log": "final-oracle-build.log",
+    "log_sha256": "4c2eb69d9e8776adb647636da3c22a1703a99a0148e67db22a4671fdae369fe0",
+    "started_utc": "2026-11-15T10:59:47Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "tests/tools/run-contract-parity-ci-gates.ps1",
+      "-SkipRestoreBuild",
+      "-OutputReportPath",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-current-local-2026-11-15/final-parity-report.json"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 37.13,
+    "exit_code": 1,
+    "finished_utc": "2026-11-15T11:00:27Z",
+    "label": "final-parity",
+    "log": "final-parity.log",
+    "log_sha256": "6e1c9a53b93430d45e53d3096d210145b05407c07b8565dee86033fcff872289",
+    "started_utc": "2026-11-15T10:59:49Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "tests/tools/run-governance-completeness-gates.ps1",
+      "-SkipRestoreBuild"
+    ],
+    "cwd": "/tmp/hexalith-job.wQ59L9fl/folders",
+    "elapsed_seconds": 9.16,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T11:00:36Z",
+    "label": "final-governance",
+    "log": "final-governance.log",
+    "log_sha256": "87c70cc05f1c648ed05e72ec7f0d51bd01810dff0f60c8eb56aaf40b3205b96c",
+    "started_utc": "2026-11-15T11:00:27Z"
+  }
+]

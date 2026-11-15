@@ -1,0 +1,59 @@
+[
+  {
+    "id": "Hexalith.Folders.Client",
+    "version": "1.4.0",
+    "archive": "retained-packages/hexalith.folders.client.1.4.0.nupkg",
+    "archive_sha256": "5ff508f4a42e1b6540329bbf6cd9e091c3fc1c10acd7d21e1477daa74e04ea26",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Hexalith/Hexalith.Folders",
+      "commit": "f9808ddecaae791a9802561e7c513da21a61b473"
+    },
+    "signature_present": true,
+    "dlls": [
+      {
+        "member": "lib/net10.0/Hexalith.Folders.Client.dll",
+        "sha256": "a571d5e5cf7d88667d9e7dcf1ba8bfb974583a9c416da648558e66b016f6f706"
+      }
+    ],
+    "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation"
+  },
+  {
+    "id": "Hexalith.Folders.Contracts",
+    "version": "1.4.0",
+    "archive": "retained-packages/hexalith.folders.contracts.1.4.0.nupkg",
+    "archive_sha256": "492dd508739678c0fbb761d76d3b0247e775ac586966dae61576247323eaf83e",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Hexalith/Hexalith.Folders",
+      "commit": "f9808ddecaae791a9802561e7c513da21a61b473"
+    },
+    "signature_present": true,
+    "dlls": [
+      {
+        "member": "lib/net10.0/Hexalith.Folders.Contracts.dll",
+        "sha256": "c798046407d298e175d7a4ac6ee581255aaeb5cd2455a518744bd3e29d8857aa"
+      }
+    ],
+    "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation"
+  },
+  {
+    "id": "Hexalith.EventStore.Client",
+    "version": "5.1.0",
+    "archive": "retained-packages/hexalith.eventstore.client.5.1.0.nupkg",
+    "archive_sha256": "a3d0de6ff9f9d8eaafaa39a5faa9798ee9dd87c8721b9a9445a3a17c2abbdb40",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Hexalith/Hexalith.EventStore",
+      "commit": "49084f66f8d6545cae442875355a7066d5f5e73d"
+    },
+    "signature_present": true,
+    "dlls": [
+      {
+        "member": "lib/net11.0/Hexalith.EventStore.Client.dll",
+        "sha256": "786cbb4bebd8d3720300afd775b0c38ccafdd1a73e8f1c1ccd79ef931ab5cbc2"
+      }
+    ],
+    "qualification": "cached archive observation only; no fresh feed/publication/signature trust validation"
+  }
+]

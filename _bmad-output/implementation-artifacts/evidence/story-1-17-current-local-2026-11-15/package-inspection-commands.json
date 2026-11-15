@@ -1,0 +1,22 @@
+[
+  {
+    "argv": [
+      "/home/administrator/.nuget/packages/dotnet-inspect.linux-x64/0.27.0/tools/any/linux-x64/dotnet-inspect",
+      "type",
+      "INativeSource*",
+      "--package",
+      "/home/administrator/.nuget/packages/hexalith.eventstore.client/5.1.0/hexalith.eventstore.client.5.1.0.nupkg",
+      "--plaintext",
+      "-n",
+      "25"
+    ],
+    "cwd": "/home/administrator/projects/hexalith/folders",
+    "elapsed_seconds": 0.47,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:53:14Z",
+    "label": "eventstore-package-api",
+    "log": "eventstore-package-api.log",
+    "log_sha256": "13cb6b0e1c2f70040fd1f12cf33e3e492692902cf7080e3026da74c6d960afd0",
+    "started_utc": "2026-11-15T10:53:13Z"
+  }
+]

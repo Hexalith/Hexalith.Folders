@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--name-only",
+    "f9808ddecaae791a9802561e7c513da21a61b473",
+    "HEAD",
+    "--",
+    "src/Hexalith.Folders.Client",
+    "src/Hexalith.Folders.Contracts"
+  ],
+  "exit_code": 0,
+  "changed_paths": [
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+    "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+  ],
+  "stderr": ""
+}

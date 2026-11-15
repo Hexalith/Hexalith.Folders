@@ -1,0 +1,2806 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v11.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v11.0": {
+      "Hexalith.Folders.Server.Tests/1.0.0": {
+        "dependencies": {
+          "Hexalith.Commons.UniqueIds": "1.0.0",
+          "Hexalith.EventStore.Testing": "5.1.0",
+          "Hexalith.Folders.Client": "1.0.0",
+          "Hexalith.Folders.Server": "1.0.0",
+          "Hexalith.Folders.Testing": "1.0.0",
+          "Microsoft.AspNetCore.TestHost": "11.0.0",
+          "Microsoft.NET.Test.Sdk": "18.12.0",
+          "Microsoft.Testing.Extensions.CodeCoverage": "18.12.0",
+          "Shouldly": "4.3.0",
+          "Task36FoldObserver": "1.0.0",
+          "YamlDotNet": "18.1.0",
+          "xunit.v3": "4.0.3"
+        },
+        "runtime": {
+          "Hexalith.Folders.Server.Tests.dll": {}
+        }
+      },
+      "ByteAether.Ulid/1.4.2": {
+        "runtime": {
+          "lib/net10.0/ByteAether.Ulid.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0",
+            "localPath": "ByteAether.Ulid.dll"
+          }
+        }
+      },
+      "Dapr.Actors/1.19.1": {
+        "dependencies": {
+          "Dapr.Client": "1.19.1",
+          "Dapr.Common": "1.19.1",
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0",
+          "Grpc.Reflection": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.Actors.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.Actors.dll"
+          }
+        }
+      },
+      "Dapr.Actors.AspNetCore/1.19.1": {
+        "dependencies": {
+          "Dapr.Actors": "1.19.1",
+          "Dapr.Common": "1.19.1",
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0",
+          "Grpc.Reflection": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.Actors.AspNetCore.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.Actors.AspNetCore.dll"
+          }
+        }
+      },
+      "Dapr.AspNetCore/1.19.1": {
+        "dependencies": {
+          "Dapr.Client": "1.19.1",
+          "Dapr.Common": "1.19.1",
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0",
+          "Grpc.Reflection": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.AspNetCore.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.AspNetCore.dll"
+          }
+        }
+      },
+      "Dapr.Client/1.19.1": {
+        "dependencies": {
+          "Dapr.Common": "1.19.1",
+          "Dapr.Protos": "1.19.1",
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0",
+          "Grpc.Reflection": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.Client.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.Client.dll"
+          }
+        }
+      },
+      "Dapr.Common/1.19.1": {
+        "dependencies": {
+          "Dapr.Protos": "1.19.1",
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0",
+          "Grpc.Reflection": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.Common.dll"
+          }
+        }
+      },
+      "Dapr.Protos/1.19.1": {
+        "dependencies": {
+          "Google.Api.CommonProtos": "2.17.0",
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Net.Client": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Dapr.Protos.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.19.1.0",
+            "localPath": "Dapr.Protos.dll"
+          }
+        }
+      },
+      "DiffEngine/11.3.0": {
+        "dependencies": {
+          "EmptyFiles": "4.4.0",
+          "System.Management": "6.0.1"
+        },
+        "runtime": {
+          "lib/net7.0/DiffEngine.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0",
+            "localPath": "DiffEngine.dll"
+          }
+        }
+      },
+      "EmptyFiles/4.4.0": {
+        "runtime": {
+          "lib/net7.0/EmptyFiles.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0",
+            "localPath": "EmptyFiles.dll"
+          }
+        }
+      },
+      "Google.Api.CommonProtos/2.17.0": {
+        "dependencies": {
+          "Google.Protobuf": "3.35.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Api.CommonProtos.dll": {
+            "assemblyVersion": "2.17.0.0",
+            "fileVersion": "2.17.0.0",
+            "localPath": "Google.Api.CommonProtos.dll"
+          }
+        }
+      },
+      "Google.Protobuf/3.35.0": {
+        "runtime": {
+          "lib/net5.0/Google.Protobuf.dll": {
+            "assemblyVersion": "3.35.0.0",
+            "fileVersion": "3.35.0.0",
+            "localPath": "Google.Protobuf.dll"
+          }
+        }
+      },
+      "Grpc.Core.Api/2.80.0": {
+        "runtime": {
+          "lib/netstandard2.1/Grpc.Core.Api.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.66.0.0",
+            "localPath": "Grpc.Core.Api.dll"
+          }
+        }
+      },
+      "Grpc.Net.Client/2.80.0": {
+        "dependencies": {
+          "Grpc.Net.Common": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Grpc.Net.Client.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.66.0.0",
+            "localPath": "Grpc.Net.Client.dll"
+          }
+        }
+      },
+      "Grpc.Net.Common/2.80.0": {
+        "dependencies": {
+          "Grpc.Core.Api": "2.80.0"
+        },
+        "runtime": {
+          "lib/net10.0/Grpc.Net.Common.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.66.0.0",
+            "localPath": "Grpc.Net.Common.dll"
+          }
+        }
+      },
+      "Grpc.Reflection/2.80.0": {
+        "dependencies": {
+          "Google.Protobuf": "3.35.0",
+          "Grpc.Core.Api": "2.80.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Grpc.Reflection.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.66.0.0",
+            "localPath": "Grpc.Reflection.dll"
+          }
+        }
+      },
+      "Humanizer.Core/3.0.10": {
+        "runtime": {
+          "lib/net10.0/Humanizer.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.10.37104",
+            "localPath": "Humanizer.dll"
+          }
+        }
+      },
+      "Json.More.Net/3.1.0": {
+        "runtime": {
+          "lib/net11.0/Json.More.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.1.0.0",
+            "localPath": "Json.More.dll"
+          }
+        }
+      },
+      "JsonPointer.Net/7.1.0": {
+        "dependencies": {
+          "Humanizer.Core": "3.0.10",
+          "Json.More.Net": "3.1.0"
+        },
+        "runtime": {
+          "lib/net11.0/JsonPointer.Net.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.1.0.0",
+            "localPath": "JsonPointer.Net.dll"
+          }
+        }
+      },
+      "JsonSchema.Net/9.7.0": {
+        "dependencies": {
+          "JsonPointer.Net": "7.1.0"
+        },
+        "runtime": {
+          "lib/net11.0/JsonSchema.Net.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.7.0.0",
+            "localPath": "JsonSchema.Net.dll"
+          }
+        }
+      },
+      "LibGit2Sharp/0.32.0": {
+        "dependencies": {
+          "LibGit2Sharp.NativeBinaries": "2.0.324"
+        },
+        "runtime": {
+          "lib/net8.0/LibGit2Sharp.dll": {
+            "assemblyVersion": "0.32.0.0",
+            "fileVersion": "0.32.0.0",
+            "localPath": "LibGit2Sharp.dll"
+          }
+        }
+      },
+      "LibGit2Sharp.NativeBinaries/2.0.324": {
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libgit2-5853918.so": {
+            "rid": "linux-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-arm/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-arm64/native/libgit2-5853918.so": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-arm64/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-musl-arm/native/libgit2-5853918.so": {
+            "rid": "linux-musl-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-arm/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-musl-arm64/native/libgit2-5853918.so": {
+            "rid": "linux-musl-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-arm64/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-musl-x64/native/libgit2-5853918.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-x64/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-ppc64le/native/libgit2-5853918.so": {
+            "rid": "linux-ppc64le",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-ppc64le/native/libgit2-5853918.so"
+          },
+          "runtimes/linux-x64/native/libgit2-5853918.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-x64/native/libgit2-5853918.so"
+          },
+          "runtimes/osx-arm64/native/libgit2-5853918.dylib": {
+            "rid": "osx-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/osx-arm64/native/libgit2-5853918.dylib"
+          },
+          "runtimes/osx-x64/native/libgit2-5853918.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/osx-x64/native/libgit2-5853918.dylib"
+          },
+          "runtimes/win-arm64/native/git2-5853918.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/git2-5853918.dll"
+          },
+          "runtimes/win-x64/native/git2-5853918.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/git2-5853918.dll"
+          },
+          "runtimes/win-x86/native/git2-5853918.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/git2-5853918.dll"
+          }
+        }
+      },
+      "MediatR/15.0.0": {
+        "dependencies": {
+          "MediatR.Contracts": "2.0.1",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.23.0"
+        },
+        "runtime": {
+          "lib/net11.0/MediatR.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.0.0",
+            "localPath": "MediatR.dll"
+          }
+        }
+      },
+      "MediatR.Contracts/2.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/MediatR.Contracts.dll": {
+            "assemblyVersion": "2.0.1.0",
+            "fileVersion": "2.0.1.0",
+            "localPath": "MediatR.Contracts.dll"
+          }
+        }
+      },
+      "Microsoft.ApplicationInsights/2.23.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.ApplicationInsights.dll": {
+            "assemblyVersion": "2.23.0.29",
+            "fileVersion": "2.23.0.29",
+            "localPath": "Microsoft.ApplicationInsights.dll"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/11.0.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.53018",
+            "localPath": "Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.TestHost/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.AspNetCore.TestHost.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.53018",
+            "localPath": "Microsoft.AspNetCore.TestHost.dll"
+          }
+        }
+      },
+      "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210",
+            "localPath": "Microsoft.Bcl.AsyncInterfaces.dll"
+          }
+        }
+      },
+      "Microsoft.Bcl.Cryptography/10.0.2": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Bcl.Cryptography.dll": {
+            "assemblyVersion": "10.0.0.2",
+            "fileVersion": "10.0.225.61305",
+            "localPath": "Microsoft.Bcl.Cryptography.dll"
+          }
+        }
+      },
+      "Microsoft.DiaSymReader/2.2.10": {
+        "runtime": {
+          "lib/net10.0/Microsoft.DiaSymReader.dll": {
+            "assemblyVersion": "2.2.10.0",
+            "fileVersion": "2.200.1026.32716",
+            "localPath": "Microsoft.DiaSymReader.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.AmbientMetadata.Application/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.AmbientMetadata.Application.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.AmbientMetadata.Application.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Compliance.Abstractions/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Compliance.Abstractions.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Compliance.Abstractions.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Compliance.Redaction/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Compliance.Abstractions": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Compliance.Redaction.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Compliance.Redaction.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.AutoActivation/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.DependencyInjection.AutoActivation.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.DependencyInjection.AutoActivation.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyModel/10.0.10": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyModel.dll": {
+            "assemblyVersion": "10.0.0.10",
+            "fileVersion": "10.0.1026.32716",
+            "localPath": "Microsoft.Extensions.DependencyModel.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.ExceptionSummarization/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Diagnostics.ExceptionSummarization.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Http.Diagnostics/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Compliance.Redaction": "11.0.0",
+          "Microsoft.Extensions.Telemetry": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Http.Diagnostics.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Http.Diagnostics.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Http.Resilience/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Http.Diagnostics": "11.0.0",
+          "Microsoft.Extensions.Resilience": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Http.Resilience.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Http.Resilience.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Resilience/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.ExceptionSummarization": "11.0.0",
+          "Microsoft.Extensions.Telemetry.Abstractions": "11.0.0",
+          "Polly.Extensions": "8.4.2",
+          "Polly.RateLimiting": "8.4.2"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Resilience.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Resilience.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.ServiceDiscovery/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.ServiceDiscovery.Abstractions": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.ServiceDiscovery.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.ServiceDiscovery.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.ServiceDiscovery.Abstractions/11.0.0": {
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.ServiceDiscovery.Abstractions.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.ServiceDiscovery.Abstractions.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Telemetry/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.AmbientMetadata.Application": "11.0.0",
+          "Microsoft.Extensions.DependencyInjection.AutoActivation": "11.0.0",
+          "Microsoft.Extensions.Telemetry.Abstractions": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Telemetry.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Telemetry.dll"
+          }
+        }
+      },
+      "Microsoft.Extensions.Telemetry.Abstractions/11.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Compliance.Abstractions": "11.0.0"
+        },
+        "runtime": {
+          "lib/net11.0/Microsoft.Extensions.Telemetry.Abstractions.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.26.56003",
+            "localPath": "Microsoft.Extensions.Telemetry.Abstractions.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Abstractions/8.23.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Abstractions.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.Abstractions.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.JsonWebTokens/8.23.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.JsonWebTokens.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Logging/8.23.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Abstractions": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Logging.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.Logging.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols/8.23.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Protocols.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.Protocols.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect/8.23.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "8.23.0",
+          "System.IdentityModel.Tokens.Jwt": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Tokens/8.23.0": {
+        "dependencies": {
+          "Microsoft.Bcl.Cryptography": "10.0.2",
+          "Microsoft.IdentityModel.Logging": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Tokens.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "Microsoft.IdentityModel.Tokens.dll"
+          }
+        }
+      },
+      "Microsoft.NET.Test.Sdk/18.12.0": {
+        "dependencies": {
+          "Microsoft.TestPlatform.TestHost": "18.12.0"
+        }
+      },
+      "Microsoft.Testing.Extensions.CodeCoverage/18.12.0": {
+        "dependencies": {
+          "Microsoft.DiaSymReader": "2.2.10",
+          "Microsoft.Extensions.DependencyModel": "10.0.10",
+          "Microsoft.Testing.Platform": "2.5.2",
+          "Mono.Cecil": "0.11.6"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.CodeCoverage.Core.dll": {
+            "assemblyVersion": "18.12.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.CodeCoverage.Core.dll"
+          },
+          "lib/net8.0/Microsoft.CodeCoverage.Instrumentation.Core.dll": {
+            "assemblyVersion": "18.12.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.CodeCoverage.Instrumentation.Core.dll"
+          },
+          "lib/net8.0/Microsoft.CodeCoverage.Instrumentation.dll": {
+            "assemblyVersion": "18.12.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.CodeCoverage.Instrumentation.dll"
+          },
+          "lib/net8.0/Microsoft.CodeCoverage.Interprocess.dll": {
+            "assemblyVersion": "18.12.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.CodeCoverage.Interprocess.dll"
+          },
+          "lib/net8.0/Microsoft.Testing.Extensions.CodeCoverage.dll": {
+            "assemblyVersion": "18.12.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.Testing.Extensions.CodeCoverage.dll"
+          },
+          "lib/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.50607",
+            "localPath": "Microsoft.VisualStudio.CodeCoverage.Shim.dll"
+          }
+        },
+        "resources": {
+          "lib/net8.0/cs/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/hu/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "hu",
+            "localPath": "hu/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/nl/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "nl",
+            "localPath": "nl/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/pt-PT/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "pt-PT",
+            "localPath": "pt-PT/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/sv/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "sv",
+            "localPath": "sv/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.Testing.Extensions.CodeCoverage.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.Testing.Extensions.CodeCoverage.resources.dll"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-musl-x64/native/Cov_x64.config": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-x64/native/Cov_x64.config"
+          },
+          "runtimes/linux-musl-x64/native/libCoverageInstrumentationMethod.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-x64/native/libCoverageInstrumentationMethod.so"
+          },
+          "runtimes/linux-musl-x64/native/libInstrumentationEngine.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-musl-x64/native/libInstrumentationEngine.so"
+          },
+          "runtimes/linux-x64/native/Cov_x64.config": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-x64/native/Cov_x64.config"
+          },
+          "runtimes/linux-x64/native/libCoverageInstrumentationMethod.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-x64/native/libCoverageInstrumentationMethod.so"
+          },
+          "runtimes/linux-x64/native/libInstrumentationEngine.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/linux-x64/native/libInstrumentationEngine.so"
+          },
+          "runtimes/osx-x64/native/Cov_x64.config": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/osx-x64/native/Cov_x64.config"
+          },
+          "runtimes/osx-x64/native/libCoverageInstrumentationMethod.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/osx-x64/native/libCoverageInstrumentationMethod.dylib"
+          },
+          "runtimes/osx-x64/native/libInstrumentationEngine.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/osx-x64/native/libInstrumentationEngine.dylib"
+          },
+          "runtimes/win-arm64/native/CodeCoverageMessages.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/CodeCoverageMessages.dll"
+          },
+          "runtimes/win-arm64/native/Cov_arm64.config": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/Cov_arm64.config"
+          },
+          "runtimes/win-arm64/native/Cov_x64.config": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/Cov_x64.config"
+          },
+          "runtimes/win-arm64/native/Cov_x86.config": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/Cov_x86.config"
+          },
+          "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_arm64.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_arm64.dll"
+          },
+          "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_x64.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_x64.dll"
+          },
+          "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_x86.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/MicrosoftInstrumentationEngine_x86.dll"
+          },
+          "runtimes/win-arm64/native/covrun32.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/covrun32.dll"
+          },
+          "runtimes/win-arm64/native/covrun64.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/covrun64.dll"
+          },
+          "runtimes/win-arm64/native/covrunarm64.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/covrunarm64.dll"
+          },
+          "runtimes/win-arm64/native/msdia140.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-arm64/native/msdia140.dll"
+          },
+          "runtimes/win-x64/native/CodeCoverageMessages.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/CodeCoverageMessages.dll"
+          },
+          "runtimes/win-x64/native/Cov_arm64.config": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/Cov_arm64.config"
+          },
+          "runtimes/win-x64/native/Cov_x64.config": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/Cov_x64.config"
+          },
+          "runtimes/win-x64/native/Cov_x86.config": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/Cov_x86.config"
+          },
+          "runtimes/win-x64/native/MicrosoftInstrumentationEngine_arm64.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/MicrosoftInstrumentationEngine_arm64.dll"
+          },
+          "runtimes/win-x64/native/MicrosoftInstrumentationEngine_x64.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/MicrosoftInstrumentationEngine_x64.dll"
+          },
+          "runtimes/win-x64/native/MicrosoftInstrumentationEngine_x86.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/MicrosoftInstrumentationEngine_x86.dll"
+          },
+          "runtimes/win-x64/native/covrun32.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/covrun32.dll"
+          },
+          "runtimes/win-x64/native/covrun64.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/covrun64.dll"
+          },
+          "runtimes/win-x64/native/covrunarm64.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/covrunarm64.dll"
+          },
+          "runtimes/win-x64/native/msdia140.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x64/native/msdia140.dll"
+          },
+          "runtimes/win-x86/native/CodeCoverageMessages.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/CodeCoverageMessages.dll"
+          },
+          "runtimes/win-x86/native/Cov_arm64.config": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/Cov_arm64.config"
+          },
+          "runtimes/win-x86/native/Cov_x64.config": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/Cov_x64.config"
+          },
+          "runtimes/win-x86/native/Cov_x86.config": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/Cov_x86.config"
+          },
+          "runtimes/win-x86/native/MicrosoftInstrumentationEngine_arm64.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/MicrosoftInstrumentationEngine_arm64.dll"
+          },
+          "runtimes/win-x86/native/MicrosoftInstrumentationEngine_x64.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/MicrosoftInstrumentationEngine_x64.dll"
+          },
+          "runtimes/win-x86/native/MicrosoftInstrumentationEngine_x86.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/MicrosoftInstrumentationEngine_x86.dll"
+          },
+          "runtimes/win-x86/native/covrun32.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/covrun32.dll"
+          },
+          "runtimes/win-x86/native/covrun64.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/covrun64.dll"
+          },
+          "runtimes/win-x86/native/covrunarm64.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/covrunarm64.dll"
+          },
+          "runtimes/win-x86/native/msdia140.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0",
+            "localPath": "runtimes/win-x86/native/msdia140.dll"
+          }
+        }
+      },
+      "Microsoft.Testing.Extensions.Telemetry/2.5.2": {
+        "dependencies": {
+          "Microsoft.ApplicationInsights": "2.23.0",
+          "Microsoft.Testing.Platform": "2.5.2"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Testing.Extensions.Telemetry.dll": {
+            "assemblyVersion": "2.5.2.0",
+            "fileVersion": "2.500.226.52706",
+            "localPath": "Microsoft.Testing.Extensions.Telemetry.dll"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/de/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/es/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/fr/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/it/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/ja/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/ko/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/pl/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/pt-BR/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/ru/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/tr/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.Testing.Extensions.Telemetry.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.Testing.Extensions.Telemetry.resources.dll"
+          }
+        }
+      },
+      "Microsoft.Testing.Extensions.TrxReport.Abstractions/2.5.2": {
+        "dependencies": {
+          "Microsoft.Testing.Platform": "2.5.2"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Testing.Extensions.TrxReport.Abstractions.dll": {
+            "assemblyVersion": "2.5.2.0",
+            "fileVersion": "2.500.226.52706",
+            "localPath": "Microsoft.Testing.Extensions.TrxReport.Abstractions.dll"
+          }
+        }
+      },
+      "Microsoft.Testing.Platform/2.5.2": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Testing.Platform.dll": {
+            "assemblyVersion": "2.5.2.0",
+            "fileVersion": "2.500.226.52706",
+            "localPath": "Microsoft.Testing.Platform.dll"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/de/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/es/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/fr/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/it/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/ja/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/ko/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/pl/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/pt-BR/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/ru/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/tr/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.Testing.Platform.resources.dll"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.Testing.Platform.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.Testing.Platform.resources.dll"
+          }
+        }
+      },
+      "Microsoft.Testing.Platform.MSBuild/2.5.2": {
+        "dependencies": {
+          "Microsoft.Testing.Platform": "2.5.2"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Testing.Extensions.MSBuild.dll": {
+            "assemblyVersion": "2.5.2.0",
+            "fileVersion": "2.500.226.52706",
+            "localPath": "Microsoft.Testing.Extensions.MSBuild.dll"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/de/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/es/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/fr/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/it/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/ja/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/ko/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/pl/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/pt-BR/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/ru/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/tr/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.Testing.Extensions.MSBuild.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.Testing.Extensions.MSBuild.resources.dll"
+          }
+        }
+      },
+      "Microsoft.TestPlatform.ObjectModel/18.12.0": {
+        "runtime": {
+          "lib/net8.0/Microsoft.TestPlatform.CoreUtilities.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.TestPlatform.CoreUtilities.dll"
+          },
+          "lib/net8.0/Microsoft.TestPlatform.PlatformAbstractions.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.TestPlatform.PlatformAbstractions.dll"
+          },
+          "lib/net8.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll"
+          }
+        },
+        "resources": {
+          "lib/net8.0/cs/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/cs/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.TestPlatform.CoreUtilities.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.TestPlatform.CoreUtilities.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
+          }
+        }
+      },
+      "Microsoft.TestPlatform.TestHost/18.12.0": {
+        "dependencies": {
+          "Microsoft.TestPlatform.ObjectModel": "18.12.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.TestPlatform.CommunicationUtilities.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.TestPlatform.CommunicationUtilities.dll"
+          },
+          "lib/net8.0/Microsoft.TestPlatform.CrossPlatEngine.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.TestPlatform.CrossPlatEngine.dll"
+          },
+          "lib/net8.0/Microsoft.TestPlatform.Utilities.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.TestPlatform.Utilities.dll"
+          },
+          "lib/net8.0/Microsoft.VisualStudio.TestPlatform.Common.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "Microsoft.VisualStudio.TestPlatform.Common.dll"
+          },
+          "lib/net8.0/testhost.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "18.1200.26.56015",
+            "localPath": "testhost.dll"
+          }
+        },
+        "resources": {
+          "lib/net8.0/cs/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/cs/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/cs/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "cs",
+            "localPath": "cs/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/de/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "de",
+            "localPath": "de/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/es/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "es",
+            "localPath": "es/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/fr/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "fr",
+            "localPath": "fr/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/it/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "it",
+            "localPath": "it/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/ja/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "ja",
+            "localPath": "ja/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/ko/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "ko",
+            "localPath": "ko/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/pl/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "pl",
+            "localPath": "pl/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/pt-BR/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "pt-BR",
+            "localPath": "pt-BR/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/ru/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "ru",
+            "localPath": "ru/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/tr/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "tr",
+            "localPath": "tr/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/zh-Hans/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "zh-Hans",
+            "localPath": "zh-Hans/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.TestPlatform.CommunicationUtilities.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.TestPlatform.CrossPlatEngine.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
+          },
+          "lib/net8.0/zh-Hant/Microsoft.VisualStudio.TestPlatform.Common.resources.dll": {
+            "locale": "zh-Hant",
+            "localPath": "zh-Hant/Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
+          }
+        }
+      },
+      "Mono.Cecil/0.11.6": {
+        "runtime": {
+          "lib/netstandard2.0/Mono.Cecil.Mdb.dll": {
+            "assemblyVersion": "0.11.6.0",
+            "fileVersion": "0.11.6.0",
+            "localPath": "Mono.Cecil.Mdb.dll"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Pdb.dll": {
+            "assemblyVersion": "0.11.6.0",
+            "fileVersion": "0.11.6.0",
+            "localPath": "Mono.Cecil.Pdb.dll"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Rocks.dll": {
+            "assemblyVersion": "0.11.6.0",
+            "fileVersion": "0.11.6.0",
+            "localPath": "Mono.Cecil.Rocks.dll"
+          },
+          "lib/netstandard2.0/Mono.Cecil.dll": {
+            "assemblyVersion": "0.11.6.0",
+            "fileVersion": "0.11.6.0",
+            "localPath": "Mono.Cecil.dll"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.4": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.4.30916",
+            "localPath": "Newtonsoft.Json.dll"
+          }
+        }
+      },
+      "Octokit/14.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Octokit.dll": {
+            "assemblyVersion": "14.0.0.0",
+            "fileVersion": "14.0.0.0",
+            "localPath": "Octokit.dll"
+          }
+        }
+      },
+      "OpenTelemetry/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.21.0.2267",
+            "localPath": "OpenTelemetry.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Api/1.21.0": {
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Api.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.21.0.2267",
+            "localPath": "OpenTelemetry.Api.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Api.ProviderBuilderExtensions/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry.Api": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.21.0.2267",
+            "localPath": "OpenTelemetry.Api.ProviderBuilderExtensions.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.21.0.2267",
+            "localPath": "OpenTelemetry.Exporter.OpenTelemetryProtocol.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Extensions.Hosting/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Extensions.Hosting.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.21.0.2267",
+            "localPath": "OpenTelemetry.Extensions.Hosting.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Instrumentation.AspNetCore/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Instrumentation.AspNetCore.dll": {
+            "assemblyVersion": "1.21.0.1593",
+            "fileVersion": "1.21.0.1593",
+            "localPath": "OpenTelemetry.Instrumentation.AspNetCore.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Instrumentation.Http/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Instrumentation.Http.dll": {
+            "assemblyVersion": "1.21.0.1601",
+            "fileVersion": "1.21.0.1601",
+            "localPath": "OpenTelemetry.Instrumentation.Http.dll"
+          }
+        }
+      },
+      "OpenTelemetry.Instrumentation.Runtime/1.21.0": {
+        "dependencies": {
+          "OpenTelemetry.Api": "1.21.0"
+        },
+        "runtime": {
+          "lib/net11.0/OpenTelemetry.Instrumentation.Runtime.dll": {
+            "assemblyVersion": "1.21.0.1607",
+            "fileVersion": "1.21.0.1607",
+            "localPath": "OpenTelemetry.Instrumentation.Runtime.dll"
+          }
+        }
+      },
+      "Polly.Core/8.4.2": {
+        "runtime": {
+          "lib/net8.0/Polly.Core.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.4.2.3950",
+            "localPath": "Polly.Core.dll"
+          }
+        }
+      },
+      "Polly.Extensions/8.4.2": {
+        "dependencies": {
+          "Polly.Core": "8.4.2"
+        },
+        "runtime": {
+          "lib/net8.0/Polly.Extensions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.4.2.3950",
+            "localPath": "Polly.Extensions.dll"
+          }
+        }
+      },
+      "Polly.RateLimiting/8.4.2": {
+        "dependencies": {
+          "Polly.Core": "8.4.2"
+        },
+        "runtime": {
+          "lib/net8.0/Polly.RateLimiting.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.4.2.3950",
+            "localPath": "Polly.RateLimiting.dll"
+          }
+        }
+      },
+      "Shouldly/4.3.0": {
+        "dependencies": {
+          "DiffEngine": "11.3.0",
+          "EmptyFiles": "4.4.0"
+        },
+        "runtime": {
+          "lib/net9.0/Shouldly.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0",
+            "localPath": "Shouldly.dll"
+          }
+        }
+      },
+      "System.CodeDom/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.CodeDom.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210",
+            "localPath": "System.CodeDom.dll"
+          }
+        }
+      },
+      "System.IdentityModel.Tokens.Jwt/8.23.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.JsonWebTokens": "8.23.0",
+          "Microsoft.IdentityModel.Tokens": "8.23.0"
+        },
+        "runtime": {
+          "lib/net10.0/System.IdentityModel.Tokens.Jwt.dll": {
+            "assemblyVersion": "8.23.0.0",
+            "fileVersion": "8.23.0.26257",
+            "localPath": "System.IdentityModel.Tokens.Jwt.dll"
+          }
+        }
+      },
+      "System.Management/6.0.1": {
+        "dependencies": {
+          "System.CodeDom": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/System.Management.dll": {
+            "assemblyVersion": "6.0.0.1",
+            "fileVersion": "6.0.1623.17311",
+            "localPath": "System.Management.dll"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Management.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.1",
+            "fileVersion": "6.0.1623.17311",
+            "localPath": "runtimes/win/lib/net6.0/System.Management.dll"
+          }
+        }
+      },
+      "xunit.v3/4.0.3": {
+        "dependencies": {
+          "xunit.v3.mtp-v2": "4.0.3"
+        }
+      },
+      "xunit.v3.assert/4.0.3": {
+        "runtime": {
+          "lib/net8.0/xunit.v3.assert.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.assert.dll"
+          }
+        }
+      },
+      "xunit.v3.common/4.0.3": {
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/xunit.v3.common.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.common.dll"
+          }
+        }
+      },
+      "xunit.v3.core.mtp-v2/4.0.3": {
+        "dependencies": {
+          "Microsoft.Testing.Extensions.Telemetry": "2.5.2",
+          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.5.2",
+          "Microsoft.Testing.Platform": "2.5.2",
+          "Microsoft.Testing.Platform.MSBuild": "2.5.2",
+          "xunit.v3.extensibility.core": "4.0.3",
+          "xunit.v3.runner.inproc.console": "4.0.3"
+        },
+        "runtime": {
+          "lib/net8.0/xunit.v3.mtp-v2.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.mtp-v2.dll"
+          }
+        }
+      },
+      "xunit.v3.extensibility.core/4.0.3": {
+        "dependencies": {
+          "xunit.v3.common": "4.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/xunit.v3.core.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.core.dll"
+          }
+        }
+      },
+      "xunit.v3.mtp-v2/4.0.3": {
+        "dependencies": {
+          "xunit.v3.assert": "4.0.3",
+          "xunit.v3.core.mtp-v2": "4.0.3"
+        }
+      },
+      "xunit.v3.runner.common/4.0.3": {
+        "dependencies": {
+          "xunit.v3.common": "4.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/xunit.v3.runner.common.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.runner.common.dll"
+          }
+        }
+      },
+      "xunit.v3.runner.inproc.console/4.0.3": {
+        "dependencies": {
+          "xunit.v3.extensibility.core": "4.0.3",
+          "xunit.v3.runner.common": "4.0.3"
+        },
+        "runtime": {
+          "lib/net8.0/xunit.v3.runner.inproc.console.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0",
+            "localPath": "xunit.v3.runner.inproc.console.dll"
+          }
+        }
+      },
+      "YamlDotNet/18.1.0": {
+        "runtime": {
+          "lib/net10.0/YamlDotNet.dll": {
+            "assemblyVersion": "18.0.0.0",
+            "fileVersion": "18.1.0.0",
+            "localPath": "YamlDotNet.dll"
+          }
+        }
+      },
+      "Hexalith.Commons.UniqueIds/1.0.0": {
+        "dependencies": {
+          "ByteAether.Ulid": "1.4.2"
+        },
+        "runtime": {
+          "Hexalith.Commons.UniqueIds.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.Client/5.1.0": {
+        "dependencies": {
+          "Dapr.Client": "1.19.1",
+          "Hexalith.EventStore.Contracts": "5.1.0"
+        },
+        "runtime": {
+          "Hexalith.EventStore.Client.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.Contracts/5.1.0": {
+        "dependencies": {
+          "Hexalith.Commons.UniqueIds": "1.0.0"
+        },
+        "runtime": {
+          "Hexalith.EventStore.Contracts.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.DomainService/5.1.0": {
+        "dependencies": {
+          "Dapr.Actors.AspNetCore": "1.19.1",
+          "Dapr.AspNetCore": "1.19.1",
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.EventStore.ServiceDefaults": "5.1.0"
+        },
+        "runtime": {
+          "Hexalith.EventStore.DomainService.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.Server/5.1.0": {
+        "dependencies": {
+          "Dapr.Actors": "1.19.1",
+          "Dapr.Actors.AspNetCore": "1.19.1",
+          "Dapr.Client": "1.19.1",
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.EventStore.Contracts": "5.1.0",
+          "Hexalith.EventStore.DomainService": "5.1.0",
+          "MediatR": "15.0.0",
+          "Microsoft.Extensions.Http.Resilience": "11.0.0"
+        },
+        "runtime": {
+          "Hexalith.EventStore.Server.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.ServiceDefaults/5.1.0": {
+        "dependencies": {
+          "Hexalith.EventStore.Contracts": "5.1.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "11.0.0",
+          "Microsoft.Extensions.Http.Resilience": "11.0.0",
+          "Microsoft.Extensions.ServiceDiscovery": "11.0.0",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.23.0",
+          "Microsoft.IdentityModel.Protocols": "8.23.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.23.0",
+          "Microsoft.IdentityModel.Tokens": "8.23.0",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.21.0",
+          "OpenTelemetry.Extensions.Hosting": "1.21.0",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.21.0",
+          "OpenTelemetry.Instrumentation.Http": "1.21.0",
+          "OpenTelemetry.Instrumentation.Runtime": "1.21.0"
+        },
+        "runtime": {
+          "Hexalith.EventStore.ServiceDefaults.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.EventStore.Testing/5.1.0": {
+        "dependencies": {
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.EventStore.Contracts": "5.1.0",
+          "Hexalith.EventStore.Server": "5.1.0",
+          "JsonSchema.Net": "9.7.0",
+          "Shouldly": "4.3.0",
+          "xunit.v3.assert": "4.0.3"
+        },
+        "runtime": {
+          "Hexalith.EventStore.Testing.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders/1.0.0": {
+        "dependencies": {
+          "Dapr.Client": "1.19.1",
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.Folders.Contracts": "1.0.0",
+          "LibGit2Sharp": "0.32.0",
+          "Octokit": "14.0.0"
+        },
+        "runtime": {
+          "Hexalith.Folders.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders.Client/1.0.0": {
+        "dependencies": {
+          "Hexalith.Folders.Contracts": "1.0.0",
+          "Newtonsoft.Json": "13.0.4"
+        },
+        "runtime": {
+          "Hexalith.Folders.Client.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders.Contracts/1.0.0": {
+        "dependencies": {
+          "Hexalith.McpCli.Abstractions": "2.0.1"
+        },
+        "runtime": {
+          "Hexalith.Folders.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders.Server/1.0.0": {
+        "dependencies": {
+          "Hexalith.Commons.UniqueIds": "1.0.0",
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.EventStore.Contracts": "5.1.0",
+          "Hexalith.EventStore.DomainService": "5.1.0",
+          "Hexalith.Folders": "1.0.0",
+          "Hexalith.Folders.Contracts": "1.0.0",
+          "Hexalith.Folders.ServiceDefaults": "1.0.0",
+          "Hexalith.Memories.Client.Rest": "1.0.0",
+          "Hexalith.Memories.Contracts": "1.0.0",
+          "Hexalith.Tenants.Client": "8.0.0",
+          "Hexalith.Tenants.Contracts": "8.0.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "11.0.0"
+        },
+        "runtime": {
+          "Hexalith.Folders.Server.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders.ServiceDefaults/1.0.0": {
+        "dependencies": {
+          "Hexalith.EventStore.ServiceDefaults": "5.1.0",
+          "Microsoft.Extensions.Http.Resilience": "11.0.0",
+          "Microsoft.Extensions.ServiceDiscovery": "11.0.0",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.21.0",
+          "OpenTelemetry.Extensions.Hosting": "1.21.0",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.21.0",
+          "OpenTelemetry.Instrumentation.Http": "1.21.0",
+          "OpenTelemetry.Instrumentation.Runtime": "1.21.0"
+        },
+        "runtime": {
+          "Hexalith.Folders.ServiceDefaults.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Folders.Testing/1.0.0": {
+        "dependencies": {
+          "Hexalith.EventStore.ServiceDefaults": "5.1.0",
+          "Hexalith.Folders": "1.0.0",
+          "Hexalith.Folders.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "Hexalith.Folders.Testing.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.McpCli.Abstractions/2.0.1": {
+        "runtime": {
+          "Hexalith.McpCli.Abstractions.dll": {
+            "assemblyVersion": "2.0.1.0",
+            "fileVersion": "2.0.1.0"
+          }
+        }
+      },
+      "Hexalith.Memories.Client.Rest/1.0.0": {
+        "dependencies": {
+          "Hexalith.Memories.Contracts": "1.0.0",
+          "Microsoft.Extensions.Http.Resilience": "11.0.0"
+        },
+        "runtime": {
+          "Hexalith.Memories.Client.Rest.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Memories.Contracts/1.0.0": {
+        "runtime": {
+          "Hexalith.Memories.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Tenants.Client/8.0.0": {
+        "dependencies": {
+          "Dapr.AspNetCore": "1.19.1",
+          "Hexalith.EventStore.Client": "5.1.0",
+          "Hexalith.Tenants.Contracts": "8.0.0"
+        },
+        "runtime": {
+          "Hexalith.Tenants.Client.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.0"
+          }
+        }
+      },
+      "Hexalith.Tenants.Contracts/8.0.0": {
+        "dependencies": {
+          "Hexalith.EventStore.Contracts": "5.1.0",
+          "Hexalith.McpCli.Abstractions": "2.0.1"
+        },
+        "runtime": {
+          "Hexalith.Tenants.Contracts.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.0"
+          }
+        }
+      },
+      "Task36FoldObserver/1.0.0": {
+        "dependencies": {
+          "Hexalith.EventStore.DomainService": "5.1.0"
+        },
+        "runtime": {
+          "Task36FoldObserver.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Hexalith.Folders.Server.Tests/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ByteAether.Ulid/1.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LCOjm7QFSdM2X779Db2K+i3pPei4f8PJEcY1wGehkdgYNmpQaP5uF7U8aZMMBWeYe+zV2Ues9j/nFpW4Pw10wQ==",
+      "path": "byteaether.ulid/1.4.2",
+      "hashPath": "byteaether.ulid.1.4.2.nupkg.sha512"
+    },
+    "Dapr.Actors/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/0KNi2ZW2WpDMudvK/9UUenJwYfgRR5VqBBsdpjNpgT2P2hH8p80zCFEsM7vCltpaNJ9hKP4382CNmq40rPhAQ==",
+      "path": "dapr.actors/1.19.1",
+      "hashPath": "dapr.actors.1.19.1.nupkg.sha512"
+    },
+    "Dapr.Actors.AspNetCore/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Aw3FmhhfducbxHY/j7Kc1UAWX/ASKHXhe1c1P1XON3fu4CR4PcVsZivoT1gjQQIkhrEbUrU4DicBG1A8S1taPw==",
+      "path": "dapr.actors.aspnetcore/1.19.1",
+      "hashPath": "dapr.actors.aspnetcore.1.19.1.nupkg.sha512"
+    },
+    "Dapr.AspNetCore/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-csjXmpcHZAy7dxgualJF8gOyg7E0Jq93R6s/wYdgN7crLhiegW/ieqZD7oNeZLnAcrJGzKtMh5C2ZTXXg48exw==",
+      "path": "dapr.aspnetcore/1.19.1",
+      "hashPath": "dapr.aspnetcore.1.19.1.nupkg.sha512"
+    },
+    "Dapr.Client/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BKlO8CdoNm8AnlHV03V46a99kKEy2yPM+g4fG0yyZLJda0vrzJER+eiGpSwePTGiYksTQr8Q7KEsdnJ+TKbLpQ==",
+      "path": "dapr.client/1.19.1",
+      "hashPath": "dapr.client.1.19.1.nupkg.sha512"
+    },
+    "Dapr.Common/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WUwB4KQH6PGRLD4JMsWnyQSFbgLIxCAX2Q9schp6zMJVP0TnofsRUGRbySNq93xOSHOmOhAKSsghkULc/BQ4Eg==",
+      "path": "dapr.common/1.19.1",
+      "hashPath": "dapr.common.1.19.1.nupkg.sha512"
+    },
+    "Dapr.Protos/1.19.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9k/o+DcnPKRSmBam3karEUQGn5Wrf8GL5ikYyOyCdT+bftqwQJPHTmI6QsnK+6AEeghLKFETrorNPt2L/xSv5w==",
+      "path": "dapr.protos/1.19.1",
+      "hashPath": "dapr.protos.1.19.1.nupkg.sha512"
+    },
+    "DiffEngine/11.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-k0ZgZqd09jLZQjR8FyQbSQE86Q7QZnjEzq1LPHtj1R2AoWO8sjV5x+jlSisL7NZAbUOI4y+7Bog8gkr9WIRBGw==",
+      "path": "diffengine/11.3.0",
+      "hashPath": "diffengine.11.3.0.nupkg.sha512"
+    },
+    "EmptyFiles/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gwJEfIGS7FhykvtZoscwXj/XwW+mJY6UbAZk+qtLKFUGWC95kfKXnj8VkxsZQnWBxJemM/q664rGLN5nf+OHZw==",
+      "path": "emptyfiles/4.4.0",
+      "hashPath": "emptyfiles.4.4.0.nupkg.sha512"
+    },
+    "Google.Api.CommonProtos/2.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-elfQPknFr495hm7vdy6ZlgyQh6yzZq9TU7sS35L/Fj/fqjM/mUGau9gVJLhvQEtUlPjtR80hpn/m9HvBMyCXIw==",
+      "path": "google.api.commonprotos/2.17.0",
+      "hashPath": "google.api.commonprotos.2.17.0.nupkg.sha512"
+    },
+    "Google.Protobuf/3.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OrUZCUzBXqdSmsQSWp/EPeINjOBcMU+PrZEJegw0aLgOGFHZ9ZI37X/SFrIxo8C9ghKynaKpPr3BVPc4EujWYg==",
+      "path": "google.protobuf/3.35.0",
+      "hashPath": "google.protobuf.3.35.0.nupkg.sha512"
+    },
+    "Grpc.Core.Api/2.80.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i/8s+MOrYa6n7BmZ5bilcbHk+EMJDQHm2MKLhwGAT+urQqlZ6cpjvSivYvuULjebuX+UKieLYZbLRCmVQxFRkw==",
+      "path": "grpc.core.api/2.80.0",
+      "hashPath": "grpc.core.api.2.80.0.nupkg.sha512"
+    },
+    "Grpc.Net.Client/2.80.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-I1Aa24nTRMHqx0pmQfvthFsOpejquDjiJV6092KBqjw6EEr3wA9CMXlrdkoEgHartOiJrpKyZiQRl7n0NVlfBg==",
+      "path": "grpc.net.client/2.80.0",
+      "hashPath": "grpc.net.client.2.80.0.nupkg.sha512"
+    },
+    "Grpc.Net.Common/2.80.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E2ERsx+9IXlry4yjBl8btx0XMIKzymGNSvX5jmBS/uSwYyYDoKIDcIREyLqFLvd8vcJdcoRlycpvn9YRXutFpQ==",
+      "path": "grpc.net.common/2.80.0",
+      "hashPath": "grpc.net.common.2.80.0.nupkg.sha512"
+    },
+    "Grpc.Reflection/2.80.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SNGFuUR4OiJM9QUdkpP6gbFVrRKSe2xhL7lvXMP38gcgwPJBFC0wVUcYMue656YhPRIGEjeCa4iXjDQ+VQU2jQ==",
+      "path": "grpc.reflection/2.80.0",
+      "hashPath": "grpc.reflection.2.80.0.nupkg.sha512"
+    },
+    "Humanizer.Core/3.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yZIhtw8sYuvsONzQbZxWpR60tMWYHXoo0DL6nyOqSFiU5POjBTSEyWFpTQtJEZuy+oqiYTXKXY/Mjx7KnqIQFw==",
+      "path": "humanizer.core/3.0.10",
+      "hashPath": "humanizer.core.3.0.10.nupkg.sha512"
+    },
+    "Json.More.Net/3.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7qGdCuzlojAC0u1a3aPoVyZTEmwnQaEThsTpeeMfMVjj3OmSzXwfY4mHvx8tDJbqr4xB1pMqh9PkjV/Dl7kHzA==",
+      "path": "json.more.net/3.1.0",
+      "hashPath": "json.more.net.3.1.0.nupkg.sha512"
+    },
+    "JsonPointer.Net/7.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wht0EXfuazcdA0CuTaCuzk7Mpv7jOyj+BEdTDMX/FfyGVuoeB/ecnIqPA+IOr9GCcQpdvNt5NmRQ8KJzPBWgQQ==",
+      "path": "jsonpointer.net/7.1.0",
+      "hashPath": "jsonpointer.net.7.1.0.nupkg.sha512"
+    },
+    "JsonSchema.Net/9.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uzAiT0JPDQcco/+HUxDvAHfq6rnAGgfWvoPKJxwe9M+OBa22lh2AEA/ni0DSVDWy/38cDhFUd7Ea3EQd2NO+fw==",
+      "path": "jsonschema.net/9.7.0",
+      "hashPath": "jsonschema.net.9.7.0.nupkg.sha512"
+    },
+    "LibGit2Sharp/0.32.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BL3eMVRnkWWS9zbz6n0H+iDVJ9ZK7hDeiuASnHlsFvwZYTJtDuBFRRVIaH//s4VlF0baOGvCeenXbobE1JLLiQ==",
+      "path": "libgit2sharp/0.32.0",
+      "hashPath": "libgit2sharp.0.32.0.nupkg.sha512"
+    },
+    "LibGit2Sharp.NativeBinaries/2.0.324": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5YZVGNuO9nYFQfzRQGPGY9fdpSsABwlF2jSaZ7ydxCfjvt5Krbj/eHbXkvvgAQzp4lkjvgDrlAuuI4KTmqhDlA==",
+      "path": "libgit2sharp.nativebinaries/2.0.324",
+      "hashPath": "libgit2sharp.nativebinaries.2.0.324.nupkg.sha512"
+    },
+    "MediatR/15.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZVDHVA90YI6sur4BJrYguTbcyY4YxygrePQS9MMDxCytYCdyLYZlk1zv8ych/z550uJpOKDGVbWAIGQUaMDw8Q==",
+      "path": "mediatr/15.0.0",
+      "hashPath": "mediatr.15.0.0.nupkg.sha512"
+    },
+    "MediatR.Contracts/2.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ==",
+      "path": "mediatr.contracts/2.0.1",
+      "hashPath": "mediatr.contracts.2.0.1.nupkg.sha512"
+    },
+    "Microsoft.ApplicationInsights/2.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nWArUZTdU7iqZLycLKWe0TDms48KKGE6pONH2terYNa8REXiqixrMOkf1sk5DHGMaUTqONU2YkS4SAXBhLStgw==",
+      "path": "microsoft.applicationinsights/2.23.0",
+      "hashPath": "microsoft.applicationinsights.2.23.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iWIWAOw3TGa8OxAForwBWlkp/VCelVTYbSc633I6E8zfpjG456xOtSMGIiSEU2E6rdSfJS1vf+EySP19efab8g==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/11.0.0",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.TestHost/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rveyIUtr/2aYv4J5EEZr+0+p5kXzEMYVwVr5o6Bvt3J86+uRjgKn7J2rw9uUdpGRHaVn9NqbZvhUkJOMD4N0tA==",
+      "path": "microsoft.aspnetcore.testhost/11.0.0",
+      "hashPath": "microsoft.aspnetcore.testhost.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg==",
+      "path": "microsoft.bcl.asyncinterfaces/6.0.0",
+      "hashPath": "microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512"
+    },
+    "Microsoft.Bcl.Cryptography/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LG9Yll3B5aNpxv0+D47g6LiOiKBIlodhcHdQwcYzo8VeexFLGqx5ymetmA2aBRyo9cCcWsQWrFsdbsr8LvmWDw==",
+      "path": "microsoft.bcl.cryptography/10.0.2",
+      "hashPath": "microsoft.bcl.cryptography.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.DiaSymReader/2.2.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zmGsm6b2y3STDa/Of7rdkkfTDV8VuGB8aCqIkLoJIQh5tL78K3zJ8OUyFKnfsaORXmGr9iOKwDkZfUjeXi+CwA==",
+      "path": "microsoft.diasymreader/2.2.10",
+      "hashPath": "microsoft.diasymreader.2.2.10.nupkg.sha512"
+    },
+    "Microsoft.Extensions.AmbientMetadata.Application/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U01aZIXzeGwE6oRBxULi/IX+RSeoVUwQ3sZ6wF73Lggo50wVjr7Z8CBsfYXkUAAxawdCty7rdqW2xATXK8zdJw==",
+      "path": "microsoft.extensions.ambientmetadata.application/11.0.0",
+      "hashPath": "microsoft.extensions.ambientmetadata.application.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Compliance.Abstractions/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OqyhzoT0jh9q7O9wpzQqqWn9BL/9UZvYuBFfNxOR5Bg45ZVIKnqXxJ9lvOcoBZIyDiBBPbH0gVoI7IuZcmCftw==",
+      "path": "microsoft.extensions.compliance.abstractions/11.0.0",
+      "hashPath": "microsoft.extensions.compliance.abstractions.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Compliance.Redaction/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fTUiMsZAlnLus8p0ZDxhu4pVbACI9pcCS/1kHFp19/+1mjaqjedBP5ljYjh+7cbHcrHneaTg/mRb804RgPJXPA==",
+      "path": "microsoft.extensions.compliance.redaction/11.0.0",
+      "hashPath": "microsoft.extensions.compliance.redaction.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.AutoActivation/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ugy3NqXfjxD3KFoVX27oRxdLeCnhGE1kMkdowetalYaqBqiokPgJ/POODN+9fy33eLVd3qtAfLIDAXE3dmGspw==",
+      "path": "microsoft.extensions.dependencyinjection.autoactivation/11.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.autoactivation.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyModel/10.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rfZA1RjR021RPqSmIPovfz2aOd79TGqJ9BengbjnzIISOVwjLmuSDnhCMmiY/1c6iYvGolQ1iNGzkav0u11XEA==",
+      "path": "microsoft.extensions.dependencymodel/10.0.10",
+      "hashPath": "microsoft.extensions.dependencymodel.10.0.10.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Diagnostics.ExceptionSummarization/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lKslmWuyCeGNtY6Cdj/7xfkqJpZJZqTSNR4HY2Da4hPGjWDlPorWXsRF2T2kKHOoUfdGu+47rIM0xnxNSY1XBw==",
+      "path": "microsoft.extensions.diagnostics.exceptionsummarization/11.0.0",
+      "hashPath": "microsoft.extensions.diagnostics.exceptionsummarization.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Http.Diagnostics/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-267v3xskdHtMaBVhGfz0uUFgPnR+Y8L9oy7nN8JV5ilo2C9yDeE5vXKctQKT3b2q1QkTti85bGMPEDpupErYhQ==",
+      "path": "microsoft.extensions.http.diagnostics/11.0.0",
+      "hashPath": "microsoft.extensions.http.diagnostics.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Http.Resilience/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lzkKZCLq+fvTFpngomZepn5qPcFc+zhdb1l1lvJfWXZPinGxJlwYvtImldxvxugzEGpzknnp5gFUCMKIHQ7xPA==",
+      "path": "microsoft.extensions.http.resilience/11.0.0",
+      "hashPath": "microsoft.extensions.http.resilience.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Resilience/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iUNq3gks/YCF+uv9HpO3nlHAFoocXo7CqlIJ27qUBUXgW9miVPn3LhWOv9LTHZLPKepVvO4UFdvBW2oXO2orMQ==",
+      "path": "microsoft.extensions.resilience/11.0.0",
+      "hashPath": "microsoft.extensions.resilience.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.ServiceDiscovery/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uZIeLScWGKu/k7YOeTOeZupF9Ydov+kBn6sRWNaXRGEQKhrEdlHdxkjvLUxDPnK5/at6DrEjr15CdSg3whYu/A==",
+      "path": "microsoft.extensions.servicediscovery/11.0.0",
+      "hashPath": "microsoft.extensions.servicediscovery.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.ServiceDiscovery.Abstractions/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qTG6O/Pg0d1IV0wgpTDSkUwhiNQtM5swEfBC5SjnYyjA/qiTLD4lIN2gIwpzz3+iB5g4jsA82V0q86md4MyxZw==",
+      "path": "microsoft.extensions.servicediscovery.abstractions/11.0.0",
+      "hashPath": "microsoft.extensions.servicediscovery.abstractions.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Telemetry/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i5oxkPJ8+9uMRMAc80oLpkaytGXteBQKm65TM8voDX6Qr9cpwGtNQvey8WbL+TmObtXP+1kivotgvDMLeEFA4Q==",
+      "path": "microsoft.extensions.telemetry/11.0.0",
+      "hashPath": "microsoft.extensions.telemetry.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Telemetry.Abstractions/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IGZLLuDI9qD7DhySbPtudJAUQ4dot6tsTcBgb0StZY5HtXC+jyk3eflHK6znDQ5ffXyb1lpdAA4XlIpk1fiC+Q==",
+      "path": "microsoft.extensions.telemetry.abstractions/11.0.0",
+      "hashPath": "microsoft.extensions.telemetry.abstractions.11.0.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Abstractions/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JjiBkKj12OKvuWr+kB5sQwb7fmWW5bi03Mq/rd2Fu/7YwZ1RWQO9KhI9lBxki4o1VvY0wzqny8c7nwx1uuZzVg==",
+      "path": "microsoft.identitymodel.abstractions/8.23.0",
+      "hashPath": "microsoft.identitymodel.abstractions.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.JsonWebTokens/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ePEm+mv5iswzckE3mygh52uFUeQpVlHa1B10nS4jpEyNV5tL1mLgRS9U5sMaRlhsPRsZ1DJP0+FhxSrOIfMGIg==",
+      "path": "microsoft.identitymodel.jsonwebtokens/8.23.0",
+      "hashPath": "microsoft.identitymodel.jsonwebtokens.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Logging/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wSXXOoV4b4hhRcC492jyNBZkO0LWrcWtWP5Cl5ujrON3vTMlufXDT39gTZfBhFAZCV2XJtNU6DLHMDR6E9YpUg==",
+      "path": "microsoft.identitymodel.logging/8.23.0",
+      "hashPath": "microsoft.identitymodel.logging.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wQxyMdH/9Q25/kF7B56YgyqEaUBXJEQ5IY0TEKNH3oAPewNxVOl0ENuaKu0sazR0kw4owQDDSF+AvWcEFEvo2g==",
+      "path": "microsoft.identitymodel.protocols/8.23.0",
+      "hashPath": "microsoft.identitymodel.protocols.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols.OpenIdConnect/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QvvFeTznlWHZ7w3aE4cJ+Ln2BnKzKleVG+H7ywiNcQtGUWmo2XS3LJDizpTyv9N0b8FDWYOnvWAxNynaJapwMQ==",
+      "path": "microsoft.identitymodel.protocols.openidconnect/8.23.0",
+      "hashPath": "microsoft.identitymodel.protocols.openidconnect.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Tokens/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PUowLq8gqICt+oepHWmKBOJmnVmWoQ5dOVn2CgwFMBZZOAEMHgCQLWs8ONYdsjAyjhDHaFy+AAx0OMG/oV06Zw==",
+      "path": "microsoft.identitymodel.tokens/8.23.0",
+      "hashPath": "microsoft.identitymodel.tokens.8.23.0.nupkg.sha512"
+    },
+    "Microsoft.NET.Test.Sdk/18.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MdVkskM2ZCKSlNts5DIbz9MZidX7SwcXKBoBqY4XT91b30hAwC8PkjWbdGKRak6BKAD1BQqaZnh/SD0AJGoDCQ==",
+      "path": "microsoft.net.test.sdk/18.12.0",
+      "hashPath": "microsoft.net.test.sdk.18.12.0.nupkg.sha512"
+    },
+    "Microsoft.Testing.Extensions.CodeCoverage/18.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BST/sWYpKk9OXO7Yxktcg6FWORRsHU0EdCbMwZ7d3OqJsMKlrNHIZ30g0Ib4k5T5acJYXRBmg9mNrTU/N6cy1g==",
+      "path": "microsoft.testing.extensions.codecoverage/18.12.0",
+      "hashPath": "microsoft.testing.extensions.codecoverage.18.12.0.nupkg.sha512"
+    },
+    "Microsoft.Testing.Extensions.Telemetry/2.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j1XGKCBrmfNm0tmotMa05GlqVtb2cW5UaMkKCFHPyyFHz5rdOy7TD0SVXnZJ+QMrjPAHjRoRqn5qcsUjICSWwg==",
+      "path": "microsoft.testing.extensions.telemetry/2.5.2",
+      "hashPath": "microsoft.testing.extensions.telemetry.2.5.2.nupkg.sha512"
+    },
+    "Microsoft.Testing.Extensions.TrxReport.Abstractions/2.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+xTIaIU9H44GxOyjrfieMSZnxltGvleA3jCRtdEAzlXKb85pMmVYMLUv2JS8KwD+U2wQHUgvy5YfQfWoPEfVdQ==",
+      "path": "microsoft.testing.extensions.trxreport.abstractions/2.5.2",
+      "hashPath": "microsoft.testing.extensions.trxreport.abstractions.2.5.2.nupkg.sha512"
+    },
+    "Microsoft.Testing.Platform/2.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ocX0rgGY78dKfmZlZe4hB0/dvlh7wJgUAWS+KfwrqxB9DpNsjshnne9dppCKnFNEOkX4QYsrdUU++NInFPiCBw==",
+      "path": "microsoft.testing.platform/2.5.2",
+      "hashPath": "microsoft.testing.platform.2.5.2.nupkg.sha512"
+    },
+    "Microsoft.Testing.Platform.MSBuild/2.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Jey2v0hd7WHHa7pr6MRNKtA07FvxcOMTCtIhTI7uBZ/qR5m1mgCVCo5L1rtVAtqgMhGA205bUwq9+is4LiCzpw==",
+      "path": "microsoft.testing.platform.msbuild/2.5.2",
+      "hashPath": "microsoft.testing.platform.msbuild.2.5.2.nupkg.sha512"
+    },
+    "Microsoft.TestPlatform.ObjectModel/18.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ilT2o4v/c1joLgsfzS4dYQ71bWAy/RsA6fBY7f5OEUpUsUhwIzoliGeXdS3yctWuy4NZyuSVlO7dPX4ed7R06A==",
+      "path": "microsoft.testplatform.objectmodel/18.12.0",
+      "hashPath": "microsoft.testplatform.objectmodel.18.12.0.nupkg.sha512"
+    },
+    "Microsoft.TestPlatform.TestHost/18.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WTT912JUqmFa2BkCeXPkMCUpbYOqsbeRfRJdhaIQROx49iokgnGPAlKvXmHWKC9nJwWrHwSQfR+k+Qn7NCxfzw==",
+      "path": "microsoft.testplatform.testhost/18.12.0",
+      "hashPath": "microsoft.testplatform.testhost.18.12.0.nupkg.sha512"
+    },
+    "Mono.Cecil/0.11.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f33RkDtZO8VlGXCtmQIviOtxgnUdym9xx/b1p9h91CRGOsJFxCFOFK1FDbVt1OCf1aWwYejUFa2MOQyFWTFjbA==",
+      "path": "mono.cecil/0.11.6",
+      "hashPath": "mono.cecil.0.11.6.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A==",
+      "path": "newtonsoft.json/13.0.4",
+      "hashPath": "newtonsoft.json.13.0.4.nupkg.sha512"
+    },
+    "Octokit/14.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jGOuTH1l+TCpJH+fwYOp7USzHDuGfN1jKbLz3J2COwyn+wL08eynvpnM6rY2qkzIEXum3PN2p2QkP3BW/p9Qcw==",
+      "path": "octokit/14.0.0",
+      "hashPath": "octokit.14.0.0.nupkg.sha512"
+    },
+    "OpenTelemetry/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ynAzNO/ebDTPxARbz4z/HgL8azMk/iDk4GXFuIRQ6krr1+a5QMC4eoiXRl+e7COd+3RLyL/yTuE6bevwqbv4Bw==",
+      "path": "opentelemetry/1.21.0",
+      "hashPath": "opentelemetry.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Api/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KptD6ThegQORUzwot75zW2AUH6IDyKXH1R2yhovJPYfrzqSgHQidMfVfKLjaYEnJa5ySQgQm0RjuM6X+TCJ9yw==",
+      "path": "opentelemetry.api/1.21.0",
+      "hashPath": "opentelemetry.api.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Api.ProviderBuilderExtensions/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZcBCBTGbzjj8Y+9UnZKbSjnRyKc2ub2IvvU68fFHKmyKzTS4hU+4/f0PO1GoIf7FTYLKTyw+l/EwLL/PPIDkxg==",
+      "path": "opentelemetry.api.providerbuilderextensions/1.21.0",
+      "hashPath": "opentelemetry.api.providerbuilderextensions.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Xo/3lqiZhv+an00t5N9Jxt3U2vIOcY6/bu0wo5LiQrrRIwd/8dv9FdlIVB3k3ypiyG1VkbCXhWH1tiC48HQS4w==",
+      "path": "opentelemetry.exporter.opentelemetryprotocol/1.21.0",
+      "hashPath": "opentelemetry.exporter.opentelemetryprotocol.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Extensions.Hosting/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+cOZFDBLktHT8V/aUb2SXQVFNP5JrcX/F24TgHcbD2kd4SFcKlBMChYeU/K+Tg3nuL+4HAS7dcR7Y2+tcSnFbQ==",
+      "path": "opentelemetry.extensions.hosting/1.21.0",
+      "hashPath": "opentelemetry.extensions.hosting.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Instrumentation.AspNetCore/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mHX+dOb0uGLGuVJxoKdYTsndz8pNg+Uxe7YqTp6IY3No9tmoLCiUjXf/fI82IrTRnF1PraVzU+VWymzLR1CmFw==",
+      "path": "opentelemetry.instrumentation.aspnetcore/1.21.0",
+      "hashPath": "opentelemetry.instrumentation.aspnetcore.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Instrumentation.Http/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sThY0J9yMUZ4yWX5/JWpRlFN0LedPpA2ZTj35Z2unkxXLcCiXxDmmlL8UkqFDR6I16E+o/bTFC1HPylr/CbJ8A==",
+      "path": "opentelemetry.instrumentation.http/1.21.0",
+      "hashPath": "opentelemetry.instrumentation.http.1.21.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Instrumentation.Runtime/1.21.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CpkfBbVIHR6Jn8QrGwt7RtOEDyKOHL2rs9HL+5ckzvlsvQiJ5lHD/qvB7NqJuFZIvXnACSYB7AD0ycXITPQFPg==",
+      "path": "opentelemetry.instrumentation.runtime/1.21.0",
+      "hashPath": "opentelemetry.instrumentation.runtime.1.21.0.nupkg.sha512"
+    },
+    "Polly.Core/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BpE2I6HBYYA5tF0Vn4eoQOGYTYIK1BlF5EXVgkWGn3mqUUjbXAr13J6fZVbp7Q3epRR8yshacBMlsHMhpOiV3g==",
+      "path": "polly.core/8.4.2",
+      "hashPath": "polly.core.8.4.2.nupkg.sha512"
+    },
+    "Polly.Extensions/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GZ9vRVmR0jV2JtZavt+pGUsQ1O1cuRKG7R7VOZI6ZDy9y6RNPvRvXK1tuS4ffUrv8L0FTea59oEuQzgS0R7zSA==",
+      "path": "polly.extensions/8.4.2",
+      "hashPath": "polly.extensions.8.4.2.nupkg.sha512"
+    },
+    "Polly.RateLimiting/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ehTImQ/eUyO07VYW2WvwSmU9rRH200SKJ/3jku9rOkyWE0A2JxNFmAVms8dSn49QLSjmjFRRSgfNyOgr/2PSmA==",
+      "path": "polly.ratelimiting/8.4.2",
+      "hashPath": "polly.ratelimiting.8.4.2.nupkg.sha512"
+    },
+    "Shouldly/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sDetrWXrl6YXZ4HeLsdBoNk3uIa7K+V4uvIJ+cqdRa5DrFxeTED7VkjoxCuU1kJWpUuBDZz2QXFzSxBtVXLwRQ==",
+      "path": "shouldly/4.3.0",
+      "hashPath": "shouldly.4.3.0.nupkg.sha512"
+    },
+    "System.CodeDom/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CPc6tWO1LAer3IzfZufDBRL+UZQcj5uS207NHALQzP84Vp/z6wF0Aa0YZImOQY8iStY0A2zI/e3ihKNPfUm8XA==",
+      "path": "system.codedom/6.0.0",
+      "hashPath": "system.codedom.6.0.0.nupkg.sha512"
+    },
+    "System.IdentityModel.Tokens.Jwt/8.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mUuRjk0KKvF3dlF7CKcnjHn/4TFaWRDGjDRtn1rACitoIflv96apfLD9KPDisyCEuc/0ierocnHCvIXBvCL4Sw==",
+      "path": "system.identitymodel.tokens.jwt/8.23.0",
+      "hashPath": "system.identitymodel.tokens.jwt.8.23.0.nupkg.sha512"
+    },
+    "System.Management/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-10J1D0h/lioojphfJ4Fuh5ZUThT/xOVHdV9roGBittKKNP2PMjrvibEdbVTGZcPra1399Ja3tqIJLyQrc5Wmhg==",
+      "path": "system.management/6.0.1",
+      "hashPath": "system.management.6.0.1.nupkg.sha512"
+    },
+    "xunit.v3/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GxBopTuV5aU7NS0iE1P6I6YCQscIAP0iIyyZqZhs1c8Ry3cdiOouEtQQpX8cA7E1gEnKGRMNA+7NlhBy13AEyg==",
+      "path": "xunit.v3/4.0.3",
+      "hashPath": "xunit.v3.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.assert/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RrlWQ3yXla+ud9JBWDIY9GnUS/DS44r3ObqqV7wdWt1GhS+SveCe0MBDL238VXYoV2mWnX/DhO2LdTq5FTlT7g==",
+      "path": "xunit.v3.assert/4.0.3",
+      "hashPath": "xunit.v3.assert.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.common/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+2qGz3rcveIxzbXeZVHU8dhMyaawt01mgm/zv1FJH2FPcvJpfTUqc1vQ3hK2V5zVt8QEDddA+B6fkf9/LWf/Pg==",
+      "path": "xunit.v3.common/4.0.3",
+      "hashPath": "xunit.v3.common.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.core.mtp-v2/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CsmxEanMln1chMExl6TUjnH5kF0XUDb/SqWKXqnGD8UjpkZARAXi8JDtsUYdxuROcIIdwEfs3iHZeHmTeA8DUA==",
+      "path": "xunit.v3.core.mtp-v2/4.0.3",
+      "hashPath": "xunit.v3.core.mtp-v2.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.extensibility.core/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TBYqQKyT+XBDLSHjG6PnmQpooqatflBcWvNiESVS5ptQxWXVf/FGlkUfkNyHKRCUDSCxxHIJNgwO+SRosUmZEw==",
+      "path": "xunit.v3.extensibility.core/4.0.3",
+      "hashPath": "xunit.v3.extensibility.core.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.mtp-v2/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lad1hGmodKkfp3AgIwHVVIYeA9GfW125tnkYj7HvOyiwbDH8gpMKPPhzHRC1wc0w4a+0UsOHx2Ero/DtLXvtqA==",
+      "path": "xunit.v3.mtp-v2/4.0.3",
+      "hashPath": "xunit.v3.mtp-v2.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.runner.common/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-J/kkhBgJg3wu1xI8gY2Esm3oRE47gNrGmKpT/XZDPOzZ3/F33yTK/ZH1CM6qDpAHoTT3GY/JgrVbS4T1JEKYiQ==",
+      "path": "xunit.v3.runner.common/4.0.3",
+      "hashPath": "xunit.v3.runner.common.4.0.3.nupkg.sha512"
+    },
+    "xunit.v3.runner.inproc.console/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lDvNs5exa8rBdWXX/wdapPTp81SNCvUarXC5iXzr1qvO168+Sx/Ytrk9VSLbSD3Y9KNK8PcOjMl1q7JfCoo3LQ==",
+      "path": "xunit.v3.runner.inproc.console/4.0.3",
+      "hashPath": "xunit.v3.runner.inproc.console.4.0.3.nupkg.sha512"
+    },
+    "YamlDotNet/18.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5K+9KFg2TdTl7VXv88Qzi/0lqK6JFoNP3lRuImPYGRV7K/QYklDyTrj4+A+KAki1JsQi6qKY+hDyY7d6WRqjrw==",
+      "path": "yamldotnet/18.1.0",
+      "hashPath": "yamldotnet.18.1.0.nupkg.sha512"
+    },
+    "Hexalith.Commons.UniqueIds/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.Client/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.Contracts/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.DomainService/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.Server/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.ServiceDefaults/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.EventStore.Testing/5.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders.Client/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders.Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders.ServiceDefaults/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Folders.Testing/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.McpCli.Abstractions/2.0.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Memories.Client.Rest/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Memories.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Tenants.Client/8.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexalith.Tenants.Contracts/8.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Task36FoldObserver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

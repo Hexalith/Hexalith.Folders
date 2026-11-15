@@ -1,0 +1,245 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+      "-p:Configuration=Debug",
+      "--configfile",
+      "/tmp/hexalith-job.CmPVjD0O/nuget.config",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 1.92,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:52:55Z",
+    "label": "source-server-tests-restore",
+    "log": "source-server-tests-restore.log",
+    "log_sha256": "baa5d6cfe780cbf75e29046c38b25a0c387a857dede097599a2eff621fd9d4b7",
+    "started_utc": "2026-11-15T10:52:53Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+      "--configuration",
+      "Debug",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 60.28,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:53:55Z",
+    "label": "source-server-tests-build",
+    "log": "source-server-tests-build.log",
+    "log_sha256": "f789d5800c669fa54f8cf1ce119978f030ff18a88b74c706c9edbaca430a604e",
+    "started_utc": "2026-11-15T10:52:55Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.CmPVjD0O/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0/Hexalith.Folders.Server.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 4.38,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:53:59Z",
+    "label": "source-server-tests-behavior",
+    "log": "source-server-tests-behavior.log",
+    "log_sha256": "f5f474360314dc139e415d0bcaf448bbecfcc505798ba739f34924c0110a7dfd",
+    "started_utc": "2026-11-15T10:53:55Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "-p:Configuration=Debug",
+      "--configfile",
+      "/tmp/hexalith-job.CmPVjD0O/nuget.config",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 1.82,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:01Z",
+    "label": "source-integrationtests-restore",
+    "log": "source-integrationtests-restore.log",
+    "log_sha256": "608f19444e8583262a65291b39083110f5df4460e991c7442681878204bda808",
+    "started_utc": "2026-11-15T10:53:59Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "--configuration",
+      "Debug",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 12.68,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:14Z",
+    "label": "source-integrationtests-build",
+    "log": "source-integrationtests-build.log",
+    "log_sha256": "510ad64d83fcc13566a6dd39616f8e338e8d5b74cf8a7c93564c26fa758a2ff4",
+    "started_utc": "2026-11-15T10:54:01Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.CmPVjD0O/folders/tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0/Hexalith.Folders.IntegrationTests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 35.82,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:50Z",
+    "label": "source-integrationtests-behavior",
+    "log": "source-integrationtests-behavior.log",
+    "log_sha256": "5dc71bbcae96a9d8584c2b460b458bb5de6399862e55df8f6f6a19507c237b3c",
+    "started_utc": "2026-11-15T10:54:14Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "-p:Configuration=Debug",
+      "--configfile",
+      "/tmp/hexalith-job.CmPVjD0O/nuget.config",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 1.12,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:51Z",
+    "label": "source-contracts-tests-restore",
+    "log": "source-contracts-tests-restore.log",
+    "log_sha256": "921ead8c163d59f239f4498fad210582a1cbd4a9e654b07344f554038771711f",
+    "started_utc": "2026-11-15T10:54:50Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "--configuration",
+      "Debug",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 6.06,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:57Z",
+    "label": "source-contracts-tests-build",
+    "log": "source-contracts-tests-build.log",
+    "log_sha256": "b7e557b9bedbf50d42a835eea99dbd3c23a24026476b354639dde64a570c41da",
+    "started_utc": "2026-11-15T10:54:51Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.CmPVjD0O/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 2.09,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:59Z",
+    "label": "source-contracts-tests-behavior",
+    "log": "source-contracts-tests-behavior.log",
+    "log_sha256": "b576575a999074216c5a292a2323123e95bcdb707f827c7661540cf0b916ea50",
+    "started_utc": "2026-11-15T10:54:57Z"
+  },
+  {
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--output",
+      "/tmp/hexalith-job.CmPVjD0O/first.yaml"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 0.17,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:59Z",
+    "label": "source-generate-1",
+    "log": "source-generate-1.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "started_utc": "2026-11-15T10:54:59Z"
+  },
+  {
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--output",
+      "/tmp/hexalith-job.CmPVjD0O/second.yaml"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 0.22,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:54:59Z",
+    "label": "source-generate-2",
+    "log": "source-generate-2.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "started_utc": "2026-11-15T10:54:59Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests"
+    ],
+    "cwd": "/tmp/hexalith-job.CmPVjD0O/folders",
+    "elapsed_seconds": 5.7,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T10:55:05Z",
+    "label": "source-conformance",
+    "log": "source-conformance.log",
+    "log_sha256": "c0eaec690c44e4fa380dc7f48e91d82d1a5fe50799ea0ffdf31daf13e6b92e16",
+    "started_utc": "2026-11-15T10:54:59Z"
+  }
+]

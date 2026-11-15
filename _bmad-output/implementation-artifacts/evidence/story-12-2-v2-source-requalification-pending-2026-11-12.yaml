@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 314fb6c02e5de8069009ee2ff5f3b7509ca1d410c2a112d7ba92e4e23e2c3516
+candidate_set_sha256: 6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022
 artifact_count: 1635
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -6527,11 +6527,11 @@ artifacts:
   - path: "tests/tools/run-adr-runbook-docs-gates.ps1"
     kind: file
     bytes: 10769
-    sha256: f974062ed7038354f2fb640e6de54e6eeeb2c2c83ef093133f75395772bc6fc3
+    sha256: 35c9abcc1f88452da1dae99f7f9f12c1ec81c011af94175a43462382f2c1953f
   - path: "tests/tools/run-consumer-docs-gates.ps1"
     kind: file
     bytes: 10831
-    sha256: 710410b162556edbe97c13a0d757e233ca592487ac31681f9659d1bab90826e2
+    sha256: a8afc8b7b136495a3be0f1c98bf658ff46c9f788e750be6050922becf13845eb
   - path: "tests/tools/run-contract-parity-ci-gates.ps1"
     kind: file
     bytes: 19314
@@ -6543,7 +6543,7 @@ artifacts:
   - path: "tests/tools/run-dapr-policy-conformance-gates.ps1"
     kind: file
     bytes: 7824
-    sha256: 831facf09999819fdbe93c45a76a236b53ab6cd4cf54e4f6784f3de85f4fb054
+    sha256: b28e3bf27fc2d4857e9006b75dfd9aa3883046e7f01593dc789f619bbcdaad6a
   - path: "tests/tools/run-governance-completeness-gates.ps1"
     kind: file
     bytes: 5786
@@ -6551,12 +6551,12 @@ artifacts:
   - path: "tests/tools/run-operations-audit-docs-gates.ps1"
     kind: file
     bytes: 11239
-    sha256: 1123645be1691048c79b2e1fcc132596f40d2127f0ed846a1a8b4f2362c86d0d
+    sha256: 419504b11abed473d2de1b4e0712926ed297ee51ee3ca64b54bf489782d239fe
   - path: "tests/tools/run-production-observability-gates.ps1"
     kind: file
     bytes: 10167
-    sha256: bc417aa81e90691fe3b5c3bcb2edab49e454570d0f0161e1e49e4e5195038ea5
+    sha256: 1b6f4221574a2680c145e26ff168c879c0e908c6813f98a50f35affad681c296
   - path: "tests/tools/run-provider-error-docs-gates.ps1"
     kind: file
     bytes: 12035
-    sha256: d503a884a2fe8e370da2158d20c5992df3220a65d4314ab9f207298f31c66bba
+    sha256: da625eb8f23c2d0dbaea7d7246a9c43608482e4e619f6e2afe4aab239b10ae83

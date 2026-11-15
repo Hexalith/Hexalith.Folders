@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "rows": 1635,
+  "changed_rows": [
+    "tests/tools/run-adr-runbook-docs-gates.ps1",
+    "tests/tools/run-consumer-docs-gates.ps1",
+    "tests/tools/run-dapr-policy-conformance-gates.ps1",
+    "tests/tools/run-operations-audit-docs-gates.ps1",
+    "tests/tools/run-production-observability-gates.ps1",
+    "tests/tools/run-provider-error-docs-gates.ps1"
+  ],
+  "header_controls_preserved": true,
+  "before_sha256": "0c0368212d2b778e5960ffc61276ab76dfcf6a54151b10034e2379c17f8815e5",
+  "after_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+  "ordered_set_sha256": "6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022",
+  "generation_hashes": [
+    "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+  ],
+  "command": "python3 scripts/generate-pd10-v2-conformance-set.py --output $TMPDIR/{first,second}.yaml",
+  "root_revision": "ee74564477176a698971b9cddea084335a94fe29"
+}
