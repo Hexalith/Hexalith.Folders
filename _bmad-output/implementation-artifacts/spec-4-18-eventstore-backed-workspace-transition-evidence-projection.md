@@ -80,6 +80,15 @@ context:
 
 The frozen defer decision keeps this spec `draft`. The reader remains in memory; no projector, implementation or build ran.
 
+**Readiness recheck (2026-11-15):** Folders `f538bb77e3e0d19771222b7050e3f3b9dc40db26`; EventStore checkout `fdb59895975e86a1e234325a01237f259cdbd53b`.
+
+- `planning-story-manifest.yaml` still lists 4.18 as `backlog`, execution `held`, evidence `open`, with prerequisites `DEC-A8-HOLD`, 4.22, 11.15, 12.1 and 12.2. The sprint tracker keeps 12.1 `done`, 12.2 `in-progress`, and 4.22/11.15 `backlog`. Story 4.22's spec is `ready-for-dev`, with its prerequisite and implementation tasks unchecked; this is planning readiness, not accepted delivery.
+- EventStore evolution acceptance remains limited to the pinned source/SDK compatibility recorded above. The newer checkout does not itself establish deployed acceptance.
+- The parent 12.2 spec's **Historical source-authority prerequisite qualified — 2026-11-15** entry and `evidence/story-12-2-source-authority-reviewed-20261115.json` supersede the older child checkpoint's restart-timeout blocker: 6,489 affected tests and all three unchanged strict bodies passed. That receipt explicitly keeps whole-story status `in-progress`, with SM4 performance, release/publication and governance gates open. `evidence/story-12-2-durability.json` still reports `full_acceptance: false`; source-only qualification is not whole-story acceptance.
+- The November 13 amendment adds `EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY` to 12.2. Folders still records that node as pending. Platform's 2.12 spec now says `done` while its tracker says `review`; the amendment's original `backlog` description is historical and does not establish current consumer acceptance.
+
+The existing defer decision remains applicable without a new intent decision. This recheck changes only this spec's verification record, preserves its frozen block and `draft` status, and performs no irreversible action. Implementation, builds and topology runs remain deferred; prerequisite delivery and acceptance stay with their owning stories.
+
 **Commands:**
 - `dotnet build Hexalith.Folders.slnx -c Debug` after prerequisite acceptance.
 - Build/run core, Server, Client and integration projects separately; invoke built xUnit v3 assemblies with `-class` and assert stored end-state.

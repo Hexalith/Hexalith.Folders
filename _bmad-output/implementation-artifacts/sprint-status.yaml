@@ -150,6 +150,8 @@ development_status:
   4-16-validate-lifecycle-security-boundaries: done
   4-17-seed-lifecycle-capacity-test-harness: done
   4-18-eventstore-backed-workspace-transition-evidence-projection: backlog
+  # 4.22 and 11.15 lack accepted delivery.
+  # 12.2 passed newer qualification tests, but performance, release, and governance gates remain open.
   4-19-prove-durable-workspace-prepare-and-lock-lifecycle: backlog
   4-20-prove-durable-file-mutation-and-bounded-context-lifecycle: backlog
   4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconci: backlog
