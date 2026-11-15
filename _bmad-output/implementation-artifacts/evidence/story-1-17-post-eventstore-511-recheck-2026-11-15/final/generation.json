@@ -1,0 +1,12 @@
+{
+  "checked_in_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+  "equals_checked_in": true,
+  "exit_codes": [
+    0,
+    0
+  ],
+  "first_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+  "generations_equal": true,
+  "ran": true,
+  "second_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+}

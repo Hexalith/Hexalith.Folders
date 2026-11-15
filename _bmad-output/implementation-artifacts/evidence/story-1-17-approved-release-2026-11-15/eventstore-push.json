@@ -1,0 +1,14 @@
+{
+  "command": [
+    "git",
+    "-c",
+    "submodule.recurse=false",
+    "push",
+    "--recurse-submodules=no",
+    "origin",
+    "HEAD:refs/heads/main"
+  ],
+  "exit_code": 0,
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "observed_utc": "2026-11-15T13:33:45.551153+00:00"
+}

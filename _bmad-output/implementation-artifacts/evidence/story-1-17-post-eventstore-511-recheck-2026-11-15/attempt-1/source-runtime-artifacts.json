@@ -1,0 +1,50 @@
+[
+  {
+    "bytes": 1456640,
+    "directory": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0",
+    "file": "Hexalith.EventStore.Client.dll",
+    "sha256": "2051d8bf9a6bd276e96b1a5769a7a8a74e3e1d601f30c31d173bc9ac7b51dab1"
+  },
+  {
+    "bytes": 1020928,
+    "directory": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Server.dll",
+    "sha256": "2e52c34fd2a2f3740b4d43e41c4a241fe42ad5f646bbd6112e25de15a9deb786"
+  },
+  {
+    "bytes": 980992,
+    "directory": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Client.dll",
+    "sha256": "598b00bcbe6cf5fd68588302d213a2148f86fdec7c3f93fa8a18dbe0878922f5"
+  },
+  {
+    "bytes": 183296,
+    "directory": "tests/Hexalith.Folders.Server.Tests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Contracts.dll",
+    "sha256": "b7680c41415a0210b6198a95e7988799cf28c10d660bf9d5a52733129c4bec03"
+  },
+  {
+    "bytes": 1456640,
+    "directory": "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0",
+    "file": "Hexalith.EventStore.Client.dll",
+    "sha256": "2051d8bf9a6bd276e96b1a5769a7a8a74e3e1d601f30c31d173bc9ac7b51dab1"
+  },
+  {
+    "bytes": 1020928,
+    "directory": "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Server.dll",
+    "sha256": "2e52c34fd2a2f3740b4d43e41c4a241fe42ad5f646bbd6112e25de15a9deb786"
+  },
+  {
+    "bytes": 980992,
+    "directory": "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Client.dll",
+    "sha256": "598b00bcbe6cf5fd68588302d213a2148f86fdec7c3f93fa8a18dbe0878922f5"
+  },
+  {
+    "bytes": 183296,
+    "directory": "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net11.0",
+    "file": "Hexalith.Folders.Contracts.dll",
+    "sha256": "b7680c41415a0210b6198a95e7988799cf28c10d660bf9d5a52733129c4bec03"
+  }
+]

@@ -1,0 +1,14 @@
+diff --git a/Directory.Packages.props b/Directory.Packages.props
+index 6fd0ef5c..8d48d385 100644
+--- a/Directory.Packages.props
++++ b/Directory.Packages.props
+@@ -4,7 +4,8 @@
+     <!-- Story 1.17: consume the released PD10 v2 Client/Contracts pair together. -->
+     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+     <!-- Consume the .NET 11 SDK snapshot limits and tenant access recovery contracts. -->
+-    <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">5.1.0</HexalithEventStoreVersion>
++    <!-- Story 1.17: consume the published 5.1.1 native source scanner package family. -->
++    <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">5.1.1</HexalithEventStoreVersion>
+     <HexalithTenantsVersion Condition="'$(HexalithTenantsVersion)' == ''">8.0.0</HexalithTenantsVersion>
+     <!-- Define paths of the Hexalith packages props. -->
+     <Hexalith1BuildPackageProps>$(MSBuildThisFileDirectory)references/Hexalith.Builds/Props/Directory.Packages.props</Hexalith1BuildPackageProps>

@@ -1,0 +1,247 @@
+[
+  {
+    "owner": "Projects",
+    "label": "restore",
+    "argv": [
+      "dotnet",
+      "restore",
+      "Hexalith.Projects.CI.slnx",
+      "-p:Configuration=Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "--configfile",
+      "/tmp/hexalith-job.hIRlsqzg/NuGet.Config",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Projects",
+    "exit_code": 0,
+    "elapsed_seconds": 10.46,
+    "log": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/restore.log",
+    "log_sha256": "41a61ceb3cfb975e0ca83918c2e4e996609af89202a6bbed8189682e27c67a26"
+  },
+  {
+    "owner": "Projects",
+    "label": "release-build",
+    "argv": [
+      "dotnet",
+      "build",
+      "Hexalith.Projects.CI.slnx",
+      "-c",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Projects",
+    "exit_code": 0,
+    "elapsed_seconds": 83.74,
+    "log": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/release-build.log",
+    "log_sha256": "4cec67807bc2e4f7fdee548f458f2708fd6b8e8d8121e9b5e854efed6dd3e297"
+  },
+  {
+    "owner": "Projects",
+    "label": "conversations-folders-adapters",
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Projects.Server.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+      "-class",
+      "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests",
+      "-class",
+      "Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests",
+      "-class",
+      "Hexalith.Projects.Server.Tests.Conversations.*",
+      "-class",
+      "Hexalith.Projects.Server.Tests.Folders.*",
+      "-class",
+      "Hexalith.Projects.Server.Tests.ProjectConversationAssignmentEndpointTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters.xml"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Projects",
+    "exit_code": 0,
+    "elapsed_seconds": 2.05,
+    "log": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters.log",
+    "log_sha256": "52d37ceac7a73c6470117df4e921d35de95bb04638c59d511e7dcca12641686f"
+  },
+  {
+    "owner": "folders",
+    "label": "restore",
+    "argv": [
+      "dotnet",
+      "restore",
+      "Hexalith.Folders.CI.slnx",
+      "-p:Configuration=Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "--configfile",
+      "/tmp/hexalith-job.hIRlsqzg/NuGet.Config",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 10.91,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/restore.log",
+    "log_sha256": "587a417f2ed29946c21072af1ce58848f6505d66d920f332443a61974e7143dc"
+  },
+  {
+    "owner": "folders",
+    "label": "release-build",
+    "argv": [
+      "dotnet",
+      "build",
+      "Hexalith.Folders.CI.slnx",
+      "-c",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 112.07,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/release-build.log",
+    "log_sha256": "c72f86925f994543e9c9f8bf259cf5d27cd37bce55d2833f54e1acca03cacf38"
+  },
+  {
+    "owner": "folders",
+    "label": "native-authority",
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.hIRlsqzg/folders/tests/Hexalith.Folders.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Server.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority.xml"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 3.96,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority.log",
+    "log_sha256": "6c45e0e1d1b85d9f14e816873ccc0d8e0126961366272dcd56d78a8e4f7fc9d3"
+  },
+  {
+    "owner": "folders",
+    "label": "routing",
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.hIRlsqzg/folders/tests/Hexalith.Folders.IntegrationTests/bin/Release/net11.0/Hexalith.Folders.IntegrationTests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+      "-class",
+      "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing.xml"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 30.69,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing.log",
+    "log_sha256": "a68f321837efc8f665329be4fee6070da0dc6c5cedaddf1e95d9aa7bffa8905b"
+  },
+  {
+    "owner": "folders",
+    "label": "parity",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "tests/tools/run-contract-parity-ci-gates.ps1",
+      "-SkipRestoreBuild",
+      "-OutputReportPath",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/parity-report.json"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 218.28,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/parity.log",
+    "log_sha256": "7a226be879b3de61e74ae4b514bd3ee49979c3d4d5f9b5296ce9e9db8f2c0b9f"
+  },
+  {
+    "owner": "folders",
+    "label": "governance",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "tests/tools/run-governance-completeness-gates.ps1",
+      "-SkipRestoreBuild"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "exit_code": 0,
+    "elapsed_seconds": 6.94,
+    "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/governance.log",
+    "log_sha256": "14b19a6cc2219e0af7970549feba2a46697f3d9bf570ffd5f48851770562d9d4"
+  },
+  {
+    "owner": "Builds",
+    "label": "test-authoritative-package-catalog.ps1",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/test-authoritative-package-catalog.ps1"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Builds",
+    "exit_code": 0,
+    "elapsed_seconds": 59.89,
+    "log": "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/test-authoritative-package-catalog.ps1.telemetry-disabled.log",
+    "log_sha256": "4aae501d135d885f84d8f4c09517542a14d689a57aaa5c2770a0b3ea0e383c36",
+    "environment_delta": {
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
+    }
+  },
+  {
+    "owner": "Builds",
+    "label": "validate-platform-version-catalog.ps1",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-platform-version-catalog.ps1"
+    ],
+    "cwd": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Builds",
+    "exit_code": 0,
+    "elapsed_seconds": 1.13,
+    "log": "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/validate-platform-version-catalog.ps1.telemetry-disabled.log",
+    "log_sha256": "ad9f1c7851dce709f30843878a6ab15a9d867f9f05a5202aeca46a505f242d78",
+    "environment_delta": {
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
+    }
+  }
+]

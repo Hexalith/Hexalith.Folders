@@ -1,0 +1,9 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.EventStore/tools/Hexalith.EventStore.RuntimeIdentityProbe/Hexalith.EventStore.RuntimeIdentityProbe.csproj (in 122 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj (in 156 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj (in 222 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 203 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.Memories/src/Hexalith.Memories.Aspire/Hexalith.Memories.Aspire.csproj (in 203 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj (in 206 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj (in 252 ms).
+  17 of 24 projects are up-to-date for restore.

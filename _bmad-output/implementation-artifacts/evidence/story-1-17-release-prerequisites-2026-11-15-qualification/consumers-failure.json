@@ -1,0 +1,6 @@
+{
+  "stage": "published Conversations verification",
+  "status": "failed-preparation-runner",
+  "error": "Reused EventStore NuGet verifier retained its EventStore-only repository URL constant; Conversations source commit and archive metadata were correct. Runner corrected to set the expected owning repository URL before each family. No signature or source check bypassed.",
+  "rerun_evidence": "story-1-17-release-prerequisites-2026-11-15-qualification2"
+}

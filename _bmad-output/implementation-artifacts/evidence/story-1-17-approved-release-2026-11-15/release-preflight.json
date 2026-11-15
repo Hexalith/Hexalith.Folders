@@ -1,0 +1,21 @@
+{
+  "observed_utc": "2026-11-15T14:13:58.015020+00:00",
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "version": "5.1.1",
+  "source_ci_run": 43719644714,
+  "commitlint_run": 43719644629,
+  "source_script": [
+    "bash",
+    "scripts/verify-release-source.sh"
+  ],
+  "source_script_exit": 0,
+  "api_families": 14,
+  "candidate_inventory_sha256": "0521b6d142a0f59eeb7aed4cd8d3325535eb1b87dc2704d381cb2b4540c72a31",
+  "approval": "I approve",
+  "effects": [
+    "14NuGet families",
+    "registry.hexalith.com/eventstore:5.1.1 linux/amd64 and linux/arm64",
+    "GitHub releasev5.1.1"
+  ],
+  "deployment_authorized": false
+}

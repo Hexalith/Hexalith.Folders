@@ -1,0 +1,104 @@
+{
+  "status": "passed",
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "packages": [
+    {
+      "package": "Hexalith.EventStore.Contracts",
+      "github_archive_sha256": "a18653327bc05f889abfacb41b1815b0c35e870d1c8ad0d8acfce29d2d5cd38c",
+      "nuget_archive_sha256": "38d1e13eea64437584f2718f3aceb1345e76e2ae16dd048f94a392d7dc63f357",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Client",
+      "github_archive_sha256": "91ca089dd77502696471c186eb83a55bdeb747b340ddb6195de12632e22aa370",
+      "nuget_archive_sha256": "e1341f098019b6a678a3e7e61a768651a82970c86bbed61dd3077e87a6a946e5",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Server",
+      "github_archive_sha256": "fff9f76fedb40ebbd32b29c56e09c955cd7ed5f4e0136a8e3552dd0d9e6086d7",
+      "nuget_archive_sha256": "8f510f933d6090b68cfe74ebd5f117aad1d373267d07edf2ceaf8fa9ea99ab9a",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.SignalR",
+      "github_archive_sha256": "2724893f5dda0bad8e03f5f5d98a8e372139a8a3ad4c69515ce3c19e3bdaf857",
+      "nuget_archive_sha256": "60fe1b05dd6b2bcf7b502db723c30c11dc0c32682ceb0ac4e5f470f809ae47d9",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Testing",
+      "github_archive_sha256": "cd25c1cb1da13b6ffe894739bd8b49d5ca5db4a6b0cc09f2a52564dc5b8caa5e",
+      "nuget_archive_sha256": "6de70c10e4a7adc89d4d13a0c997115e5861e83a197bf918ac384fbcaeeaf322",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Testing.Integration",
+      "github_archive_sha256": "19d8111c9f3cc0456bde38670b785574fb0845b31f75fac8017db3349ad617d9",
+      "nuget_archive_sha256": "3c163645f08732cfea070e9ce07a46c9d29c99264793fc72e7aa1d3b0394b000",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Aspire",
+      "github_archive_sha256": "fe9543d61e29853a16572424c9580453555e6e805168eec915aa324e1fafb2a6",
+      "nuget_archive_sha256": "1dc51efae1c512182717cfda216b71ba1a156fed7df503e4d04f90156b1dce56",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.ServiceDefaults",
+      "github_archive_sha256": "6d1413fdcab2adbc1b318682a35f304a254155b341adda520d7d17ff719acffa",
+      "nuget_archive_sha256": "25776e7e76543dd25f4d5263a96be24ee40cc1bd3da1382c2a36839a7f90e8f7",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.DomainService",
+      "github_archive_sha256": "d36318ac657f4047cba85776dc0f0c740c3e4b46349d85b6cbeddcc9bbfafc5c",
+      "nuget_archive_sha256": "bc4cc909f1172aa4fc528cf13dbc1a9e6bc4e19ab0d1dd5417d077b16734ddff",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.RestApi.Generators",
+      "github_archive_sha256": "579e4be4dbdf2339959de2c96f4f56a874a99835397b24862efa7cbda3d35d5f",
+      "nuget_archive_sha256": "08791aec29853095c69955240af4f0bbb071c8d189a5dea0dc3419e7ffba55b7",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Gateway",
+      "github_archive_sha256": "b93dcc8aa1f4b6f58930caec2ac8d180125ac862c3ab1929bfb8d229caaa6b21",
+      "nuget_archive_sha256": "03a58b7c1b6338b31b504bafff4dd2f7ef5dc20964c8f7bffe2e9256178979da",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Admin.Abstractions",
+      "github_archive_sha256": "84e66a39264f8cfa14a8197512e04e73d6c39b6b60c16f41f6c777c890fd69b6",
+      "nuget_archive_sha256": "8917d1dfe8950c7ac8a8c0b53778cc70dc25f7c16878d1967e19bc7199ceac78",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Admin.Cli",
+      "github_archive_sha256": "1ab9c160f8242119d43364e4456350923370b9dc445dac4877223334ab53242d",
+      "nuget_archive_sha256": "a822c80bb11ca5f8c8b8ccd651f71b05f729c6777d567cd4542db059bde2d1da",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    },
+    {
+      "package": "Hexalith.EventStore.Admin.Server",
+      "github_archive_sha256": "480ad5b9586eacd0a638cb9bbb30a89e6a17f2ab5de5b08640310487968f0dc2",
+      "nuget_archive_sha256": "0dce067f048d13d81efb3c1b9c74fe950b56ec460cd13c388f4054cf8a115137",
+      "release_api_gate_exit": 0,
+      "unsigned_payload_equal": true
+    }
+  ]
+}

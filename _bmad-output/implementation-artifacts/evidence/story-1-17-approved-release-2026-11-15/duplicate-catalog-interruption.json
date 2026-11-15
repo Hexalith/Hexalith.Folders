@@ -1,0 +1,21 @@
+{
+  "reason": "Stop the duplicate slow catalog attempt only after both full catalog gates and runtime capture completed successfully with DOTNET_CLI_TELEMETRY_OPTOUT=1. All audits and package settings remain unchanged.",
+  "signal": "SIGTERM",
+  "parent": 3021582,
+  "targets": [
+    {
+      "pid": 3697544,
+      "argv": [
+        "/home/administrator/.dotnet/dotnet",
+        "msbuild",
+        "/tmp/hexalith-job.hIRlsqzg/sdk42-catalog-views-c7accb33e4094c6d94a237e6650a6061/Hexalith.platform.Composition.proj",
+        "-nologo",
+        "-noAutoResponse",
+        "-nr:false",
+        "-getProperty:HexalithEventStoreVersion,HexalithMemoriesVersion,HexalithTenantsVersion,HexalithPartiesSdk42CatalogView,HexalithPlatformSdk42CatalogView,HexalithBuildsPackagedHostSdk42CatalogView,HexalithFrontComposerNet10CatalogView,HexalithFrontComposerImmutable10CatalogView,HexalithImmutableVersion",
+        "-getItem:PackageVersion"
+      ]
+    }
+  ],
+  "time_unix": 1794756090.9541087
+}

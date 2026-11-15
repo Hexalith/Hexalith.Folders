@@ -1,0 +1,1 @@
+public class Contract { public int RequiredMember() => 42; public string Find(string tenantId) => tenantId; }

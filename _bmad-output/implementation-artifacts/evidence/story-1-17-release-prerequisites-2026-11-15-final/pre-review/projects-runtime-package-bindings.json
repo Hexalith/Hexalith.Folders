@@ -1,0 +1,92 @@
+[
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/published-packages/Hexalith.Conversations.Client.2.0.0.nupkg",
+    "archive_sha256": "e3225ff4ff3389407f097dbe22511e61a0f7d7c1671bde440078eb66aea84107",
+    "assembly_sha256": "782af7870e58920882f89ec8fa883f04ee2899a40956ae2fa6a049793299b225",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.Conversations.Client.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Conversations.Client.dll",
+    "runtime_sha256": "782af7870e58920882f89ec8fa883f04ee2899a40956ae2fa6a049793299b225"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/published-packages/Hexalith.Conversations.Contracts.2.0.0.nupkg",
+    "archive_sha256": "bba5483dbaea023b08f66c163516cd142086eb93c2306d79979dbb9de10e74bd",
+    "assembly_sha256": "25d91de97dae2c96582bdb4f5c630fc2a29574fbd4d28396014150d1ed192110",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.Conversations.Contracts.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Conversations.Contracts.dll",
+    "runtime_sha256": "25d91de97dae2c96582bdb4f5c630fc2a29574fbd4d28396014150d1ed192110"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg",
+    "archive_sha256": "1bf4462cd4f2f8df2d4755703ff069cfa60123d920c4fb26b1c9d5c665e59579",
+    "assembly_sha256": "40f76ccf74e9b5f72fcf267589416fef3956ede4c5bfa0b0f30cf9e5a6bfc154",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Admin.Abstractions.dll",
+    "runtime_sha256": "40f76ccf74e9b5f72fcf267589416fef3956ede4c5bfa0b0f30cf9e5a6bfc154"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Client.5.1.1.nupkg",
+    "archive_sha256": "3bf7c60737be685ff2d7cac5a2d51b7ca09e790bc7ec49a92a4dfa50ef4377ca",
+    "assembly_sha256": "14a16f782d2f8dc64d4f696029e8cfb0ecccaf40337f5adb96e9f88b20e0db6e",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Client.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Client.dll",
+    "runtime_sha256": "14a16f782d2f8dc64d4f696029e8cfb0ecccaf40337f5adb96e9f88b20e0db6e"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Contracts.5.1.1.nupkg",
+    "archive_sha256": "ddf11bf6b8ea5b3a70a0ddc5e1f5e63a408e89b55588ebc7c3829f27b2732b19",
+    "assembly_sha256": "d6e2d33f82b75f9c117a1f049c71ef61664da2e5a9354e4a652177b4faa550b6",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Contracts.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Contracts.dll",
+    "runtime_sha256": "d6e2d33f82b75f9c117a1f049c71ef61664da2e5a9354e4a652177b4faa550b6"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.DomainService.5.1.1.nupkg",
+    "archive_sha256": "d49c40615519cae0d181f7fbb0ec1362b14d1a39c5b4ea63cc4687ad26d75701",
+    "assembly_sha256": "1db1d679b839b0344d964a1330769b871808174e5548f2f15623d6e71ea8173a",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.DomainService.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.DomainService.dll",
+    "runtime_sha256": "1db1d679b839b0344d964a1330769b871808174e5548f2f15623d6e71ea8173a"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Gateway.5.1.1.nupkg",
+    "archive_sha256": "8d56327cb214b00c2375520e418b11e2bb372ab548aa574ab7f7da5db39bc8a8",
+    "assembly_sha256": "427c57b17b9dad5a843860583c79e4d89e7aa48c38dcd41afd3922df309ba48f",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Gateway.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Gateway.dll",
+    "runtime_sha256": "427c57b17b9dad5a843860583c79e4d89e7aa48c38dcd41afd3922df309ba48f"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Server.5.1.1.nupkg",
+    "archive_sha256": "83c709e9a2044b86a031532fc7eaaf8c8a12e98b72e78553655d91318e063582",
+    "assembly_sha256": "ad9eb10fc5f84535108e342ead413ba6d5b329ba634e9bafcb52eebf0e777238",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Server.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Server.dll",
+    "runtime_sha256": "ad9eb10fc5f84535108e342ead413ba6d5b329ba634e9bafcb52eebf0e777238"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg",
+    "archive_sha256": "afa6072a15cf91d31d2e7bba4c66b05a814d986c04bb47422871c5ea29f15ec8",
+    "assembly_sha256": "27ca7552fec0adb689a2aa4e88d12922179b2a748cfa0853e20d52b27307b061",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.ServiceDefaults.dll",
+    "runtime_sha256": "27ca7552fec0adb689a2aa4e88d12922179b2a748cfa0853e20d52b27307b061"
+  },
+  {
+    "archive": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Testing.5.1.1.nupkg",
+    "archive_sha256": "92344230e0c56026be7d99aa82add49206b09c1f9620d0ef6ecd0e04fc4c55a4",
+    "assembly_sha256": "ebc1c949f008ef6bd9383c1fd1f7bb77937fea7b7f93be25d947b118b5694c21",
+    "matches_package_member": true,
+    "member": "lib/net11.0/Hexalith.EventStore.Testing.dll",
+    "runtime_path": "tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Testing.dll",
+    "runtime_sha256": "ebc1c949f008ef6bd9383c1fd1f7bb77937fea7b7f93be25d947b118b5694c21"
+  }
+]

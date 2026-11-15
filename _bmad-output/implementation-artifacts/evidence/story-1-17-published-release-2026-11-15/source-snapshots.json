@@ -1,0 +1,100 @@
+[
+  {
+    "owner": "/home/administrator/projects/hexalith/folders",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders",
+    "head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+    "changed_files": {
+      "_bmad-output/implementation-artifacts/epic-1-context.md": "9863c6a13dd6748e816eb771683572ffb9e64dddd2352ab4384367fa921e5d03"
+    },
+    "snapshot_patch_sha256": "df29515ff9adbefd85e7cd36d575a94157f85a8b626cbbbe2cb69b9fcb8f45b3"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Tenants",
+    "head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.AI.Tools",
+    "head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.EventStore",
+    "head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.FrontComposer",
+    "head": "bca9dff291ce42c57516598732340a80703dfb6d",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Memories",
+    "head": "b7e195031cab96b38949b90317ea8033797027b8",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Commons",
+    "head": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Builds",
+    "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+    "changed_files": {
+      "Props/Directory.Packages.props": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+      "Tools/test-authoritative-package-catalog.ps1": "3347378af2da949736ff739ac260ff68d788d1658b61ede4db426eb81d288bbb"
+    },
+    "snapshot_patch_sha256": "abd205f130a3bbe2e077961ebb689568ccc0b5407cfc579761084d63111c5e20"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.PolymorphicSerializations",
+    "head": "e97b56930e213f674b64c157551f499b0473ec43",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Projects",
+    "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+    "changed_files": {
+      "Directory.Packages.props": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb"
+    },
+    "snapshot_patch_sha256": "e6d3b5cfc163eee5d6bffb2836aeb7922650a72362cc37dadf09fdc408590b8e"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Platform",
+    "head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.McpCli",
+    "head": "28bcbbb898b6530838a7872f2ba450c34e56cc70",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "owner": "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties",
+    "snapshot": "/tmp/hexalith-job.hIRlsqzg/folders/references/Hexalith.Parties",
+    "head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+    "changed_files": {},
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

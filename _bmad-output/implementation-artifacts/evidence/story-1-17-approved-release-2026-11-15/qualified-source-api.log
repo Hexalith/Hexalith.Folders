@@ -1,0 +1,17 @@
+["python3", "tools/verify-release-api-compatibility.py", "/tmp/hexalith-job.l7DBxGHS/packages-output", "5.1.1", "--candidate-commit", "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331", "--package-catalog", "/tmp/hexalith-job.l7DBxGHS/workspace/references/Hexalith.Builds/Props/Directory.Packages.props", "--work-directory", "/tmp/hexalith-job.l7DBxGHS/api-compatibility"]
+API gate evidence: /tmp/hexalith-job.l7DBxGHS/api-compatibility
+API compatible: Hexalith.EventStore.Contracts
+API compatible: Hexalith.EventStore.Client
+API compatible: Hexalith.EventStore.Server
+API compatible: Hexalith.EventStore.SignalR
+API compatible: Hexalith.EventStore.Testing
+API compatible: Hexalith.EventStore.Testing.Integration
+API compatible: Hexalith.EventStore.Aspire
+API compatible: Hexalith.EventStore.ServiceDefaults
+API compatible: Hexalith.EventStore.DomainService
+API compatible: Hexalith.EventStore.RestApi.Generators
+API compatible: Hexalith.EventStore.Gateway
+API compatible: Hexalith.EventStore.Admin.Abstractions
+API compatible: Hexalith.EventStore.Admin.Cli
+API compatible: Hexalith.EventStore.Admin.Server
+Verified all 14 families and real compatible/removed-member/renamed-parameter controls; receipt: /tmp/hexalith-job.l7DBxGHS/api-compatibility/receipt.json

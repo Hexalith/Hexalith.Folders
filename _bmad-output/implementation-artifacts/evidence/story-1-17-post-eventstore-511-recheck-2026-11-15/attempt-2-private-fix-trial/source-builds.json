@@ -1,0 +1,5 @@
+{
+  "Hexalith.Folders.Contracts.Tests": true,
+  "Hexalith.Folders.IntegrationTests": true,
+  "Hexalith.Folders.Server.Tests": true
+}

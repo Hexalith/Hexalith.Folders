@@ -1,0 +1,21 @@
+{
+  "endpoint": "/alive",
+  "environment": "Development",
+  "image_repository": "registry.hexalith.com/eventstore",
+  "platforms": [
+    {
+      "cleanup": "pass",
+      "digest": "sha256:cf936585b5fb97b4d33347f81f3c6f35206128927326de2a56e388e323ec8507",
+      "outcome": "pass",
+      "platform": "linux/amd64"
+    },
+    {
+      "cleanup": "pass",
+      "digest": "sha256:82b7e04d97423ecdb5e06488858537917f87cd8f85b4834830f7f2097f0c0bec",
+      "outcome": "pass",
+      "platform": "linux/arm64"
+    }
+  ],
+  "result": "pass",
+  "timeout_seconds": 180.0
+}

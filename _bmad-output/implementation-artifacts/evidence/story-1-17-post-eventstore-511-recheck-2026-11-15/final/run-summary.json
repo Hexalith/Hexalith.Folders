@@ -1,0 +1,34 @@
+{
+  "copied_inputs": 63094,
+  "finished_utc": "2026-11-15T15:57:56Z",
+  "generation": {
+    "checked_in_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "equals_checked_in": true,
+    "exit_codes": [
+      0,
+      0
+    ],
+    "first_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "generations_equal": true,
+    "ran": true,
+    "second_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+  },
+  "owning_workspace_unchanged": true,
+  "source_builds": {
+    "Hexalith.Folders.Contracts.Tests": true,
+    "Hexalith.Folders.IntegrationTests": true,
+    "Hexalith.Folders.Server.Tests": true
+  },
+  "source_results": {
+    "conformance": true,
+    "contract-behavior": true,
+    "deployment-conformance": true,
+    "native-authority": true,
+    "routing": true
+  },
+  "source_solution": {
+    "build": 1,
+    "restore": 0
+  },
+  "started_utc": "2026-11-15T15:54:17Z"
+}

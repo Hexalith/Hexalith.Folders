@@ -1,0 +1,8 @@
+["dotnet", "--list-sdks"]
+10.0.302 [/home/administrator/.dotnet/sdk]
+10.0.400 [/home/administrator/.dotnet/sdk]
+10.0.401 [/home/administrator/.dotnet/sdk]
+10.0.402 [/home/administrator/.dotnet/sdk]
+10.0.403 [/home/administrator/.dotnet/sdk]
+10.0.404 [/home/administrator/.dotnet/sdk]
+11.0.100 [/home/administrator/.dotnet/sdk]

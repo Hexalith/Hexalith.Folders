@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "runtime_bindings": 32,
+  "projects": [
+    {
+      "project": "Hexalith.Folders.Cli.Tests",
+      "bindings": 3,
+      "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Cli.Tests-runtime.tar.gz",
+      "archive_sha256": "5224807cbbb962c8befb4d513abf14030f73f7e354f32e69bc5b9d9cf5564c3d",
+      "deps_runtime_members_verified": true
+    },
+    {
+      "project": "Hexalith.Folders.Client.Tests",
+      "bindings": 3,
+      "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Client.Tests-runtime.tar.gz",
+      "archive_sha256": "acb81bc5128987060ba35284465a81e270e28dab4eabcb5c970f17a3774563b3",
+      "deps_runtime_members_verified": true
+    },
+    {
+      "project": "Hexalith.Folders.IntegrationTests",
+      "bindings": 5,
+      "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.IntegrationTests-runtime.tar.gz",
+      "archive_sha256": "5cb418bc18e74b22be36b0d5178f0356af23d7d2fb2116eb00b490583a7b90c2",
+      "deps_runtime_members_verified": true
+    },
+    {
+      "project": "Hexalith.Folders.Mcp.Tests",
+      "bindings": 3,
+      "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Mcp.Tests-runtime.tar.gz",
+      "archive_sha256": "6c82721e61cb5789df1fcbe128c54e66db8a47406af27fc9f9d641a9b79df516",
+      "deps_runtime_members_verified": true
+    },
+    {
+      "project": "Hexalith.Folders.Server.Tests",
+      "bindings": 6,
+      "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Server.Tests-runtime.tar.gz",
+      "archive_sha256": "c40563b082543c6de516bf37c9583edfc8ce990d3ab13590b9bb4f409f122511",
+      "deps_runtime_members_verified": true
+    },
+    {
+      "project": "Hexalith.Projects.Server.Tests",
+      "bindings": 12,
+      "archive": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Projects.Server.Tests-runtime.tar.gz",
+      "archive_sha256": "13b722c1bd61b3c7ccf3568ba4646b59a9b19e68de0670e58075d9faa904569f",
+      "deps_runtime_members_verified": true
+    }
+  ],
+  "qualified_commands": 11,
+  "duplicate_attempt_exit": 1,
+  "duplicate_attempt_disposition": "Intentionally interrupted after successful replacement catalog gates; retained commands.json preserves its exit. Use completed-commands.json for the final 11 passing commands.",
+  "disposable_workspace_removed": true
+}

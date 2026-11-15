@@ -1,0 +1,225 @@
+{
+  "currentCandidateRelease": {
+    "commitsSinceV140": 33,
+    "featureCommits": [
+      "c4510025e2b4812c770d7f85de8ec465d9981649"
+    ],
+    "note": "The configured conventional-commit analyzer, not this record, selects the next version; a feature commit implies a minor increment."
+  },
+  "localFix": {
+    "baseBlob": "HEAD:Directory.Build.targets",
+    "owner": "Folders repository owner (landing requires an explicit commit instruction)",
+    "patchSha256": "8394b054bf7e5cf2f7a1acb3f04786af16d90edbcdefd287b33c8632b9a99cb8",
+    "path": "Directory.Build.targets",
+    "resultSha256": "26dbe03d6b99b31fae6f4d030af333daf9ff7da94b7647373bdb2e7d9e26ceb0",
+    "summary": "Carry the root EventStore selection to direct and SDK-promoted Tenants source references in local source graphs without a verified workspace mapping; inert in Release/package."
+  },
+  "observations": [
+    "Tenants (5.1.0) and McpCli (5.1.0) keep local EventStore cohort defaults; only Tenants carries its value onto EventStore source edges in the Folders graph, which the local fix now overrides. Projects Debug/source graphs were not examined."
+  ],
+  "operationalControls": {
+    "activationAuthority": null,
+    "firstInstallActivation": null,
+    "migrationT0": null,
+    "parentStatus": "in-progress",
+    "routeMode": "V1Only",
+    "stagingChecksExecuted": 0,
+    "storyClosureClaimed": false,
+    "trackerStatus": "backlog"
+  },
+  "qualification": "HOLD",
+  "receipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-post-eventstore-511-recheck-2026-11-15/receipt.json",
+  "releasedPair": {
+    "client": {
+      "archiveSha256": "5ff508f4a42e1b6540329bbf6cd9e091c3fc1c10acd7d21e1477daa74e04ea26",
+      "dllSha256": "a571d5e5cf7d88667d9e7dcf1ba8bfb974583a9c416da648558e66b016f6f706",
+      "member": "lib/net10.0/Hexalith.Folders.Client.dll"
+    },
+    "contracts": {
+      "archiveSha256": "492dd508739678c0fbb761d76d3b0247e775ac586966dae61576247323eaf83e",
+      "dllSha256": "c798046407d298e175d7a4ac6ee581255aaeb5cd2455a518744bd3e29d8857aa",
+      "member": "lib/net10.0/Hexalith.Folders.Contracts.dll"
+    },
+    "currentSourceDelta": "Contracts unchanged since v1.4.0. Client: 776 NSwag 14.7.1->14.8.0 / NJsonSchema 11.6.1->11.6.2 GeneratedCode attribute lines and the generator invocation's audit flags; a current pack targets net11.0 instead of net10.0.",
+    "isCurrentCandidate": false,
+    "sourceCommit": "f9808ddecaae791a9802561e7c513da21a61b473",
+    "version": "1.4.0"
+  },
+  "remainingOwnerInputs": [
+    {
+      "gate": "Land the 5.1.1 adoption and source-graph fix",
+      "owner": "Builds catalog owner, Projects build owner, Folders root owner (Jerome)",
+      "required": "Explicit instruction to commit and push Builds Props/Directory.Packages.props and Tools/test-authoritative-package-catalog.ps1, Projects Directory.Packages.props, and Folders Directory.Build.targets, then record the resulting Builds, Projects and EventStore f792bba6 gitlinks in Folders, each with commitlint-validated Conventional Commit messages."
+    },
+    {
+      "gate": "Exact current-candidate release",
+      "owner": "Folders release owner (protected production environment reviewer)",
+      "required": "After landing and successful exact-source push CI on main, dispatch the existing release.yml lane for all five packages and record the published Client/Contracts identities."
+    },
+    {
+      "gate": "Projects consumer artifact",
+      "owner": "Projects build and release owner",
+      "required": "Repin to the newly released pair, rerun the 221-case adapter selection, and record an immutable Projects image/deployment artifact and its deployed delegation."
+    },
+    {
+      "gate": "Platform executable-source mapping and graph qualification",
+      "owner": "Platform owner with direct module owners",
+      "required": "Mapping decision for the current Platform/direct-owner revisions, or qualified exact roots; equal declaration bytes do not approve executable source."
+    },
+    {
+      "gate": "Current offline source proposal",
+      "owner": "Folders candidate owner with Projects and Platform intake owners",
+      "required": "Reconcile eng/story117-platform-qualification-current after the release source is fixed; it still refuses current drift (24 stale bindings at the 2026-11-15 receipt)."
+    },
+    {
+      "gate": "Operational entry and closure",
+      "owner": "Platform qualified deployment/operator and data owners; Jerome for closure/tracker decision",
+      "required": "Attempt-locked target/consumer/data disposition, hosted identity/delegation, exact artifacts, owners/UTC slots/thresholds, fourteen staging results, observation and applicable recovery. Use the original migration clocks only if an existing-v1 branch is established."
+    }
+  ],
+  "results": {
+    "freshDebugSource": {
+      "final": "native authority 64/64, routing 20/20, behavior 18/18, conformance 21/21, deployment conformance 17/17",
+      "firstAttempt": "native authority 16/64, routing 0/20 (EventStore Client/Contracts 5.1.0.0 vs 5.1.1.0); behavior 18/18; conformance 21/21",
+      "privateFixTrial": "native authority 64/64, routing 20/20, behavior 18/18, conformance 21/21",
+      "solution": "Hexalith.Folders.CI.slnx Debug/source 0 warnings, 0 errors after prepending ~/.dotnet/tools to PATH (first attempt: Builds.Tooling pwsh exit 127)"
+    },
+    "pendingInventory": {
+      "approval": "pending-a6b; no production authority",
+      "generations": 2,
+      "orderedSetSha256": "6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022",
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+      "rawSha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+      "resealed": false,
+      "rows": 1635
+    },
+    "reusedReleasePackage": {
+      "evidence": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/result.json",
+      "foldersNativeAuthority": "64/64",
+      "foldersReleaseSolution": "0 warnings, 0 errors",
+      "foldersRouting": "20/20",
+      "governance": "217/217 + 7/7 + 3/3",
+      "parity": "12/12 categories",
+      "projectsAdapters": "221/221",
+      "projectsReleaseSolution": "0 warnings, 0 errors",
+      "reuseBasis": "reuse-identity.json and profile-evaluation.json in the receipt directory",
+      "runtimePackageBindings": 32
+    }
+  },
+  "schema": "hexalith.folders.story117.publication-handoff.v2026-11-15-post-eventstore-511",
+  "scope": "Local recheck after EventStore 5.1.1 adoption. Release/package results are reused from the same-day public-feed qualification; Debug/source checks are new. No publication or deployment command ran.",
+  "sourceTuple": {
+    "limits": "Builds, Projects and the root (gitlinks plus Directory.Build.targets) carry uncommitted edits; a dirty tuple supplies no immutable release source.",
+    "repositories": {
+      ".": {
+        "branch": "main",
+        "head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+        "index_entries_sha256": "1ac17cfa04620eb86f8544ade9f96e20d81d5865a7c66d76954de0727115409a",
+        "root_gitlink": null,
+        "uncommitted_changed_files": {
+          "Directory.Build.targets": "26dbe03d6b99b31fae6f4d030af333daf9ff7da94b7647373bdb2e7d9e26ceb0",
+          "_bmad-output/implementation-artifacts/epic-1-context.md": "9863c6a13dd6748e816eb771683572ffb9e64dddd2352ab4384367fa921e5d03",
+          "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "95407ecea4d20c8cd6865dfc68c0cda4269355ec76ffb6ec0df4b6fbba3b6f13"
+        }
+      },
+      "references/Hexalith.AI.Tools": {
+        "branch": "main",
+        "head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+        "index_entries_sha256": "96b78954b43227656b257f9a3a263f8a423d387f444622d66e2e89838d09dc28",
+        "root_gitlink": "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.Builds": {
+        "branch": "main",
+        "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+        "index_entries_sha256": "4fdcaa9477ef55f58e3fe166bbe0d81373f3b698222a074c79f68f43f487d11c",
+        "root_gitlink": "160000 commit 73e60af8a1fcdf3f06726d5d1b6e1199cce778ee\treferences/Hexalith.Builds",
+        "uncommitted_changed_files": {
+          "Props/Directory.Packages.props": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+          "Tools/test-authoritative-package-catalog.ps1": "3347378af2da949736ff739ac260ff68d788d1658b61ede4db426eb81d288bbb"
+        }
+      },
+      "references/Hexalith.Commons": {
+        "branch": "main",
+        "head": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+        "index_entries_sha256": "2e3afbd3b887f02d549135ace0e8487da36e84dc1eda40a530c4cc8c819df3b3",
+        "root_gitlink": "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.EventStore": {
+        "branch": "main",
+        "head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+        "index_entries_sha256": "d7acf45b1459d9bdfe14dad99c80d9ba857c1a1db8c5aa150fd3fcbd503d22d8",
+        "root_gitlink": "160000 commit fdb59895975e86a1e234325a01237f259cdbd53b\treferences/Hexalith.EventStore",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.FrontComposer": {
+        "branch": "main",
+        "head": "bca9dff291ce42c57516598732340a80703dfb6d",
+        "index_entries_sha256": "3c78812b5b7605777e88096365d6f324e0d7ddbf333d074d6ac656055c797c0d",
+        "root_gitlink": "160000 commit bca9dff291ce42c57516598732340a80703dfb6d\treferences/Hexalith.FrontComposer",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.McpCli": {
+        "branch": "main",
+        "head": "28bcbbb898b6530838a7872f2ba450c34e56cc70",
+        "index_entries_sha256": "211ff4a1b4afec0d560f619281536f6acf74b08e82f22cf1b41743f2849c7534",
+        "root_gitlink": "160000 commit 28bcbbb898b6530838a7872f2ba450c34e56cc70\treferences/Hexalith.McpCli",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.Memories": {
+        "branch": "main",
+        "head": "b7e195031cab96b38949b90317ea8033797027b8",
+        "index_entries_sha256": "d5208f12ae2aeb737a8cacd582446accc55992b0d82ba321e03ace78e6acec99",
+        "root_gitlink": "160000 commit b7e195031cab96b38949b90317ea8033797027b8\treferences/Hexalith.Memories",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.Parties": {
+        "branch": "main",
+        "head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+        "index_entries_sha256": "17b0140c69a65cc5bc72bc3a1ccb925df51b6bb24f01f0e3c47da838b5feec86",
+        "root_gitlink": "160000 commit cb9ba9ecfb76125efd407d294d3d01b62e8af687\treferences/Hexalith.Parties",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.Platform": {
+        "branch": "main",
+        "head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+        "index_entries_sha256": "46a70e64e69f614cf294045fd3de6bde27c0ea2a7d9fb0636ded3a97a5fd779f",
+        "root_gitlink": "160000 commit 695463c5eed801e96dbd9efc6a8cef4b70e900f9\treferences/Hexalith.Platform",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.PolymorphicSerializations": {
+        "branch": "main",
+        "head": "e97b56930e213f674b64c157551f499b0473ec43",
+        "index_entries_sha256": "750dc4720d16f66391c92415f85b07212eb2c1b99c0833cdd679453637b016fa",
+        "root_gitlink": "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+        "uncommitted_changed_files": {}
+      },
+      "references/Hexalith.Projects": {
+        "branch": "main",
+        "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+        "index_entries_sha256": "7d1201830661ad52b5316ea92e25c6e3536b9d1269a24db1af8c7e48166b9e92",
+        "root_gitlink": "160000 commit fc58cefde69d72d7d3daa574b5022f73f830a85e\treferences/Hexalith.Projects",
+        "uncommitted_changed_files": {
+          "Directory.Packages.props": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb"
+        }
+      },
+      "references/Hexalith.Tenants": {
+        "branch": "main",
+        "head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+        "index_entries_sha256": "500f7ef2c7ff731a7b1120d44f418c8fc0c4faaaaf9a99f67226cc5083c50fad",
+        "root_gitlink": "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants",
+        "uncommitted_changed_files": {}
+      }
+    },
+    "rootRevision": "336c3e82df1f66febf9cb30febcdb5b841d225e9"
+  },
+  "supersedes": {
+    "path": "_bmad-output/implementation-artifacts/story-1-17-publication-handoff-2026-11-15.json",
+    "resolvedOwnerInputs": [
+      "remainingOwnerInputs[0]: EventStore 5.1.1 published from f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331 with the native scan APIs; the Builds catalog selection is still an uncommitted working-tree edit",
+      "remainingOwnerInputs[1]: Conversations Client/Contracts 2.0.0 restore from NuGet.org; Projects builds and tests against Folders 1.4.0 (no immutable Projects artifact yet)"
+    ],
+    "sha256": "28ca3e06fb478caecc2abee6c1b6b70c94ccf537ef4950b0b093440f1426c510"
+  }
+}

@@ -1,0 +1,14 @@
+test_all_32_runtime_payloads_match_named_package_members (__main__.ReviewControls.test_all_32_runtime_payloads_match_named_package_members) ... ok
+test_concurrent_live_edit_is_rejected_and_snapshot_inventory_stays_bound (__main__.ReviewControls.test_concurrent_live_edit_is_rejected_and_snapshot_inventory_stays_bound) ... ok
+test_hostile_audit_environment_cannot_override_explicit_manual_pins (__main__.ReviewControls.test_hostile_audit_environment_cannot_override_explicit_manual_pins) ... ok
+test_manual_hash_check_rejects_tampering_before_feed_copy (__main__.ReviewControls.test_manual_hash_check_rejects_tampering_before_feed_copy) ... ok
+test_manual_restore_failure_stops_before_build (__main__.ReviewControls.test_manual_restore_failure_stops_before_build) ... ok
+test_package_bytes_and_required_dotnet_results_remain_unchanged (__main__.ReviewControls.test_package_bytes_and_required_dotnet_results_remain_unchanged) ... ok
+test_plain_mkdir_collision_does_not_modify_existing_receipts (__main__.ReviewControls.test_plain_mkdir_collision_does_not_modify_existing_receipts) ... ok
+test_qualified_tests_pass_each_requested_selector_without_skips (__main__.ReviewControls.test_qualified_tests_pass_each_requested_selector_without_skips) ... ok
+test_retirement_preserves_exact_pre_review_bytes (__main__.ReviewControls.test_retirement_preserves_exact_pre_review_bytes) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 2.118s
+
+OK

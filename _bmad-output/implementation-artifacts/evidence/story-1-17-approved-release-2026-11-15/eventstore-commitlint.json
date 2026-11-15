@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "node_modules/@commitlint/cli/cli.js",
+    "--config",
+    "commitlint.config.mjs",
+    "--edit",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commit-message.txt"
+  ],
+  "exit_code": 0,
+  "cli_version": "21.2.4",
+  "message_sha256": "85d97534f9c12e0da98a87ab36db9dd7605766b997301b565c49d1acfcfc98fa",
+  "config_sha256": "796a04abdd8c35e645f654c9d8d571556f34ccf4ab3611c9327697a452add38d"
+}

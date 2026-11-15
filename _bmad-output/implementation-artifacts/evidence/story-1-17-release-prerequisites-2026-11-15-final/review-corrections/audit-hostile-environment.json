@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "dotnet",
+    "msbuild",
+    "/tmp/hexalith-job.kOF6sc5R/tmp5992rbm1/Audit.proj",
+    "-nologo",
+    "-nr:false",
+    "-p:NuGetAudit=true",
+    "-p:NuGetAuditMode=all",
+    "-p:NuGetAuditLevel=low",
+    "-getProperty:NuGetAudit,NuGetAuditMode,NuGetAuditLevel"
+  ],
+  "exit_code": 0,
+  "properties": {
+    "NuGetAudit": "true",
+    "NuGetAuditMode": "all",
+    "NuGetAuditLevel": "low"
+  },
+  "hostile_input": {
+    "NuGetAudit": "false",
+    "NUGETAUDIT": "false",
+    "NuGetAuditMode": "direct",
+    "NuGetAuditLevel": "critical"
+  },
+  "private_allowlist_audit": {
+    "NuGetAudit": "true",
+    "NuGetAuditMode": "all",
+    "NuGetAuditLevel": "low"
+  }
+}

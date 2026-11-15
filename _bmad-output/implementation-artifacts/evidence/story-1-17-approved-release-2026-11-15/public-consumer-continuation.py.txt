@@ -1,0 +1,64 @@
+from pathlib import Path
+import os,subprocess,json,hashlib,zipfile,tarfile,time
+root=Path('/home/administrator/projects/hexalith/folders')
+name='story-1-17-published-release-2026-11-15'
+source='f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331'
+work=Path('/tmp/hexalith-job.hIRlsqzg/folders')
+projects=work/'references/Hexalith.Projects'
+evidence={k:v/'_bmad-output/implementation-artifacts/evidence'/name for k,v in {'folders':root,'EventStore':root/'references/Hexalith.EventStore','Projects':root/'references/Hexalith.Projects','Builds':root/'references/Hexalith.Builds'}.items()}
+record=root/'_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15'
+def digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+assert work.is_dir()
+old_env={s.split('=',1)[0]:s.split('=',1)[1] for s in Path('/proc/3021582/environ').read_bytes().decode().split('\0') if '=' in s}
+old_env.update({k:os.environ[k] for k in ['TMPDIR','TMP','TEMP']})
+old_env['DOTNET_CLI_TELEMETRY_OPTOUT']='1'
+os.environ.clear();os.environ.update(old_env)
+commands=json.loads((evidence['folders']/'commands.json').read_text())
+assert len(commands)==9 and all(x['exit_code']==0 and digest(root/x['log'])==x['log_sha256'] for x in commands)
+for owner in [work,work/'references/Hexalith.Builds',projects]:
+    observed=subprocess.check_output(['git','diff','HEAD','--binary'],cwd=owner)
+    row=next(x for x in json.loads((evidence['folders']/'source-snapshots.json').read_text()) if x['snapshot']==str(owner))
+    assert hashlib.sha256(observed).hexdigest()==row['snapshot_patch_sha256']
+for script in ['test-authoritative-package-catalog.ps1','validate-platform-version-catalog.ps1']:
+    args=['pwsh','-NoLogo','-NoProfile','-File','Tools/'+script]
+    log=evidence['Builds']/(script+'.telemetry-disabled.log')
+    assert not log.exists()
+    print('START',script,flush=True);started=time.monotonic()
+    with log.open('w') as f:
+        f.write(json.dumps(args)+'\nDOTNET_CLI_TELEMETRY_OPTOUT=1\n');f.flush()
+        run=subprocess.run(args,cwd=work/'references/Hexalith.Builds',stdout=f,stderr=subprocess.STDOUT)
+    commands.append({'owner':'Builds','label':script,'argv':args,'cwd':str(work/'references/Hexalith.Builds'),'exit_code':run.returncode,'elapsed_seconds':round(time.monotonic()-started,2),'log':str(log.relative_to(root)),'log_sha256':digest(log),'environment_delta':{'DOTNET_CLI_TELEMETRY_OPTOUT':'1'}})
+    (evidence['folders']/'completed-commands.json').write_text(json.dumps(commands,indent=2)+'\n')
+    print('END',script,run.returncode,flush=True)
+    assert run.returncode==0
+archives={}
+for owner,filename in [('EventStore','published-packages.json'),('Projects','published-pairs.json')]:
+    for row in json.loads((evidence[owner]/filename).read_text()):
+        assert digest(row['archive'])==row['sha256']
+        archives[row['id']+'/'+row['version']]=Path(row['archive'])
+assert len(archives)==18
+bindings=[]
+for owner,cwd,project in [("folders",work,"Hexalith.Folders.Server.Tests"),("folders",work,"Hexalith.Folders.Client.Tests"),("folders",work,"Hexalith.Folders.IntegrationTests"),("folders",work,"Hexalith.Folders.Cli.Tests"),("folders",work,"Hexalith.Folders.Mcp.Tests"),("Projects",projects,"Hexalith.Projects.Server.Tests")]:
+    directory=cwd/"tests"/project/"bin/Release/net11.0";deps=json.loads((directory/(project+".deps.json")).read_text())
+    target=next(v for k,v in deps["targets"].items() if k.startswith(".NETCoreApp,Version=v11.0"))
+    for identity,item in target.items():
+        if identity not in archives:continue
+        archive=archives[identity]
+        for member in item.get("runtime",{}):
+            filename=Path(member).name
+            if not filename.endswith(".dll"):continue
+            runtime=directory/filename;assert runtime.is_file()
+            with zipfile.ZipFile(archive) as z:expected=hashlib.sha256(z.read(member)).hexdigest()
+            assert digest(runtime)==expected,(identity,runtime)
+            bindings.append({"project":project,"package":identity,"member":member,"archive_sha256":digest(archive),"runtime_sha256":expected})
+    if project.endswith("Server.Tests"):
+        selected={r["package"] for r in bindings if r["project"]==project}
+        required={f"Hexalith.EventStore.{s}/5.1.1" for s in ["Client","Contracts","Server"]}
+        if owner=="Projects":required|={f"Hexalith.{f}.{s}/{v}" for f,v in [("Folders","1.4.0"),("Conversations","2.0.0")] for s in ["Client","Contracts"]}
+        assert required<=selected,(required-selected)
+    with tarfile.open(evidence[owner]/(project+"-runtime.tar.gz"),"w:gz") as t:t.add(directory,arcname=project)
+(evidence["folders"]/"runtime-package-bindings.json").write_text(json.dumps(bindings,indent=2)+"\n")
+parity=json.loads((evidence['folders']/'parity-report.json').read_text());assert parity['status']=='passed' and len(parity['results'])==12 and all(x['status']=='passed' for x in parity['results'])
+assert json.loads((evidence['folders']/'governance-report.json').read_text())['status']=='passed'
+(evidence['folders']/'result.json').write_text(json.dumps({'status':'passed','source':source,'version':'5.1.1','public_feed_only':True,'published_sdk_packages':14,'runtime_bindings':len(bindings),'parity_categories':12,'commands':len(commands),'command_receipt':'completed-commands.json','catalog_telemetry_optout':True,'original_duplicate_catalog_attempt':'interrupted only after this complete continuation succeeds'},indent=2)+'\n')
+print('Public release qualification passed',len(bindings),'runtime bindings',flush=True)

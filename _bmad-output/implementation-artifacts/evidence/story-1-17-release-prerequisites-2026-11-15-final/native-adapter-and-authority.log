@@ -1,0 +1,217 @@
+["dotnet", "/tmp/hexalith-job.4JRm10oI/folders/tests/Hexalith.Folders.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Server.Tests.dll", "-noLogo", "-noColor", "-class", "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests", "-class", "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests", "-class", "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests", "-class", "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests", "-class", "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests", "-result-xml", "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-adapter-and-authority.xml"]
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/search - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileTreeResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/search - 200 - application/json;+charset=utf-8 161.2847ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/glob - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileTreeResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/glob - 200 - application/json;+charset=utf-8 13.3594ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/range-read - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileRangeReadResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/context/range-read - 200 - application/json;+charset=utf-8 17.7656ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=ContentUnavailableException.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=ContentUnavailableException.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=ContentUnavailableException.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection correlation-a task-a MetadataOnly
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 202 - application/json;+charset=utf-8 118.8224ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 202 - application/json;+charset=utf-8 7.5460ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 202 - application/json;+charset=utf-8 132.9741ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 202 - application/json;+charset=utf-8 6.5737ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed FileOperation Denied authorization_denied correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 404.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 404 - application/problem+json 117.2407ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed FileOperation Unavailable projection_unavailable correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 503 - application/problem+json 110.0527ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=ContentUnavailableException.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - multipart/form-data;+boundary="46828425-d69d-4cda-90d7-166f1dd8dfec" -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed FileOperation Rejected validation_error correlation_0123456789 task-a MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/workspaces/workspace-a/files/add - 400 - application/problem+json 138.6747ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=NullReferenceException.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+warn: Hexalith.Folders.Server.Content.AuthoritativeWorkspaceFileContextSource[0]
+      Authoritative workspace content dependency is unavailable. Phase=binding; FailureType=ContentUnavailableException.
+  Finished:    Hexalith.Folders.Server.Tests (ID = 'd919ff9b92cee23fbec188d12535f82a21f537c214bdaf8d7e9bdcca2827092b')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 64, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 4.213s

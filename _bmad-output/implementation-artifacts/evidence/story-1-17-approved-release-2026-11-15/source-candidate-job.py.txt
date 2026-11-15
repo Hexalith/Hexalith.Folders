@@ -1,0 +1,54 @@
+from pathlib import Path
+import subprocess,os,json,hashlib,zipfile,xml.etree.ElementTree as ET,shutil,time
+root=Path("/home/administrator/projects/hexalith/folders")
+ev=root/"_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15"
+scratch=Path(os.environ["TMPDIR"])
+work=scratch/"workspace/references"
+work.mkdir(parents=True)
+source="f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331"
+for name in ["Hexalith.EventStore","Hexalith.Builds"]:
+    target=work/name
+    subprocess.run(["git","clone","--shared","--no-hardlinks","--no-recurse-submodules","--quiet",str(root/"references"/name),str(target)],check=True)
+    subprocess.run(["git","remote","set-url","origin",f"https://github.com/Hexalith/{name}.git"],cwd=target,check=True)
+    expected=source if name=="Hexalith.EventStore" else "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee"
+    assert subprocess.check_output(["git","rev-parse","HEAD"],cwd=target,text=True).strip()==expected
+config=scratch/"NuGet.Config"
+config.write_text('<configuration><packageSources><clear/><add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></packageSources><auditSources><clear/><add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></auditSources></configuration>')
+os.environ.update({"NUGET_PACKAGES":str(scratch/"packages"),"NUGET_HTTP_CACHE_PATH":str(scratch/"http-cache"),"DOTNET_CLI_HOME":str(scratch/"dotnet-home"),"RestoreConfigFile":str(config),"NuGetAudit":"true","NuGetAuditMode":"all","NuGetAuditLevel":"low","CI":"true","ContinuousIntegrationBuild":"true","UseSharedCompilation":"false","DOTNET_CLI_USE_MSBUILD_SERVER":"0","MSBUILDDISABLENODEREUSE":"1","IncludeSymbols":"true","SymbolPackageFormat":"snupkg"})
+owner=work/"Hexalith.EventStore"
+shutil.copyfile(config,ev/"source-candidate-NuGet.Config")
+commands=[]
+def command(label,args):
+    log=ev/(label+".log")
+    if log.exists():raise FileExistsError(log)
+    started=time.time()
+    print("START",label,flush=True)
+    with log.open("w") as f:
+        f.write(json.dumps(args)+"\n");f.flush()
+        r=subprocess.run(args,cwd=owner,stdout=f,stderr=subprocess.STDOUT,check=False)
+    commands.append({"label":label,"argv":args,"cwd":str(owner),"exit_code":r.returncode,"elapsed_seconds":round(time.time()-started,2),"log":log.name,"log_sha256":hashlib.sha256(log.read_bytes()).hexdigest(),"source":source,"environment":{k:os.environ[k] for k in ["CI","ContinuousIntegrationBuild","NuGetAudit","NuGetAuditMode","NuGetAuditLevel","NUGET_PACKAGES","NUGET_HTTP_CACHE_PATH","DOTNET_CLI_HOME","RestoreConfigFile","IncludeSymbols","SymbolPackageFormat"]}})
+    (ev/"source-candidate-commands.json").write_text(json.dumps(commands,indent=2)+"\n")
+    print("END",label,r.returncode,flush=True)
+    if r.returncode:raise SystemExit(r.returncode)
+packages=scratch/"packages-output"
+command("qualified-source-pack",["python3","tools/pack-release-packages.py",str(packages),"5.1.1"])
+command("qualified-source-package-validation",["python3","tools/validate-release-packages.py",str(packages),"5.1.1"])
+durable=ev/"qualified-source-candidates"
+durable.mkdir()
+for a in packages.iterdir():shutil.copyfile(a,durable/a.name)
+rows=[]
+for a in sorted(durable.iterdir()):
+    with zipfile.ZipFile(a) as z:
+        md=ET.fromstring(z.read(next(n for n in z.namelist() if n.endswith(".nuspec")))).find("{*}metadata")
+        assert md.findtext("{*}version")=="5.1.1"
+        assert md.find("{*}repository").get("commit")==source
+        rows.append({"path":str(a.relative_to(root)),"id":md.findtext("{*}id"),"version":"5.1.1","source":source,"sha256":hashlib.sha256(a.read_bytes()).hexdigest(),"bytes":a.stat().st_size})
+assert len([x for x in rows if x["path"].endswith(".nupkg")])==14
+assert len([x for x in rows if x["path"].endswith(".snupkg")])==14
+(ev/"qualified-source-candidates.json").write_text(json.dumps(rows,indent=2)+"\n")
+api=scratch/"api-compatibility"
+try:
+    command("qualified-source-api",["python3","tools/verify-release-api-compatibility.py",str(packages),"5.1.1","--candidate-commit",source,"--package-catalog",str(work/"Hexalith.Builds/Props/Directory.Packages.props"),"--work-directory",str(api)])
+finally:
+    if api.exists():shutil.copytree(api,ev/"qualified-source-api",ignore=shutil.ignore_patterns("scratch"))
+print("Qualified new-source candidates ready",source,flush=True)

@@ -1,0 +1,3 @@
+[main f792bba6c] fix(release): qualify native scanner package prerequisites
+ 5 files changed, 32 insertions(+), 8 deletions(-)
+check-committed-files: staged files pass (5 checked).

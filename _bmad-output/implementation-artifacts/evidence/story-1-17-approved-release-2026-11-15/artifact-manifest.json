@@ -1,0 +1,1935 @@
+{
+  "directories": [
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15",
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15",
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15",
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15"
+  ],
+  "exclusions": [
+    "artifact-manifest.json",
+    "artifact-manifest.sha256"
+  ],
+  "file_count": 479,
+  "files": {
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/.gitattributes": {
+      "bytes": 20,
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/RELEASE.json": {
+      "bytes": 2713,
+      "sha256": "1a73c238c43e7c3bf1e6c67ec8f19fd6c1745b432c18c05588988024ae3ef23d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/RELEASE.md": {
+      "bytes": 6323,
+      "sha256": "cd313c8fc780381cd0a73334996655e125d47e220b689ea0c455d05d9a83e0b7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/approval.json": {
+      "bytes": 709,
+      "sha256": "1546b540852aaeac72773bf0a804d4a74e848417ddbc87e4d82832e1e558f5c7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/builds-published-catalog.patch": {
+      "bytes": 6279,
+      "sha256": "abd205f130a3bbe2e077961ebb689568ccc0b5407cfc579761084d63111c5e20"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/ci-successful-run.json": {
+      "bytes": 14351,
+      "sha256": "3f44d63907385eced46705fbe7762557aae78cec75e4e8fab1f9227718554d10"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/commitlint-successful-run.json": {
+      "bytes": 14364,
+      "sha256": "704926d0f131b358b4c6c2ff2d9d6883d4d68b2e95d8b357f2f93e9638f86423"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/container-verification.json": {
+      "bytes": 397,
+      "sha256": "84348b90ce8c5d7615f30dd4dbb273ea791b91c823cc4453b0327bce2c090404"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/duplicate-catalog-interruption.json": {
+      "bytes": 983,
+      "sha256": "9f78e530dabf79f746987bf13858fc26a9a21c54ff084c398e36af8410c005ab"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commit-message.txt": {
+      "bytes": 59,
+      "sha256": "85d97534f9c12e0da98a87ab36db9dd7605766b997301b565c49d1acfcfc98fa"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commit.log": {
+      "bytes": 181,
+      "sha256": "cb41814bd92b110197bc48e742908212d033233649cdebcea60903f324d69cf9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commitlint.json": {
+      "bytes": 525,
+      "sha256": "4192e32cc6fecc9d5925ddd94f30b0da079fb529724b11ba073a6f4c1bf2c4e7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commitlint.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-push.json": {
+      "bytes": 287,
+      "sha256": "4a5e39e5d7c5448903ef16473612ca1d90d240246a716de7d6ed94e5484deb4c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-push.log": {
+      "bytes": 307,
+      "sha256": "90f6ffb0051284e329491df5938a352811a00dea8f49d4f4ada9a632e94dde40"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-source-commit.json": {
+      "bytes": 1003,
+      "sha256": "521cf031c92be5da86a26a45b5cee4d345c77045f0f8d342479b92d4f288c648"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-nuget-payload-comparison.json": {
+      "bytes": 4636,
+      "sha256": "9ec50c0ed2731a6ffe9ab770f0a6037a36bfeeb169969f81d0b24a14ade3c14d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets.json": {
+      "bytes": 5528,
+      "sha256": "4c497e5c031c1c0e8716ef695bbb0fe0b20e6518b67e7493dd05aaf3376a813d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg": {
+      "bytes": 120537,
+      "sha256": "84e66a39264f8cfa14a8197512e04e73d6c39b6b60c16f41f6c777c890fd69b6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Admin.Cli.5.1.1.nupkg": {
+      "bytes": 1068678,
+      "sha256": "1ab9c160f8242119d43364e4456350923370b9dc445dac4877223334ab53242d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Admin.Server.5.1.1.nupkg": {
+      "bytes": 187540,
+      "sha256": "480ad5b9586eacd0a638cb9bbb30a89e6a17f2ab5de5b08640310487968f0dc2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Aspire.5.1.1.nupkg": {
+      "bytes": 136076,
+      "sha256": "fe9543d61e29853a16572424c9580453555e6e805168eec915aa324e1fafb2a6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Client.5.1.1.nupkg": {
+      "bytes": 563868,
+      "sha256": "91ca089dd77502696471c186eb83a55bdeb747b340ddb6195de12632e22aa370"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Contracts.5.1.1.nupkg": {
+      "bytes": 473633,
+      "sha256": "a18653327bc05f889abfacb41b1815b0c35e870d1c8ad0d8acfce29d2d5cd38c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.DomainService.5.1.1.nupkg": {
+      "bytes": 436278,
+      "sha256": "d36318ac657f4047cba85776dc0f0c740c3e4b46349d85b6cbeddcc9bbfafc5c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Gateway.5.1.1.nupkg": {
+      "bytes": 297806,
+      "sha256": "b93dcc8aa1f4b6f58930caec2ac8d180125ac862c3ab1929bfb8d229caaa6b21"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.RestApi.Generators.5.1.1.nupkg": {
+      "bytes": 41901,
+      "sha256": "579e4be4dbdf2339959de2c96f4f56a874a99835397b24862efa7cbda3d35d5f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Server.5.1.1.nupkg": {
+      "bytes": 1394595,
+      "sha256": "fff9f76fedb40ebbd32b29c56e09c955cd7ed5f4e0136a8e3552dd0d9e6086d7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg": {
+      "bytes": 250824,
+      "sha256": "6d1413fdcab2adbc1b318682a35f304a254155b341adda520d7d17ff719acffa"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.SignalR.5.1.1.nupkg": {
+      "bytes": 33351,
+      "sha256": "2724893f5dda0bad8e03f5f5d98a8e372139a8a3ad4c69515ce3c19e3bdaf857"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Testing.5.1.1.nupkg": {
+      "bytes": 121902,
+      "sha256": "cd25c1cb1da13b6ffe894739bd8b49d5ca5db4a6b0cc09f2a52564dc5b8caa5e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/github-package-assets/Hexalith.EventStore.Testing.Integration.5.1.1.nupkg": {
+      "bytes": 52655,
+      "sha256": "19d8111c9f3cc0456bde38670b785574fb0845b31f75fac8017db3349ad617d9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/independent-public-check.json": {
+      "bytes": 2644,
+      "sha256": "24b8d157284c8b09ef85764182e3362766eebec35e35698e66e08b9f3cff3d4e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/nuget-registration-observation.json": {
+      "bytes": 14965,
+      "sha256": "f577602730443a0f4a528be78535d414b86d29f6f78603e8bb73488bd43ebb36"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/nuget-visibility-observations.jsonl": {
+      "bytes": 1028,
+      "sha256": "a9971a860fba45fd7a85dfa8de506e265feb2aeb1e4e47f2ad784ffe749355e9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/preservation-check.json": {
+      "bytes": 144,
+      "sha256": "08ceb24e9bda72ab5aa7de6f2f4905185465547025d74c1b4dee1fbf50ab9757"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/production-review-before.json": {
+      "bytes": 1740,
+      "sha256": "41a728eed6ce1cc51aa3aa3225ea7c9f260f66e775a5e21f489153c541634aeb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/production-review-command.json": {
+      "bytes": 447,
+      "sha256": "576f7ccf74649cea9b2a28356a716d83339ab0fb1a9bcf79773977f0d2840f23"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/production-review-request.json": {
+      "bytes": 244,
+      "sha256": "2671e6bd0cf2e6c37772d21ea4ecebf50fb046b19c421ffb939199b2ece2f1bf"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/production-review-response.json": {
+      "bytes": 3838,
+      "sha256": "7da82f817f7df4164580be3e655d48e7ea356249a001f10465ebeec729072f2f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/projects-published-catalog.patch": {
+      "bytes": 1088,
+      "sha256": "e6d3b5cfc163eee5d6bffb2836aeb7922650a72362cc37dadf09fdc408590b8e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/public-consumer-continuation.py.txt": {
+      "bytes": 5560,
+      "sha256": "c82d744682007bf0d10452a2fc57abbf1f61b410960269dea633760efbd6f388"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/public-consumer-job.py.txt": {
+      "bytes": 11190,
+      "sha256": "3bd5b75406ca3626b8c7f8193bfda68338a66aafbde83ae2a5b364d18ab4fdff"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/published-api-linkage.json": {
+      "bytes": 4761,
+      "sha256": "986392ba4ec0641604a8e2f7aab8f4fb3021844b8833fec9ff014eb0f69af443"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/published-catalog-updates.json": {
+      "bytes": 733,
+      "sha256": "c8723232c9a16bdce2cac00cfffb0f07bbac6cccfa0fa141853ed436d23c8807"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/published-github-release.json": {
+      "bytes": 31073,
+      "sha256": "7c543d70bf736daf84539560dde37f5a1e7f10f55527dddfbefa543500854d41"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api.log": {
+      "bytes": 1254,
+      "sha256": "f286e5142b3711b59deab69586be71e8f04bf649c3439585391be721918ed59c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/Directory.Build.props": {
+      "bytes": 11,
+      "sha256": "360d9302d942de5ba435265063190c36eec8de5d42a0b2a14c92852a2052df93"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/Directory.Build.targets": {
+      "bytes": 11,
+      "sha256": "360d9302d942de5ba435265063190c36eec8de5d42a0b2a14c92852a2052df93"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/NuGet.Config": {
+      "bytes": 278,
+      "sha256": "2553810e7509510c961b14ef7e6848b2dd697ff0fb7c5b855b14442a21cde022"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/Context.csproj": {
+      "bytes": 609,
+      "sha256": "0170054735a38f2a4728a88dfdcb8fa45f63542e670dee4e30ae139e31091f62"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/apicompat.log": {
+      "bytes": 827,
+      "sha256": "1d63897363df930d93638ca99b01f3cdf93de16f899e53edf6b31382c29d1b71"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/project-evaluation.log": {
+      "bytes": 311102,
+      "sha256": "add29850966ecf32b9032f63009f59a42d8897cabdbee0ed42b5f71111034781"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/reference-inventory.json": {
+      "bytes": 188110,
+      "sha256": "8403d6da21e77cecb4e68c2059cdaf8d6dbfb59676de7bd499fb337055db5f2a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/references.log": {
+      "bytes": 353741,
+      "sha256": "be37c0e55060e43f9f3bf4497874fc740288ef135536855954d062a086df58d3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Abstractions/resolved-assets.json": {
+      "bytes": 45304,
+      "sha256": "80978f9b910aeeb94d961bb57c66cfc15381961bbd98f99db668149e6b969f96"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/Context.csproj": {
+      "bytes": 658,
+      "sha256": "2a2786cf3fa4d3a5542ff33f036f401741e72602625337babb5c2ad1088c1490"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/apicompat.log": {
+      "bytes": 791,
+      "sha256": "b2d66a574cf3ce28242db021e521fe8c33cf8ac568c04de86cbb12042e1342cb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/project-evaluation.log": {
+      "bytes": 306378,
+      "sha256": "5d95300c584862dab8c690cd2d5e9eb3acb47134a02160f0ec449e91f2e449ac"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/reference-inventory.json": {
+      "bytes": 188664,
+      "sha256": "a716696c8effe13b1a522b265c68d86cce7144e283120a87c2220559c7003ca6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/references.log": {
+      "bytes": 355712,
+      "sha256": "d3abaca27960361419e46fd4a31490edcc4ba1b183a7fc43059d521b91677d07"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Cli/resolved-assets.json": {
+      "bytes": 49755,
+      "sha256": "fff5b52e75cf431513e435734323b267dd7c545e94384e3d2fd21ca731625395"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/Context.csproj": {
+      "bytes": 660,
+      "sha256": "fca9f92f65a0051afdf22452e510fb6b5c55dee9113774b4b180ee424343b64e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/apicompat.log": {
+      "bytes": 803,
+      "sha256": "4136ae2383db9f095aa03935faa4a56e5fdc142f25e6b832e7ea25f0d67b5a8d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/project-evaluation.log": {
+      "bytes": 314641,
+      "sha256": "38b2a3bc25179e40d86ec29170c982c3541886cece13c8c10b17286c2c132e98"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/reference-inventory.json": {
+      "bytes": 197043,
+      "sha256": "007625a769cb7b3c418f596ea9cca23674de24f141e6bad40f4ab8e8f888947a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/references.log": {
+      "bytes": 656297,
+      "sha256": "0fedc3f74a2e8208e63bfa78b7bee021dac3d9eca17f5f491fbb27ecb76bf524"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Admin.Server/resolved-assets.json": {
+      "bytes": 78292,
+      "sha256": "1f7b05f8e61d532fd53df4c7def2dfa8c978d46fa0f0643ffcf3d3e4a3e65cd8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/Context.csproj": {
+      "bytes": 597,
+      "sha256": "87ddcb90243da32c3362bc18306d6bd2c40caa4b5b903036d335bfe7b6075728"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/apicompat.log": {
+      "bytes": 779,
+      "sha256": "4f382b6bf05284d412da34d76341b2e2092e96e3c9c29c0ba4ae322e8d22b740"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/project-evaluation.log": {
+      "bytes": 311156,
+      "sha256": "a1fc3a4f864e13d9055e68a14b6b77997b04105a95db745ce874f388abad608a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/reference-inventory.json": {
+      "bytes": 233762,
+      "sha256": "19b202f878bd37e4b3a97149e44c462ee19ef9ff0c17f92eda931e51b0f8539f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/references.log": {
+      "bytes": 783592,
+      "sha256": "1a3dcb6bbb885cbe11d85bea1b9cbbcb15bc706f606c95839faa6670029fc451"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Aspire/resolved-assets.json": {
+      "bytes": 253753,
+      "sha256": "3913b5621f89beb9b96889e6379aefce117436472dcc32d696ed6589fb79ef40"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/Context.csproj": {
+      "bytes": 597,
+      "sha256": "8fa520ac0878108d19493e138259aae154e69d4162e2f36cbd0703daecf251c5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/apicompat.log": {
+      "bytes": 779,
+      "sha256": "8402eea582789138d066ffe145e85ed36969fc25571e5b2ba4465c5b8d05f754"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/project-evaluation.log": {
+      "bytes": 307437,
+      "sha256": "610125cfffbd1206ae907d584055d6ab044dc63ddc4bd826e947e31d1ac1ea82"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/reference-inventory.json": {
+      "bytes": 193204,
+      "sha256": "d94feec66be8d132f90629e29656bafe7888d6aa65d9c6539b2ae087eea378e6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/references.log": {
+      "bytes": 389212,
+      "sha256": "46b2e019d98f462352e2636e55318639fb102a61f649b48627ce6faccd28a57a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Client/resolved-assets.json": {
+      "bytes": 77733,
+      "sha256": "486abca0a91fe803dca63f22a9d0daf00193fa876ebcbe258f106144b8a08632"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/Context.csproj": {
+      "bytes": 600,
+      "sha256": "7374db787e2ed884c5fc77fa83adb864d7d425035d2ade4c1d52afa710b14301"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/apicompat.log": {
+      "bytes": 791,
+      "sha256": "ca7f22945c883f3054835c3aeb6c8f43bf918a9d632095240e42ecd4375e64ae"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/project-evaluation.log": {
+      "bytes": 305122,
+      "sha256": "416aab2af7e6b7efc3e9974152bafdb90fd064fce03b211a2022cfba0c6e3463"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/reference-inventory.json": {
+      "bytes": 187527,
+      "sha256": "3b32a72b38715cf732fb5d5867a3cc66875d8256b2386a6b7c7d24c8ee590470"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/references.log": {
+      "bytes": 351484,
+      "sha256": "48f7368bf37affbe782be05f4b04de9fb8514d093518f8e5d7d334fe31c195c1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Contracts/resolved-assets.json": {
+      "bytes": 43791,
+      "sha256": "124c1a884fc0c683384524fdd6e7afd164aa7fcd6b7440dc253967d45207d033"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/Context.csproj": {
+      "bytes": 661,
+      "sha256": "b4638331da12336ab5f4cf0e753977f9bbef9547712e34cbf44f723113b34874"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/apicompat.log": {
+      "bytes": 807,
+      "sha256": "76f9fec665cc737971b4cba136496e62a3e5ed0f1f70e383452664e1cc44af88"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/project-evaluation.log": {
+      "bytes": 312200,
+      "sha256": "602d0c0e6ed391a28cb78a82a15e578b36ad4ceadcc74eca54dc45335c6151a3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/reference-inventory.json": {
+      "bytes": 216760,
+      "sha256": "c70977f22d235044be9974e5d28f8290b6c6e524717e55673bf2a164fb68d673"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/references.log": {
+      "bytes": 723173,
+      "sha256": "97dce47a0e9f174064134f1e8b74d1ee59fb9d1599936dc18c61c16bb337c7ed"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.DomainService/resolved-assets.json": {
+      "bytes": 138770,
+      "sha256": "2198227660c306ffb95cd4e793c0c9e328333dc494c1b6c9767355a452f5ae77"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/Context.csproj": {
+      "bytes": 655,
+      "sha256": "142b51a72280caf5fe97683a8a0be9a6d4848cfed1342b2c440c8d0f47676046"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/apicompat.log": {
+      "bytes": 783,
+      "sha256": "a114155f62f00b9538c8dd47e9da5fe10633f68f64b635de31b3398b161c3e2d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/project-evaluation.log": {
+      "bytes": 315843,
+      "sha256": "850a770c74412b13bffd43938b1c1878b284ddc09b000d8b081ff7619ebbc6ca"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/reference-inventory.json": {
+      "bytes": 226581,
+      "sha256": "9233d17b6d5c9f465869956073f6c6f92cbebe65b1909e9d0b61f03d47df1eec"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/references.log": {
+      "bytes": 756243,
+      "sha256": "a908fcb79d83c22531590bb367b9a5df93d0be685d5fd0590e0a6187e53e8968"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Gateway/resolved-assets.json": {
+      "bytes": 164167,
+      "sha256": "26839e0c632481cb9d62eccbc60f4cd094255bb39b786e32379b9a53b467a4db"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/Context.csproj": {
+      "bytes": 670,
+      "sha256": "f085b9bb3ccd064136861fae80fc75df4f286c0b20f3ba7a2761df9b4680d99c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/apicompat.log": {
+      "bytes": 827,
+      "sha256": "332a7ed2c7ef4b6eb8107591239f61ee6b6379e19a3d913d4be600071abf1df4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/project-evaluation.log": {
+      "bytes": 312101,
+      "sha256": "92259c9bc51d82670ed94b096d39a5ef95b3fe0665d678b27bbc7f3a1bf4ae66"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/reference-inventory.json": {
+      "bytes": 74846,
+      "sha256": "0ec930d560cfecb281773f578ead3b06dd6c2fe64937b76e3e7ef22f0b94590c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/references.log": {
+      "bytes": 234942,
+      "sha256": "70748f505efc48b5bd9ec332d80ff8133b4fea16a2ae2c94f1cfbd511df0c110"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.RestApi.Generators/resolved-assets.json": {
+      "bytes": 58366,
+      "sha256": "59d993a914c66d19c613dcf7e717e12718606126ce982fec214773f463c8113f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/Context.csproj": {
+      "bytes": 597,
+      "sha256": "d439bbb8864ec67d8f2ac6654ebd1873b9e1cd148daa17036a54d4b59c7e73cc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/apicompat.log": {
+      "bytes": 779,
+      "sha256": "e3745d6d12e20b6907d07623a0b1da3b1b88119e701017c4c21b39b1c691d064"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/project-evaluation.log": {
+      "bytes": 310647,
+      "sha256": "2cf732c539d9e71de7e19ce3fbecc09c2b79348affed4e344d5418c2d5b1e85a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/reference-inventory.json": {
+      "bytes": 218347,
+      "sha256": "072f935408f3b8f02c8a4a1d2db54045ccc330a0269f28ffd33f19da620710af"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/references.log": {
+      "bytes": 729095,
+      "sha256": "200fd216aa9c80af51c2a3f6d287c8896f54d3ff81279178184c589cef41fc28"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Server/resolved-assets.json": {
+      "bytes": 162545,
+      "sha256": "474056a2d3b290de2a7f40f549c53740c486e7350f1ac6334b77b2cf3e70563b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/Context.csproj": {
+      "bytes": 663,
+      "sha256": "8518604b203d05e1be62f0476ef1c8c6cf7ad56ba5bc5d34e50c389f02227475"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/apicompat.log": {
+      "bytes": 815,
+      "sha256": "00e1a4b6b78adfb86a93cdc097da6978b839397771d5eb8b6d2c757b9696bce4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/project-evaluation.log": {
+      "bytes": 323205,
+      "sha256": "dcea18818bd4dbdaa7202ebadf33be63ba1570efcb595164c618c3b404c47323"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/reference-inventory.json": {
+      "bytes": 209184,
+      "sha256": "17bbe606302ab18a85a0b9190add8429bd1287bde7aaea8af0df7e7136dae6c6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/references.log": {
+      "bytes": 695477,
+      "sha256": "4cc54528af6b215a0f1620c0d5923f62f8849890d3f01f4b980d15cbb153dfe8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.ServiceDefaults/resolved-assets.json": {
+      "bytes": 115936,
+      "sha256": "e7e2424793e0d7e0fd19321cc7d35e1666ab9347f7e4bc8326ba17e28210d723"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/Context.csproj": {
+      "bytes": 598,
+      "sha256": "99a2e98179059efcd999d013f660816d9a22063d7ee9de56df65083aaded9077"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/apicompat.log": {
+      "bytes": 783,
+      "sha256": "cdf2d9bc30ee550d2881efee35d59306c8c906ab5fc51bb0fe17d93d2833e932"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/project-evaluation.log": {
+      "bytes": 305070,
+      "sha256": "4db8ad56b80e55ed2e1b02d8ca655c0e7bf0d3572af29d3d8f00e97888139bfe"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/reference-inventory.json": {
+      "bytes": 190386,
+      "sha256": "fba09bedc6c1ccccdfce9116142eeef89d052fd7bf6c75ebdef48314fa771769"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/references.log": {
+      "bytes": 376298,
+      "sha256": "2208b47e6ccf6fccd66374e31c5757b0eeec9d5d3f278a6d4d8f56932ca52d6e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.SignalR/resolved-assets.json": {
+      "bytes": 61697,
+      "sha256": "61ac2f7a3e017d796525881f80d512243ff52ff870e6b9531b21079e8c063b68"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/Context.csproj": {
+      "bytes": 610,
+      "sha256": "4086707da52ab7145b21b3a61f1e1dc920df429f7303b25f7ad14e0553976d01"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/apicompat.log": {
+      "bytes": 831,
+      "sha256": "83feef3156d7d4f16b702a295d44fef36c52a91ade9a0670591aa472c8c70135"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/project-evaluation.log": {
+      "bytes": 318419,
+      "sha256": "fc7d14a563605b6b1b29f4803ce0c23b05055fd942a89ff01e253c8b5994b1d7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/reference-inventory.json": {
+      "bytes": 228023,
+      "sha256": "a4e12786dc9b3c82a3ab711dc65ee4504090ac6cde8d34fbd3f3afb0279c78ef"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/references.log": {
+      "bytes": 764516,
+      "sha256": "7821711d42a6ca62574dc37d20817d686c458ec4ffbeb585a7da19f8fab3ffdd"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing.Integration/resolved-assets.json": {
+      "bytes": 191337,
+      "sha256": "32735b49f5482840cf4e22e5a430de795f9f7ffb04e4d6e6edf47922d1b3af5a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/Context.csproj": {
+      "bytes": 598,
+      "sha256": "451ad28f8207583b8ffe62c5d649479b0a4d792a9f281d2ca3eb82430509177c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/apicompat.log": {
+      "bytes": 783,
+      "sha256": "8989676491ccaae83e3dc97462275e98a106a8455936429ca4e3699ad749d258"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/project-evaluation.log": {
+      "bytes": 310272,
+      "sha256": "c0be825e02a0a5d0a90b831927765938a3294bcac84512f8b8e0ed0a3cc706ec"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/reference-inventory.json": {
+      "bytes": 224082,
+      "sha256": "0040f3c487ea6209aa4d90d94335a3de8ce07bd0a3eefc23a867bf4e47edecd5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/references.log": {
+      "bytes": 750199,
+      "sha256": "64c05c216efa5dd65d71b7654347553c5d1eece47c396a467411b6b06c2d4b73"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/contexts/Hexalith.EventStore.Testing/resolved-assets.json": {
+      "bytes": 180754,
+      "sha256": "3e21e57dea66e23211cd011de41a6e103b8e217324b8172f5e80328c44a3aeba"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/baseline/Control.cs": {
+      "bytes": 109,
+      "sha256": "04d48becfa208d0a0e3ea923347efef0effdaf0676c6775e0c91b5f29a10a84b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/baseline/build.log": {
+      "bytes": 165,
+      "sha256": "fb768c5202aa8d3d5b4311a06a58b2b2f78001eeb82293a89bd8f1da241d8466"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/baseline/compile.rsp": {
+      "bytes": 45555,
+      "sha256": "70dd1ee716ed7263668374018d5d751cafe56346deeb6c96e1772c62fc2dc7ab"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/baseline/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/baseline/sdk.log": {
+      "bytes": 327,
+      "sha256": "405b778fdb17ea00637e4125aa20489aeb9ad5efde8e912954754d7ce30eb187"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible.log": {
+      "bytes": 681,
+      "sha256": "875e58922dcac10ee2ccb31c6b95350826a89e7316e2b6dbe7e4fb861f40099e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible/Control.cs": {
+      "bytes": 109,
+      "sha256": "04d48becfa208d0a0e3ea923347efef0effdaf0676c6775e0c91b5f29a10a84b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible/build.log": {
+      "bytes": 167,
+      "sha256": "fd2765a8aa17e4f70cdee55cf948b23a7f7e7325f4ca3eb6ec817ae60f89c0a9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible/compile.rsp": {
+      "bytes": 45684,
+      "sha256": "24e5873412fe69c7be136803534cd7944e5f46fc34668bb2e6fbc1370cef1e39"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/compatible/sdk.log": {
+      "bytes": 327,
+      "sha256": "405b778fdb17ea00637e4125aa20489aeb9ad5efde8e912954754d7ce30eb187"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/reference-inventory.json": {
+      "bytes": 186648,
+      "sha256": "2c2595906be6eaa865e91bd13e4bfd7eb5975141299a6d5d302966e6c05f594e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed.log": {
+      "bytes": 1227,
+      "sha256": "95221ad96ac4c9e03c4824ef4fa44ca6059cb1c612c1ad90e83a7b45565d9209"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed/Control.cs": {
+      "bytes": 74,
+      "sha256": "0afdfd9a9c4ee64ebdfb166dad88e715488f1298ed31e2a7a5c333e42701f478"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed/build.log": {
+      "bytes": 164,
+      "sha256": "676f4bd46c356dbaf238b2a173bef962ae77cd4c2b3c1d44cc78dd1e7a66f900"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed/compile.rsp": {
+      "bytes": 45678,
+      "sha256": "81d9b9e06f906fd4049470caf98022e6eec4dc59bb2d94c7bcd11a9ccf95dd7d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/removed/sdk.log": {
+      "bytes": 327,
+      "sha256": "405b778fdb17ea00637e4125aa20489aeb9ad5efde8e912954754d7ce30eb187"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed.log": {
+      "bytes": 1091,
+      "sha256": "ac1364e4d718292ee104111ac686dabf0155e99a5901a750b29cce7506815990"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed/Control.cs": {
+      "bytes": 111,
+      "sha256": "b5089df88e0a673a2f56ae2233179de1161c14277d41d2630e4e0ad00e2fc619"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed/build.log": {
+      "bytes": 164,
+      "sha256": "562648c4f3d7e19261f490f915e1c7b670de1c5cadd1a63ae36fd3d06c48af20"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed/compile.rsp": {
+      "bytes": 45678,
+      "sha256": "bb75a58a296588643ec0daa3300dfae4934b865c6e19d777de20dc9703ade7c0"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/controls/renamed/sdk.log": {
+      "bytes": 327,
+      "sha256": "405b778fdb17ea00637e4125aa20489aeb9ad5efde8e912954754d7ce30eb187"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/global.json": {
+      "bytes": 148,
+      "sha256": "4caed62d38fabb1d7e0bff4c5f8c84085173eef22c8ef5ed5fdfa740a1e9c87f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/receipt.json": {
+      "bytes": 3004753,
+      "sha256": "2d7bffe2a620ba5979a2d16d07a82312e60677015b840146aeed803d542e5027"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/selected-sdk.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Admin.Abstractions.4.2.0.log": {
+      "bytes": 600,
+      "sha256": "62bdc3602e752fc15f26f194ca528e2a633c1bfe278ce6c57cd5644e0c0d8574"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Admin.Cli.4.2.0.log": {
+      "bytes": 582,
+      "sha256": "4dca544882512da5023a83ed4fc324118c79b4a0f27e0b2bcfc04abe56df3037"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Admin.Server.4.2.0.log": {
+      "bytes": 588,
+      "sha256": "840553f7715c95d9d546863e88bd3344af89590603d1dc6b6af722a477c998b5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Aspire.4.2.0.log": {
+      "bytes": 576,
+      "sha256": "822b79d9e417b2af24bba1fd9be6bb71b50c7c338f472b9e16bb00f56a03e401"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Client.4.2.0.log": {
+      "bytes": 576,
+      "sha256": "1d1e2860b53dbc39ffd98d6be54d3ecd03f599b3149be3808334b84c5a8eac3e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Contracts.4.2.0.log": {
+      "bytes": 582,
+      "sha256": "a5cfed67638acf08992c123043682c21dc481e33268ba7ca2bb3221dcd0b3566"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.DomainService.4.2.0.log": {
+      "bytes": 590,
+      "sha256": "c1e9f2b434523b9c768e0a8c744f20f46b9ed8774a6aa1f392cb5cfe9e82aada"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Gateway.4.2.0.log": {
+      "bytes": 578,
+      "sha256": "61c54514c023270f344d76d719a3a2af47dc7ccb96d4087f8d637a1e291487ba"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.RestApi.Generators.4.2.0.log": {
+      "bytes": 600,
+      "sha256": "b9a34016f890a5d5ec71697760429e405949a66cfacee9a7b07950d90249f4ac"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Server.4.2.0.log": {
+      "bytes": 576,
+      "sha256": "dbd4905e0075d74a566ae960e10526f4c23f28ee4af58e66ecce8028f285d3f0"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.ServiceDefaults.4.2.0.log": {
+      "bytes": 594,
+      "sha256": "695a1065bb106cd825c07009eaf0482db50670faf1e57934c1e644a8bef63482"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.SignalR.4.2.0.log": {
+      "bytes": 578,
+      "sha256": "1ad4a9ee31f68cf65c6db9b39891fef0a4bbee1b8a5dc7b8a2878f25e558ea79"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Testing.4.2.0.log": {
+      "bytes": 578,
+      "sha256": "69c497e34c7e8c3c6d0dc5db313a6e1af54e1eeab99636990fbe13e1ebbca04d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Hexalith.EventStore.Testing.Integration.4.2.0.log": {
+      "bytes": 602,
+      "sha256": "2b219ddbaedf53a48bd5ce027d26ae210ad2ee7eaab9058f973c22f6350d46b4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Microsoft.AspNetCore.App.Ref.10.0.15.log": {
+      "bytes": 833,
+      "sha256": "0445cf2704f89f41c0119f226b26a7983280e656cde2de61b28c8965e0fef9a4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Microsoft.AspNetCore.App.Ref.11.0.0.log": {
+      "bytes": 831,
+      "sha256": "5014efa8331fa0d8654c9f3d9fa3dae15c81bfb2d3036f2ae93dfd5c7253f245"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Microsoft.DotNet.ApiCompat.Tool.11.0.100.log": {
+      "bytes": 805,
+      "sha256": "03b6ca87d11e1d772d4b2d38f87aa285cd3cfd599505554becb9df12a260343d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Microsoft.NETCore.App.Ref.10.0.15.log": {
+      "bytes": 827,
+      "sha256": "4e0fb9ccdbd8d8deef6fad22b25b52a31b323c1113769a3cbae9b5f96c824883"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/signatures/Microsoft.NETCore.App.Ref.11.0.0.log": {
+      "bytes": 825,
+      "sha256": "c169e86000e9591804cdb052726127ca4da579295bd4a502edf7a9d3c79b3103"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-api/tool-version.log": {
+      "bytes": 229,
+      "sha256": "05e62b152a8cb4b369825a670010ef50ebbbc5a92c9f2169321d1cacb5fd75aa"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates.json": {
+      "bytes": 11508,
+      "sha256": "0521b6d142a0f59eeb7aed4cd8d3325535eb1b87dc2704d381cb2b4540c72a31"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg": {
+      "bytes": 120524,
+      "sha256": "5b276292ad016c25313cbdbd4846576807d1b322ac4e3409f8767706d84382bb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Abstractions.5.1.1.snupkg": {
+      "bytes": 28736,
+      "sha256": "643a8b0318d9a89446ee8e6da0727e7f5f32e4f43f574e797ce6ccf62ba658bc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Cli.5.1.1.nupkg": {
+      "bytes": 1066989,
+      "sha256": "af573eb80d7062de79591a6671d7b91cd90e6fbc8a17aa1ed88433164518b2f5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Cli.5.1.1.snupkg": {
+      "bytes": 167378,
+      "sha256": "ea6fa4c0e7f8b57af0c63be56a2d832d9f57984c43d167e746a782b2d80a38b6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Server.5.1.1.nupkg": {
+      "bytes": 187528,
+      "sha256": "100b8b61f50bdfe600f54fbbd18b752c65942d660780d456dc661548dddef45f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Server.5.1.1.snupkg": {
+      "bytes": 49194,
+      "sha256": "a1b4113c45a38d6dc09ca34e0864dd6c3a2205f4f8f8c2cdd320817ad640c8c4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Aspire.5.1.1.nupkg": {
+      "bytes": 136052,
+      "sha256": "41908504940ef458d92826a1793e2c210313d842aeb983442dd25b06dd73b06a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Aspire.5.1.1.snupkg": {
+      "bytes": 42566,
+      "sha256": "888e9ecb00ea4cb6dfe09afe107e6d8feeb37dad38ee6cb879920f87eb453c89"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Client.5.1.1.nupkg": {
+      "bytes": 563872,
+      "sha256": "ae8e77367f3dbf0b0fc7f39738b06a6fe506a6f81cc5899c385821daa4a6a0ee"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Client.5.1.1.snupkg": {
+      "bytes": 136275,
+      "sha256": "294ed740f44b0e131748e55550ac25e2336bd02c7ad10844553495dfe4e35594"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Contracts.5.1.1.nupkg": {
+      "bytes": 473619,
+      "sha256": "01ab905b9678d64cb69b2b7a00e417b0972141deb275cd127ae30672045e664e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Contracts.5.1.1.snupkg": {
+      "bytes": 110281,
+      "sha256": "fee397854f8f6b4977ae516d0fc48baa015926437e6990c303e15d29bee8d8d7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.DomainService.5.1.1.nupkg": {
+      "bytes": 436266,
+      "sha256": "105ae8d89b0b7e4d7533caacfa573e08ef0414574bb55d8dea544dfe7285bd93"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.DomainService.5.1.1.snupkg": {
+      "bytes": 122745,
+      "sha256": "bbe50c2cf2332b01cf4254b006ddf8d4d7247f2c2c27f3546bf26cd0e25f3813"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Gateway.5.1.1.nupkg": {
+      "bytes": 297793,
+      "sha256": "df6156f4cb5347bf6d8dc3befeccced3d89a785b4a2bb3a57a42e4634e9bb57f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Gateway.5.1.1.snupkg": {
+      "bytes": 110395,
+      "sha256": "27fa023d34ea7223aaf5193f7dd0f4fe4a2c86e390295af9ea4a16973f28a516"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.RestApi.Generators.5.1.1.nupkg": {
+      "bytes": 57051,
+      "sha256": "edb4b428fc6bf7b978b3c57a838fe5201d761ac847e6596e277bcb349c078af9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.RestApi.Generators.5.1.1.snupkg": {
+      "bytes": 17080,
+      "sha256": "58400299b91766ded8d0aa2171f7b3031b19ddcb4131cf9ea9a258d413f462b1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Server.5.1.1.nupkg": {
+      "bytes": 1394575,
+      "sha256": "1b5dd2a21c7155bcea2750188f4c4ead8f0c949a122f88b13d1b63d6a0523d4c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Server.5.1.1.snupkg": {
+      "bytes": 465240,
+      "sha256": "a6457ed8a6492edfd89744578c26d09ad84106225b991e4c7a2f8254bdb1e222"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg": {
+      "bytes": 250799,
+      "sha256": "c6c4b4e421f3890de30a1fe5a499fd1907838a70f5fc6c20c818622d2e0e49cc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.ServiceDefaults.5.1.1.snupkg": {
+      "bytes": 74474,
+      "sha256": "c4c22df13e08c0950f9d5f01ffa7bd91b930b65e0ac393ff57d349ae6ecb7038"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.SignalR.5.1.1.nupkg": {
+      "bytes": 33333,
+      "sha256": "79ea50db67d45c836fdd7b4595ff23499ce08d305e52027f512cf54093a1aecb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.SignalR.5.1.1.snupkg": {
+      "bytes": 17357,
+      "sha256": "e75063386f74d8982b6b4b533da927534553fdaad6cf15c7a03acd2799623ba3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.5.1.1.nupkg": {
+      "bytes": 121891,
+      "sha256": "c9714dd5042f3e42bcc6de051475fa9f09078dab9acf40bf029239adba7cb928"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.5.1.1.snupkg": {
+      "bytes": 46235,
+      "sha256": "45febe99d7652201d61b1c2c26779c3f7e7b25d36065478d5745ea61c875d9b5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.Integration.5.1.1.nupkg": {
+      "bytes": 52640,
+      "sha256": "8d4523eb362a32072939c6253f5ffa51f11ead48dbf822e23a3f8b9a353200f1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.Integration.5.1.1.snupkg": {
+      "bytes": 24623,
+      "sha256": "cfb460dbfbf3ae4d2d4ec996981c358cdb822aeda3754a0f1d03e3ee1d45c1fe"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-pack.log": {
+      "bytes": 21425,
+      "sha256": "b364bcbdd32e3f74edf6804b4c72cebf72f8c12ef4cf6b51b776919b4bf6bd1c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-package-validation.log": {
+      "bytes": 199,
+      "sha256": "3a5820f4f6fbaa154af819ca8611445c026661d4bfafc2b0543c36e6108e3de3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-dispatch.json": {
+      "bytes": 335,
+      "sha256": "c874d120122475ec2bb5d1db3e086704c6e2579cd24e22cbd0ed3f2efb5e426d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-dispatch.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence.zip": {
+      "bytes": 1757618,
+      "sha256": "245e8dd07f48476f88f2c632f46b337d63268f6d07a200ea220f6b2f302c7f77"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/child-linux-amd64.config.raw": {
+      "bytes": 4147,
+      "sha256": "456613eda1dbb995994c4be9914ac3be1d07912cff73bad1af0cdcbd7e3b851d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/child-linux-amd64.manifest.raw": {
+      "bytes": 1399,
+      "sha256": "cf936585b5fb97b4d33347f81f3c6f35206128927326de2a56e388e323ec8507"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/child-linux-arm64.config.raw": {
+      "bytes": 4148,
+      "sha256": "2094592b303d60d339b7a0cfdc67e0f05d365264cdef54674785fa43c9d0e967"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/child-linux-arm64.manifest.raw": {
+      "bytes": 1399,
+      "sha256": "82b7e04d97423ecdb5e06488858537917f87cd8f85b4834830f7f2097f0c0bec"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/index.raw": {
+      "bytes": 493,
+      "sha256": "0e6ccefe997f70fb374c23430cd58c24765e08dd2cbd53177e92a4a6a63f2de6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/oci-validation.json": {
+      "bytes": 2989,
+      "sha256": "a401d51c9bfbb4b76654a903054902825406c6ca430bdbce9b9a2255009232e5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/smoke-linux-amd64.log": {
+      "bytes": 221,
+      "sha256": "18992cbb584d6374f01a8cd45798f35a9ba6bd4902169f4441d9c46ceafde497"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/smoke-linux-arm64.log": {
+      "bytes": 1262,
+      "sha256": "f0c09327355038e197a567551d23f8d898f2117278907bc8e03dbdfdfcf53fe1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/smoke-preflight.log": {
+      "bytes": 161,
+      "sha256": "22bb19cb2cc2d7e215f6d53a9852fe39466a6589159381ccc7d6395b3515b86a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/smoke-results.json": {
+      "bytes": 558,
+      "sha256": "1c58bc46ee3f2545db47cf1115f61dd2483ed6e1292d5208904ac71755895c2e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/eventstore/smoke-sha256.txt": {
+      "bytes": 347,
+      "sha256": "856a56d2f05fe562ad961b9e9210177734ca90b58fd88286016b9dff7d7f64f3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/preflight/publication-identity.json": {
+      "bytes": 3148,
+      "sha256": "e85015535e311a2f4fc723f0d9f1f4a26ec5e4e8df5e136e585177a9b0f50701"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/preflight/publication-preflight.container.json": {
+      "bytes": 3813,
+      "sha256": "3aa2fd22028228e8f06d6a091ef303d24b853ba5e805ea48ee9236ffc92516ca"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/preflight/publication-preflight.publish.json": {
+      "bytes": 9165,
+      "sha256": "99b0df3996248484be4925e0efb0326b4e900f83c2acdb238852e81a2afb5bbc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/5.1.1/preflight/publication-preflight.verify.json": {
+      "bytes": 8850,
+      "sha256": "2ba8b322de1c417654aca76b6186599e263a3d57449dfa5e85deabeedc34e629"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/Directory.Build.props": {
+      "bytes": 11,
+      "sha256": "360d9302d942de5ba435265063190c36eec8de5d42a0b2a14c92852a2052df93"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/Directory.Build.targets": {
+      "bytes": 11,
+      "sha256": "360d9302d942de5ba435265063190c36eec8de5d42a0b2a14c92852a2052df93"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/NuGet.Config": {
+      "bytes": 349,
+      "sha256": "e42d53fc431232dece3e20e8aff840d729f5eedcf00cf7f2dcdc3506a52b9f66"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/Context.csproj": {
+      "bytes": 751,
+      "sha256": "9f18a5f58b67e3b3d216fe24020cced0e27961fcea16a0def02b5aeeafa297de"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/apicompat.log": {
+      "bytes": 1182,
+      "sha256": "d8b524266d2605e1c5b9ff40573ba569d41bd251875143f59bdff7d7663a7455"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/project-evaluation.log": {
+      "bytes": 317727,
+      "sha256": "51365582f5376d1e0bebf6d3ca9747b9a32b8eb25f133beca547a8ae8ef91302"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/reference-inventory.json": {
+      "bytes": 232343,
+      "sha256": "aee6bf087cbe28a91cda1412e9ab604b825462803a6843c2d6a0ae0ca0a40b4f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/references.log": {
+      "bytes": 343116,
+      "sha256": "b9e8d096d26dd540c5e9927ed1db12689d2949439769bd95bb2bf62a14514175"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Abstractions/resolved-assets.json": {
+      "bytes": 45791,
+      "sha256": "bc6198663ce84285ab8fccceb7f7b39c39453bea00c4eb19c81f6e83b5d57df2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/Context.csproj": {
+      "bytes": 800,
+      "sha256": "ca721fbedd3cfb356a553e8f499f524a7c32ca3f9ca7f985f13b2535e277e675"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/apicompat.log": {
+      "bytes": 1146,
+      "sha256": "2cbbf0bcce8b5626ed4856f2b5a143360c0e6f55d43281c3b303326af2172c66"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/project-evaluation.log": {
+      "bytes": 312963,
+      "sha256": "50a863f44c014f46b6476c6da1598b635944e788ac8db8e8d2d78f92391a362d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/reference-inventory.json": {
+      "bytes": 233039,
+      "sha256": "1d6dcfa0cf6ccb8e148e6edb57c859520057468728557b07f53f3d9b1f85f9cf"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/references.log": {
+      "bytes": 345493,
+      "sha256": "1c1f466506668bcc3282b8409cc782c860bcdfc9070a43e64b38d66f59a25ecc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Cli/resolved-assets.json": {
+      "bytes": 50242,
+      "sha256": "3af00bd9cd0d4868d091a7a12369dc0f2d35dd9337b11ffb7b2079746130c455"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/Context.csproj": {
+      "bytes": 802,
+      "sha256": "77717f16e6cc853c893c715c5c7219ba8c812672a0bca7771f7d9d9667062613"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/apicompat.log": {
+      "bytes": 1158,
+      "sha256": "36b435fbbd58f55de12f990c546d71826959f602ac1f084cbd20d174c43af7e1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/project-evaluation.log": {
+      "bytes": 320986,
+      "sha256": "c320ae26f2849f7afb2e53190b391e72d3aad4eb1055be9d68f7f30cd3c3ff35"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/reference-inventory.json": {
+      "bytes": 243548,
+      "sha256": "0f066a983881118392c9caa430c593dcbd832d6b99234f55a12699cbe3acfe8b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/references.log": {
+      "bytes": 642928,
+      "sha256": "c00287ef3ef7acc492b5d9e0c07cc57ff4c4d5c8517685dec84f48b9f3aaca8a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Admin.Server/resolved-assets.json": {
+      "bytes": 78779,
+      "sha256": "669fa2e5b76f8c9e8e7f300bd569e054049b63de22029dbd5202abb9dbfe7c1e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/Context.csproj": {
+      "bytes": 739,
+      "sha256": "a1a4e4252f32e71eb4738f91911843e6d783807c0c3551cabd79d6d4f4e5b329"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/apicompat.log": {
+      "bytes": 1134,
+      "sha256": "5b507e6b8988e4dbed6b4405493daf24af4e7551a3dd8c0a15953f2cc0746a84"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/project-evaluation.log": {
+      "bytes": 317501,
+      "sha256": "75eefbfec490012c4bf7aa89a3e6b492b02b30b74c7a7da07f94db638e51e989"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/reference-inventory.json": {
+      "bytes": 288787,
+      "sha256": "a7da5106e82ece7edc407e8fb42a9797d8390bfb4f6f02df87fe8f47a1c5b1ee"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/references.log": {
+      "bytes": 794583,
+      "sha256": "b519e2f28e3d7148891cddb58a9e40dfb2fb0c0308d3dbd50237deeed9dd5e15"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Aspire/resolved-assets.json": {
+      "bytes": 254240,
+      "sha256": "f180e7557354bfaf362ca0ced0ac8db9d45df820300d11e4e7aaea797fa95c75"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/Context.csproj": {
+      "bytes": 739,
+      "sha256": "485ab62f82a5c32c98e9419511baa8b852aa181fc13314193200facc48684103"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/apicompat.log": {
+      "bytes": 1134,
+      "sha256": "f69878de955fdccc699e1efd7864f201d095c68ba127f108741c4e274209bc09"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/project-evaluation.log": {
+      "bytes": 313902,
+      "sha256": "502649801c79cf3de2547cad678caab667a94fd7b9b8493a67476aec76092f8f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/reference-inventory.json": {
+      "bytes": 238715,
+      "sha256": "813db1d3777673bb3ca1deb210f18bc17ebba4995e09b30cee5c322d037370b6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/references.log": {
+      "bytes": 385489,
+      "sha256": "9fc4f702286b176ca6ae52101d9d51b6bc4b4317b3663048d9dad9b57c895dcd"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Client/resolved-assets.json": {
+      "bytes": 78220,
+      "sha256": "da8b2acaa272c61032d5f10a725a735cd6d23f90bf1519895e30677736a0dc59"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/Context.csproj": {
+      "bytes": 742,
+      "sha256": "c0515a461cbfe333c0d3f8a67d5bee601cf9fb6673985695cac089e4955c6f85"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/apicompat.log": {
+      "bytes": 1146,
+      "sha256": "bad1a85b181cfd4f7cb219359f640ec311970f40faf1e813caab150b8a91c972"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/project-evaluation.log": {
+      "bytes": 311747,
+      "sha256": "b11ea9a1538870adcab320f381b4eadb222956f8cc290da542ba1c3842a38dd4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/reference-inventory.json": {
+      "bytes": 231618,
+      "sha256": "65c7df338447b2a6e9ebc2cc160edd3943b608661875854a00ae8407f5240664"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/references.log": {
+      "bytes": 340453,
+      "sha256": "47dd9cd13628ec2005aad709e6bed91c0be4cf2c37ab6bf24feba6402db58758"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Contracts/resolved-assets.json": {
+      "bytes": 44278,
+      "sha256": "59ca4bf796c6cc92296ab9cb110e5efa3b7ed0bcdf996b04b70746e8b0154ec8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/Context.csproj": {
+      "bytes": 803,
+      "sha256": "eb1304b87b3556226781e529ccc457bf0c53a52576234d68321669483eebdd20"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/apicompat.log": {
+      "bytes": 1162,
+      "sha256": "1d8c0c27245c0a219b537eb6a205248510ab1e276c1337da167fb41481262c4e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/project-evaluation.log": {
+      "bytes": 318665,
+      "sha256": "ba5fad96129fde2de5f9b77c01376b678067c31c02bd69382ca2ac418b4fd5af"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/reference-inventory.json": {
+      "bytes": 267525,
+      "sha256": "0ceb6fc8b17ac94bd24f56512b0648c7f4ee66e7ff60055b6d4eb29f3fcfa267"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/references.log": {
+      "bytes": 721984,
+      "sha256": "b12454da6217ffe2ac190bddbdc438d2ec2cc7c641a89f66665886702ed21d07"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.DomainService/resolved-assets.json": {
+      "bytes": 139257,
+      "sha256": "ad4391e2f468d93111127252f70049c91f099c484a4414b6b4b16b4a222e6cb9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/Context.csproj": {
+      "bytes": 797,
+      "sha256": "95147f85a21d99d1258845b9b9c23a31bee34423e90f50a05a4271c247834787"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/apicompat.log": {
+      "bytes": 1138,
+      "sha256": "dbc6d2846ff2a2a64146623b16cf7eab5b838b75615ce7998eb0b5319dccd077"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/project-evaluation.log": {
+      "bytes": 322028,
+      "sha256": "f150b6394a11ec5edf38c100f4a8822d27faccec31dcb77192ee59e0277e57ed"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/reference-inventory.json": {
+      "bytes": 279760,
+      "sha256": "ff2e8953259b9ed3d4deeb217ae5788d94c18335bef5344947b47a7bb1ece776"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/references.log": {
+      "bytes": 761550,
+      "sha256": "8ae2c4d1aaaf194ed3ae9f3057642e6a4b23f2b3dfd23e7d8c42d1aa4e438aed"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Gateway/resolved-assets.json": {
+      "bytes": 164654,
+      "sha256": "9a39ae74669dade319a0eca9cfa131d41d6ed6dd2c965ff9c3fc707a96962d9d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/Context.csproj": {
+      "bytes": 812,
+      "sha256": "2508f9db03b1092f603948de45ee097da294aeeaf5bc368ca45cc3a1b763b5d8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/apicompat.log": {
+      "bytes": 1182,
+      "sha256": "96829a7ce12bf8e75eaf50816ce4a6fe1d4426dd855b09fadf87ae954607d916"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/project-evaluation.log": {
+      "bytes": 318686,
+      "sha256": "8bf68a94c8207b7285ea325e8558883c5825f1060484cafdc24eac2b28ba8d62"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/reference-inventory.json": {
+      "bytes": 92312,
+      "sha256": "13c89fb59c18acf9c3a150a10b3886ba3c4b711f2952c70a4a3f386946a9a33c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/references.log": {
+      "bytes": 276928,
+      "sha256": "e04586af8e3e95421d725939b8b705f8f7c5678cc10fd33507169a11a7474e13"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.RestApi.Generators/resolved-assets.json": {
+      "bytes": 58853,
+      "sha256": "a75fd80d4a463b83a956da3829ff2398930364a5eec7816839091a6d5de73604"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/Context.csproj": {
+      "bytes": 739,
+      "sha256": "63e2fe32ee6a3303634d4d1b9eada9d9f11867ec8d32d822726d77a7467dc7a6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/apicompat.log": {
+      "bytes": 1134,
+      "sha256": "acccefd444687fa1f4a0d2fa02da3538779816f93aee9577a49cbf1a59201932"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/project-evaluation.log": {
+      "bytes": 316992,
+      "sha256": "fda0189afb5b7e9444a588cc06a8775b2ec5777cac3bef75709d7fe8eb4fefe8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/reference-inventory.json": {
+      "bytes": 269538,
+      "sha256": "e5a39c4d42d20510799ac423ead09fe8ba16dd39a9767b989abdcf0ab771c5ce"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/references.log": {
+      "bytes": 729124,
+      "sha256": "ee6a432c7c49181018937ce9f783c1ed5a20803111156e05c653a7f067a5423b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Server/resolved-assets.json": {
+      "bytes": 163032,
+      "sha256": "8ca5f0e608befbacd13c830314d711f7939fcf51c3f4599db8aa9bdf58d92987"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/Context.csproj": {
+      "bytes": 805,
+      "sha256": "7859576726b5793fdce16029561d219eb7826de5bfc1b74239f14d28e813c34e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/apicompat.log": {
+      "bytes": 1170,
+      "sha256": "010bc6570f80f1798620e6d54b9f871012eba806df765d289fb75001de887d31"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/project-evaluation.log": {
+      "bytes": 329310,
+      "sha256": "04b681f00fc70665c78e8a1efc67849e45fcba92c1c919a9ae4ebcee0d7d2a91"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/reference-inventory.json": {
+      "bytes": 257961,
+      "sha256": "c1a6a3ce39c93d6d1424e50e81de778b03f47bc8b12a26acdb3fd02f1f6277ff"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/references.log": {
+      "bytes": 688604,
+      "sha256": "72f23f3516b60e47d9b7599c3153962fac49824826361129c29343b79ce44248"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.ServiceDefaults/resolved-assets.json": {
+      "bytes": 116423,
+      "sha256": "e31383807c1accb041fa47b91f0033068ccbe31e9d72790652bc537454d9ac56"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/Context.csproj": {
+      "bytes": 740,
+      "sha256": "2880dd4e272b5df8348a8b0fde85b5a7c84c57906922e447f4cbf6a532fd6587"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/apicompat.log": {
+      "bytes": 1138,
+      "sha256": "0a5c32947353c14a4473226d78cb630c09708c179a9fc8cf434b73d1d23a3ceb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/project-evaluation.log": {
+      "bytes": 311655,
+      "sha256": "91b7578d27fc068d1e29a4a682611336cdc4671be84044bf1afacef1a932aa8b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/reference-inventory.json": {
+      "bytes": 235045,
+      "sha256": "4a57c813db39059532f293076918a1d51cabb9a98920a8629596aca6dc9f7f1b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/references.log": {
+      "bytes": 369733,
+      "sha256": "146ab58a99802ba951df05810bf52302a5624aceea5badc9bf1c64615f6d0e77"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.SignalR/resolved-assets.json": {
+      "bytes": 62184,
+      "sha256": "2d9980d9c273d78fd5fb1efacd68597c3b38da788bbf9e5592731139ace0748b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/Context.csproj": {
+      "bytes": 752,
+      "sha256": "ed2c963c483ec1cecc2546e69a458129f1b0bc268b91395095e304650c1ba078"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/apicompat.log": {
+      "bytes": 1186,
+      "sha256": "c2c78a4dfd3a2771cd370b57e29b082658e142e0e8f67267e95cea455207d391"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/project-evaluation.log": {
+      "bytes": 324804,
+      "sha256": "390911ec132aaf6739bb18f05c8b3c12cf603fc37893c6899618a30c4731b597"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/reference-inventory.json": {
+      "bytes": 281770,
+      "sha256": "81cdffa85724fa462d4a41244782fd5459d07d7094e5204b99c3c64fef9e2969"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/references.log": {
+      "bytes": 771853,
+      "sha256": "eb1325ef22b9d41d664630a28aa644b7b7322a4afa8e94c7be9688d52cc0e880"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing.Integration/resolved-assets.json": {
+      "bytes": 191824,
+      "sha256": "3e8b330591382ceb07c1fa4e94ce324acfb7e3564416f35caa8a06f38cccf6e2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/Context.csproj": {
+      "bytes": 740,
+      "sha256": "c09ffb136024b134e0379fbf076b79efeeebc38e82b3c4a2f8bb210444cc19d9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/Directory.Packages.props": {
+      "bytes": 23267,
+      "sha256": "2438d9e60023304617acbccf3cf8255fbe6a38b75a72eb174b4072ab97557a11"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/apicompat.log": {
+      "bytes": 1138,
+      "sha256": "0ab3060a6493dea44a11e1a9f71d2008d349437bece93a9e0517ecfb50aebf20"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/project-evaluation.log": {
+      "bytes": 316657,
+      "sha256": "2b8930e42f6711543327463d2b2e9c884f612641f9abd527697dc540e9a8d8f1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/reference-inventory.json": {
+      "bytes": 276835,
+      "sha256": "34b6669c057b5f0483f56556d5f1eafd79a17cb9aa584bb5ebc22ffc2392dcf8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/references.log": {
+      "bytes": 754694,
+      "sha256": "6980652f01b37bff248d9789a40026cabd82bfe9e3fa7f1329e839860d5f8a69"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/contexts/Hexalith.EventStore.Testing/resolved-assets.json": {
+      "bytes": 181241,
+      "sha256": "05480051687137384d39b4ec936ba35f945e865430a498a506ea69bc27930244"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/baseline/Control.cs": {
+      "bytes": 109,
+      "sha256": "04d48becfa208d0a0e3ea923347efef0effdaf0676c6775e0c91b5f29a10a84b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/baseline/build.log": {
+      "bytes": 226,
+      "sha256": "73dfa1c9933c78ef77d48c822201c7cb0280c2fd31569e91a354081de71849ce"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/baseline/compile.rsp": {
+      "bytes": 67494,
+      "sha256": "ce447d7ed829f6651f59b7cb8d3c9387a809fb22759aa4ffa082695be6887c71"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/baseline/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/baseline/sdk.log": {
+      "bytes": 415,
+      "sha256": "1af03fae32f21590b855abd5677f91fd74d820b771c9ef22f475a31daf9173d5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible.log": {
+      "bytes": 1036,
+      "sha256": "b64b897071a7316f6e6005999e6a5ada653a583383867afd3b99200180e5ac53"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible/Control.cs": {
+      "bytes": 109,
+      "sha256": "04d48becfa208d0a0e3ea923347efef0effdaf0676c6775e0c91b5f29a10a84b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible/build.log": {
+      "bytes": 228,
+      "sha256": "efc3d265f51e5c47ad9074f288cf1e1171ade734a13ffdea7cc7af80666eb505"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible/compile.rsp": {
+      "bytes": 67694,
+      "sha256": "ce1faa36ef658878000fc9502fbb3870a4df5483bcc54d340ab12783fee5654b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/compatible/sdk.log": {
+      "bytes": 415,
+      "sha256": "1af03fae32f21590b855abd5677f91fd74d820b771c9ef22f475a31daf9173d5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/reference-inventory.json": {
+      "bytes": 230597,
+      "sha256": "d95aefd3732285dd74d9f9c72435258dd92e79ac6139f4aadb0eac99a3990364"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed.log": {
+      "bytes": 1866,
+      "sha256": "44b8c821023f230fd768cdf7fb89e7c5abd3bcd491a68be538584ad46840b10d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed/Control.cs": {
+      "bytes": 74,
+      "sha256": "0afdfd9a9c4ee64ebdfb166dad88e715488f1298ed31e2a7a5c333e42701f478"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed/build.log": {
+      "bytes": 225,
+      "sha256": "cb61965a4aeab1a603dfb259683aefea55f8deca423f13a3bdd0a91ad476a10b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed/compile.rsp": {
+      "bytes": 67688,
+      "sha256": "e090ca5e27858711b8d942c1a57cf74432f185d742b17eab98c564a68c70ba68"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/removed/sdk.log": {
+      "bytes": 415,
+      "sha256": "1af03fae32f21590b855abd5677f91fd74d820b771c9ef22f475a31daf9173d5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed.log": {
+      "bytes": 1588,
+      "sha256": "c30c55d70c143c646b5d4db1452b37b48ed640ca8a71fea91ab7a5ff7d6e2ea7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed/Control.cs": {
+      "bytes": 111,
+      "sha256": "b5089df88e0a673a2f56ae2233179de1161c14277d41d2630e4e0ad00e2fc619"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed/build.log": {
+      "bytes": 225,
+      "sha256": "600c1bbc36be18089f9f9211ced8ad4142745e219e408ba2afc639d9d5527ed7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed/compile.rsp": {
+      "bytes": 67688,
+      "sha256": "bda889f3a2f46fd6468b5053520764409a05fe34920c84d7671a924f666f7612"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed/sdk-version.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/controls/renamed/sdk.log": {
+      "bytes": 415,
+      "sha256": "1af03fae32f21590b855abd5677f91fd74d820b771c9ef22f475a31daf9173d5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/global.json": {
+      "bytes": 148,
+      "sha256": "4caed62d38fabb1d7e0bff4c5f8c84085173eef22c8ef5ed5fdfa740a1e9c87f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/receipt.json": {
+      "bytes": 3665537,
+      "sha256": "be7f69f890e990f628184a6635c94055d87466690429547a51eda0f458db64a8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/selected-sdk.log": {
+      "bytes": 33,
+      "sha256": "52aa5fa0ad91d53dd9f99945c220888e469c9f08126a95d4e3ba1b5cd20290e3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Admin.Abstractions.4.2.0.log": {
+      "bytes": 671,
+      "sha256": "6d44edf4bc0a6879c23cf95ed721aabe3e2c5374b35ee3f6ec02298275e4ad9d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Admin.Cli.4.2.0.log": {
+      "bytes": 653,
+      "sha256": "eff804049bc46e4b283eadc86fe9c0481218d4fed964acf43e5324014f18cadf"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Admin.Server.4.2.0.log": {
+      "bytes": 659,
+      "sha256": "8f96bacf664913382994e8e83276fc72d688dc963dc9807ef049b2966cb72305"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Aspire.4.2.0.log": {
+      "bytes": 647,
+      "sha256": "b0379d72f3cd6e569ea68b3b774088e3a4881e4875316602bed53404c4f4e9fa"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Client.4.2.0.log": {
+      "bytes": 647,
+      "sha256": "a17bc711e911729a60a0b53805933095b11a24210389caa4639c282c07058149"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Contracts.4.2.0.log": {
+      "bytes": 653,
+      "sha256": "af44414f3aeada0a90e26dce0aa1284bd9c678d28d1b604181036e4b52ea046d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.DomainService.4.2.0.log": {
+      "bytes": 661,
+      "sha256": "f979a95c64637b561870208c400a9cad0003cbbe83a6150ea4d45789b204a64b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Gateway.4.2.0.log": {
+      "bytes": 649,
+      "sha256": "2d58022b0347b59fd7d23354d3b6abe90c7bf9b63820a42e9462af148183b176"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.RestApi.Generators.4.2.0.log": {
+      "bytes": 671,
+      "sha256": "a428a7cefec3ea200b6a2096407305cf26f681bcf8165dad0a02b218b49620f1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Server.4.2.0.log": {
+      "bytes": 647,
+      "sha256": "33422914337c0948320b1b534d582bd68840b5aa3c47ba410340098d9f473a2c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.ServiceDefaults.4.2.0.log": {
+      "bytes": 665,
+      "sha256": "59a1e521ba56c5f04773f043f3bf943b8a8f25a20a4e33ceaafb77fa4d99c7ed"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.SignalR.4.2.0.log": {
+      "bytes": 649,
+      "sha256": "5b03345ac51018fd2eb213ea4c8d861ad2b8f1d2f39e6f4fb4a2c6fc0624b2e4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Testing.4.2.0.log": {
+      "bytes": 649,
+      "sha256": "8a24b36f1440d9e23cd4d960a56ca34f279c07719c66ef5e9ca1939011070385"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Hexalith.EventStore.Testing.Integration.4.2.0.log": {
+      "bytes": 673,
+      "sha256": "d414c3e6a3bf38301499386ccb4488fd4c7bb614eab14e4ef9eb10cb586d534e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Microsoft.AspNetCore.App.Ref.10.0.15.log": {
+      "bytes": 904,
+      "sha256": "9e565d5e62321c8489bd766c02c2d08da9d9585d5fb118ba181132fad0b18836"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Microsoft.AspNetCore.App.Ref.11.0.0.log": {
+      "bytes": 902,
+      "sha256": "4266d80757b850cbdcf4b03865110a3f11460f166937b1a06b58328cb28c3e1f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Microsoft.DotNet.ApiCompat.Tool.11.0.100.log": {
+      "bytes": 876,
+      "sha256": "8ba001c32836e7449ffebf7dbccb07321a3e445ffa9a663b3cdf0f6335136573"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Microsoft.NETCore.App.Ref.10.0.15.log": {
+      "bytes": 898,
+      "sha256": "a426b4cac85a058bb70fab9747f535f057214dcbc6a160b3f7bbb39e65feedee"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/signatures/Microsoft.NETCore.App.Ref.11.0.0.log": {
+      "bytes": 896,
+      "sha256": "4a9d58d9fdc7bc18b9317ba49c87d8a0c42b674e1d79c74c64b1287fd9c5da7a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-evidence/api-compatibility/run-2ytdutl0/tool-version.log": {
+      "bytes": 300,
+      "sha256": "f18689b307fee22c16c8e6a0a7acf512b66383c180ed04dbd6f0e574683d252a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-preflight.json": {
+      "bytes": 632,
+      "sha256": "a690bbd8bfef1b4c018e5709d011c18b7c695c5a2a31c288b2a1a93a3e84212a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-run.json": {
+      "bytes": 14134,
+      "sha256": "522d20517a014181a92062c8f29ce81545cf43203d62167caee66505f6c81867"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/release-source-preflight.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-candidate-NuGet.Config": {
+      "bytes": 241,
+      "sha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-candidate-commands.json": {
+      "bytes": 3427,
+      "sha256": "e40abb62554120df8dfaa5a5888db8324a0e4c79131bf2aa7fc2f4824038bc5b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-candidate-job.py.txt": {
+      "bytes": 4336,
+      "sha256": "111cc6d90611314b8e7de1fac8f2bd1735d97e9d91243d633265873e89780c7c"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-workflow-runs.json": {
+      "bytes": 842,
+      "sha256": "c283ed0e25cf369ce16f3f3104b65b198b09024fadd6dd86347a614456f2e334"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/successful-release-run.json": {
+      "bytes": 14137,
+      "sha256": "12c566d876795bbe401c998b9902ccf37177f7024e8f15135d29fa34e5869f58"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/version-selection.json": {
+      "bytes": 162,
+      "sha256": "0a50662eb57c4ddfe228a815ecf4ec9fb93e846f51b06494a810accda4c270f9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/workspace-check.json": {
+      "bytes": 1837,
+      "sha256": "9d5c5017589c78fead653d873c41ab78318419207bfddcae3995a27c3bd59b29"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/.gitattributes": {
+      "bytes": 20,
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Cli.Tests-runtime.tar.gz": {
+      "bytes": 38199134,
+      "sha256": "5224807cbbb962c8befb4d513abf14030f73f7e354f32e69bc5b9d9cf5564c3d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Client.Tests-runtime.tar.gz": {
+      "bytes": 37792015,
+      "sha256": "acb81bc5128987060ba35284465a81e270e28dab4eabcb5c970f17a3774563b3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.IntegrationTests-runtime.tar.gz": {
+      "bytes": 58165482,
+      "sha256": "5cb418bc18e74b22be36b0d5178f0356af23d7d2fb2116eb00b490583a7b90c2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Mcp.Tests-runtime.tar.gz": {
+      "bytes": 38707997,
+      "sha256": "6c82721e61cb5789df1fcbe128c54e66db8a47406af27fc9f9d641a9b79df516"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Folders.Server.Tests-runtime.tar.gz": {
+      "bytes": 41923245,
+      "sha256": "c40563b082543c6de516bf37c9583edfc8ce990d3ab13590b9bb4f409f122511"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config": {
+      "bytes": 241,
+      "sha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/commands.json": {
+      "bytes": 8415,
+      "sha256": "d2d44de1aa6a243cf74d21d7087bcbe609155e6d954ea16f8cebc3a083a96f8f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/completed-commands.json": {
+      "bytes": 9206,
+      "sha256": "21f35ee6ee6a5fee2f51b83de639e36b21a07334484d56734eadf2d206e4075f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/governance-report.json": {
+      "bytes": 1128,
+      "sha256": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/governance.log": {
+      "bytes": 1328,
+      "sha256": "14b19a6cc2219e0af7970549feba2a46697f3d9bf570ffd5f48851770562d9d4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority-counts.json": {
+      "bytes": 407,
+      "sha256": "7fd8147151c9ad32fb04a91e43f3fdfacc5e14e117351c32478f0de39c520b92"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority.log": {
+      "bytes": 19612,
+      "sha256": "6c45e0e1d1b85d9f14e816873ccc0d8e0126961366272dcd56d78a8e4f7fc9d3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority.xml": {
+      "bytes": 42036,
+      "sha256": "c58d6081f13eb64cec110276fb5654f340be7ee722fa875acb637454ccaf55dc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/parity-report.json": {
+      "bytes": 24302,
+      "sha256": "7bf0d1398961c498ac155c9c776efb39128f6a33532cdd8e54f08ba12512482e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/parity.log": {
+      "bytes": 180677,
+      "sha256": "7a226be879b3de61e74ae4b514bd3ee49979c3d4d5f9b5296ce9e9db8f2c0b9f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/release-build.log": {
+      "bytes": 6808,
+      "sha256": "c72f86925f994543e9c9f8bf259cf5d27cd37bce55d2833f54e1acca03cacf38"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/restore.log": {
+      "bytes": 4807,
+      "sha256": "587a417f2ed29946c21072af1ce58848f6505d66d920f332443a61974e7143dc"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/result.json": {
+      "bytes": 420,
+      "sha256": "dcc4a9a92fc62337d1161bb34ab2816f7651afc199c148eb696ab3167b3605cb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing-counts.json": {
+      "bytes": 199,
+      "sha256": "e531e3bc298070090ed223f0deec16340205fe1cbe122253a0848a9eb1ce0a0b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing.log": {
+      "bytes": 102598,
+      "sha256": "a68f321837efc8f665329be4fee6070da0dc6c5cedaddf1e95d9aa7bffa8905b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing.xml": {
+      "bytes": 13402,
+      "sha256": "71469baefd0b523f93398c923395e1b865e26b5485288048c1d6c90f77c97acb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/runtime-package-bindings.json": {
+      "bytes": 11349,
+      "sha256": "461b25b3179fa347b5b05b0dd3d89793327bfaa8f4294c25931e962ae7814feb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/source-snapshots.json": {
+      "bytes": 5136,
+      "sha256": "0c71455e19d8fd76597e49a39e7255c8d86a8d52a3cbee65e52ff3938e6fe4cd"
+    },
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/.gitattributes": {
+      "bytes": 20,
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae"
+    },
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config": {
+      "bytes": 241,
+      "sha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef"
+    },
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/test-authoritative-package-catalog.ps1.log": {
+      "bytes": 453,
+      "sha256": "a2e01c7fb9b55b1476020b70a43022b855cdefce03fb3c749be87e36adf06bf3"
+    },
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/test-authoritative-package-catalog.ps1.telemetry-disabled.log": {
+      "bytes": 415,
+      "sha256": "4aae501d135d885f84d8f4c09517542a14d689a57aaa5c2770a0b3ea0e383c36"
+    },
+    "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/validate-platform-version-catalog.ps1.telemetry-disabled.log": {
+      "bytes": 288,
+      "sha256": "ad9f1c7851dce709f30843878a6ab15a9d867f9f05a5202aeca46a505f242d78"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/.gitattributes": {
+      "bytes": 20,
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config": {
+      "bytes": 241,
+      "sha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg": {
+      "bytes": 133623,
+      "sha256": "8917d1dfe8950c7ac8a8c0b53778cc70dc25f7c16878d1967e19bc7199ceac78"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Abstractions.5.1.1.signature.log": {
+      "bytes": 711,
+      "sha256": "b5992a387bfa5d958c64089b20f5958951bcef3bfbe9cf75e05aa32be547b525"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Cli.5.1.1.nupkg": {
+      "bytes": 1081764,
+      "sha256": "a822c80bb11ca5f8c8b8ccd651f71b05f729c6777d567cd4542db059bde2d1da"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Cli.5.1.1.signature.log": {
+      "bytes": 693,
+      "sha256": "5da400e613871b0b29b059bd1f81e685e17779cf3abfc98297dcce672afe9319"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Server.5.1.1.nupkg": {
+      "bytes": 200626,
+      "sha256": "0dce067f048d13d81efb3c1b9c74fe950b56ec460cd13c388f4054cf8a115137"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Admin.Server.5.1.1.signature.log": {
+      "bytes": 699,
+      "sha256": "acff9b0e370723f68324e00e8ae735e609ae44a6e148139188433d4432c773d7"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Aspire.5.1.1.nupkg": {
+      "bytes": 149163,
+      "sha256": "1dc51efae1c512182717cfda216b71ba1a156fed7df503e4d04f90156b1dce56"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Aspire.5.1.1.signature.log": {
+      "bytes": 687,
+      "sha256": "d77cd4ad80814b67241ebee66216e9cb052bfe98e17c7f974baec9886152f593"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Client.5.1.1.nupkg": {
+      "bytes": 576955,
+      "sha256": "e1341f098019b6a678a3e7e61a768651a82970c86bbed61dd3077e87a6a946e5"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Client.5.1.1.signature.log": {
+      "bytes": 687,
+      "sha256": "feaed8765033d9df7251b94d65f88068774530ed03b98b260bc5053936c333b7"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Contracts.5.1.1.nupkg": {
+      "bytes": 486720,
+      "sha256": "38d1e13eea64437584f2718f3aceb1345e76e2ae16dd048f94a392d7dc63f357"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Contracts.5.1.1.signature.log": {
+      "bytes": 1739,
+      "sha256": "b245e7741a036a9a7008dff263aae4f95000c09fe3a44b759db48920c43b10ec"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.DomainService.5.1.1.nupkg": {
+      "bytes": 449364,
+      "sha256": "bc4cc909f1172aa4fc528cf13dbc1a9e6bc4e19ab0d1dd5417d077b16734ddff"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.DomainService.5.1.1.signature.log": {
+      "bytes": 701,
+      "sha256": "08d441b5535e3f9d6930d8819fd25c6f94cb8da77bd5aeda1699c2a64bd79ba4"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Gateway.5.1.1.nupkg": {
+      "bytes": 310893,
+      "sha256": "03a58b7c1b6338b31b504bafff4dd2f7ef5dc20964c8f7bffe2e9256178979da"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Gateway.5.1.1.signature.log": {
+      "bytes": 689,
+      "sha256": "7284b5e35618502a9ee461e62380faa0714613fc05a90cca74813a3a63d7a885"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.RestApi.Generators.5.1.1.nupkg": {
+      "bytes": 54988,
+      "sha256": "08791aec29853095c69955240af4f0bbb071c8d189a5dea0dc3419e7ffba55b7"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.RestApi.Generators.5.1.1.signature.log": {
+      "bytes": 711,
+      "sha256": "332f1c5b83f8c21c4b0b76b3f10420ef88be3cd5e110f7d686f56bb8253f5a76"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Server.5.1.1.nupkg": {
+      "bytes": 1407681,
+      "sha256": "8f510f933d6090b68cfe74ebd5f117aad1d373267d07edf2ceaf8fa9ea99ab9a"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Server.5.1.1.signature.log": {
+      "bytes": 687,
+      "sha256": "020dd02c2d8eb8fa2b495f94d9ececd25016bbeae6d9089338e305c4172f74ba"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg": {
+      "bytes": 263910,
+      "sha256": "25776e7e76543dd25f4d5263a96be24ee40cc1bd3da1382c2a36839a7f90e8f7"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.ServiceDefaults.5.1.1.signature.log": {
+      "bytes": 705,
+      "sha256": "a54be7405c92007f1391b0462903fb5ed5e95c993fbca27d2b086809e1d8004c"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.SignalR.5.1.1.nupkg": {
+      "bytes": 46438,
+      "sha256": "60fe1b05dd6b2bcf7b502db723c30c11dc0c32682ceb0ac4e5f470f809ae47d9"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.SignalR.5.1.1.signature.log": {
+      "bytes": 689,
+      "sha256": "47eab4ba0f208272d153147130dc5c05b1255e1e6ca1c67dee2edf07a0cfa66a"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Testing.5.1.1.nupkg": {
+      "bytes": 134989,
+      "sha256": "6de70c10e4a7adc89d4d13a0c997115e5861e83a197bf918ac384fbcaeeaf322"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Testing.5.1.1.signature.log": {
+      "bytes": 689,
+      "sha256": "87b810a2d1713a68052db100311d6d1b6428c8f8042d60b9a7c7aebd8f657eec"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Testing.Integration.5.1.1.nupkg": {
+      "bytes": 65742,
+      "sha256": "3c163645f08732cfea070e9ce07a46c9d29c99264793fc72e7aa1d3b0394b000"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.EventStore.Testing.Integration.5.1.1.signature.log": {
+      "bytes": 713,
+      "sha256": "3a68f9e567a0ec23eb99d91290bf4e9203e31b70a71081a7fcee032c78b0a268"
+    },
+    "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/published-packages.json": {
+      "bytes": 16511,
+      "sha256": "df9bc2705ea97b52f27c46e28a86a5aba6f6567e4a415503a3a4d8da1f04bfb7"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/.gitattributes": {
+      "bytes": 20,
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/Hexalith.Projects.Server.Tests-runtime.tar.gz": {
+      "bytes": 39450955,
+      "sha256": "13b722c1bd61b3c7ccf3568ba4646b59a9b19e68de0670e58075d9faa904569f"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config": {
+      "bytes": 241,
+      "sha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters-counts.json": {
+      "bytes": 467,
+      "sha256": "39918d4de8c948d33333acbfe63a6d7a2d56b4147a14092d08ecaf1171fa87c9"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters.log": {
+      "bytes": 73299,
+      "sha256": "52d37ceac7a73c6470117df4e921d35de95bb04638c59d511e7dcca12641686f"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters.xml": {
+      "bytes": 146474,
+      "sha256": "655ed3cc9e9d44e8e88d9c2a9aa6f2646b022380daf7409188d3edae8622925d"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Conversations.Client.2.0.0.nupkg": {
+      "bytes": 43114,
+      "sha256": "e3225ff4ff3389407f097dbe22511e61a0f7d7c1671bde440078eb66aea84107"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Conversations.Client.2.0.0.signature.log": {
+      "bytes": 691,
+      "sha256": "7200cac0d69441187788fe87c0b6177a4f66d31aee352ca3fb5b02786bce31b0"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Conversations.Contracts.2.0.0.nupkg": {
+      "bytes": 505323,
+      "sha256": "bba5483dbaea023b08f66c163516cd142086eb93c2306d79979dbb9de10e74bd"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Conversations.Contracts.2.0.0.signature.log": {
+      "bytes": 697,
+      "sha256": "45245b41f9adf172e4daa632ee80d68598060d3025cff1a573ee5d5c2b38551f"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Folders.Client.1.4.0.nupkg": {
+      "bytes": 238254,
+      "sha256": "5ff508f4a42e1b6540329bbf6cd9e091c3fc1c10acd7d21e1477daa74e04ea26"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Folders.Client.1.4.0.signature.log": {
+      "bytes": 679,
+      "sha256": "520e826e37624d4aa8b41aa25d901599deea23f3f94360c9ec5eb93be08875f8"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Folders.Contracts.1.4.0.nupkg": {
+      "bytes": 77712,
+      "sha256": "492dd508739678c0fbb761d76d3b0247e775ac586966dae61576247323eaf83e"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/packages/Hexalith.Folders.Contracts.1.4.0.signature.log": {
+      "bytes": 685,
+      "sha256": "17e55331ef88afc189680e8eae2cc000c92659d900b3490f1751cc5148338f3d"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/published-pairs.json": {
+      "bytes": 4623,
+      "sha256": "5550065da1fc5ab7b644a53be063b7b6305d04cace1ed482580be1f5056407fa"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/release-build.log": {
+      "bytes": 7067,
+      "sha256": "4cec67807bc2e4f7fdee548f458f2708fd6b8e8d8121e9b5e854efed6dd3e297"
+    },
+    "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/restore.log": {
+      "bytes": 5802,
+      "sha256": "41a61ceb3cfb975e0ca83918c2e4e996609af89202a6bbed8189682e27c67a26"
+    }
+  },
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "status": "published-and-verified",
+  "version": "5.1.1"
+}

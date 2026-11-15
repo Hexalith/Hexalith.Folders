@@ -108,3 +108,6 @@ _bmad-output/implementation-artifacts/evidence/story-1-17-merged-main-2026-11-02
 
 # Preserve new local package qualification logs, patches and hash receipts byte-for-byte.
 eng/package-cohort/qualification/** -text -whitespace
+
+# Preserve the Story 1.17 post-EventStore 5.1.1 recheck evidence byte-for-byte; some retained logs carry CRLF.
+_bmad-output/implementation-artifacts/evidence/story-1-17-post-eventstore-511-recheck-2026-11-15/** -text -whitespace

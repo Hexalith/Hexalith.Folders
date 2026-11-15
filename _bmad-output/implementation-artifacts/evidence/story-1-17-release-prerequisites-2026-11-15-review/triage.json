@@ -1,0 +1,144 @@
+{
+  "rows": [
+    {
+      "id": "BH1",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Required command/test statuses are discarded in producer/consumer callers and main returns normally; current recorded final gates are independently all successful. Patch fail-closed phase status and stop build after restore failure.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH2",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Job construction rewrites runner receipts before checking collisions; all four evidence targets must be reserved fresh before writes. Patch immutable evidence reservation.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH3",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Package-member enumeration only accepts net11 while Folders1.4.0 pair targets net10. Parent directly verified both archived runtime DLLs equal published net10 package payloads; add those required bindings and update total from30 to32.",
+      "resolution": "Corrected both net10 payload bindings; total32 independently verified."
+    },
+    {
+      "id": "BH4",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Consumer seed trusts current candidate directory without checking successful producer receipts and recorded inventory hashes; changed bytes can become its own authority. Patch producer input preflight.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH5",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Producer unconditionally hashes an ignored hardcoded historical triage file; consumer also parses it. Remove the mandatory history dependency using explicit existing repaired class selectors and optional diagnostic copy.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH6",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Test success validates only positive total; skipped-only results are accepted. Require actual passed unskipped cases.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH7",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Aggregate counts hide a missing class selector; retained native-scanner command actually includes an unmatched old Client DI selector. Its17 scanner cases pass and the separately built real DomainService class passes5/5. Add per-selector matching guards and preserve correction evidence.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH8",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Job inherits NuGetAudit=false and does not enforce its audit guarantee. Explicitly enforce and retain required audit settings for new invocations.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH9",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Imported API helpers use their own subprocess.run; producer/consumer calls do not supply job.env or managed process cleanup. Route helper execution through private managed command handling while preserving expected return contract.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "BH10",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Source patch and hashes are collected from live owner after snapshot copies, so concurrent edits can misdescribe compiled inputs. Record actual snapshot inventories/patches and reject source drift during capture.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "EC1",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Same verified ignored required-result defect as BH1; failed restore can also be followed by successful build status. Patch groupG1.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "EC2",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Same verified evidence overwrite before collision detection as BH2. Patch groupG2.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "EC3",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Same verified skipped-only success as BH6. Patch groupG6.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "VG1",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Verified caller status loss permits successful phase after focused tests, package/API, parity or governance failures. Same demonstrated root cause as BH1; patch groupG1.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    },
+    {
+      "id": "VG2",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Verified repeated evidence names replace runner/source metadata before existing log guard. Same demonstrated root cause as BH2; patch groupG2.",
+      "resolution": "Retired supported executable entry points; preserved exact historical bytes; manual existing-owner-tool guide specifies required checks."
+    }
+  ],
+  "groups": {
+    "G1": [
+      "BH1",
+      "EC1",
+      "VG1"
+    ],
+    "G2": [
+      "BH2",
+      "EC2",
+      "VG2"
+    ],
+    "G3": [
+      "BH3"
+    ],
+    "G4": [
+      "BH4"
+    ],
+    "G5": [
+      "BH5"
+    ],
+    "G6": [
+      "BH6",
+      "BH7",
+      "EC3"
+    ],
+    "G7": [
+      "BH8"
+    ],
+    "G8": [
+      "BH9"
+    ],
+    "G9": [
+      "BH10"
+    ]
+  }
+}

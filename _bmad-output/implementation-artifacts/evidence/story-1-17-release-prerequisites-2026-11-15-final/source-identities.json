@@ -1,0 +1,38 @@
+{
+  "Builds": {
+    "base_commit": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+    "diff_check_diagnostics": "",
+    "diff_check_exit": 0,
+    "staged_paths": [],
+    "status": " M Props/Directory.Packages.props\n M Tools/test-authoritative-package-catalog.ps1\n?? _bmad-output/implementation-artifacts/evidence/\n",
+    "working_patch": "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+    "working_patch_sha256": "9391a96d3ed9d02d1fd64c8fe91b1aa67c1dfce61fc6071f02838966c6e1d10d"
+  },
+  "EventStore": {
+    "base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+    "diff_check_diagnostics": "",
+    "diff_check_exit": 0,
+    "staged_paths": [],
+    "status": " M deploy/dapr/eventstore-routing-catalog.json\n M tests/Hexalith.EventStore.Client.Tests/Routing/DevelopmentRouteCatalogBuilderTests.cs\n M tests/Hexalith.EventStore.Client.Tests/Streams/GatewayNativeSourceMetadataAdmissionTests.cs\n M tests/Hexalith.EventStore.Server.Tests/DomainServices/DevelopmentRouteCatalogParityTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpCatalogFixture.cs\n",
+    "working_patch": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+    "working_patch_sha256": "577f1395a7ca5cb73361507e970a93825486ffd5b284da026c6c978e6912e795"
+  },
+  "Projects": {
+    "base_commit": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+    "diff_check_diagnostics": "",
+    "diff_check_exit": 0,
+    "staged_paths": [],
+    "status": " M Directory.Packages.props\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/\n",
+    "working_patch": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+    "working_patch_sha256": "f849c3f88f55d8f9dcdeb7d818cd16ee7cc90b161bfc19aa8aa47629ce38afa2"
+  },
+  "folders": {
+    "base_commit": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+    "diff_check_diagnostics": "warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it\n",
+    "diff_check_exit": 0,
+    "staged_paths": [],
+    "status": " M _bmad-output/implementation-artifacts/epic-1-context.md\n M references/Hexalith.Builds\n M references/Hexalith.EventStore\n M references/Hexalith.Projects\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-review/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/\n?? _bmad-output/implementation-artifacts/spec-1-17-resolve-native-scanner-and-conversations-release-prerequisites.md\n?? eng/story117-release-prerequisites/\n",
+    "working_patch": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+    "working_patch_sha256": "9be4a34cac7f8d6e25f998ea816c2865484ffe64273487abacfb4db82dbbb95c"
+  }
+}

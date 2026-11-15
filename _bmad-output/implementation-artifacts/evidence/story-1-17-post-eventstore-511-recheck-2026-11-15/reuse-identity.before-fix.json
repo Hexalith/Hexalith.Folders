@@ -1,0 +1,158 @@
+{
+  "non_input_exclusions": [
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md"
+  ],
+  "owners": [
+    {
+      "current_changed_files": {
+        "_bmad-output/implementation-artifacts/epic-1-context.md": "9863c6a13dd6748e816eb771683572ffb9e64dddd2352ab4384367fa921e5d03",
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "95407ecea4d20c8cd6865dfc68c0cda4269355ec76ffb6ec0df4b6fbba3b6f13"
+      },
+      "current_head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+      "differences": [
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md"
+      ],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": ".",
+      "public_changed_files": {
+        "_bmad-output/implementation-artifacts/epic-1-context.md": "9863c6a13dd6748e816eb771683572ffb9e64dddd2352ab4384367fa921e5d03"
+      },
+      "public_head": "336c3e82df1f66febf9cb30febcdb5b841d225e9"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Tenants",
+      "public_changed_files": {},
+      "public_head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.AI.Tools",
+      "public_changed_files": {},
+      "public_head": "17a37d83db193f0b7494c1b931fd1e82a67c1424"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.EventStore",
+      "public_changed_files": {},
+      "public_head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "bca9dff291ce42c57516598732340a80703dfb6d",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.FrontComposer",
+      "public_changed_files": {},
+      "public_head": "bca9dff291ce42c57516598732340a80703dfb6d"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "b7e195031cab96b38949b90317ea8033797027b8",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Memories",
+      "public_changed_files": {},
+      "public_head": "b7e195031cab96b38949b90317ea8033797027b8"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Commons",
+      "public_changed_files": {},
+      "public_head": "fbf4e94233821f6ca336af91a06feaaeb7a16855"
+    },
+    {
+      "current_changed_files": {
+        "Props/Directory.Packages.props": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+        "Tools/test-authoritative-package-catalog.ps1": "3347378af2da949736ff739ac260ff68d788d1658b61ede4db426eb81d288bbb"
+      },
+      "current_head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Builds",
+      "public_changed_files": {
+        "Props/Directory.Packages.props": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+        "Tools/test-authoritative-package-catalog.ps1": "3347378af2da949736ff739ac260ff68d788d1658b61ede4db426eb81d288bbb"
+      },
+      "public_head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "e97b56930e213f674b64c157551f499b0473ec43",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.PolymorphicSerializations",
+      "public_changed_files": {},
+      "public_head": "e97b56930e213f674b64c157551f499b0473ec43"
+    },
+    {
+      "current_changed_files": {
+        "Directory.Packages.props": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb"
+      },
+      "current_head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Projects",
+      "public_changed_files": {
+        "Directory.Packages.props": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb"
+      },
+      "public_head": "fc58cefde69d72d7d3daa574b5022f73f830a85e"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Platform",
+      "public_changed_files": {},
+      "public_head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "28bcbbb898b6530838a7872f2ba450c34e56cc70",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.McpCli",
+      "public_changed_files": {},
+      "public_head": "28bcbbb898b6530838a7872f2ba450c34e56cc70"
+    },
+    {
+      "current_changed_files": {},
+      "current_head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+      "differences": [],
+      "identical_inputs": true,
+      "material_differences": [],
+      "owner": "references/Hexalith.Parties",
+      "public_changed_files": {},
+      "public_head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687"
+    }
+  ],
+  "public_completed_commands_sha256": "21f35ee6ee6a5fee2f51b83de639e36b21a07334484d56734eadf2d206e4075f",
+  "public_result_sha256": "dcc4a9a92fc62337d1161bb34ab2816f7651afc199c148eb696ab3167b3605cb",
+  "public_source_snapshots_sha256": "0c71455e19d8fd76597e49a39e7255c8d86a8d52a3cbee65e52ff3938e6fe4cd",
+  "reusable": true
+}

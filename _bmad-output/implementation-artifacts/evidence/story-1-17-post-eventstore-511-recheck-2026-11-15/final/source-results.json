@@ -1,0 +1,7 @@
+{
+  "conformance": true,
+  "contract-behavior": true,
+  "deployment-conformance": true,
+  "native-authority": true,
+  "routing": true
+}

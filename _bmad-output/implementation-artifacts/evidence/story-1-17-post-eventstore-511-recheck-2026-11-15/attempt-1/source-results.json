@@ -1,0 +1,6 @@
+{
+  "conformance": true,
+  "contract-behavior": true,
+  "native-authority": false,
+  "routing": false
+}

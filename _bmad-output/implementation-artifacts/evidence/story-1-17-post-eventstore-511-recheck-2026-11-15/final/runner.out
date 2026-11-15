@@ -1,0 +1,39 @@
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+Copying root-declared repositories into the private workspace
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+Copied 63094 source/build inputs
+START sdk
+END sdk exit=0 elapsed=0.1s
+START source-server-tests-restore
+END source-server-tests-restore exit=0 elapsed=1.7s
+START source-server-tests-build
+END source-server-tests-build exit=0 elapsed=63.2s
+START source-integrationtests-restore
+END source-integrationtests-restore exit=0 elapsed=2.0s
+START source-integrationtests-build
+END source-integrationtests-build exit=0 elapsed=15.2s
+START source-contracts-tests-restore
+END source-contracts-tests-restore exit=0 elapsed=1.2s
+START source-contracts-tests-build
+END source-contracts-tests-build exit=0 elapsed=5.1s
+START source-native-authority
+END source-native-authority exit=0 elapsed=4.9s
+START source-routing
+END source-routing exit=0 elapsed=33.6s
+START source-contract-behavior
+END source-contract-behavior exit=0 elapsed=1.3s
+START source-conformance
+END source-conformance exit=0 elapsed=5.3s
+START source-deployment-conformance
+END source-deployment-conformance exit=0 elapsed=0.4s
+START generate-first
+END generate-first exit=0 elapsed=0.1s
+START generate-second
+END generate-second exit=0 elapsed=0.1s
+START source-solution-restore
+END source-solution-restore exit=0 elapsed=3.4s
+START source-solution-build
+END source-solution-build exit=1 elapsed=66.4s
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+{"builds": {"Hexalith.Folders.Server.Tests": true, "Hexalith.Folders.IntegrationTests": true, "Hexalith.Folders.Contracts.Tests": true}, "results": {"native-authority": true, "routing": true, "contract-behavior": true, "conformance": true, "deployment-conformance": true}, "generation": {"ran": true, "exit_codes": [0, 0], "first_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2", "second_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2", "checked_in_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2", "generations_equal": true, "equals_checked_in": true}, "solution": {"restore": 0, "build": 1}, "unchanged": true}
+exit=1

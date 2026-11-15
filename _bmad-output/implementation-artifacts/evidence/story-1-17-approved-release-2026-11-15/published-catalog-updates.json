@@ -1,0 +1,16 @@
+[
+  {
+    "owner": "references/Hexalith.Builds",
+    "path": "Props/Directory.Packages.props",
+    "before_sha256": "28abfa09d3e3cc4271d7552aa14c044e2a341827d76c5217302aaeaf32c6bdfa",
+    "after_sha256": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+    "change": "Publication-status comment only; selected5.1.1 and all4.2.0 views unchanged"
+  },
+  {
+    "owner": "references/Hexalith.Projects",
+    "path": "Directory.Packages.props",
+    "before_sha256": "cec4e996ec61fd71347244907e6637d937b10d8fbb5c1cc3d30ae187f7883cd2",
+    "after_sha256": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb",
+    "change": "Publication-status comment only; selected5.1.1 and all4.2.0 views unchanged"
+  }
+]

@@ -1,0 +1,9 @@
+["dotnet", "nuget", "verify", "--all", "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/verified-public-dependencies/Hexalith.Tenants.Contracts.8.0.0.nupkg"]
+
+Verifying Hexalith.Tenants.Contracts.8.0.0
+Content hash: ml8GrvCnmWQ7VlTbmAbV9t4EKpgw9ZWTScjFxz7Ee4U8X/6VeN6DgnXR9CRLZowTvxhxj3xNfXi2ccHbWrGPdA==
+
+Signature type: Repository
+  Subject Name: CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US
+  SHA256 hash: 1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D
+  Valid from: 02/23/2024 01:00:00 to 05/19/2027 01:59:59

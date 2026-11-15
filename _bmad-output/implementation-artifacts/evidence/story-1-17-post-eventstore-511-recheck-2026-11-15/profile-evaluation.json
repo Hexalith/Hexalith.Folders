@@ -1,0 +1,515 @@
+{
+  "package_inert": true,
+  "package_tenants_references": [
+    {
+      "additional_properties": "",
+      "file": "Hexalith.Tenants.csproj",
+      "project": "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj"
+    }
+  ],
+  "profiles": {
+    "debug-source": [
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.Aspire.csproj"
+          }
+        ],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.Client.csproj"
+          },
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.Contracts.csproj"
+          }
+        ],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.Client.csproj"
+          },
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.Contracts.csproj"
+          }
+        ],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [
+          {
+            "additional_properties": ";HexalithEventStoreVersion=5.1.1",
+            "file": "Hexalith.Tenants.csproj"
+          }
+        ],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/load/Hexalith.Folders.LoadTests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj"
+      },
+      {
+        "carry": "true",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
+      }
+    ],
+    "release-package": [
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "src/Hexalith.Folders/Hexalith.Folders.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [
+          {
+            "additional_properties": "",
+            "file": "Hexalith.Tenants.csproj"
+          }
+        ],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/load/Hexalith.Folders.LoadTests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj"
+      },
+      {
+        "carry": "",
+        "direct_tenants_source_references": [],
+        "eventstore_version": "5.1.1",
+        "exit_code": 0,
+        "project": "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
+      }
+    ]
+  },
+  "projects": 33,
+  "source_all_direct_tenants_references_carried": true,
+  "source_direct_tenants_references": 6,
+  "status": "pass"
+}

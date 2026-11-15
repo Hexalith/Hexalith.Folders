@@ -1,0 +1,14 @@
+["dotnet", "nuget", "verify", "--all", "/home/runner/work/Hexalith.EventStore/Hexalith.EventStore/.hexalith/release-evidence/api-compatibility/run-2ytdutl0/scratch/Microsoft.AspNetCore.App.Ref.10.0.15.nupkg"]
+
+Verifying Microsoft.AspNetCore.App.Ref.10.0.15
+Content hash: jNxZtliKNuZPCM+6YvNMZhMAe96AIWT4voG3zAzT4x3Ua/byk4d0NRWdYhXzV/+ztU9vSLxXZcHqAN57xRp8gg==
+
+Signature type: Author
+  Subject Name: CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US
+  SHA256 hash: 9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630
+  Valid from: 09/08/2026 00:00:00 to 12/03/2027 23:59:59
+
+Signature type: Repository
+  Subject Name: CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US
+  SHA256 hash: 1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D
+  Valid from: 02/23/2024 00:00:00 to 05/18/2027 23:59:59

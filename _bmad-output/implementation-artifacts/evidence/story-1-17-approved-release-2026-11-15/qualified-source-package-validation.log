@@ -1,0 +1,2 @@
+["python3", "tools/validate-release-packages.py", "/tmp/hexalith-job.l7DBxGHS/packages-output", "5.1.1"]
+Validated 14 release packages at version 5.1.1 in /tmp/hexalith-job.l7DBxGHS/packages-output.

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "artifact_manifest_sha256": "659b37fed3fae0a9cfa799589b88df2cf8eb89738fd150c80027c981128af445",
+  "retained_files_rehashed": 593,
+  "physical_runtime_package_member_comparisons": 32,
+  "unchanged_protected_root_files": 15016,
+  "remote_main_observed": "fdb59895975e86a1e234325a01237f259cdbd53b",
+  "observed_utc": "2026-11-15T12:31:19.345878+00:00",
+  "latest_published_eventstore_client": "5.1.0",
+  "candidate_5_1_1_published": false,
+  "source_ci_run": 43701823933,
+  "source_ci_conclusion": "failure",
+  "commitlint_run": 43701823983,
+  "commitlint_conclusion": "success",
+  "publication_approval": false
+}

@@ -1,0 +1,19 @@
+{
+  "every_selector_passed_unskipped": true,
+  "exit_code": 0,
+  "selectors": {
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 21,
+      "skipped": 0
+    }
+  },
+  "totals": {
+    "failed": 0,
+    "other": 0,
+    "passed": 21,
+    "skipped": 0
+  },
+  "xml_sha256": "72f33a959e62ad383a6d8def11f038220ff0d1e828df429233cb053ca276fe19"
+}

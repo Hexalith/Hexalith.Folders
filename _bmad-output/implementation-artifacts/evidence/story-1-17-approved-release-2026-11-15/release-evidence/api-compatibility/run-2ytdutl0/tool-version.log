@@ -1,0 +1,2 @@
+["dotnet", "exec", "--roll-forward", "Major", "/home/runner/work/Hexalith.EventStore/Hexalith.EventStore/.hexalith/release-evidence/api-compatibility/run-2ytdutl0/scratch/apicompat/tools/net10.0/any/Microsoft.DotNet.ApiCompat.Tool.dll", "--version"]
+11.0.100+297acf930fb0f5c07fd4e51d78e521b4ad2e5d1f

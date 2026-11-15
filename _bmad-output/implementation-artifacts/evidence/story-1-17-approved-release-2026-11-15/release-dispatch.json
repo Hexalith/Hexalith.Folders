@@ -1,0 +1,17 @@
+{
+  "command": [
+    "gh",
+    "workflow",
+    "run",
+    "release.yml",
+    "--repo",
+    "Hexalith/Hexalith.EventStore",
+    "--ref",
+    "main"
+  ],
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "expected_version": "5.1.1",
+  "exit_code": 0,
+  "observed_utc": "2026-11-15T14:14:28.273651+00:00",
+  "prior_run_ids": []
+}

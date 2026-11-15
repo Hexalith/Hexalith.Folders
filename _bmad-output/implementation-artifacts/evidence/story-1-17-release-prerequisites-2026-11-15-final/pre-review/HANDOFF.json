@@ -1,0 +1,1741 @@
+{
+  "api_gates": {
+    "existing_gate": {
+      "baseline": "4.2.0",
+      "candidate": "5.1.1",
+      "controls": {
+        "compatible": "pass",
+        "directory": "/tmp/hexalith-job.B2SUKDkV/api-compatibility/controls",
+        "removedMember": "refused CP0002",
+        "renamedParameter": "refused CP0017"
+      },
+      "families_passed": 14,
+      "receipt": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/api-compatibility/receipt.json",
+      "sha256": "64c1aba63dc85d902955d915bb013b95e49316b3c22b522f34fff442ce99e4cc"
+    },
+    "immediate_patch_gate": {
+      "baseline": "5.1.0",
+      "baseline_source": "49084f66f8d6545cae442875355a7066d5f5e73d",
+      "candidate": "5.1.1",
+      "families_passed": 14,
+      "receipt": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/receipt.json",
+      "sha256": "7edc18b12bf9014adc97a5ffb285dd8ff1acfb74beaae4ee6e30f6597010d09c"
+    }
+  },
+  "candidate_archives_and_symbols": [
+    {
+      "bytes": 120582,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "1bf4462cd4f2f8df2d4755703ff069cfa60123d920c4fb26b1c9d5c665e59579",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 28669,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Abstractions.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "eefbfce1274eb68300bf87db259bb88a7573f11ddd48b6f4524acaf3c3137085",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 1066979,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Cli.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "c2f42fcffca3cc26d4e920387c2d293befbdc25e1667fedd58899b72a7cb2add",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 167232,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Cli.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "13167c6cc52a39a490e9adb88c4a4c17483d03291743c1f03c12621e08cd5009",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 187572,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Server.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "035bd0eaed2c9ea0f368d4c2818456d12050a156473f7c3f356ffd8d31500225",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 49121,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Admin.Server.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "c0d8112f60c1c683a257a387d65e1ea682eb79cb445127ea37779c341c4de84a",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 136105,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Aspire.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "12d255f862d8388c6260833250e0bb735fe659a6328d3746f83d6705d24de16a",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 42477,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Aspire.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "f164259126621eba722584903b894eca61b4b97f7cf1a24cdcba649c3720db38",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 563911,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Client.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "3bf7c60737be685ff2d7cac5a2d51b7ca09e790bc7ec49a92a4dfa50ef4377ca",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 136241,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Client.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "6081c261ea6ce6364da3bfa1a34e3feef830c0206d69cc89b857926d0ae78ea2",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 473658,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Contracts.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "ddf11bf6b8ea5b3a70a0ddc5e1f5e63a408e89b55588ebc7c3829f27b2732b19",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 110264,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Contracts.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "51b827c4edc2dc7c0c21c1eabd7cb1e6475a295c09fd1816e4f6939f65fd9dbb",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 436306,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.DomainService.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "d49c40615519cae0d181f7fbb0ec1362b14d1a39c5b4ea63cc4687ad26d75701",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 122741,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.DomainService.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "f693c0052239b4d745e41ccc0e24e83c95e735c73ea69c51858f8759e04ec9f6",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 297841,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Gateway.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "8d56327cb214b00c2375520e418b11e2bb372ab548aa574ab7f7da5db39bc8a8",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 110116,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Gateway.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "3a6d1d75832f55a90a0bd3d0afde9556d00adb1b5fb481968793997292bb63ad",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 56998,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.RestApi.Generators.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "04e7b5c79e72f385f236de29771cb3cb26995396bfd795e6aacbbd9a1c92d8d8",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 16990,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.RestApi.Generators.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "61c3e147484a3e693eb8c8d11d178dd4788140b38f1b86b76c2b811a5c0e81c4",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 1394614,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Server.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "83c709e9a2044b86a031532fc7eaaf8c8a12e98b72e78553655d91318e063582",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 465343,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Server.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "93dd761414bdb8cd52689a63ad66c41554f33651e111c4286becff3d53695e35",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 250845,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "afa6072a15cf91d31d2e7bba4c66b05a814d986c04bb47422871c5ea29f15ec8",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 74429,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.ServiceDefaults.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "8433e92c8bae083c1fa7ce8f6a9c4d916534dccee4c661625002a50a772373f9",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 33377,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.SignalR.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "233754f24e607b02a755fb0806ed5a2bbb64d35eabb2d42f8f7316102e919aa1",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 17287,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.SignalR.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "94280eba1c437a18690e50a7cc806090ee723949ae37e1908c0a871cdae77ecc",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 121934,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Testing.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "92344230e0c56026be7d99aa82add49206b09c1f9620d0ef6ecd0e04fc4c55a4",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 46176,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Testing.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "13ab35e63a173e823dce22a7e7e0d5011a236ce687a081827171a15753227664",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 52676,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Testing.Integration.5.1.1.nupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "c78bf11ff0e169590780b6e9c7f9190db8b1f2be40577c78c6c7d9df8983c369",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    },
+    {
+      "bytes": 24555,
+      "path": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/candidate-packages/Hexalith.EventStore.Testing.Integration.5.1.1.snupkg",
+      "producer_base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "sha256": "d42394d1f5c9a94e191839720b096fa79c290a373c2341bd4b9703d0a4f4f9c0",
+      "unsigned_private_candidate": true,
+      "version": "5.1.1"
+    }
+  ],
+  "candidate_version": "5.1.1",
+  "gate_commands": {
+    "Builds/story-1-17-release-prerequisites-2026-11-15-final": [
+      {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "Tools/test-authoritative-package-catalog.ps1"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Builds",
+        "elapsed_seconds": 67.82,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "test-authoritative-package-catalog",
+        "log": "test-authoritative-package-catalog.log",
+        "log_sha256": "7004fa67a107f6ce122cd7a205bd6f6a41e47abb85cb017edb5dd736420d0833",
+        "started_utc": "2026-11-15T11:53:07Z"
+      },
+      {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "Tools/validate-platform-version-catalog.ps1"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Builds",
+        "elapsed_seconds": 1.97,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "validate-platform-version-catalog",
+        "log": "validate-platform-version-catalog.log",
+        "log_sha256": "1033c2442f670724b811b412893e3f9fbd1f6576926a4947a297dc8159a9dbb6",
+        "started_utc": "2026-11-15T11:54:15Z"
+      }
+    ],
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final": [
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.4JRm10oI/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.68,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-client-restore",
+        "log": "repaired-client-restore.log",
+        "log_sha256": "f3ac07d10061fae333c69ef673337bcbf1abf2483761cd62d4616e44af299962",
+        "started_utc": "2026-11-15T11:50:13Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 27.81,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-client-build",
+        "log": "repaired-client-build.log",
+        "log_sha256": "6186f55be15c249ff6bac491463109478b74678cc2669f0429030591b307afdb",
+        "started_utc": "2026-11-15T11:50:16Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Release/net11.0/Hexalith.EventStore.Client.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Streams.NativeSourceScannerTests",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.DomainService.NativeSourceScannerCompositionTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-scanner.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 1.07,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-scanner",
+        "log": "native-scanner.log",
+        "log_sha256": "b6947ce7f73df4bfd28a7c5d6417134ab1d2a9f4e0b74dfc14749fbbc15f5c32",
+        "started_utc": "2026-11-15T11:50:44Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Release/net11.0/Hexalith.EventStore.Client.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Streams.GatewayNativeSourceMetadataAdmissionTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-admission-isolated.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 0.57,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-admission-isolated",
+        "log": "native-admission-isolated.log",
+        "log_sha256": "48e3c2f3c0e368b842fb256e0e90ed6d446e3200070d80a59a25a4efc91c46f6",
+        "started_utc": "2026-11-15T11:50:45Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Release/net11.0/Hexalith.EventStore.Client.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Streams.*",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Routing.DevelopmentRouteCatalogBuilderTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/repaired-client-native-and-catalog.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 62.03,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-client-native-and-catalog",
+        "log": "repaired-client-native-and-catalog.log",
+        "log_sha256": "03bb62c9967fbaa3744a407dbde9739dec74b90ec4bc6f98df53708290fb1b49",
+        "started_utc": "2026-11-15T11:50:46Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.4JRm10oI/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 1.97,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-server-restore",
+        "log": "repaired-server-restore.log",
+        "log_sha256": "2f4cb962ed79dd1c63b02c792c65b2731aa90b4f5a318a30cbadac74db5ada4c",
+        "started_utc": "2026-11-15T11:51:48Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 34.52,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-server-build",
+        "log": "repaired-server-build.log",
+        "log_sha256": "565e79c619bd20261d85e0fd37079380e07937237687270e5b9c12767eeec0fe",
+        "started_utc": "2026-11-15T11:51:50Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Server.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Controllers.NativeSourceScannerAuthorizationTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Controllers.SyntheticOriginalSourceReceiverTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.DomainServices.DevelopmentRouteCatalogParityTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.DevelopmentGatewayIdentityTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.HeldMetadataDispatchTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Streams.*",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/repaired-server-native-and-ci-failures.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 26.84,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "repaired-server-native-and-ci-failures",
+        "log": "repaired-server-native-and-ci-failures.log",
+        "log_sha256": "9cd697d7600460470b2c202451c8974dd33c2051a24b8333da2f545aca34228d",
+        "started_utc": "2026-11-15T11:52:24Z"
+      }
+    ],
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final-composition": [
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.ZeTP2vHb/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.ZeTP2vHb/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.37,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.ZeTP2vHb/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.ZeTP2vHb/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.ZeTP2vHb/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.ZeTP2vHb/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-composition-restore",
+        "log": "native-composition-restore.log",
+        "log_sha256": "22462ed9b1c1bb6821f7730910391d0ff1c0077588a04da2594ca9b80a95b530",
+        "started_utc": "2026-11-15T12:01:50Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.ZeTP2vHb/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 21.0,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.ZeTP2vHb/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.ZeTP2vHb/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.ZeTP2vHb/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.ZeTP2vHb/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-composition-build",
+        "log": "native-composition-build.log",
+        "log_sha256": "b303c6b996d97d77da4059b04a5aa0c2e7612359f3a334e68350f6130393fb55",
+        "started_utc": "2026-11-15T12:01:53Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.ZeTP2vHb/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Release/net11.0/Hexalith.EventStore.DomainService.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.DomainService.Tests.NativeSourceScannerCompositionTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/native-composition.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.ZeTP2vHb/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 0.72,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.ZeTP2vHb/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.ZeTP2vHb/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.ZeTP2vHb/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.ZeTP2vHb/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-composition",
+        "log": "native-composition.log",
+        "log_sha256": "9533eb1de95ab320d941ff19ec740d7e9821ebdfe36d9cfde0eac62309106783",
+        "started_utc": "2026-11-15T12:02:14Z"
+      }
+    ],
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final-producer": [
+      {
+        "argv": [
+          "dotnet",
+          "--info"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 0.03,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "sdk",
+        "log": "sdk.log",
+        "log_sha256": "83fca8d5b09ab32123cefe99039c59dbee40d7c9a2fb0b9a9bedfc6bf3b74081",
+        "started_utc": "2026-11-15T11:43:55Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "run",
+          "tools/routing-catalog.cs",
+          "-c",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-p:UseNuGetDeps=true",
+          "--",
+          "development",
+          ".",
+          "deploy/dapr/eventstore-routing-catalog.json"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 25.38,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "development-catalog-regenerate",
+        "log": "development-catalog-regenerate.log",
+        "log_sha256": "f4051f6af40f02335e2d25fdfa6200ce8573c8cbab02d79f302d5faa94050d4d",
+        "started_utc": "2026-11-15T11:43:55Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "run",
+          "tools/routing-catalog.cs",
+          "-c",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-p:UseNuGetDeps=true",
+          "--",
+          "check-development",
+          ".",
+          "deploy/dapr/eventstore-routing-catalog.json"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.37,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "development-catalog-check",
+        "log": "development-catalog-check.log",
+        "log_sha256": "b87c019256aaf7d691d0a1d37e7a8326a778779c240e9b573bf977d67baccb41",
+        "started_utc": "2026-11-15T11:44:21Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "run",
+          "tools/routing-catalog.cs",
+          "-c",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-p:UseNuGetDeps=true",
+          "--",
+          "check-development-runtime",
+          "."
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.42,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 2,
+        "label": "development-runtime-boundary",
+        "log": "development-runtime-boundary.log",
+        "log_sha256": "3e5728fb06551ea43ce4c23779d47bb40812ef73f3a733755ed039491abfc6ec",
+        "started_utc": "2026-11-15T11:44:23Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.B2SUKDkV/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.18,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "client-restore",
+        "log": "client-restore.log",
+        "log_sha256": "abff5e1b8bd6b5c58ae36df8b2be313bec374b11b4cb710c9cf8cb8fe3619ebc",
+        "started_utc": "2026-11-15T11:44:29Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 13.05,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "client-build",
+        "log": "client-build.log",
+        "log_sha256": "5853147c64eefa826b77661d5a059a6591f25edb1886540cf47b914ba5b54581",
+        "started_utc": "2026-11-15T11:44:31Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Release/net11.0/Hexalith.EventStore.Client.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Streams.*",
+          "-class",
+          "Hexalith.EventStore.Client.Tests.Routing.DevelopmentRouteCatalogBuilderTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/client-native-and-affected.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 64.39,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "client-native-and-affected",
+        "log": "client-native-and-affected.log",
+        "log_sha256": "5eb924efdd563e00a782b456532ed929ed0e03b28f4cfe460a5a4271737a45f2",
+        "started_utc": "2026-11-15T11:44:44Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.B2SUKDkV/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 2.45,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "server-restore",
+        "log": "server-restore.log",
+        "log_sha256": "92812d624387e6d0c01f251619f4a34664bc01b383ba2c66858fa5c0595c226a",
+        "started_utc": "2026-11-15T11:45:48Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 22.87,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "server-build",
+        "log": "server-build.log",
+        "log_sha256": "b16b4528a85f2730df4e101c0811eba4484cdcb363ecef6783d6907eaa5812da",
+        "started_utc": "2026-11-15T11:45:51Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Release/net11.0/Hexalith.EventStore.Server.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Controllers.NativeSourceScannerAuthorizationTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Controllers.SyntheticOriginalSourceReceiverTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Streams.*",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.TechnicalHttp*",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.HeldMetadataDispatchTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.DevelopmentGatewayIdentityTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.Routing.PublishedTenantQuerySelectorAbiTests",
+          "-class",
+          "Hexalith.EventStore.Server.Tests.DomainServices.DevelopmentRouteCatalogParityTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/server-native-and-affected.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 45.15,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "server-native-and-affected",
+        "log": "server-native-and-affected.log",
+        "log_sha256": "92751960d6cc6b8eef2abb502bfa6dc45ae3b6685d849b5c68db0a6924e7fcac",
+        "started_utc": "2026-11-15T11:46:14Z"
+      },
+      {
+        "argv": [
+          "python3",
+          "tools/pack-release-packages.py",
+          "/tmp/hexalith-job.B2SUKDkV/candidate-packages",
+          "5.1.1"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 90.55,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "IncludeSymbols": "true",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "SymbolPackageFormat": "snupkg",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "pack-all-fourteen",
+        "log": "pack-all-fourteen.log",
+        "log_sha256": "e81c94a4a8b23e0895fe12b0d3b088a509f70e3c13f2a3ab50fc18e0bbe8869c",
+        "started_utc": "2026-11-15T11:46:59Z"
+      },
+      {
+        "argv": [
+          "python3",
+          "tools/validate-release-packages.py",
+          "/tmp/hexalith-job.B2SUKDkV/candidate-packages",
+          "5.1.1"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 0.07,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "validate-all-fourteen",
+        "log": "validate-all-fourteen.log",
+        "log_sha256": "22961a2c97741c66c7a1182879fb9cb512fb2946abce27658a995d9fe6d32631",
+        "started_utc": "2026-11-15T11:48:30Z"
+      },
+      {
+        "argv": [
+          "python3",
+          "tools/verify-release-api-compatibility.py",
+          "/tmp/hexalith-job.B2SUKDkV/candidate-packages",
+          "5.1.1",
+          "--candidate-commit",
+          "fdb59895975e86a1e234325a01237f259cdbd53b",
+          "--package-catalog",
+          "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.Builds/Props/Directory.Packages.props",
+          "--work-directory",
+          "/tmp/hexalith-job.B2SUKDkV/api-compatibility"
+        ],
+        "cwd": "/tmp/hexalith-job.B2SUKDkV/folders/references/Hexalith.EventStore",
+        "elapsed_seconds": 39.0,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.B2SUKDkV/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "HexalithEventStoreVersion": "5.1.0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.B2SUKDkV/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.B2SUKDkV/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.B2SUKDkV/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "api-all-fourteen",
+        "log": "api-all-fourteen.log",
+        "log_sha256": "cf1a179a9e182a46c1db9a860286d699a96e0af6a1b7d9307cbd3c8689e9fbee",
+        "started_utc": "2026-11-15T11:48:30Z"
+      }
+    ],
+    "Projects/story-1-17-release-prerequisites-2026-11-15-final": [
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "Hexalith.Projects.CI.slnx",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.4JRm10oI/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Projects",
+        "elapsed_seconds": 5.8,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "complete-release-restore",
+        "log": "complete-release-restore.log",
+        "log_sha256": "a6cb9c07b369df3409ede255ec2c9c84bcaeff2b45a02c0bf83842ef6332fd8b",
+        "started_utc": "2026-11-15T11:54:17Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "Hexalith.Projects.CI.slnx",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Projects",
+        "elapsed_seconds": 72.45,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "complete-release-build",
+        "log": "complete-release-build.log",
+        "log_sha256": "edaea0d06cff1c2b2ab18c85a68cc136bb005237632dfcefa85cd28ec40ba60f",
+        "started_utc": "2026-11-15T11:54:23Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Projects",
+        "elapsed_seconds": 1.42,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "server-focused-build",
+        "log": "server-focused-build.log",
+        "log_sha256": "105bfd94c6d52a290cb5532e9a84d6ceafc38b534ced0dc697239039693147e7",
+        "started_utc": "2026-11-15T11:55:35Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Projects.Server.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+          "-class",
+          "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests",
+          "-class",
+          "Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests",
+          "-class",
+          "Hexalith.Projects.Server.Tests.Conversations.*",
+          "-class",
+          "Hexalith.Projects.Server.Tests.Folders.*",
+          "-class",
+          "Hexalith.Projects.Server.Tests.ProjectConversationAssignmentEndpointTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/conversations-folders-adapters.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders/references/Hexalith.Projects",
+        "elapsed_seconds": 2.07,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "conversations-folders-adapters",
+        "log": "conversations-folders-adapters.log",
+        "log_sha256": "79f434dece76173ce785b87064793e3cc75846e72f4b8228fec9b5434cbe1e7f",
+        "started_utc": "2026-11-15T11:55:37Z"
+      }
+    ],
+    "folders/story-1-17-release-prerequisites-2026-11-15-final": [
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "Hexalith.Folders.CI.slnx",
+          "-p:Configuration=Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "--disable-build-servers",
+          "--configfile",
+          "/tmp/hexalith-job.4JRm10oI/NuGet.Config"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 6.29,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "complete-release-restore",
+        "log": "complete-release-restore.log",
+        "log_sha256": "b05749efe430b3c8ad4789312c2e30477435d1353429d587fcdbde44e4f9e9db",
+        "started_utc": "2026-11-15T11:55:39Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "Hexalith.Folders.CI.slnx",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 73.05,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "complete-release-build",
+        "log": "complete-release-build.log",
+        "log_sha256": "1ea065fa23582b354a6ae7905d46601df8ea9ea392876c8838540133f030fe72",
+        "started_utc": "2026-11-15T11:55:45Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 0.72,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.Contracts.Tests-build",
+        "log": "Hexalith.Folders.Contracts.Tests-build.log",
+        "log_sha256": "a6be32c9cf519ddb73f11368839ef8020d057077cf1937039f6475fac38bb6fe",
+        "started_utc": "2026-11-15T11:56:58Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 1.07,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.Client.Tests-build",
+        "log": "Hexalith.Folders.Client.Tests-build.log",
+        "log_sha256": "053ff0bc68234db6b0be3133836995e47f0657e5fbe8ebe9719dde807197fd14",
+        "started_utc": "2026-11-15T11:56:59Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 7.62,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.Server.Tests-build",
+        "log": "Hexalith.Folders.Server.Tests-build.log",
+        "log_sha256": "5cb4a7ff3ed89f0285fd54001b7ae665c96791f09f926b63f3a4fc6127452ded",
+        "started_utc": "2026-11-15T11:57:00Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 1.47,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.IntegrationTests-build",
+        "log": "Hexalith.Folders.IntegrationTests-build.log",
+        "log_sha256": "4fef5a6b98ceca55d616cb25d7141573a28fa658c175665c7c7f9529f51d2135",
+        "started_utc": "2026-11-15T11:57:08Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 1.12,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.Cli.Tests-build",
+        "log": "Hexalith.Folders.Cli.Tests-build.log",
+        "log_sha256": "414d8b708217e11c36443794a465e7faff32bf67556319e12350d5c3f36c6c5c",
+        "started_utc": "2026-11-15T11:57:09Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+          "--configuration",
+          "Release",
+          "-p:UseHexalithProjectReferences=false",
+          "-m:1",
+          "-warnaserror",
+          "--disable-build-servers",
+          "--no-restore"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 1.07,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "Hexalith.Folders.Mcp.Tests-build",
+        "log": "Hexalith.Folders.Mcp.Tests-build.log",
+        "log_sha256": "b6d9a64db5a4e7ee155a2fe5df9752b4fe4ad34e24152708505c4923687a5152",
+        "started_utc": "2026-11-15T11:57:10Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/tests/Hexalith.Folders.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Server.Tests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+          "-class",
+          "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests",
+          "-class",
+          "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+          "-class",
+          "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests",
+          "-class",
+          "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-adapter-and-authority.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 4.48,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "native-adapter-and-authority",
+        "log": "native-adapter-and-authority.log",
+        "log_sha256": "b498d728628abf8412dd78c45342cf2cb81df52aa7e090c4ec951cbc69cb1765",
+        "started_utc": "2026-11-15T11:57:11Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "/tmp/hexalith-job.4JRm10oI/folders/tests/Hexalith.Folders.IntegrationTests/bin/Release/net11.0/Hexalith.Folders.IntegrationTests.dll",
+          "-noLogo",
+          "-noColor",
+          "-class",
+          "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+          "-class",
+          "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+          "-result-xml",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/routing.xml"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 32.73,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "routing",
+        "log": "routing.log",
+        "log_sha256": "34ad2a213630f67c617120f19a4620a12893e77dcc639c4fd3a44b4a6bf9a94c",
+        "started_utc": "2026-11-15T11:57:16Z"
+      },
+      {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "tests/tools/run-contract-parity-ci-gates.ps1",
+          "-SkipRestoreBuild",
+          "-OutputReportPath",
+          "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/parity-report.json"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 62.79,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "parity-all-twelve",
+        "log": "parity-all-twelve.log",
+        "log_sha256": "298c84ee1b95abfe12e1dd43b2aebf4b6e4336abdd8ecbcc49b8d533c91a15d9",
+        "started_utc": "2026-11-15T11:57:49Z"
+      },
+      {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "tests/tools/run-governance-completeness-gates.ps1",
+          "-SkipRestoreBuild"
+        ],
+        "cwd": "/tmp/hexalith-job.4JRm10oI/folders",
+        "elapsed_seconds": 7.34,
+        "environment": {
+          "DOTNET_CLI_HOME": "/tmp/hexalith-job.4JRm10oI/dotnet-home",
+          "DOTNET_CLI_USE_MSBUILD_SERVER": "0",
+          "MSBUILDDISABLENODEREUSE": "1",
+          "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.4JRm10oI/http-cache",
+          "NUGET_PACKAGES": "/tmp/hexalith-job.4JRm10oI/packages",
+          "RestoreConfigFile": "/tmp/hexalith-job.4JRm10oI/NuGet.Config",
+          "UseSharedCompilation": "false"
+        },
+        "exit_code": 0,
+        "label": "governance",
+        "log": "governance.log",
+        "log_sha256": "e833d62453dc12bb6a8db3a59246df51e23f9163504565a4d63baeb425a9c00c",
+        "started_utc": "2026-11-15T11:58:51Z"
+      }
+    ]
+  },
+  "governance": "passed",
+  "limitations": [
+    "The existing Development runtime completeness boundary still refuses unrepresented-unbounded-query-fallback (exit2); declarations are generated/checked, not activated.",
+    "Exact remote source CI run43701823933 at fdb59895975e86a1e234325a01237f259cdbd53b remains failed. Local repaired tests do not replace new exact-source push CI and commitlint after normal reviewed source landing.",
+    "Catalog working files select unpublished EventStore5.1.1 and require the exact retained private feed. All changes remain unstaged; no publication/deployment performed.",
+    "Private candidate archives embed the base Git commit plus retained working-patch provenance. A later approved release rebuilds from its newly qualified source SHA and has new signed archive/runtime identities.",
+    "Earlier cache-fed or incomplete-layout attempts and the zero-test wrong-DI-selector attempt are preserved as historical, nonqualifying evidence."
+  ],
+  "package_and_runtime_bindings": {
+    "Projects": {
+      "all_candidate_archives_identical": true,
+      "all_runtime_assemblies_identical_to_package_members": true,
+      "restored_candidate_archive_bindings": 47,
+      "runtime_assembly_bindings": 10,
+      "verified_public_dependencies": 19
+    },
+    "folders": {
+      "all_candidate_archives_identical": true,
+      "all_runtime_assemblies_identical_to_package_members": true,
+      "restored_candidate_archive_bindings": 91,
+      "runtime_assembly_bindings": 20,
+      "verified_public_dependencies": 12
+    }
+  },
+  "parity_categories_passed": 12,
+  "preservation_receipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/preservation.json",
+  "proposed_release_action": {
+    "effects": [
+      "Rebuild and publish all fourteen NuGet package families",
+      "Publish EventStore container images",
+      "Create GitHub release"
+    ],
+    "eventual_command_after_source_and_explicit_approval": [
+      "gh",
+      "workflow",
+      "run",
+      "release.yml",
+      "--repo",
+      "Hexalith/Hexalith.EventStore",
+      "--ref",
+      "main"
+    ],
+    "exact_new_qualified_source_sha": null,
+    "expected_semantic_release_version": "5.1.1",
+    "inputs": {},
+    "package_only_input_available": false,
+    "ready_to_dispatch": false,
+    "ref": "main",
+    "repository": "Hexalith/Hexalith.EventStore",
+    "required_before_action": [
+      "Normal review/landing of owner changes (not authorized in this preparation)",
+      "Successful current exact-source push CI and commitlint",
+      "Present the exact newly qualified source/artifacts and full workflow effects for explicit publication/deployment approval"
+    ],
+    "workflow": ".github/workflows/release.yml"
+  },
+  "publication_or_deployment_approved": false,
+  "published_pair_provenance": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/published-package-provenance.json",
+  "reproduce": {
+    "consumers": [
+      "run-with-temp",
+      "python3",
+      "eng/story117-release-prerequisites/prepare.py",
+      "--phase",
+      "consumers",
+      "--evidence-name",
+      "NEW-CONSUMER",
+      "--producer-evidence",
+      "NEW-PRODUCER"
+    ],
+    "patch_api": [
+      "run-with-temp",
+      "python3",
+      "eng/story117-release-prerequisites/verify_patch_api.py",
+      "--evidence-name",
+      "NEW-PATCH-API",
+      "--producer-evidence",
+      "NEW-PRODUCER"
+    ],
+    "producer": [
+      "run-with-temp",
+      "python3",
+      "eng/story117-release-prerequisites/prepare.py",
+      "--phase",
+      "producer",
+      "--evidence-name",
+      "NEW-PRODUCER"
+    ]
+  },
+  "source_identities": {
+    "Builds": {
+      "base_commit": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+      "diff_check_diagnostics": "",
+      "diff_check_exit": 0,
+      "staged_paths": [],
+      "status": " M Props/Directory.Packages.props\n M Tools/test-authoritative-package-catalog.ps1\n?? _bmad-output/implementation-artifacts/evidence/\n",
+      "working_patch": "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+      "working_patch_sha256": "9391a96d3ed9d02d1fd64c8fe91b1aa67c1dfce61fc6071f02838966c6e1d10d"
+    },
+    "EventStore": {
+      "base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+      "diff_check_diagnostics": "",
+      "diff_check_exit": 0,
+      "staged_paths": [],
+      "status": " M deploy/dapr/eventstore-routing-catalog.json\n M tests/Hexalith.EventStore.Client.Tests/Routing/DevelopmentRouteCatalogBuilderTests.cs\n M tests/Hexalith.EventStore.Client.Tests/Streams/GatewayNativeSourceMetadataAdmissionTests.cs\n M tests/Hexalith.EventStore.Server.Tests/DomainServices/DevelopmentRouteCatalogParityTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpCatalogFixture.cs\n",
+      "working_patch": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+      "working_patch_sha256": "577f1395a7ca5cb73361507e970a93825486ffd5b284da026c6c978e6912e795"
+    },
+    "Projects": {
+      "base_commit": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+      "diff_check_diagnostics": "",
+      "diff_check_exit": 0,
+      "staged_paths": [],
+      "status": " M Directory.Packages.props\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/\n",
+      "working_patch": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+      "working_patch_sha256": "f849c3f88f55d8f9dcdeb7d818cd16ee7cc90b161bfc19aa8aa47629ce38afa2"
+    },
+    "folders": {
+      "base_commit": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+      "diff_check_diagnostics": "warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it\n",
+      "diff_check_exit": 0,
+      "staged_paths": [],
+      "status": " M _bmad-output/implementation-artifacts/epic-1-context.md\n M references/Hexalith.Builds\n M references/Hexalith.EventStore\n M references/Hexalith.Projects\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-review/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/\n?? _bmad-output/implementation-artifacts/spec-1-17-resolve-native-scanner-and-conversations-release-prerequisites.md\n?? eng/story117-release-prerequisites/\n",
+      "working_patch": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/handoff-working-source.patch",
+      "working_patch_sha256": "9be4a34cac7f8d6e25f998ea816c2865484ffe64273487abacfb4db82dbbb95c"
+    }
+  },
+  "status": "private-release-preparation-complete",
+  "story_1_17_closed": false,
+  "test_counts": {
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final-composition/native-composition": {
+      "failed": 0,
+      "passed": 5,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/native-composition.xml",
+      "sha256": "a5ca2c15bfd907cc4dd9f324940f5060a6a7df07891e036e28fc524a863fb20c",
+      "skipped": 0,
+      "total": 5
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final-producer/client-native-and-affected": {
+      "failed": 0,
+      "passed": 441,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/client-native-and-affected.xml",
+      "sha256": "8962247664e320a19ff7bbe46f6cd5d690b73ac547465c3793f48b2edd92e091",
+      "skipped": 0,
+      "total": 441
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final-producer/server-native-and-affected": {
+      "failed": 0,
+      "passed": 400,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/server-native-and-affected.xml",
+      "sha256": "9114c4284432e9043dec0d23c1fe56fa271d49a39ade6c236c2cc57901935697",
+      "skipped": 0,
+      "total": 400
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final/native-admission-isolated": {
+      "failed": 0,
+      "passed": 8,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-admission-isolated.xml",
+      "sha256": "45364727a233ca6cee75a134f828902cbd1242b6d1e099d37d3fb4bb352a2267",
+      "skipped": 0,
+      "total": 8
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final/native-scanner": {
+      "failed": 0,
+      "passed": 17,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-scanner.xml",
+      "sha256": "202da5ed743d324803fc1daad9a3bc05a867d5be787198fba676ca0dd9582ad9",
+      "skipped": 0,
+      "total": 17
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final/repaired-client-native-and-catalog": {
+      "failed": 0,
+      "passed": 441,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/repaired-client-native-and-catalog.xml",
+      "sha256": "3991bde7845572b6ad325b19299cff585c1cc4aa51ced63793f3bda262549c22",
+      "skipped": 0,
+      "total": 441
+    },
+    "EventStore/story-1-17-release-prerequisites-2026-11-15-final/repaired-server-native-and-ci-failures": {
+      "failed": 0,
+      "passed": 178,
+      "report": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/repaired-server-native-and-ci-failures.xml",
+      "sha256": "62345ba30607c7b38023000d4046b66b810a01ceee89ab009f031a958761fcbb",
+      "skipped": 0,
+      "total": 178
+    },
+    "Projects/story-1-17-release-prerequisites-2026-11-15-final/conversations-folders-adapters": {
+      "failed": 0,
+      "passed": 221,
+      "report": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/conversations-folders-adapters.xml",
+      "sha256": "f9482d8cd48ee81e2b8f499ea0f4d2baa13d769ff50d2dda8197c59250b39561",
+      "skipped": 0,
+      "total": 221
+    },
+    "folders/story-1-17-release-prerequisites-2026-11-15-final/native-adapter-and-authority": {
+      "failed": 0,
+      "passed": 64,
+      "report": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/native-adapter-and-authority.xml",
+      "sha256": "387cb4a83a017616d80cc9cc933992efed89c5d9d2ab62620855783983b7ef0e",
+      "skipped": 0,
+      "total": 64
+    },
+    "folders/story-1-17-release-prerequisites-2026-11-15-final/routing": {
+      "failed": 0,
+      "passed": 20,
+      "report": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/routing.xml",
+      "sha256": "3694b904b21d0b88932ceb31fd43c4b218568964fdfe24d7da9b9b27b4e3503a",
+      "skipped": 0,
+      "total": 20
+    }
+  }
+}

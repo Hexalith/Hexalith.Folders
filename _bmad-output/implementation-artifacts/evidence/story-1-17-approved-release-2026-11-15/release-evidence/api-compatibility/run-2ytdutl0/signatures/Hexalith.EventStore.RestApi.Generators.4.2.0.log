@@ -1,0 +1,9 @@
+["dotnet", "nuget", "verify", "--all", "/home/runner/work/Hexalith.EventStore/Hexalith.EventStore/.hexalith/release-evidence/api-compatibility/run-2ytdutl0/scratch/baseline/Hexalith.EventStore.RestApi.Generators.4.2.0.nupkg"]
+
+Verifying Hexalith.EventStore.RestApi.Generators.4.2.0
+Content hash: Guvhqhqaf21Dnp0JibD3mwSLRkJ5GQ8NYJvA5LA18qq5XhLXCl82oSG0ctIVlvw6ZXuxwble472P9mE8uZ9pJA==
+
+Signature type: Repository
+  Subject Name: CN=NuGet.org Repository by Microsoft, O=NuGet.org Repository by Microsoft, L=Redmond, S=Washington, C=US
+  SHA256 hash: 1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D
+  Valid from: 02/23/2024 00:00:00 to 05/18/2027 23:59:59

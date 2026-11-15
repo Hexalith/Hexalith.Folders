@@ -1,0 +1,17 @@
+["dotnet", "build", "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj", "--configuration", "Release", "-p:UseHexalithProjectReferences=false", "-m:1", "-warnaserror", "--disable-build-servers", "--no-restore"]
+  Hexalith.Folders.Aspire -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Aspire/bin/Release/net11.0/Hexalith.Folders.Aspire.dll
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Contracts/bin/Release/net11.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Client/bin/Release/net11.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Cli -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Cli/bin/Release/net11.0/Hexalith.Folders.Cli.dll
+  Hexalith.Folders.Mcp -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Mcp/bin/Release/net11.0/Hexalith.Folders.Mcp.dll
+  Hexalith.Folders -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders/bin/Release/net11.0/Hexalith.Folders.dll
+  Hexalith.Folders.ServiceDefaults -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net11.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Server/bin/Release/net11.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.Testing -> /tmp/hexalith-job.4JRm10oI/folders/src/Hexalith.Folders.Testing/bin/Release/net11.0/Hexalith.Folders.Testing.dll
+  Hexalith.Folders.IntegrationTests -> /tmp/hexalith-job.4JRm10oI/folders/tests/Hexalith.Folders.IntegrationTests/bin/Release/net11.0/Hexalith.Folders.IntegrationTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.23

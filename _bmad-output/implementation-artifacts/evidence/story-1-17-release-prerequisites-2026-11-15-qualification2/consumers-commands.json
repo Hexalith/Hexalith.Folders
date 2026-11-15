@@ -1,0 +1,313 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "Hexalith.Folders.CI.slnx",
+      "-p:Configuration=Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "--disable-build-servers",
+      "--configfile",
+      "/tmp/hexalith-job.xU5npI6s/NuGet.Config"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 8.76,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "complete-release-restore",
+    "log": "complete-release-restore.log",
+    "log_sha256": "f841e00d1cf44db9787b3793b3214a49b682535e95981a744d8c3ae2c5619ef9",
+    "started_utc": "2026-11-15T11:38:42Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "Hexalith.Folders.CI.slnx",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 68.41,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 1,
+    "label": "complete-release-build",
+    "log": "complete-release-build.log",
+    "log_sha256": "ed5976c857e73aba6b56d6e6f10816402e55ac2790d158fa032f35b2c1bf49c9",
+    "started_utc": "2026-11-15T11:38:51Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 0.82,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.Contracts.Tests-build",
+    "log": "Hexalith.Folders.Contracts.Tests-build.log",
+    "log_sha256": "5b33c01ec9aeee83fb4218a95c38314e91ccaf1c960fc2feb533f2956ea86a46",
+    "started_utc": "2026-11-15T11:40:00Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 1.12,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.Client.Tests-build",
+    "log": "Hexalith.Folders.Client.Tests-build.log",
+    "log_sha256": "a922266037fbfa257df382bb952aebb261327f877670f5dce0c750a6e68da774",
+    "started_utc": "2026-11-15T11:40:00Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 8.0,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.Server.Tests-build",
+    "log": "Hexalith.Folders.Server.Tests-build.log",
+    "log_sha256": "3c38b53685401bb6b07ea6bd3cef45edc81fd1f58865ce31ef6d0e13ed2a9cb3",
+    "started_utc": "2026-11-15T11:40:01Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 1.47,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.IntegrationTests-build",
+    "log": "Hexalith.Folders.IntegrationTests-build.log",
+    "log_sha256": "45aebf2083306bf9661a00c1bbc575ae7ebda757da09b542939019de7d94d0cb",
+    "started_utc": "2026-11-15T11:40:09Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 1.02,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.Cli.Tests-build",
+    "log": "Hexalith.Folders.Cli.Tests-build.log",
+    "log_sha256": "c562166e385f2a8e2209ca29bdf30cf0c1713b85ae57e9e6d1c9674cc9c41e36",
+    "started_utc": "2026-11-15T11:40:11Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+      "--configuration",
+      "Release",
+      "-p:UseHexalithProjectReferences=false",
+      "-m:1",
+      "-warnaserror",
+      "--disable-build-servers",
+      "--no-restore"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 1.02,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "Hexalith.Folders.Mcp.Tests-build",
+    "log": "Hexalith.Folders.Mcp.Tests-build.log",
+    "log_sha256": "92b684aae05f4c1348232a6a993d6fdebaca32cb9633e0f5521e47e2aacc5a65",
+    "started_utc": "2026-11-15T11:40:12Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.xU5npI6s/folders/tests/Hexalith.Folders.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Server.Tests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests",
+      "-class",
+      "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/native-adapter-and-authority.xml"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 4.23,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "native-adapter-and-authority",
+    "log": "native-adapter-and-authority.log",
+    "log_sha256": "5a92c0b3ebfcdb7de479e9c3451919aa70bdedc613726604f084400c69d13bad",
+    "started_utc": "2026-11-15T11:40:13Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "/tmp/hexalith-job.xU5npI6s/folders/tests/Hexalith.Folders.IntegrationTests/bin/Release/net11.0/Hexalith.Folders.IntegrationTests.dll",
+      "-noLogo",
+      "-noColor",
+      "-class",
+      "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+      "-class",
+      "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests",
+      "-result-xml",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/routing.xml"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 31.4,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "routing",
+    "log": "routing.log",
+    "log_sha256": "c8c5c55488b2d41e35e68237061abfdada630be58caeacbcb95b0919578b1e9c",
+    "started_utc": "2026-11-15T11:40:17Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "tests/tools/run-contract-parity-ci-gates.ps1",
+      "-SkipRestoreBuild",
+      "-OutputReportPath",
+      "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/parity-report.json"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 54.67,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "parity-all-twelve",
+    "log": "parity-all-twelve.log",
+    "log_sha256": "1a0b9e29cfb90220496ba4203722771d2db7119fd7f4fb3daa31f578917fb69c",
+    "started_utc": "2026-11-15T11:40:49Z"
+  },
+  {
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "tests/tools/run-governance-completeness-gates.ps1",
+      "-SkipRestoreBuild"
+    ],
+    "cwd": "/tmp/hexalith-job.xU5npI6s/folders",
+    "elapsed_seconds": 7.38,
+    "environment": {
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.xU5npI6s/dotnet-home",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.xU5npI6s/http-cache",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.xU5npI6s/packages"
+    },
+    "exit_code": 0,
+    "label": "governance",
+    "log": "governance.log",
+    "log_sha256": "d2a4a28eea0bd85da83e478a1a42cfca21482992775bfe713116ac9b8753364f",
+    "started_utc": "2026-11-15T11:41:43Z"
+  }
+]

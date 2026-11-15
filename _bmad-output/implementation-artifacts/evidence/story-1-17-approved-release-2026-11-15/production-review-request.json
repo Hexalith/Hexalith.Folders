@@ -1,0 +1,7 @@
+{
+  "environment_ids": [
+    18422589799
+  ],
+  "state": "approved",
+  "comment": "Approved EventStore5.1.1 publication at source f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331 after successful exact-sourceCI43719644714 and commitlint43719644629."
+}

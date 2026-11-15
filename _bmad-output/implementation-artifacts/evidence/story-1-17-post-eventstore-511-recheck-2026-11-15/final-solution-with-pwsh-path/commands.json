@@ -1,0 +1,47 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "restore",
+      "Hexalith.Folders.CI.slnx",
+      "-p:Configuration=Debug",
+      "--configfile",
+      "/tmp/hexalith-job.QaERLhHU/nuget.config",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.QaERLhHU/folders",
+    "elapsed_seconds": 4.62,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T15:58:51Z",
+    "label": "source-solution-restore",
+    "log": "source-solution-restore.log",
+    "log_sha256": "52db9447e86eac8aaf528dec7ea2fba34222b31e616e6e0377d0953459d0dfe9",
+    "started_utc": "2026-11-15T15:58:46Z"
+  },
+  {
+    "argv": [
+      "dotnet",
+      "build",
+      "Hexalith.Folders.CI.slnx",
+      "--configuration",
+      "Debug",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "/tmp/hexalith-job.QaERLhHU/folders",
+    "elapsed_seconds": 194.57,
+    "exit_code": 0,
+    "finished_utc": "2026-11-15T16:02:06Z",
+    "label": "source-solution-build",
+    "log": "source-solution-build.log",
+    "log_sha256": "8234aff2e93ef8483747ef8e2b9b719b135963839c63add26cfbbd738a973730",
+    "started_utc": "2026-11-15T15:58:51Z"
+  }
+]

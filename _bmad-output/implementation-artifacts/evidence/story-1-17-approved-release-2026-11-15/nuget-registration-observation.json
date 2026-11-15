@@ -1,0 +1,399 @@
+{
+  "observed_utc": "2026-11-15T14:38:19.601599+00:00",
+  "packages": [
+    {
+      "id": "Hexalith.EventStore.Contracts",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.contracts/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.42/hexalith.eventstore.contracts.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.contracts/5.1.1/hexalith.eventstore.contracts.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:20.137+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.contracts/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Client",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.client/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.42/hexalith.eventstore.client.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.client/5.1.1/hexalith.eventstore.client.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:19.807+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.client/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Server",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.server/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.31.13/hexalith.eventstore.server.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.server/5.1.1/hexalith.eventstore.server.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:20.73+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.server/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.SignalR",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.signalr/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.31.51/hexalith.eventstore.signalr.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.signalr/5.1.1/hexalith.eventstore.signalr.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:20.377+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.signalr/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Testing",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.testing/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.32.26/hexalith.eventstore.testing.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing/5.1.1/hexalith.eventstore.testing.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:23.927+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.testing/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Testing.Integration",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.testing.integration/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.05/hexalith.eventstore.testing.integration.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing.integration/5.1.1/hexalith.eventstore.testing.integration.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:22.277+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.testing.integration/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Aspire",
+      "ready": false,
+      "http": 404
+    },
+    {
+      "id": "Hexalith.EventStore.ServiceDefaults",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.servicedefaults/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.30.38/hexalith.eventstore.servicedefaults.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.servicedefaults/5.1.1/hexalith.eventstore.servicedefaults.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:21.557+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.servicedefaults/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.DomainService",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.domainservice/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.35.31/hexalith.eventstore.domainservice.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.domainservice/5.1.1/hexalith.eventstore.domainservice.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:23.44+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.domainservice/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.RestApi.Generators",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.restapi.generators/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.05/hexalith.eventstore.restapi.generators.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.restapi.generators/5.1.1/hexalith.eventstore.restapi.generators.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:21.027+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.restapi.generators/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Gateway",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.gateway/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.05/hexalith.eventstore.gateway.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.gateway/5.1.1/hexalith.eventstore.gateway.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:21.923+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.gateway/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Admin.Abstractions",
+      "ready": false,
+      "http": 404
+    },
+    {
+      "id": "Hexalith.EventStore.Admin.Cli",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.admin.cli/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.05/hexalith.eventstore.admin.cli.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.cli/5.1.1/hexalith.eventstore.admin.cli.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:22.637+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.admin.cli/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    },
+    {
+      "id": "Hexalith.EventStore.Admin.Server",
+      "ready": true,
+      "registration": {
+        "@id": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.admin.server/5.1.1.json",
+        "@type": [
+          "Package",
+          "http://schema.nuget.org/catalog#Permalink"
+        ],
+        "catalogEntry": "https://api.nuget.org/v3/catalog0/data/2026.11.15.14.33.05/hexalith.eventstore.admin.server.5.1.1.json",
+        "listed": true,
+        "packageContent": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.server/5.1.1/hexalith.eventstore.admin.server.5.1.1.nupkg",
+        "published": "2026-11-15T14:22:21.247+00:00",
+        "registration": "https://api.nuget.org/v3/registration5-gz-semver2/hexalith.eventstore.admin.server/index.json",
+        "@context": {
+          "@vocab": "http://schema.nuget.org/schema#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "catalogEntry": {
+            "@type": "@id"
+          },
+          "registration": {
+            "@type": "@id"
+          },
+          "packageContent": {
+            "@type": "@id"
+          },
+          "published": {
+            "@type": "xsd:dateTime"
+          }
+        }
+      }
+    }
+  ]
+}

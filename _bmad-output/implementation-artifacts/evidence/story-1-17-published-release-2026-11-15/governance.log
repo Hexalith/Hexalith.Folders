@@ -1,0 +1,19 @@
+["pwsh", "-NoLogo", "-NoProfile", "-File", "tests/tools/run-governance-completeness-gates.ps1", "-SkipRestoreBuild"]
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = '801a2f64a58ecb71362fea4affa91be643d11ef4f87547db129dbf9661b0e56a')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 217, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 5.347s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = '801a2f64a58ecb71362fea4affa91be643d11ef4f87547db129dbf9661b0e56a')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.517s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = '801a2f64a58ecb71362fea4affa91be643d11ef4f87547db129dbf9661b0e56a')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.106s

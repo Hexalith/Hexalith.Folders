@@ -1,0 +1,9 @@
+{
+  "user_approval": "I approve",
+  "scope": "Approved EventStore5.1.1 publication through existing release workflow, including14NuGet families, container images and GitHub release; necessary reviewed source landing and exact-sourceCI qualification; no deployment, routing/tracker change or Story1.17 closure.",
+  "handoff_sha256": "8a130477fba83f8cd72bff7a947b926a6d4170c5d4e1f30546d0421fc762c828",
+  "artifact_manifest_sha256": "659b37fed3fae0a9cfa799589b88df2cf8eb89738fd150c80027c981128af445",
+  "base_commit": "fdb59895975e86a1e234325a01237f259cdbd53b",
+  "approved_patch_sha256": "577f1395a7ca5cb73361507e970a93825486ffd5b284da026c6c978e6912e795",
+  "observed_utc": "2026-11-15T13:32:49.781366+00:00"
+}

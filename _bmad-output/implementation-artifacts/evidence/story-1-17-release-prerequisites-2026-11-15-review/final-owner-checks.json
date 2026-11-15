@@ -1,0 +1,26 @@
+[
+  {
+    "owner": ".",
+    "head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+    "diff_check": 0,
+    "staged_paths": []
+  },
+  {
+    "owner": "references/Hexalith.EventStore",
+    "head": "fdb59895975e86a1e234325a01237f259cdbd53b",
+    "diff_check": 0,
+    "staged_paths": []
+  },
+  {
+    "owner": "references/Hexalith.Builds",
+    "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+    "diff_check": 0,
+    "staged_paths": []
+  },
+  {
+    "owner": "references/Hexalith.Projects",
+    "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+    "diff_check": 0,
+    "staged_paths": []
+  }
+]

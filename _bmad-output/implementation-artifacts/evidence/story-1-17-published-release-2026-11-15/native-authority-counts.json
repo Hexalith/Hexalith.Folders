@@ -1,0 +1,10 @@
+{
+  "passed": 64,
+  "selectors": {
+    "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests": 14,
+    "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests": 6,
+    "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests": 20,
+    "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests": 8,
+    "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests": 16
+  }
+}

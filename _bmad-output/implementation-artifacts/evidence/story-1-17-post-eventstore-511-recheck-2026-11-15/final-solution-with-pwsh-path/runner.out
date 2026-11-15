@@ -1,0 +1,8 @@
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+START source-solution-restore
+END source-solution-restore exit=0 elapsed=4.6s
+START source-solution-build
+END source-solution-build exit=0 elapsed=194.6s
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+{"path_prepended": "/home/administrator/.dotnet/tools", "pwsh": "/home/administrator/.dotnet/tools/pwsh", "copied_inputs": 63094, "restore": 0, "build": 0, "owning_workspace_unchanged": false}
+exit=1

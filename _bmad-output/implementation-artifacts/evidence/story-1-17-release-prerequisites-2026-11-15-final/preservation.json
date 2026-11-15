@@ -1,0 +1,42 @@
+{
+  "all_preexisting_root_tracked_files_unchanged": true,
+  "before_manifest": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/protected-root-files-before.json",
+  "before_manifest_sha256": "3cc79d228cab486c80437a12949f8fb7723b29e1044e3dab4430e5c240307d50",
+  "changed_root_files": [],
+  "owners": {
+    "Builds": {
+      "allowed_changed_paths": [
+        "Props/Directory.Packages.props",
+        "Tools/test-authoritative-package-catalog.ps1"
+      ],
+      "baseline_manifest": "references/Hexalith.Builds/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/producer-source.json",
+      "baseline_manifest_sha256": "061ef622fea7a73597fa29c7fcf75f1971576951c84407b151c42678a631fd2b",
+      "protected_tracked_files_checked": 3615,
+      "unexpected_byte_changes": []
+    },
+    "EventStore": {
+      "allowed_changed_paths": [
+        "deploy/dapr/eventstore-routing-catalog.json",
+        "tests/Hexalith.EventStore.Client.Tests/Routing/DevelopmentRouteCatalogBuilderTests.cs",
+        "tests/Hexalith.EventStore.Client.Tests/Streams/GatewayNativeSourceMetadataAdmissionTests.cs",
+        "tests/Hexalith.EventStore.Server.Tests/DomainServices/DevelopmentRouteCatalogParityTests.cs",
+        "tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpCatalogFixture.cs"
+      ],
+      "baseline_manifest": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/producer-source.json",
+      "baseline_manifest_sha256": "82f4455774fde264972afe787ab69a4b96f6574dccf9fbdc988cd5bd927c8e46",
+      "protected_tracked_files_checked": 10544,
+      "unexpected_byte_changes": []
+    },
+    "Projects": {
+      "allowed_changed_paths": [
+        "Directory.Packages.props"
+      ],
+      "baseline_manifest": "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/consumers-source.json",
+      "baseline_manifest_sha256": "ec4291fe78d7e843ae7f74c2bcf43bf372526b17984ddbe68d8267e8374db79d",
+      "protected_tracked_files_checked": 23850,
+      "unexpected_byte_changes": []
+    }
+  },
+  "root_files_checked": 15016,
+  "trackers_operational_controls_migration_T0_and_historical_evidence": "All preexisting root tracked bytes, including authorized workflow context-agent refresh, remain identical. No publication, deployment, workflow dispatch, staging, commit, push, or nested-submodule initialization performed."
+}

@@ -1,0 +1,33 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj (in 165 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj (in 217 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj (in 184 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj (in 228 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj (in 165 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj (in 174 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj (in 224 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/Hexalith.Tenants.Aspire.csproj (in 194 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj (in 224 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Testing/Hexalith.FrontComposer.Testing.csproj (in 166 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj (in 231 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts.UI/Hexalith.FrontComposer.Contracts.UI.csproj (in 15 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj (in 224 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj (in 3 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj (in 185 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj (in 231 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj (in 1 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj (in 13 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj (in 30 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj (in 33 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj (in 42 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj (in 39 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj (in 82 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj (in 70 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj (in 63 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj (in 28 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj (in 89 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj (in 87 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj (in 109 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/load/Hexalith.Folders.LoadTests.csproj (in 254 ms).
+  Restored /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj (in 220 ms).
+  29 of 60 projects are up-to-date for restore.

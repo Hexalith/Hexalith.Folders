@@ -1,0 +1,47 @@
+{
+  "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/HANDOFF.json": {
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/HANDOFF.json",
+    "sha256": "a8c2ffa36ac2ecde937ea2c1683b5b42d9795eee3987647ddf3d7b66d75eeed2"
+  },
+  "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/HANDOFF.md": {
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/HANDOFF.md",
+    "sha256": "85d2a38fac01ba5a0e44220aa8194c8cb64728d14fa690f21bcd3df56a94ce0c"
+  },
+  "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/artifact-manifest.json": {
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/artifact-manifest.json",
+    "sha256": "975b65b6c6de444d7d62e421262738e85673937c9dcb7b9083c2e7d8912faee5"
+  },
+  "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/preservation.json": {
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/preservation.json",
+    "sha256": "c7ecf042a47abbc4f5eb3c51c0a32200f155017b43c18ee0a8293bbd0346153c"
+  },
+  "eng/story117-release-prerequisites/.editorconfig": {
+    "reason": "Pre-review formatting bytes retained; only Markdown formatting is needed after supported Python entry-point retirement.",
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/retired-entrypoints/.editorconfig.txt",
+    "sha256": "511321e0685df4e4c5adaa09ea3e10779c0ecc7faace991df9b0b100f6fe932b"
+  },
+  "eng/story117-release-prerequisites/.gitattributes": {
+    "reason": "Pre-review formatting bytes retained; only Markdown formatting is needed after supported Python entry-point retirement.",
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/retired-entrypoints/.gitattributes.txt",
+    "sha256": "0676ffec0d5c013f7abc115347edf7d893cfd8f996738f0d8397e2f0b18f349c"
+  },
+  "eng/story117-release-prerequisites/README.md": {
+    "reason": "Supported private orchestration entry points retired after review; retained bytes are historical and were not retroactively repaired.",
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/retired-entrypoints/README.md.txt",
+    "sha256": "1f29193a01ea0b942ab1c968aa0482e1acdc9ddff3c400ceba7be87cd8f53271"
+  },
+  "eng/story117-release-prerequisites/prepare.py": {
+    "reason": "Supported private orchestration entry points retired after review; retained bytes are historical and were not retroactively repaired.",
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/retired-entrypoints/prepare.py.txt",
+    "sha256": "81c3f50eaee47d3b97ed8732daa80e0664a7369800d0154c34ec7f16661e82f4"
+  },
+  "eng/story117-release-prerequisites/verify_patch_api.py": {
+    "reason": "Supported private orchestration entry points retired after review; retained bytes are historical and were not retroactively repaired.",
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/retired-entrypoints/verify_patch_api.py.txt",
+    "sha256": "9768628583b4b849438b59e827387e05a6ca3568d8e2f81113b09494cc90ad3c"
+  },
+  "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/runtime-package-bindings.json": {
+    "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/pre-review/projects-runtime-package-bindings.json",
+    "sha256": "61cc475d3b13630a5b589604a8b47435bad6cdd1cd9766b8ee8e6f62171194de"
+  }
+}

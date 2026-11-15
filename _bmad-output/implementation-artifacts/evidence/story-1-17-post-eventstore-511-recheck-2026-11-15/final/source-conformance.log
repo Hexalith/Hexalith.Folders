@@ -1,0 +1,6 @@
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = '83664b435737414ea0a6e1e11492281194fae2bb4ad59d5e86d60f596b8f8de6')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 21, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 5.072s

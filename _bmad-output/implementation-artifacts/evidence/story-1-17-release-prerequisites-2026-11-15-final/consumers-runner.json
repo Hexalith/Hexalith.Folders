@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "eng/story117-release-prerequisites/prepare.py",
+    "--phase",
+    "consumers",
+    "--evidence-name",
+    "story-1-17-release-prerequisites-2026-11-15-final",
+    "--producer-evidence",
+    "story-1-17-release-prerequisites-2026-11-15-final-producer"
+  ],
+  "path": "/home/administrator/projects/hexalith/folders/eng/story117-release-prerequisites/prepare.py",
+  "private_tmpdir": "/tmp/hexalith-job.4JRm10oI",
+  "sha256": "7d1991437b26b909dba3f30feae1876e774e188ab5da77439ffbba8b92f8a205"
+}

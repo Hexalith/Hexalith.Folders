@@ -1,0 +1,56 @@
+diff --git a/_bmad-output/implementation-artifacts/epic-1-context.md b/_bmad-output/implementation-artifacts/epic-1-context.md
+index ba1f5358..9fd8d701 100644
+--- a/_bmad-output/implementation-artifacts/epic-1-context.md
++++ b/_bmad-output/implementation-artifacts/epic-1-context.md
+@@ -4,7 +4,7 @@
+ 
+ ## Goal
+ 
+-Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine governing REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Generation and conformance gates prevent drift before downstream features consume the contract. Candidate generation, story acceptance, and production exposure require distinct evidence and authority.
++Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine governing REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Deterministic generation and conformance gates keep implementations consistent. Candidate generation, story acceptance, and production exposure require distinct evidence and authority.
+ 
+ ## Stories
+ 
+@@ -28,9 +28,9 @@ Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Sp
+ 
+ ## Requirements & Constraints
+ 
+-The spine owns operation and schema identities; product decisions own scope, actors, safety, and user-visible outcomes. Reconcile conflicts before release. `Hexalith.McpCli` is the target CLI/MCP surface. Proprietary adapters retire only after an owner-approved operation inventory, accepted replacement or withdrawal, and authorization/parity evidence. Historical completion does not establish replacement readiness.
++The spine owns operation and schema identities; product decisions own scope, actors, safety, and user-visible outcomes. Reconcile conflicts before release. Hexalith.McpCli is the target CLI/MCP surface and is required for MVP. The retained Folders adapters are frozen compatibility binaries, limited to safety and continuity work, including the v2 migration. Their evidence does not qualify McpCli replacement or retirement.
+ 
+-Authorize before protected lookup, counts, filtering, provider calls, content reads, audit access, or search egress. Authenticate, establish fresh tenant authority and folder ACL, derive resource/task scope, then enforce EventStore validation and Dapr policy. Raw locators and payload tenant values confer no authority. Unauthenticated requests receive `401`; fresh negative authority receives one byte-equivalent non-enumerating `404`; stale, unavailable, conflicting, or incomplete authority receives one non-disclosing retryable `503`. Protected v2 excludes caller-visible `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied`.
++Authorize before protected lookup, counts, filtering, provider calls, content reads, audit access, or search egress. Authenticate, establish fresh tenant authority and folder ACL, derive resource/task scope, then enforce EventStore validation and Dapr policy. Raw locators and payload tenant values confer no authority. Unauthenticated requests receive 401; fresh negative authority receives one byte-equivalent non-enumerating 404; stale, unavailable, conflicting, or incomplete authority receives one non-disclosing retryable 503. Protected v2 excludes caller-visible 403, not_found, cross_tenant_access_denied, and audit_access_denied.
+ 
+ Errors preserve category, code, safe message, correlation, retryability, client action, visibility, and closed metadata-only details across surfaces. Lifecycle, lock state, operation disposition, freshness, and disclosure remain separate dimensions. Exclude content, diffs, generated context, credentials, raw provider payloads, and unauthorized existence from metadata, telemetry, diagnostics, errors, and console output.
+ 
+@@ -38,20 +38,20 @@ Every operation declares mutation or read semantics. Mutations require idempoten
+ 
+ ## Technical Decisions
+ 
+-Use .NET 10, modern solution format, central package management, and warnings as errors. Development/Debug consumes project references; Release/CI consumes published NuGet packages. Both modes must build. Reuse platform hosting, persistence, and subscription capabilities; initialize only root-declared submodules. Approval-bound provider/native pins require compatibility evidence before change.
++Use the repository-pinned .NET SDK, modern solution format, central package management, and warnings as errors. Development/Debug consumes project references; Release/CI consumes NuGet packages. Both modes must build. Reuse platform hosting, persistence, and subscription capabilities; initialize only root-declared submodules. Approval-bound provider/native pins require compatibility evidence before change.
+ 
+-OpenAPI 3.1 drives NSwag SDK generation and idempotency helpers from ordered equivalence fields. Reads have no key helper; the SDK never invents mutation keys. Golden regeneration must be reproducible and emitted REST schemas must match the spine. CLI and MCP wrap the SDK; REST remains the parallel transport. Adapter parameter sourcing and error projections still need independent behavioral checks.
++OpenAPI 3.1 drives deterministic typed SDK generation and idempotency helpers from ordered equivalence fields. Reads have no key helper; the SDK never invents mutation keys. Golden regeneration must be reproducible and emitted REST schemas must match the spine. Frozen compatibility CLI/MCP adapters wrap the SDK. McpCli enrollment instead uses decorated Contracts through the EventStore Gateway and must prove domain-service authorization equivalent to REST before it counts toward MVP.
+ 
+-C13 derives its denominator from operations and proves SDK/REST transport parity plus per-adapter behavior with zero material deltas. Exceptions require approved rationale; removals require deprecation evidence. Previous-spine fingerprints cover status and error vocabularies. V2 server, SDK, adapter/UI consumption, drift, previous-spine, and parity artifacts regenerate together. Authorization coverage includes fourteen canonical access states and every protected operation family, including explicit folder/task binding and zero protected reads before denial.
++C13 derives its denominator from operations and proves transport and adapter behavior with zero material deltas. Exceptions require approved rationale; removals require deprecation evidence. Previous-spine fingerprints cover status and error vocabularies. Server, SDK, adapter/UI consumption, drift, previous-spine, and parity artifacts regenerate together. Authorization coverage includes fourteen canonical access states and every protected operation family, with explicit folder/task binding and zero protected reads before denial.
+ 
+-Consumer discovery examines deployed consumers and package feeds. A deployed external v1 consumer blocks exposure until an explicit migration decision is accepted. Historical v1 remains evidence rather than the supported production contract. Technical checks cannot substitute for deployment qualification or operational acceptance.
++Consumer discovery examines deployed consumers and package feeds. A deployed external v1 consumer blocks exposure until an explicit migration decision is accepted. Historical v1 remains evidence rather than the supported production contract. Local technical checks cannot substitute for deployment qualification or operational acceptance.
+ 
+-The execution manifest records removal of the general planning hold while withholding ordinary execution, v2 exposure, and automatic tracker regeneration. Scoped Story 1.17 authorization is not closure. Preserve historical exact-digest approvals. Jerome's single-owner policy governs new decisions; changed bytes require current technical rechecks, while material behavior, scope, exposure, risk, or rollback changes require a new decision.
++The execution manifest records removal of the general planning hold while withholding ordinary execution, v2 exposure, and automatic tracker regeneration. Scoped authorization is not closure. Preserve historical exact-digest approvals. Jerome's single-owner policy governs new decisions; changed bytes require current technical rechecks, while material behavior, scope, exposure, risk, or rollback changes require a new decision.
+ 
+ ## UX & Interaction Patterns
+ 
+-Preserve vocabulary consumed by the read-only, metadata-only operations console. Safe denial is terminal for the caller; authority unavailability invites retry. Both provide safe correlation without confirming resource existence. Disclosure remains distinct from availability; withheld, redacted, unavailable, and absent values must not collapse into one presentation.
++Preserve vocabulary consumed by the read-only, metadata-only operations console. Safe denial is terminal for the caller; authority unavailability invites retry. Both provide safe correlation without confirming resource existence. Disclosure remains distinct from availability; withheld, redacted, unavailable, and missing values must not collapse into one presentation.
+ 
+ ## Cross-Story Dependencies
+ 
+-Scaffold and root policy precede normative fixtures, decisions, equivalence, operation groups, generation, parity, gates, and publication. Strict manifest execution ranks and prerequisite edges govern delivery. Story 1.17 closes only when bounded implementation slices and current conformance/authorization evidence satisfy the accepted scope. Downstream stories consume the accepted contract. Lock identity/timing and renewal work follows 1.17 closure and must preserve its bound candidate until the later amendment is authorized.
++Scaffold and root policy precede normative fixtures, decisions, equivalence, operation groups, generation, parity, gates, and publication. Execution ranks and prerequisite edges govern delivery. Story 1.17 closes only when bounded implementation slices and current conformance/authorization evidence satisfy accepted scope. Downstream stories consume the accepted contract. McpCli foundation, enrollment, parity, and legacy retirement follow their own named prerequisites and owner decisions; neither legacy compatibility checks nor v2 candidate generation closes them.
+Submodule references/Hexalith.Builds contains modified content
+Submodule references/Hexalith.EventStore contains modified content
+Submodule references/Hexalith.Projects contains modified content

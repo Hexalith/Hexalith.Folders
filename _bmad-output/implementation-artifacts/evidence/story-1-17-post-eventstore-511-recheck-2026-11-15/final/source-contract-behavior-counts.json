@@ -1,0 +1,31 @@
+{
+  "every_selector_passed_unskipped": true,
+  "exit_code": 0,
+  "selectors": {
+    "Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 7,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 6,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 5,
+      "skipped": 0
+    }
+  },
+  "totals": {
+    "failed": 0,
+    "other": 0,
+    "passed": 18,
+    "skipped": 0
+  },
+  "xml_sha256": "1d2576acd7f8ca374e63d1806b547046a55b5b3b11cb3bc3ad2025e486268e97"
+}

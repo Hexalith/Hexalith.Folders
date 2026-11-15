@@ -1,0 +1,452 @@
+{
+  "attempts": {
+    "attempt-1": {
+      "counts": {
+        "source-conformance": {
+          "failed": 0,
+          "other": 0,
+          "passed": 21,
+          "skipped": 0
+        },
+        "source-contract-behavior": {
+          "failed": 0,
+          "other": 0,
+          "passed": 18,
+          "skipped": 0
+        },
+        "source-native-authority": {
+          "failed": 48,
+          "other": 0,
+          "passed": 16,
+          "skipped": 0
+        },
+        "source-routing": {
+          "failed": 20,
+          "other": 0,
+          "passed": 0,
+          "skipped": 0
+        }
+      },
+      "exit_codes": {
+        "sdk": 0,
+        "source-conformance": 0,
+        "source-contract-behavior": 0,
+        "source-contracts-tests-build": 0,
+        "source-contracts-tests-restore": 0,
+        "source-integrationtests-build": 0,
+        "source-integrationtests-restore": 0,
+        "source-native-authority": 1,
+        "source-routing": 1,
+        "source-server-tests-build": 0,
+        "source-server-tests-restore": 0
+      },
+      "finished_utc": "2026-11-15T15:41:09Z",
+      "generation": {
+        "ran": false
+      },
+      "selectors_pass": {
+        "source-conformance": true,
+        "source-contract-behavior": true,
+        "source-native-authority": false,
+        "source-routing": false
+      },
+      "started_utc": "2026-11-15T15:39:28Z"
+    },
+    "attempt-2-private-fix-trial": {
+      "counts": {
+        "source-conformance": {
+          "failed": 0,
+          "other": 0,
+          "passed": 21,
+          "skipped": 0
+        },
+        "source-contract-behavior": {
+          "failed": 0,
+          "other": 0,
+          "passed": 18,
+          "skipped": 0
+        },
+        "source-native-authority": {
+          "failed": 0,
+          "other": 0,
+          "passed": 64,
+          "skipped": 0
+        },
+        "source-routing": {
+          "failed": 0,
+          "other": 0,
+          "passed": 20,
+          "skipped": 0
+        }
+      },
+      "exit_codes": {
+        "generate-first": 0,
+        "generate-second": 0,
+        "private-copy-patch": 0,
+        "sdk": 0,
+        "source-conformance": 0,
+        "source-contract-behavior": 0,
+        "source-contracts-tests-build": 0,
+        "source-contracts-tests-restore": 0,
+        "source-integrationtests-build": 0,
+        "source-integrationtests-restore": 0,
+        "source-native-authority": 0,
+        "source-routing": 0,
+        "source-server-tests-build": 0,
+        "source-server-tests-restore": 0
+      },
+      "finished_utc": "2026-11-15T15:53:10Z",
+      "generation": {
+        "checked_in_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+        "equals_checked_in": true,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "first_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+        "generations_equal": true,
+        "ran": true,
+        "second_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+      },
+      "selectors_pass": {
+        "source-conformance": true,
+        "source-contract-behavior": true,
+        "source-native-authority": true,
+        "source-routing": true
+      },
+      "started_utc": "2026-11-15T15:50:57Z"
+    },
+    "final": {
+      "counts": {
+        "source-conformance": {
+          "failed": 0,
+          "other": 0,
+          "passed": 21,
+          "skipped": 0
+        },
+        "source-contract-behavior": {
+          "failed": 0,
+          "other": 0,
+          "passed": 18,
+          "skipped": 0
+        },
+        "source-deployment-conformance": {
+          "failed": 0,
+          "other": 0,
+          "passed": 17,
+          "skipped": 0
+        },
+        "source-native-authority": {
+          "failed": 0,
+          "other": 0,
+          "passed": 64,
+          "skipped": 0
+        },
+        "source-routing": {
+          "failed": 0,
+          "other": 0,
+          "passed": 20,
+          "skipped": 0
+        }
+      },
+      "exit_codes": {
+        "generate-first": 0,
+        "generate-second": 0,
+        "sdk": 0,
+        "source-conformance": 0,
+        "source-contract-behavior": 0,
+        "source-contracts-tests-build": 0,
+        "source-contracts-tests-restore": 0,
+        "source-deployment-conformance": 0,
+        "source-integrationtests-build": 0,
+        "source-integrationtests-restore": 0,
+        "source-native-authority": 0,
+        "source-routing": 0,
+        "source-server-tests-build": 0,
+        "source-server-tests-restore": 0,
+        "source-solution-build": 1,
+        "source-solution-restore": 0
+      },
+      "finished_utc": "2026-11-15T15:57:55Z",
+      "generation": {
+        "checked_in_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+        "equals_checked_in": true,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "first_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+        "generations_equal": true,
+        "ran": true,
+        "second_sha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2"
+      },
+      "selectors_pass": {
+        "source-conformance": true,
+        "source-contract-behavior": true,
+        "source-deployment-conformance": true,
+        "source-native-authority": true,
+        "source-routing": true
+      },
+      "solution": {
+        "build": 1,
+        "restore": 0
+      },
+      "started_utc": "2026-11-15T15:54:31Z"
+    }
+  },
+  "fix": {
+    "baseSha256": "bbee8eec4adc1f0ba6a967b1bf6150483c4588d4",
+    "patchSha256": "8394b054bf7e5cf2f7a1acb3f04786af16d90edbcdefd287b33c8632b9a99cb8",
+    "path": "Directory.Build.targets",
+    "profileEvaluationSha256": "9802cc0b2b9c06c00139cf256e7ffe9f1177278a97a2fec9c06f816068fdbcf3",
+    "resultSha256": "26dbe03d6b99b31fae6f4d030af333daf9ff7da94b7647373bdb2e7d9e26ceb0"
+  },
+  "intentionalProtectedEdits": [
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md"
+  ],
+  "migrationHeaderCorrection": {
+    "new": "**Current status, 2026-11-15: published EventStore 5.1.1 clears the native-scanner package blocker. With the still-uncommitted Builds/Projects 5.1.1 catalog adoption, both complete Release/package CI solutions build, Projects passes its Folders and Conversations adapters 221/221 against released Folders Client/Contracts 1.4.0, and Folders parity passes 12/12. The current Folders candidate is 33 commits past v1.4.0 and unreleased. Jerome has conditionally accepted first installation through the [October 18 decision](story-1-17-first-install-decision-2026-10-18.md). Target/data disposition, exact released/deployed artifacts and measured operational entry/exit evidence remain unresolved. The existing-v1 migration is retained as the fallback. See the [2026-11-15 entry decision](#2026-11-15-eventstore-511-adoption-recheck-and-entry-decision); the 2026-10-24 summary this replaces remains in its dated section.**",
+    "old": "**Current status, 2026-10-24: EventStore 3.127.0 restores both default Release/package solution gates. Projects consumes released Client/Contracts 1.3.1, and its full Server suite passes, including the direct and delegated folder adapters. The current Folders candidate is newer than 1.3.1 and its pending inventory has 34 stale rows, so no exact current-candidate release exists. Jerome has conditionally accepted first installation through the [October 18 decision](story-1-17-first-install-decision-2026-10-18.md). Target/data disposition, exact released/deployed artifacts and measured operational entry/exit evidence remain unresolved. The existing-v1 migration is retained as the fallback.**"
+  },
+  "notPerformed": [
+    "stage",
+    "commit",
+    "push",
+    "publish",
+    "deploy",
+    "dependency or pin change",
+    "nested submodule initialization",
+    "remote request",
+    "tracker transition",
+    "route activation"
+  ],
+  "operationalControls": {
+    "activationAuthority": null,
+    "firstInstallActivation": null,
+    "migrationT0": null,
+    "parentStatus": "in-progress",
+    "routeMode": "V1Only",
+    "stagingChecksExecuted": 0,
+    "storyClosureClaimed": false,
+    "trackerStatus": "backlog"
+  },
+  "pendingInventory": {
+    "orderedSetSha256": "6084b780cb14749d79930766833ce7cc82e33cb49472a17e46701007f47f1022",
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+    "rawSha256": "c715af7dde4f986adeb2098aa18243fe04216097fb366ea2d0f973e7bd8ff1f2",
+    "resealed": false,
+    "rows": 1635
+  },
+  "qualification": "HOLD",
+  "reusedReleasePackageEvidence": {
+    "files": {
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/RELEASE.json": "1a73c238c43e7c3bf1e6c67ec8f19fd6c1745b432c18c05588988024ae3ef23d",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/completed-commands.json": "21f35ee6ee6a5fee2f51b83de639e36b21a07334484d56734eadf2d206e4075f",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/native-authority-counts.json": "7fd8147151c9ad32fb04a91e43f3fdfacc5e14e117351c32478f0de39c520b92",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/parity-report.json": "7bf0d1398961c498ac155c9c776efb39128f6a33532cdd8e54f08ba12512482e",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/result.json": "dcc4a9a92fc62337d1161bb34ab2816f7651afc199c148eb696ab3167b3605cb",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/routing-counts.json": "e531e3bc298070090ed223f0deec16340205fe1cbe122253a0848a9eb1ce0a0b",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/runtime-package-bindings.json": "461b25b3179fa347b5b05b0dd3d89793327bfaa8f4294c25931e962ae7814feb",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/source-snapshots.json": "0c71455e19d8fd76597e49a39e7255c8d86a8d52a3cbee65e52ff3938e6fe4cd",
+      "references/Hexalith.Projects/_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/conversations-folders-adapters-counts.json": "39918d4de8c948d33333acbfe63a6d7a2d56b4147a14092d08ecaf1171fa87c9"
+    },
+    "qualifiedAtUtc": "2026-11-15T14:49Z",
+    "results": {
+      "foldersNativeAuthority": 64,
+      "foldersReleaseSolution": "0 warnings, 0 errors",
+      "foldersRouting": 20,
+      "governance": "217/217 + 7/7 + 3/3",
+      "parityCategories": "12/12",
+      "projectsAdapters": 221,
+      "projectsReleaseSolution": "0 warnings, 0 errors",
+      "runtimePackageBindings": 32
+    },
+    "reuseIdentitySha256": "28b61a50d3fe0851f0e6673b474bfe24214405b99a40f4ad4fa6e759b221ee89"
+  },
+  "rootCause": {
+    "assemblyVersions": {
+      "Hexalith.EventStore.Client": "5.1.0.0",
+      "Hexalith.EventStore.Contracts": "5.1.0.0",
+      "Hexalith.EventStore.DomainService": "5.1.1.0",
+      "Hexalith.EventStore.Server": "5.1.1.0",
+      "Hexalith.EventStore.ServiceDefaults": "5.1.1.0",
+      "Hexalith.EventStore.Testing": "5.1.1.0"
+    },
+    "explanation": "Builds selects EventStore 5.1.1 while Tenants keeps a local 5.1.0 package-cohort default and carries it on its EventStore source edges, so EventStore Client/Contracts were also built as 5.1.0.0 into the shared source output that Folders and EventStore Server reference as 5.1.1.0."
+  },
+  "schema": "hexalith.folders.story117.post-eventstore-511-recheck.v2026-11-15",
+  "scope": "Local Debug/source recheck and Folders source-graph identity repair after EventStore 5.1.1; Release/package results are reused from the same-day public-feed qualification.",
+  "solutionRerun": {
+    "commands": [
+      {
+        "argv": [
+          "dotnet",
+          "restore",
+          "Hexalith.Folders.CI.slnx",
+          "-p:Configuration=Debug",
+          "--configfile",
+          "/tmp/hexalith-job.QaERLhHU/nuget.config",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-m:1",
+          "--disable-build-servers"
+        ],
+        "cwd": "/tmp/hexalith-job.QaERLhHU/folders",
+        "elapsed_seconds": 4.62,
+        "exit_code": 0,
+        "finished_utc": "2026-11-15T15:58:51Z",
+        "label": "source-solution-restore",
+        "log": "source-solution-restore.log",
+        "log_sha256": "52db9447e86eac8aaf528dec7ea2fba34222b31e616e6e0377d0953459d0dfe9",
+        "started_utc": "2026-11-15T15:58:46Z"
+      },
+      {
+        "argv": [
+          "dotnet",
+          "build",
+          "Hexalith.Folders.CI.slnx",
+          "--configuration",
+          "Debug",
+          "--no-restore",
+          "-warnaserror",
+          "-p:UseHexalithProjectReferences=true",
+          "-p:UseNuGetDeps=false",
+          "-m:1",
+          "--disable-build-servers"
+        ],
+        "cwd": "/tmp/hexalith-job.QaERLhHU/folders",
+        "elapsed_seconds": 194.57,
+        "exit_code": 0,
+        "finished_utc": "2026-11-15T16:02:06Z",
+        "label": "source-solution-build",
+        "log": "source-solution-build.log",
+        "log_sha256": "8234aff2e93ef8483747ef8e2b9b719b135963839c63add26cfbbd738a973730",
+        "started_utc": "2026-11-15T15:58:51Z"
+      }
+    ],
+    "reason": "final/ solution build stopped when Hexalith.Builds.Tooling ran pwsh, absent from the agent PATH (exit 127); only ~/.dotnet/tools was prepended.",
+    "result": {
+      "build": 0,
+      "copied_inputs": 63094,
+      "owning_workspace_unchanged": false,
+      "path_prepended": "/home/administrator/.dotnet/tools",
+      "pwsh": "/home/administrator/.dotnet/tools/pwsh",
+      "restore": 0
+    }
+  },
+  "sourceTuple": {
+    ".": {
+      "branch": "main",
+      "changed_files": {
+        "Directory.Build.targets": "26dbe03d6b99b31fae6f4d030af333daf9ff7da94b7647373bdb2e7d9e26ceb0",
+        "_bmad-output/implementation-artifacts/epic-1-context.md": "9863c6a13dd6748e816eb771683572ffb9e64dddd2352ab4384367fa921e5d03",
+        "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "95407ecea4d20c8cd6865dfc68c0cda4269355ec76ffb6ec0df4b6fbba3b6f13"
+      },
+      "head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+      "index_entries_sha256": "1ac17cfa04620eb86f8544ade9f96e20d81d5865a7c66d76954de0727115409a",
+      "root_gitlink": null,
+      "staged": ""
+    },
+    "references/Hexalith.AI.Tools": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+      "index_entries_sha256": "96b78954b43227656b257f9a3a263f8a423d387f444622d66e2e89838d09dc28",
+      "root_gitlink": "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+      "staged": ""
+    },
+    "references/Hexalith.Builds": {
+      "branch": "main",
+      "changed_files": {
+        "Props/Directory.Packages.props": "300f1e641926527e66f034b52999ed100dad33fa377887c893a56cccb9d41dfe",
+        "Tools/test-authoritative-package-catalog.ps1": "3347378af2da949736ff739ac260ff68d788d1658b61ede4db426eb81d288bbb"
+      },
+      "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+      "index_entries_sha256": "4fdcaa9477ef55f58e3fe166bbe0d81373f3b698222a074c79f68f43f487d11c",
+      "root_gitlink": "160000 commit 73e60af8a1fcdf3f06726d5d1b6e1199cce778ee\treferences/Hexalith.Builds",
+      "staged": ""
+    },
+    "references/Hexalith.Commons": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+      "index_entries_sha256": "2e3afbd3b887f02d549135ace0e8487da36e84dc1eda40a530c4cc8c819df3b3",
+      "root_gitlink": "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+      "staged": ""
+    },
+    "references/Hexalith.EventStore": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+      "index_entries_sha256": "d7acf45b1459d9bdfe14dad99c80d9ba857c1a1db8c5aa150fd3fcbd503d22d8",
+      "root_gitlink": "160000 commit fdb59895975e86a1e234325a01237f259cdbd53b\treferences/Hexalith.EventStore",
+      "staged": ""
+    },
+    "references/Hexalith.FrontComposer": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "bca9dff291ce42c57516598732340a80703dfb6d",
+      "index_entries_sha256": "3c78812b5b7605777e88096365d6f324e0d7ddbf333d074d6ac656055c797c0d",
+      "root_gitlink": "160000 commit bca9dff291ce42c57516598732340a80703dfb6d\treferences/Hexalith.FrontComposer",
+      "staged": ""
+    },
+    "references/Hexalith.McpCli": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "28bcbbb898b6530838a7872f2ba450c34e56cc70",
+      "index_entries_sha256": "211ff4a1b4afec0d560f619281536f6acf74b08e82f22cf1b41743f2849c7534",
+      "root_gitlink": "160000 commit 28bcbbb898b6530838a7872f2ba450c34e56cc70\treferences/Hexalith.McpCli",
+      "staged": ""
+    },
+    "references/Hexalith.Memories": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "b7e195031cab96b38949b90317ea8033797027b8",
+      "index_entries_sha256": "d5208f12ae2aeb737a8cacd582446accc55992b0d82ba321e03ace78e6acec99",
+      "root_gitlink": "160000 commit b7e195031cab96b38949b90317ea8033797027b8\treferences/Hexalith.Memories",
+      "staged": ""
+    },
+    "references/Hexalith.Parties": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "cb9ba9ecfb76125efd407d294d3d01b62e8af687",
+      "index_entries_sha256": "17b0140c69a65cc5bc72bc3a1ccb925df51b6bb24f01f0e3c47da838b5feec86",
+      "root_gitlink": "160000 commit cb9ba9ecfb76125efd407d294d3d01b62e8af687\treferences/Hexalith.Parties",
+      "staged": ""
+    },
+    "references/Hexalith.Platform": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "695463c5eed801e96dbd9efc6a8cef4b70e900f9",
+      "index_entries_sha256": "46a70e64e69f614cf294045fd3de6bde27c0ea2a7d9fb0636ded3a97a5fd779f",
+      "root_gitlink": "160000 commit 695463c5eed801e96dbd9efc6a8cef4b70e900f9\treferences/Hexalith.Platform",
+      "staged": ""
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "e97b56930e213f674b64c157551f499b0473ec43",
+      "index_entries_sha256": "750dc4720d16f66391c92415f85b07212eb2c1b99c0833cdd679453637b016fa",
+      "root_gitlink": "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+      "staged": ""
+    },
+    "references/Hexalith.Projects": {
+      "branch": "main",
+      "changed_files": {
+        "Directory.Packages.props": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb"
+      },
+      "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+      "index_entries_sha256": "7d1201830661ad52b5316ea92e25c6e3536b9d1269a24db1af8c7e48166b9e92",
+      "root_gitlink": "160000 commit fc58cefde69d72d7d3daa574b5022f73f830a85e\treferences/Hexalith.Projects",
+      "staged": ""
+    },
+    "references/Hexalith.Tenants": {
+      "branch": "main",
+      "changed_files": {},
+      "head": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+      "index_entries_sha256": "500f7ef2c7ff731a7b1120d44f418c8fc0c4faaaaf9a99f67226cc5083c50fad",
+      "root_gitlink": "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants",
+      "staged": ""
+    }
+  }
+}

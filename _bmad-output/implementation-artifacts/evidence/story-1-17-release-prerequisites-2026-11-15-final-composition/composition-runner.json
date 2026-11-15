@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "eng/story117-release-prerequisites/prepare.py",
+    "--phase",
+    "composition",
+    "--evidence-name",
+    "story-1-17-release-prerequisites-2026-11-15-final-composition",
+    "--producer-evidence",
+    "story-1-17-release-prerequisites-2026-11-15-final-producer"
+  ],
+  "path": "/home/administrator/projects/hexalith/folders/eng/story117-release-prerequisites/prepare.py",
+  "private_tmpdir": "/tmp/hexalith-job.ZeTP2vHb",
+  "sha256": "8182a776507fb4a412f81908e0a857a52544c0071a7cbdeba50cf4314b2ddbff"
+}

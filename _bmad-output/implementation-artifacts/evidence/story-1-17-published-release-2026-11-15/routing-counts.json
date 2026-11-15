@@ -1,0 +1,7 @@
+{
+  "passed": 20,
+  "selectors": {
+    "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests": 19,
+    "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests": 1
+  }
+}

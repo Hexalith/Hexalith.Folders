@@ -1,0 +1,21 @@
+{
+  "command": [
+    "git",
+    "commit",
+    "--file",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/eventstore-commit-message.txt"
+  ],
+  "exit_code": 0,
+  "head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "tree": "74d2806c25db32be0ebd8505b6189e8f00970963",
+  "base": "fdb59895975e86a1e234325a01237f259cdbd53b",
+  "approved_patch_sha256": "577f1395a7ca5cb73361507e970a93825486ffd5b284da026c6c978e6912e795",
+  "paths": [
+    "deploy/dapr/eventstore-routing-catalog.json",
+    "tests/Hexalith.EventStore.Client.Tests/Routing/DevelopmentRouteCatalogBuilderTests.cs",
+    "tests/Hexalith.EventStore.Client.Tests/Streams/GatewayNativeSourceMetadataAdmissionTests.cs",
+    "tests/Hexalith.EventStore.Server.Tests/DomainServices/DevelopmentRouteCatalogParityTests.cs",
+    "tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpCatalogFixture.cs"
+  ],
+  "observed_utc": "2026-11-15T13:33:16.085918+00:00"
+}

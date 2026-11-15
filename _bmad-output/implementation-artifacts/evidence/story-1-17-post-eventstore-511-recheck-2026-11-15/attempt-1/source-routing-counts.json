@@ -1,0 +1,25 @@
+{
+  "every_selector_passed_unskipped": false,
+  "exit_code": 1,
+  "selectors": {
+    "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests": {
+      "failed": 19,
+      "other": 0,
+      "passed": 0,
+      "skipped": 0
+    },
+    "Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests": {
+      "failed": 1,
+      "other": 0,
+      "passed": 0,
+      "skipped": 0
+    }
+  },
+  "totals": {
+    "failed": 20,
+    "other": 0,
+    "passed": 0,
+    "skipped": 0
+  },
+  "xml_sha256": "80f112807dc0f3712f7750dd40e2b8661191950d1f5e44bd4c3f1da242c0a371"
+}

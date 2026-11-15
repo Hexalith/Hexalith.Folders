@@ -1,0 +1,29 @@
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+Copying root-declared repositories into the private workspace
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+Copied 63094 source/build inputs
+START sdk
+END sdk exit=0 elapsed=0.1s
+START source-server-tests-restore
+END source-server-tests-restore exit=0 elapsed=1.6s
+START source-server-tests-build
+END source-server-tests-build exit=0 elapsed=51.3s
+START source-integrationtests-restore
+END source-integrationtests-restore exit=0 elapsed=1.6s
+START source-integrationtests-build
+END source-integrationtests-build exit=0 elapsed=35.2s
+START source-contracts-tests-restore
+END source-contracts-tests-restore exit=0 elapsed=1.0s
+START source-contracts-tests-build
+END source-contracts-tests-build exit=0 elapsed=3.5s
+START source-native-authority
+END source-native-authority exit=1 elapsed=0.5s
+START source-routing
+END source-routing exit=1 elapsed=0.5s
+START source-contract-behavior
+END source-contract-behavior exit=0 elapsed=1.3s
+START source-conformance
+END source-conformance exit=0 elapsed=5.1s
+warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it
+{"builds": {"Hexalith.Folders.Server.Tests": true, "Hexalith.Folders.IntegrationTests": true, "Hexalith.Folders.Contracts.Tests": true}, "results": {"native-authority": false, "routing": false, "contract-behavior": true, "conformance": true}, "generation": {"ran": false}, "unchanged": true}
+exit=1

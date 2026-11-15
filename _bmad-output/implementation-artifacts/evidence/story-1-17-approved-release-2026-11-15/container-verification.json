@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "image": "registry.hexalith.com/eventstore:5.1.1",
+  "index_digest": "sha256:0e6ccefe997f70fb374c23430cd58c24765e08dd2cbd53177e92a4a6a63f2de6",
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "platforms": [
+    "linux/amd64",
+    "linux/arm64"
+  ],
+  "smoke": "pass",
+  "environment": "Development",
+  "endpoint": "/alive",
+  "live_registry_read_status": 401
+}

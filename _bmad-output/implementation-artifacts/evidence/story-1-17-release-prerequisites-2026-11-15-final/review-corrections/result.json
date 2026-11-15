@@ -1,0 +1,15 @@
+{
+  "command": [
+    "run-with-temp",
+    "python3",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/review-corrections/focused-checks.py.txt"
+  ],
+  "historical_unmatched_selector": "The old Client DI selector ran zero cases; scanner17 and separately qualified DomainService DI5 remain independent proofs. The first focused check failure is retained; the final check explicitly records this known nonqualifying selector and requires all other requested selectors to match passing, unskipped cases.",
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/review-corrections/focused-checks-final.log",
+  "log_sha256": "360b3211fa8b05cf7154cc5c485463b541ba7fc0e2cfefa08e91a261d7493d70",
+  "scope": "Retirement/hash traceability, 32 retained runtime payload/package-member comparisons, unchanged package and .NET receipts, candidate tamper rejection, fail-fast manual shell, evidence collision, concurrent-edit capture control and hostile audit environment property probe. No product rebuild or .NET test suite rerun.",
+  "status": "passed",
+  "test_source_sha256": "f34bfdbb96e782b509f2c363f10d98725521928fbe744ea110643be3810347c6",
+  "tests_failed": 0,
+  "tests_passed": 9
+}

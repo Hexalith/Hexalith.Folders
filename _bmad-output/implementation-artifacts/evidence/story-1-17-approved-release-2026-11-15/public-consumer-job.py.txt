@@ -1,0 +1,113 @@
+from pathlib import Path
+import os,subprocess,json,hashlib,shutil,zipfile,tarfile,fnmatch,importlib.util,sys,xml.etree.ElementTree as ET,time
+root=Path("/home/administrator/projects/hexalith/folders")
+name="story-1-17-published-release-2026-11-15"
+source="f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331"
+scratch=Path(os.environ["TMPDIR"])
+work=scratch/"folders"
+owners={"folders":root,"EventStore":root/"references/Hexalith.EventStore","Projects":root/"references/Hexalith.Projects","Builds":root/"references/Hexalith.Builds"}
+evidence={k:v/"_bmad-output/implementation-artifacts/evidence"/name for k,v in owners.items()}
+for p in evidence.values():
+    if p.exists():raise FileExistsError(p)
+for p in evidence.values():p.mkdir(parents=True)
+for p in evidence.values():(p/".gitattributes").write_text("* -text -whitespace\n")
+def digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def git(p,*a):return subprocess.check_output(["git",*a],cwd=p,text=True).strip()
+repos=[("folders",root,work)]
+for line in git(root,"config","-f",".gitmodules","--get-regexp","path").splitlines():
+    relative=line.split(" ",1)[1];repos.append((Path(relative).name,root/relative,work/relative))
+snapshots=[]
+for alias,owner,target in repos:
+    before=git(owner,"rev-parse","HEAD");patch=subprocess.check_output(["git","diff","HEAD","--binary"],cwd=owner)
+    changed=subprocess.check_output(["git","diff","HEAD","--name-only","-z"],cwd=owner).decode().split("\0")
+    copies={n:(owner/n).read_bytes() for n in changed if n and (owner/n).is_file()}
+    target.parent.mkdir(parents=True,exist_ok=True)
+    subprocess.run(["git","clone","--shared","--no-hardlinks","--no-recurse-submodules","--quiet",str(owner),str(target)],check=True)
+    subprocess.run(["git","remote","set-url","origin",git(owner,"remote","get-url","origin")],cwd=target,check=True)
+    for n in changed:
+        if not n:continue
+        if n in copies:(target/n).parent.mkdir(parents=True,exist_ok=True);(target/n).write_bytes(copies[n])
+        elif not (owner/n).exists() and (target/n).is_file():(target/n).unlink()
+    assert git(target,"rev-parse","HEAD")==before and git(owner,"rev-parse","HEAD")==before
+    assert subprocess.check_output(["git","diff","HEAD","--binary"],cwd=owner)==patch
+    for n,data in copies.items():assert (owner/n).read_bytes()==data and (target/n).read_bytes()==data
+    snapshots.append({"owner":str(owner),"snapshot":str(target),"head":before,"changed_files":{n:hashlib.sha256(data).hexdigest() for n,data in copies.items()}})
+assert git(work/"references/Hexalith.EventStore","rev-parse","HEAD")==source
+for row in snapshots:row["snapshot_patch_sha256"]=hashlib.sha256(subprocess.check_output(["git","diff","HEAD","--binary"],cwd=row["snapshot"])).hexdigest()
+(evidence["folders"]/"source-snapshots.json").write_text(json.dumps(snapshots,indent=2)+"\n")
+config=scratch/"NuGet.Config";config.write_text('<configuration><packageSources><clear/><add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></packageSources><auditSources><clear/><add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></auditSources></configuration>')
+os.environ.update({"NUGET_PACKAGES":str(scratch/"packages"),"NUGET_HTTP_CACHE_PATH":str(scratch/"http-cache"),"DOTNET_CLI_HOME":str(scratch/"dotnet-home"),"RestoreConfigFile":str(config),"NuGetAudit":"true","NuGetAuditMode":"all","NuGetAuditLevel":"low","UseHexalithProjectReferences":"false","UseSharedCompilation":"false","DOTNET_CLI_USE_MSBUILD_SERVER":"0","MSBUILDDISABLENODEREUSE":"1","CI":"true"})
+for p in evidence.values():shutil.copyfile(config,p/"NuGet.Config")
+commands=[]
+def run(owner,label,args,cwd):
+    log=evidence[owner]/(label+".log")
+    if log.exists():raise FileExistsError(log)
+    print("START",owner,label,flush=True);started=time.time()
+    with log.open("w") as f:
+        f.write(json.dumps(args)+"\n");f.flush();r=subprocess.run(args,cwd=cwd,stdout=f,stderr=subprocess.STDOUT)
+    commands.append({"owner":owner,"label":label,"argv":args,"cwd":str(cwd),"exit_code":r.returncode,"elapsed_seconds":round(time.time()-started,2),"log":str(log.relative_to(root)),"log_sha256":digest(log)})
+    (evidence["folders"]/"commands.json").write_text(json.dumps(commands,indent=2)+"\n")
+    print("END",owner,label,r.returncode,flush=True)
+    if r.returncode:raise SystemExit(r.returncode)
+audit=["-p:NuGetAudit=true","-p:NuGetAuditMode=all","-p:NuGetAuditLevel=low"]
+def build(owner,solution,cwd):
+    run(owner,"restore",["dotnet","restore",solution,"-p:Configuration=Release","-p:UseHexalithProjectReferences=false",*audit,"--configfile",str(config),"-m:1","--disable-build-servers"],cwd)
+    run(owner,"release-build",["dotnet","build",solution,"-c","Release","-p:UseHexalithProjectReferences=false",*audit,"-m:1","-warnaserror","--disable-build-servers","--no-restore"],cwd)
+def tests(owner,label,project,selectors,cwd):
+    assembly=cwd/"tests"/project/"bin/Release/net11.0"/(project+".dll");assert assembly.is_file()
+    report=evidence[owner]/(label+".xml");args=["dotnet",str(assembly),"-noLogo","-noColor"]
+    for s in selectors:args.extend(["-class",s])
+    run(owner,label,[*args,"-result-xml",str(report)],cwd)
+    rows=ET.parse(report).getroot().findall(".//test");assert rows and all(x.get("result")=="Pass" for x in rows)
+    matched={s:sum(fnmatch.fnmatchcase(x.get("type",""),s) for x in rows) for s in selectors};assert all(matched.values()),matched
+    (evidence[owner]/(label+"-counts.json")).write_text(json.dumps({"passed":len(rows),"selectors":matched},indent=2)+"\n")
+event=work/"references/Hexalith.EventStore";sys.path.insert(0,str(event/"tools"));spec=importlib.util.spec_from_file_location("release_api",event/"tools/verify-release-api-compatibility.py");api=importlib.util.module_from_spec(spec);spec.loader.exec_module(api)
+manifest=json.loads((event/"tools/release-packages.json").read_text())["packages"]
+archives={};provenance=[]
+for entry in manifest:
+    package=entry["id"];target=evidence["EventStore"]/"packages"/(package+".5.1.1.nupkg")
+    row=api.official_archive(package,"5.1.1",target,source=source);provenance.append(row);archives[package+"/5.1.1"]=target
+    (evidence["EventStore"]/"published-packages.json").write_text(json.dumps(provenance,indent=2)+"\n")
+assert len(provenance)==14
+pairs=[]
+for family,version,commit in [("Conversations","2.0.0","bd6265afe8aee2e555b637bd973653331c284c66"),("Folders","1.4.0","f9808ddecaae791a9802561e7c513da21a61b473")]:
+    api.REPOSITORY_URL=f"https://github.com/Hexalith/Hexalith.{family}"
+    for suffix in ["Client","Contracts"]:
+        package=f"Hexalith.{family}.{suffix}";target=evidence["Projects"]/"packages"/(package+"."+version+".nupkg")
+        row=api.official_archive(package,version,target,source=commit);pairs.append(row);archives[package+"/"+version]=target
+(evidence["Projects"]/"published-pairs.json").write_text(json.dumps(pairs,indent=2)+"\n")
+projects=work/"references/Hexalith.Projects"
+build("Projects","Hexalith.Projects.CI.slnx",projects)
+tests("Projects","conversations-folders-adapters","Hexalith.Projects.Server.Tests",["Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests","Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests","Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests","Hexalith.Projects.Server.Tests.Conversations.*","Hexalith.Projects.Server.Tests.Folders.*","Hexalith.Projects.Server.Tests.ProjectConversationAssignmentEndpointTests"],projects)
+build("folders","Hexalith.Folders.CI.slnx",work)
+tests("folders","native-authority","Hexalith.Folders.Server.Tests",["Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests","Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests","Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests","Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests","Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests"],work)
+tests("folders","routing","Hexalith.Folders.IntegrationTests",["Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests","Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests"],work)
+run("folders","parity",["pwsh","-NoLogo","-NoProfile","-File","tests/tools/run-contract-parity-ci-gates.ps1","-SkipRestoreBuild","-OutputReportPath",str(evidence["folders"]/"parity-report.json")],work)
+run("folders","governance",["pwsh","-NoLogo","-NoProfile","-File","tests/tools/run-governance-completeness-gates.ps1","-SkipRestoreBuild"],work)
+shutil.copyfile(work/"_bmad-output/gates/governance-completeness/latest.json",evidence["folders"]/"governance-report.json")
+for script in ["test-authoritative-package-catalog.ps1","validate-platform-version-catalog.ps1"]:
+    run("Builds",script,["pwsh","-NoLogo","-NoProfile","-File","Tools/"+script],work/"references/Hexalith.Builds")
+bindings=[]
+for owner,cwd,project in [("folders",work,"Hexalith.Folders.Server.Tests"),("folders",work,"Hexalith.Folders.Client.Tests"),("folders",work,"Hexalith.Folders.IntegrationTests"),("folders",work,"Hexalith.Folders.Cli.Tests"),("folders",work,"Hexalith.Folders.Mcp.Tests"),("Projects",projects,"Hexalith.Projects.Server.Tests")]:
+    directory=cwd/"tests"/project/"bin/Release/net11.0";deps=json.loads((directory/(project+".deps.json")).read_text())
+    target=next(v for k,v in deps["targets"].items() if k.startswith(".NETCoreApp,Version=v11.0"))
+    for identity,item in target.items():
+        if identity not in archives:continue
+        archive=archives[identity]
+        for member in item.get("runtime",{}):
+            filename=Path(member).name
+            if not filename.endswith(".dll"):continue
+            runtime=directory/filename;assert runtime.is_file()
+            with zipfile.ZipFile(archive) as z:expected=hashlib.sha256(z.read(member)).hexdigest()
+            assert digest(runtime)==expected,(identity,runtime)
+            bindings.append({"project":project,"package":identity,"member":member,"archive_sha256":digest(archive),"runtime_sha256":expected})
+    if project.endswith("Server.Tests"):
+        selected={r["package"] for r in bindings if r["project"]==project}
+        required={f"Hexalith.EventStore.{s}/5.1.1" for s in ["Client","Contracts","Server"]}
+        if owner=="Projects":required|={f"Hexalith.{f}.{s}/{v}" for f,v in [("Folders","1.4.0"),("Conversations","2.0.0")] for s in ["Client","Contracts"]}
+        assert required<=selected,(required-selected)
+    with tarfile.open(evidence[owner]/(project+"-runtime.tar.gz"),"w:gz") as t:t.add(directory,arcname=project)
+(evidence["folders"]/"runtime-package-bindings.json").write_text(json.dumps(bindings,indent=2)+"\n")
+parity=json.loads((evidence["folders"]/"parity-report.json").read_text());assert parity["status"]=="passed" and len(parity["results"])==12 and all(x["status"]=="passed" for x in parity["results"])
+(evidence["folders"]/"result.json").write_text(json.dumps({"status":"passed","source":source,"version":"5.1.1","public_feed_only":True,"published_sdk_packages":14,"runtime_bindings":len(bindings),"parity_categories":12,"commands":len(commands)},indent=2)+"\n")
+print("Public release qualification passed",len(bindings),"runtime bindings",flush=True)

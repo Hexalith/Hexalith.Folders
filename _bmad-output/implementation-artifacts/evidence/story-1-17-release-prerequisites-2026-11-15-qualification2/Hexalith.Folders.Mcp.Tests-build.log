@@ -1,0 +1,13 @@
+["dotnet", "build", "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj", "--configuration", "Release", "-p:UseHexalithProjectReferences=false", "-m:1", "-warnaserror", "--disable-build-servers", "--no-restore"]
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.xU5npI6s/folders/src/Hexalith.Folders.Contracts/bin/Release/net11.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-job.xU5npI6s/folders/src/Hexalith.Folders.Client/bin/Release/net11.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Mcp -> /tmp/hexalith-job.xU5npI6s/folders/src/Hexalith.Folders.Mcp/bin/Release/net11.0/Hexalith.Folders.Mcp.dll
+  Hexalith.Folders -> /tmp/hexalith-job.xU5npI6s/folders/src/Hexalith.Folders/bin/Release/net11.0/Hexalith.Folders.dll
+  Hexalith.Folders.Testing -> /tmp/hexalith-job.xU5npI6s/folders/src/Hexalith.Folders.Testing/bin/Release/net11.0/Hexalith.Folders.Testing.dll
+  Hexalith.Folders.Mcp.Tests -> /tmp/hexalith-job.xU5npI6s/folders/tests/Hexalith.Folders.Mcp.Tests/bin/Release/net11.0/Hexalith.Folders.Mcp.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.81

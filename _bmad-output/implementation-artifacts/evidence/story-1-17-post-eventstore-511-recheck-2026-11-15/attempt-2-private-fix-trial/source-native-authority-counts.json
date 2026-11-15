@@ -1,0 +1,43 @@
+{
+  "every_selector_passed_unskipped": true,
+  "exit_code": 0,
+  "selectors": {
+    "Hexalith.Folders.Server.Tests.FoldersNativeGatewayBearerTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 6,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 14,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 16,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 20,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Server.Tests.WorkspaceContentRejectionMappingTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 8,
+      "skipped": 0
+    }
+  },
+  "totals": {
+    "failed": 0,
+    "other": 0,
+    "passed": 64,
+    "skipped": 0
+  },
+  "xml_sha256": "cd299ea56ac8d4ed7ea6a23a5dfa63709f3de693b5904b879a437a3519e4212b"
+}

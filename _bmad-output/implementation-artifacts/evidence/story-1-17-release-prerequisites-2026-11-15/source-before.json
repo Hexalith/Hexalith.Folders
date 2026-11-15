@@ -1,0 +1,6 @@
+{
+  "git rev-parse HEAD": "336c3e82df1f66febf9cb30febcdb5b841d225e9\n",
+  "git status --porcelain=v1": " M _bmad-output/implementation-artifacts/epic-1-context.md\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/\n?? _bmad-output/implementation-artifacts/spec-1-17-resolve-native-scanner-and-conversations-release-prerequisites.md\n",
+  "git remote -v": "origin\thttps://github.com/Hexalith/Hexalith.Folders.git (fetch)\norigin\thttps://github.com/Hexalith/Hexalith.Folders.git (push)\n",
+  "git log -8 --format=%H %s": "336c3e82df1f66febf9cb30febcdb5b841d225e9 fix: story 1.17\nee74564477176a698971b9cddea084335a94fe29 build: sync local changes via /pushall\n69e9faf6a8dbf41201395b7236761c98f1de995a fix: story 4.22\n21ce78aea3b03c76240901cad9cbba29113e9748 fix: story 4.18\ncb5de78357242bc91bce47f28db1335337f17a18 fix(ci): resolve net11 assemblies in the CI/CD tooling fixtures\nf538bb77e3e0d19771222b7050e3f3b9dc40db26 build: record synced root submodule pointers\nbb990a8766a9feac42ff7ecf02c8b7ca42a7ba15 build: record synced root submodule pointers\n89e2fbb6bd965eae2008db4501e7b79cc6e1c8e1 build: record synced root submodule pointers\n"
+}

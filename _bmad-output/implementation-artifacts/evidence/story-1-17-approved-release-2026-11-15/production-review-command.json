@@ -1,0 +1,14 @@
+{
+  "command": [
+    "gh",
+    "api",
+    "--method",
+    "POST",
+    "repos/Hexalith/Hexalith.EventStore/actions/runs/43723266764/pending_deployments",
+    "--input",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/production-review-request.json"
+  ],
+  "exit_code": 0,
+  "observed_utc": "2026-11-15T14:15:47.157708+00:00",
+  "user_approval": "I approve"
+}

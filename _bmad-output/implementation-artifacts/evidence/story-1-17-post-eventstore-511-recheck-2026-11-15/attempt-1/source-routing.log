@@ -1,0 +1,213 @@
+  Discovering: Hexalith.Folders.IntegrationTests
+  Discovered:  Hexalith.Folders.IntegrationTests
+  Starting:    Hexalith.Folders.IntegrationTests
+    Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests.ActualBytesShouldTraverseTheGatewayAndOwningProcess [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/WorkspaceContentProcessWiringTests.cs(179,0): at Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests.Seed(InMemoryFolderRepository repository, DateTimeOffset now)
+        tests/Hexalith.Folders.IntegrationTests/WorkspaceContentProcessWiringTests.cs(44,0): at Hexalith.Folders.IntegrationTests.WorkspaceContentProcessWiringTests.ActualBytesShouldTraverseTheGatewayAndOwningProcess()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.DirectHistoricalMutationDenialPrecedesGatewayAdmission(mode: "V1Only") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(133,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.DirectHistoricalMutationDenialPrecedesGatewayAdmission(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.DirectHistoricalMutationDenialPrecedesGatewayAdmission(mode: "Coexistence") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(133,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.DirectHistoricalMutationDenialPrecedesGatewayAdmission(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.AuthenticationRunsBeforeTheSeamWithTheRealClaimsBasedAccessors(mode: "Coexistence") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(165,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.AuthenticationRunsBeforeTheSeamWithTheRealClaimsBasedAccessors(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.AuthenticationRunsBeforeTheSeamWithTheRealClaimsBasedAccessors(mode: "V2Only") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(165,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.AuthenticationRunsBeforeTheSeamWithTheRealClaimsBasedAccessors(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RetiredV1DenialIsByteEquivalentToTheSeamsUndeclaredRouteDenial [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(260,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RetiredV1DenialIsByteEquivalentToTheSeamsUndeclaredRouteDenial()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(mode: "V1Only", expectedV1Status: 200, expectedV2Status: 404) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(71,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(String mode, Int32 expectedV1Status, Int32 expectedV2Status)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(mode: "Coexistence", expectedV1Status: 200, expectedV2Status: 200) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(71,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(String mode, Int32 expectedV1Status, Int32 expectedV2Status)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(mode: "V2Only", expectedV1Status: 404, expectedV2Status: 200) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(71,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(String mode, Int32 expectedV1Status, Int32 expectedV2Status)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.CoexistenceRoutesV1AndV2 [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(112,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.CoexistenceRoutesV1AndV2()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.MissingAndInvalidBearerCredentialsDenyBeforeProtectedReads [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(182,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.MissingAndInvalidBearerCredentialsDenyBeforeProtectedReads()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: "") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: " V1Only") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at InvokeStub_FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: "v2only") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at InvokeStub_FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: "1") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at InvokeStub_FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: "V1Only,V2Only") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at InvokeStub_FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(mode: "Unknown") [FAIL]
+      Shouldly.ShouldAssertException : `builder.AddFoldersServerHost()`
+          should throw
+      System.InvalidOperationException
+          but threw
+      System.IO.FileNotFoundException
+      ---- System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(String mode)
+           at InvokeStub_FoldersApiRoutingModeTests.InvalidModeFailsHostStartup(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+        ----- Inner Stack Trace -----
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(285,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.<>c__DisplayClass10_0.<InvalidModeFailsHostStartup>b__0()
+        /_/src/Shouldly/ShouldStaticClasses/ShouldThrow.cs(76,0): at Shouldly.Should.ThrowInternal[TException](Func`1 actual, String customMessage, String shouldlyMethod)
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.HoldModeRoutesV1AndDoesNotRouteV2(mode: null) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(92,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.HoldModeRoutesV1AndDoesNotRouteV2(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.HoldModeRoutesV1AndDoesNotRouteV2(mode: "V1Only") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(92,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.HoldModeRoutesV1AndDoesNotRouteV2(String mode)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RetiredModeAnswersExternalV1WithCanonical404BeforeAnyLookupAndKeepsV2Dispatch [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.FoldersServerHostComposition.AddFoldersServerHost(WebApplicationBuilder builder)
+        tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeTestHost.cs(127,0): at Hexalith.Folders.IntegrationTests.Routing.RoutingModeTestHost.StartAsync(String mode, Boolean claimsIdentity)
+        tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs(211,0): at Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests.RetiredModeAnswersExternalV1WithCanonical404BeforeAnyLookupAndKeepsV2Dispatch()
+        --- End of stack trace from previous location ---
+  Finished:    Hexalith.Folders.IntegrationTests (ID = '00a96767ffa7f65116d42178b9dcca1e86d416e90dcd3aac3d63de3cfd1f513c')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 20, Errors: 0, Failed: 20, Skipped: 0, Not Run: 0, Time: 0.246s

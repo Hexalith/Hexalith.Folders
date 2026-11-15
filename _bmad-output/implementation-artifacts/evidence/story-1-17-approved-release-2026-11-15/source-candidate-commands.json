@@ -1,0 +1,92 @@
+[
+  {
+    "label": "qualified-source-pack",
+    "argv": [
+      "python3",
+      "tools/pack-release-packages.py",
+      "/tmp/hexalith-job.l7DBxGHS/packages-output",
+      "5.1.1"
+    ],
+    "cwd": "/tmp/hexalith-job.l7DBxGHS/workspace/references/Hexalith.EventStore",
+    "exit_code": 0,
+    "elapsed_seconds": 281.52,
+    "log": "qualified-source-pack.log",
+    "log_sha256": "b364bcbdd32e3f74edf6804b4c72cebf72f8c12ef4cf6b51b776919b4bf6bd1c",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "environment": {
+      "CI": "true",
+      "ContinuousIntegrationBuild": "true",
+      "NuGetAudit": "true",
+      "NuGetAuditMode": "all",
+      "NuGetAuditLevel": "low",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.l7DBxGHS/packages",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.l7DBxGHS/http-cache",
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.l7DBxGHS/dotnet-home",
+      "RestoreConfigFile": "/tmp/hexalith-job.l7DBxGHS/NuGet.Config",
+      "IncludeSymbols": "true",
+      "SymbolPackageFormat": "snupkg"
+    }
+  },
+  {
+    "label": "qualified-source-package-validation",
+    "argv": [
+      "python3",
+      "tools/validate-release-packages.py",
+      "/tmp/hexalith-job.l7DBxGHS/packages-output",
+      "5.1.1"
+    ],
+    "cwd": "/tmp/hexalith-job.l7DBxGHS/workspace/references/Hexalith.EventStore",
+    "exit_code": 0,
+    "elapsed_seconds": 0.04,
+    "log": "qualified-source-package-validation.log",
+    "log_sha256": "3a5820f4f6fbaa154af819ca8611445c026661d4bfafc2b0543c36e6108e3de3",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "environment": {
+      "CI": "true",
+      "ContinuousIntegrationBuild": "true",
+      "NuGetAudit": "true",
+      "NuGetAuditMode": "all",
+      "NuGetAuditLevel": "low",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.l7DBxGHS/packages",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.l7DBxGHS/http-cache",
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.l7DBxGHS/dotnet-home",
+      "RestoreConfigFile": "/tmp/hexalith-job.l7DBxGHS/NuGet.Config",
+      "IncludeSymbols": "true",
+      "SymbolPackageFormat": "snupkg"
+    }
+  },
+  {
+    "label": "qualified-source-api",
+    "argv": [
+      "python3",
+      "tools/verify-release-api-compatibility.py",
+      "/tmp/hexalith-job.l7DBxGHS/packages-output",
+      "5.1.1",
+      "--candidate-commit",
+      "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+      "--package-catalog",
+      "/tmp/hexalith-job.l7DBxGHS/workspace/references/Hexalith.Builds/Props/Directory.Packages.props",
+      "--work-directory",
+      "/tmp/hexalith-job.l7DBxGHS/api-compatibility"
+    ],
+    "cwd": "/tmp/hexalith-job.l7DBxGHS/workspace/references/Hexalith.EventStore",
+    "exit_code": 0,
+    "elapsed_seconds": 487.17,
+    "log": "qualified-source-api.log",
+    "log_sha256": "f286e5142b3711b59deab69586be71e8f04bf649c3439585391be721918ed59c",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "environment": {
+      "CI": "true",
+      "ContinuousIntegrationBuild": "true",
+      "NuGetAudit": "true",
+      "NuGetAuditMode": "all",
+      "NuGetAuditLevel": "low",
+      "NUGET_PACKAGES": "/tmp/hexalith-job.l7DBxGHS/packages",
+      "NUGET_HTTP_CACHE_PATH": "/tmp/hexalith-job.l7DBxGHS/http-cache",
+      "DOTNET_CLI_HOME": "/tmp/hexalith-job.l7DBxGHS/dotnet-home",
+      "RestoreConfigFile": "/tmp/hexalith-job.l7DBxGHS/NuGet.Config",
+      "IncludeSymbols": "true",
+      "SymbolPackageFormat": "snupkg"
+    }
+  }
+]

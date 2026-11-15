@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "eng/story117-release-prerequisites/verify_patch_api.py",
+    "--evidence-name",
+    "story-1-17-release-prerequisites-2026-11-15-final-patch-api",
+    "--producer-evidence",
+    "story-1-17-release-prerequisites-2026-11-15-final-producer"
+  ],
+  "path": "/home/administrator/projects/hexalith/folders/eng/story117-release-prerequisites/prepare.py",
+  "private_tmpdir": "/tmp/hexalith-job.ZrV0oyLa",
+  "sha256": "81c3f50eaee47d3b97ed8732daa80e0664a7369800d0154c34ec7f16661e82f4"
+}

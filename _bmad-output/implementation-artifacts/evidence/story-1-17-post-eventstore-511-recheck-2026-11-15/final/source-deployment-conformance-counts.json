@@ -1,0 +1,25 @@
+{
+  "every_selector_passed_unskipped": true,
+  "exit_code": 0,
+  "selectors": {
+    "Hexalith.Folders.Contracts.Tests.Deployment.ContainerImageConformanceTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 8,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests": {
+      "failed": 0,
+      "other": 0,
+      "passed": 9,
+      "skipped": 0
+    }
+  },
+  "totals": {
+    "failed": 0,
+    "other": 0,
+    "passed": 17,
+    "skipped": 0
+  },
+  "xml_sha256": "6f596aa0c07c86fac55b5b2d4d84754f3a97ab68fa5597588da97dfdad138930"
+}

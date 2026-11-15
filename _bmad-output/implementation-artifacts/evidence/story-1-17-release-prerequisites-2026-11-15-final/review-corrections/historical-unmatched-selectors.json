@@ -1,0 +1,7 @@
+[
+  {
+    "gate": "EventStore/story-1-17-release-prerequisites-2026-11-15-final/native-scanner",
+    "selector": "Hexalith.EventStore.Client.Tests.DomainService.NativeSourceScannerCompositionTests",
+    "qualification": "unmatched; not executed and not credited"
+  }
+]

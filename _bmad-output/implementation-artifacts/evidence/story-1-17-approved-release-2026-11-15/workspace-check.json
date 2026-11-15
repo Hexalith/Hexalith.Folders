@@ -1,0 +1,70 @@
+[
+  {
+    "owner": ".",
+    "head": "336c3e82df1f66febf9cb30febcdb5b841d225e9",
+    "branch": "main",
+    "diff_check": {
+      "exit_code": 0,
+      "output": "warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it\n"
+    },
+    "staged": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "changed": {
+      "exit_code": 0,
+      "output": "warning: in the working copy of '_bmad-output/implementation-artifacts/epic-1-context.md', CRLF will be replaced by LF the next time Git touches it\n_bmad-output/implementation-artifacts/epic-1-context.md\nreferences/Hexalith.Builds\nreferences/Hexalith.EventStore\nreferences/Hexalith.Projects\n"
+    }
+  },
+  {
+    "owner": "references/Hexalith.EventStore",
+    "head": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "branch": "main",
+    "diff_check": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "staged": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "changed": {
+      "exit_code": 0,
+      "output": ""
+    }
+  },
+  {
+    "owner": "references/Hexalith.Builds",
+    "head": "73e60af8a1fcdf3f06726d5d1b6e1199cce778ee",
+    "branch": "main",
+    "diff_check": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "staged": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "changed": {
+      "exit_code": 0,
+      "output": "Props/Directory.Packages.props\nTools/test-authoritative-package-catalog.ps1\n"
+    }
+  },
+  {
+    "owner": "references/Hexalith.Projects",
+    "head": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+    "branch": "main",
+    "diff_check": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "staged": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "changed": {
+      "exit_code": 0,
+      "output": "Directory.Packages.props\n"
+    }
+  }
+]

@@ -1,0 +1,37 @@
+--- a/Directory.Build.targets
++++ b/Directory.Build.targets
+@@ -9,6 +9,34 @@
+     </PackageReference>
+   </ItemGroup>
+ 
++  <!-- Local source graphs must use one EventStore assembly identity across this root and its Tenants
++       source edges. Tenants keeps its own published package cohort default and carries that value to
++       its EventStore source references, so pass this root's selection to Tenants source references.
++       Package graphs and verified workspace mappings, which own their reserved version inputs, are unchanged. -->
++  <PropertyGroup>
++    <_FoldersCarriesEventStoreVersionToTenants Condition="'$(HexalithEventStoreFromSource)' == 'true' and '$(HexalithTenantsFromSource)' == 'true' and '$(HexalithTenantsRoot)' != '' and '$(HexalithEventStoreVersion)' != '' and '$(HexalithSourceMappingHash)' == '' and '$(HexalithSourceMappingMode)' != 'source' and '$(HEXALITH_SOURCE_MAPPING_HASH)' == '' and '$(HEXALITH_SOURCE_MAPPING_PATH)' == ''">true</_FoldersCarriesEventStoreVersionToTenants>
++    <_FoldersSelectedTenantsSourceRoot Condition="'$(_FoldersCarriesEventStoreVersionToTenants)' == 'true'">$([MSBuild]::NormalizeDirectory('$(HexalithTenantsRoot)', 'src'))</_FoldersSelectedTenantsSourceRoot>
++  </PropertyGroup>
++
++  <ItemGroup Condition="'$(_FoldersCarriesEventStoreVersionToTenants)' == 'true'">
++    <ProjectReference Update="$(HexalithTenantsRoot)/src/Hexalith.Tenants*/Hexalith.Tenants*.csproj">
++      <AdditionalProperties>%(ProjectReference.AdditionalProperties);HexalithEventStoreVersion=$(HexalithEventStoreVersion)</AdditionalProperties>
++    </ProjectReference>
++  </ItemGroup>
++
++  <!-- The .NET SDK promotes transitive project references after item evaluation and without edge
++       metadata. Keep promoted Tenants source nodes on the same EventStore identity. -->
++  <Target Name="CarryEventStoreVersionToPromotedTenantsSources"
++          AfterTargets="IncludeTransitiveProjectReferences"
++          Condition="'$(_FoldersCarriesEventStoreVersionToTenants)' == 'true'">
++    <ItemGroup>
++      <ProjectReference Update="@(ProjectReference)"
++                        Condition="'%(ProjectReference.Extension)' == '.csproj' and $([System.String]::Copy('%(ProjectReference.FullPath)').StartsWith('$(_FoldersSelectedTenantsSourceRoot)')) and $([System.String]::Copy('%(ProjectReference.Filename)').StartsWith('Hexalith.Tenants')) and !$([System.String]::Copy('%(ProjectReference.AdditionalProperties)').Contains('HexalithEventStoreVersion='))">
++        <AdditionalProperties>%(ProjectReference.AdditionalProperties);HexalithEventStoreVersion=$(HexalithEventStoreVersion)</AdditionalProperties>
++      </ProjectReference>
++    </ItemGroup>
++  </Target>
++
+   <!--
+     Container image defaults (.NET SDK container support).
+     Opt in per service with:

@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+  "version": "5.1.1",
+  "public_feed_only": true,
+  "published_sdk_packages": 14,
+  "runtime_bindings": 32,
+  "parity_categories": 12,
+  "commands": 11,
+  "command_receipt": "completed-commands.json",
+  "catalog_telemetry_optout": true,
+  "original_duplicate_catalog_attempt": "interrupted only after this complete continuation succeeds"
+}

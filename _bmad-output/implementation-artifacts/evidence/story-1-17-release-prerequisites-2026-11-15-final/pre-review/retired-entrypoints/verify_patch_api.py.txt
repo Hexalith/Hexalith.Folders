@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Add an all-family 5.1.0-to-5.1.1 metadata comparison to the existing 4.2.0 gate.
+
+Uses the owner's unchanged authentication, reference resolution and APICompat
+helpers. Run through run-with-temp after a successful producer preparation.
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import os
+from pathlib import Path
+import shutil
+import sys
+import zipfile
+
+from prepare import EVIDENCE_PARENT, ROOT, VERSION, Job, git, sha, write
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--evidence-name", required=True)
+    parser.add_argument("--producer-evidence", required=True)
+    args = parser.parse_args()
+    args.phase = "patch-api"
+    job = Job(args)
+    event = job.snapshot("Hexalith.EventStore", job.workspace / "references/Hexalith.EventStore")
+    builds = job.snapshot("Hexalith.Builds", job.workspace / "references/Hexalith.Builds")
+    evidence = job.evidence("Hexalith.EventStore")
+    write(evidence / "patch-api-runner.json", {"argv": sys.argv, "sha256": sha(Path(__file__)),
+          "shared_runner_sha256": sha(Path(__file__).with_name("prepare.py"))})
+    shutil.copyfile(Path(__file__), evidence / "patch-api-runner.py")
+    sys.path.insert(0, str(event / "tools"))
+    spec = importlib.util.spec_from_file_location("owner_api", event / "tools/verify-release-api-compatibility.py")
+    api = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(api)
+    source_evidence = ROOT / "references/Hexalith.EventStore" / EVIDENCE_PARENT / args.producer_evidence
+    source = git(event, "rev-parse", "HEAD")
+    candidates = api.candidate_inventory(source_evidence / "candidate-packages", VERSION, source)
+    initial = {name: sha(path) for name, path in candidates.items()}
+    feed = job.scratch / "candidate-feed"
+    feed.mkdir()
+    for path in candidates.values():
+        shutil.copyfile(path, feed / path.name)
+    config = job.config(feed)
+    # The owner's helpers execute subprocesses themselves; give them precisely
+    # this job's fresh cache, SDK home and authorized configuration too.
+    os.environ.update(job.env)
+    os.environ["RestoreConfigFile"] = str(config)
+    for filename in ["global.json", "Directory.Build.props", "Directory.Build.targets"]:
+        path = job.scratch / filename
+        if filename == "global.json":
+            shutil.copyfile(event / filename, path)
+        else:
+            path.write_text("<Project/>\n", encoding="utf-8")
+    baseline_source = "49084f66f8d6545cae442875355a7066d5f5e73d"
+    if git(event, "rev-parse", "v5.1.0^{commit}") != baseline_source:
+        raise ValueError("The canonical v5.1.0 tag differs from its pinned public source.")
+    receipt = {"baseline_version": "5.1.0", "baseline_source": baseline_source, "candidate_version": VERSION,
+               "candidate_source": source, "status": "in-progress", "scope": "All fourteen public API metadata families, net11-to-net11; parameter names enforced.",
+               "existing_gate": str(source_evidence / "api-compatibility/receipt.json"), "baseline": [], "families": []}
+    write(evidence / "receipt.json", receipt)
+    left, right = job.scratch / "baseline-assemblies", job.scratch / "candidate-assemblies"
+    for name, candidate in sorted(candidates.items()):
+        archive = evidence / "baseline-packages" / f"{name}.5.1.0.nupkg"
+        record = api.official_archive(name, "5.1.0", archive, source=baseline_source)
+        receipt["baseline"].append(record)
+        api.extract_member(archive, api.member(name, "net11.0"), left / f"{name}.dll")
+        api.extract_member(candidate, api.member(name, "net11.0"), right / f"{name}.dll")
+        write(evidence / "receipt.json", receipt)
+    tool_archive = job.scratch / "apicompat.nupkg"
+    receipt["tool"] = api.official_archive("Microsoft.DotNet.ApiCompat.Tool", api.APICOMPAT_VERSION, tool_archive,
+                                          signature_log=evidence / "tool.signature.log")
+    with zipfile.ZipFile(tool_archive) as archive:
+        for member in archive.namelist():
+            relative = Path(member)
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError("Unsafe tool archive member.")
+            if member.startswith("tools/net10.0/any/") and not member.endswith("/"):
+                api.extract_member(tool_archive, member, job.scratch / "tool" / relative)
+    tool = ["dotnet", "exec", "--roll-forward", "Major",
+            str(job.scratch / "tool/tools/net10.0/any/Microsoft.DotNet.ApiCompat.Tool.dll")]
+    manifest = api.load_release_manifest(event / "tools/release-packages.json", event)
+    projects = {entry.project_path.resolve(): entry.package_id for entry in manifest}
+    for package in manifest:
+        name = package.package_id
+        context = evidence / "contexts" / name
+        current, framework = api.resolve_context(name, package.project_path, event, VERSION, feed,
+            context, Path(job.env["NUGET_PACKAGES"]), projects, builds / "Props/Directory.Packages.props",
+            scratch=job.scratch / "contexts" / name)
+        old = [left / path.name if path.stem in api.PACKAGE_IDS else path for path in current]
+        new = [right / path.name if path.stem in api.PACKAGE_IDS else path for path in current]
+        old_refs, new_refs = job.scratch / "old-refs" / name, job.scratch / "new-refs" / name
+        old_rows = api.stage_references(old, old_refs)
+        new_rows = api.stage_references(new, new_refs)
+        write(context / "reference-inventory.json", {"left": old_rows, "right": new_rows})
+        result = api.compare(tool, left / f"{name}.dll", right / f"{name}.dll", old_refs, new_refs, context / "apicompat.log")
+        receipt["families"].append({"id": name, "target_framework": framework,
+            "baseline_assembly_sha256": sha(left / f"{name}.dll"), "candidate_assembly_sha256": sha(right / f"{name}.dll"),
+            "candidate_archive_sha256": initial[name], **result})
+        write(evidence / "receipt.json", receipt)
+        print(f"Patch API compatible: {name}", flush=True)
+    if {name: sha(path) for name, path in candidates.items()} != initial:
+        raise ValueError("Candidate archives changed during comparison.")
+    receipt["status"] = "pass"
+    write(evidence / "receipt.json", receipt)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,136 @@
+"""One-off artifact and manual-lane controls; not a supported preparation tool."""
+from pathlib import Path
+import fnmatch
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import tarfile
+import tempfile
+import threading
+import unittest
+import xml.etree.ElementTree as ET
+import zipfile
+
+ROOT = Path.cwd()
+FINAL = ROOT / '_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final'
+SHA = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+
+class ReviewControls(unittest.TestCase):
+    def test_retirement_preserves_exact_pre_review_bytes(self):
+        manifest = json.loads((FINAL/'pre-review/artifact-manifest.json').read_text())['files']
+        mapping = json.loads((FINAL/'pre-review/retired-entrypoints.json').read_text())
+        for old, row in mapping.items():
+            self.assertEqual(SHA(ROOT/row['retained_path']), row['sha256'])
+            self.assertEqual(row['sha256'], manifest[old]['sha256'])
+        for filename in ['prepare.py', 'verify_patch_api.py', '.editorconfig', '__pycache__']:
+            self.assertFalse((ROOT/'eng/story117-release-prerequisites'/filename).exists())
+
+    def test_qualified_tests_pass_each_requested_selector_without_skips(self):
+        handoff = json.loads((FINAL/'pre-review/HANDOFF.json').read_text())
+        unmatched = []
+        for key, expected in handoff['test_counts'].items():
+            path = ROOT/expected['report']
+            self.assertEqual(SHA(path), expected['sha256'])
+            cases = ET.parse(path).getroot().findall('.//test')
+            self.assertTrue(cases)
+            self.assertTrue(all(case.get('result') == 'Pass' for case in cases))
+            label = path.stem
+            commands = json.loads((path.parent/('producer-commands.json' if 'final-producer' in key else 'composition-commands.json' if 'final-composition' in key else 'consumers-commands.json')).read_text())
+            command = next(row for row in commands if row['label'] == label)
+            selectors = [command['argv'][i+1] for i, value in enumerate(command['argv'][:-1]) if value == '-class']
+            for selector in selectors:
+                matched = any(fnmatch.fnmatchcase(case.get('type',''), selector) for case in cases)
+                if not matched:
+                    unmatched.append({'gate':key,'selector':selector,'qualification':'unmatched; not executed and not credited'})
+        self.assertEqual(unmatched,[{'gate':'EventStore/story-1-17-release-prerequisites-2026-11-15-final/native-scanner','selector':'Hexalith.EventStore.Client.Tests.DomainService.NativeSourceScannerCompositionTests','qualification':'unmatched; not executed and not credited'}])
+        (FINAL/'review-corrections/historical-unmatched-selectors.json').write_text(json.dumps(unmatched,indent=2)+'\n')
+        scanner = next(v for k,v in handoff['test_counts'].items() if k.endswith('/native-scanner'))
+        composition = next(v for k,v in handoff['test_counts'].items() if k.endswith('/native-composition'))
+        self.assertEqual(scanner['passed'],17)
+        self.assertEqual(composition['passed'],5)
+
+    def test_all_32_runtime_payloads_match_named_package_members(self):
+        count = 0
+        for owner in [ROOT, ROOT/'references/Hexalith.Projects']:
+            directory = owner/'_bmad-output/implementation-artifacts/evidence'/FINAL.name
+            rows = json.loads((directory/'runtime-package-bindings.json').read_text())
+            groups = {}
+            for row in rows:
+                project = Path(row['runtime_path']).parts[1]
+                groups.setdefault(project, []).append(row)
+            for project, entries in groups.items():
+                with tarfile.open(directory/(project+'-runtime.tar.gz')) as capsule:
+                    for row in entries:
+                        archive = Path(row['archive'])
+                        self.assertEqual(SHA(archive),row['archive_sha256'])
+                        with zipfile.ZipFile(archive) as package:
+                            package_hash = hashlib.sha256(package.read(row['member'])).hexdigest()
+                        stream = capsule.extractfile(project+'/'+Path(row['runtime_path']).name)
+                        self.assertIsNotNone(stream)
+                        runtime_hash = hashlib.sha256(stream.read()).hexdigest()
+                        self.assertEqual(runtime_hash,package_hash)
+                        self.assertEqual(runtime_hash,row['runtime_sha256'])
+                        count += 1
+            if owner != ROOT:
+                for name in ['Client','Contracts']:
+                    row = next(r for r in rows if Path(r['runtime_path']).name == 'Hexalith.Folders.'+name+'.dll')
+                    self.assertEqual(row['member'],'lib/net10.0/Hexalith.Folders.'+name+'.dll')
+        self.assertEqual(count,32)
+
+    def test_package_bytes_and_required_dotnet_results_remain_unchanged(self):
+        handoff = json.loads((FINAL/'pre-review/HANDOFF.json').read_text())
+        for row in handoff['candidate_archives_and_symbols']:
+            self.assertEqual(SHA(ROOT/row['path']),row['sha256'])
+        for rows in handoff['gate_commands'].values():
+            for row in rows:
+                self.assertTrue(row['exit_code']==0 or row['label']=='development-runtime-boundary' and row['exit_code']==2)
+        self.assertTrue(all(Path(r['path']).name.endswith(('.nupkg','.snupkg')) for r in handoff['candidate_archives_and_symbols']))
+
+    def test_manual_hash_check_rejects_tampering_before_feed_copy(self):
+        handoff = json.loads((FINAL/'pre-review/HANDOFF.json').read_text())
+        row = handoff['candidate_archives_and_symbols'][0]
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
+            directory = Path(temp);archive = directory/Path(row['path']).name
+            shutil.copyfile(ROOT/row['path'],archive)
+            checksums = directory/'candidate.sha256';checksums.write_text(row['sha256']+'  '+archive.name+'\n')
+            self.assertEqual(subprocess.run(['sha256sum','--check',str(checksums)],cwd=directory,capture_output=True).returncode,0)
+            with archive.open('ab') as target: target.write(b'changed')
+            self.assertNotEqual(subprocess.run(['sha256sum','--check',str(checksums)],cwd=directory,capture_output=True).returncode,0)
+
+    def test_manual_restore_failure_stops_before_build(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
+            marker = Path(temp)/'build-started'
+            result = subprocess.run(['bash','-c','set -euo pipefail\nfalse\ntouch "$1"','control',str(marker)],capture_output=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertFalse(marker.exists())
+
+    def test_plain_mkdir_collision_does_not_modify_existing_receipts(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
+            directory=Path(temp)/'evidence';directory.mkdir();receipt=directory/'source.json';receipt.write_text('original\n');before=SHA(receipt)
+            result=subprocess.run(['mkdir',str(directory)],capture_output=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertEqual(SHA(receipt),before)
+
+    def test_concurrent_live_edit_is_rejected_and_snapshot_inventory_stays_bound(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
+            live=Path(temp)/'live.cs';snapshot=Path(temp)/'snapshot.cs';live.write_text('captured\n');before=SHA(live);shutil.copyfile(live,snapshot)
+            writer=threading.Thread(target=lambda:live.write_text('concurrent edit\n'));writer.start();writer.join()
+            self.assertNotEqual(SHA(live),before)
+            self.assertEqual(SHA(snapshot),before)
+
+    def test_hostile_audit_environment_cannot_override_explicit_manual_pins(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
+            project=Path(temp)/'Audit.proj';project.write_text('<Project/>\n')
+            inherited=os.environ.copy();inherited.update({'NuGetAudit':'false','NUGETAUDIT':'false','NuGetAuditMode':'direct','NuGetAuditLevel':'critical'})
+            allowed={k:inherited[k] for k in ['PATH','HOME','TMPDIR','TMP','TEMP'] if k in inherited}
+            allowed.update({'DOTNET_CLI_HOME':temp,'NuGetAudit':'true','NuGetAuditMode':'all','NuGetAuditLevel':'low','DOTNET_SKIP_FIRST_TIME_EXPERIENCE':'1','DOTNET_CLI_TELEMETRY_OPTOUT':'1'})
+            argv=['dotnet','msbuild',str(project),'-nologo','-nr:false','-p:NuGetAudit=true','-p:NuGetAuditMode=all','-p:NuGetAuditLevel=low','-getProperty:NuGetAudit,NuGetAuditMode,NuGetAuditLevel']
+            result=subprocess.run(argv,env=allowed,capture_output=True,text=True,timeout=30)
+            self.assertEqual(result.returncode,0,result.stderr)
+            properties=json.loads(result.stdout[result.stdout.index('{'):])['Properties']
+            self.assertEqual(properties,{'NuGetAudit':'true','NuGetAuditMode':'all','NuGetAuditLevel':'low'})
+            (FINAL/'review-corrections/audit-hostile-environment.json').write_text(json.dumps({'argv':argv,'exit_code':result.returncode,'properties':properties,'hostile_input':{'NuGetAudit':'false','NUGETAUDIT':'false','NuGetAuditMode':'direct','NuGetAuditLevel':'critical'},'private_allowlist_audit':{'NuGetAudit':'true','NuGetAuditMode':'all','NuGetAuditLevel':'low'}},indent=2)+'\n')
+
+if __name__=='__main__':unittest.main(verbosity=2)

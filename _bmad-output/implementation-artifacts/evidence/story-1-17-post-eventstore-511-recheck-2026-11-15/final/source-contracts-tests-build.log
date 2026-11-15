@@ -1,0 +1,11 @@
+  Hexalith.Folders.Aspire -> /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Aspire/bin/Debug/net11.0/Hexalith.Folders.Aspire.dll
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/bin/Debug/netstandard2.0/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-job.a99K59dp/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/bin/Debug/net11.0/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.a99K59dp/folders/src/Hexalith.Folders.Contracts/bin/Debug/net11.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Contracts.Tests -> /tmp/hexalith-job.a99K59dp/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net11.0/Hexalith.Folders.Contracts.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.65

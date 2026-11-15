@@ -1,0 +1,20 @@
+{
+  "copied_inputs": 63094,
+  "finished_utc": "2026-11-15T15:41:09Z",
+  "generation": {
+    "ran": false
+  },
+  "owning_workspace_unchanged": true,
+  "source_builds": {
+    "Hexalith.Folders.Contracts.Tests": true,
+    "Hexalith.Folders.IntegrationTests": true,
+    "Hexalith.Folders.Server.Tests": true
+  },
+  "source_results": {
+    "conformance": true,
+    "contract-behavior": true,
+    "native-authority": false,
+    "routing": false
+  },
+  "started_utc": "2026-11-15T15:38:50Z"
+}

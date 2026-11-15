@@ -1,0 +1,226 @@
+[
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Abstractions.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Admin.Abstractions",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "5b276292ad016c25313cbdbd4846576807d1b322ac4e3409f8767706d84382bb",
+    "bytes": 120524
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Abstractions.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Admin.Abstractions",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "643a8b0318d9a89446ee8e6da0727e7f5f32e4f43f574e797ce6ccf62ba658bc",
+    "bytes": 28736
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Cli.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Admin.Cli",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "af573eb80d7062de79591a6671d7b91cd90e6fbc8a17aa1ed88433164518b2f5",
+    "bytes": 1066989
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Cli.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Admin.Cli",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "ea6fa4c0e7f8b57af0c63be56a2d832d9f57984c43d167e746a782b2d80a38b6",
+    "bytes": 167378
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Server.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Admin.Server",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "100b8b61f50bdfe600f54fbbd18b752c65942d660780d456dc661548dddef45f",
+    "bytes": 187528
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Admin.Server.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Admin.Server",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "a1b4113c45a38d6dc09ca34e0864dd6c3a2205f4f8f8c2cdd320817ad640c8c4",
+    "bytes": 49194
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Aspire.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Aspire",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "41908504940ef458d92826a1793e2c210313d842aeb983442dd25b06dd73b06a",
+    "bytes": 136052
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Aspire.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Aspire",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "888e9ecb00ea4cb6dfe09afe107e6d8feeb37dad38ee6cb879920f87eb453c89",
+    "bytes": 42566
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Client.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Client",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "ae8e77367f3dbf0b0fc7f39738b06a6fe506a6f81cc5899c385821daa4a6a0ee",
+    "bytes": 563872
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Client.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Client",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "294ed740f44b0e131748e55550ac25e2336bd02c7ad10844553495dfe4e35594",
+    "bytes": 136275
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Contracts.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Contracts",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "01ab905b9678d64cb69b2b7a00e417b0972141deb275cd127ae30672045e664e",
+    "bytes": 473619
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Contracts.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Contracts",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "fee397854f8f6b4977ae516d0fc48baa015926437e6990c303e15d29bee8d8d7",
+    "bytes": 110281
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.DomainService.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.DomainService",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "105ae8d89b0b7e4d7533caacfa573e08ef0414574bb55d8dea544dfe7285bd93",
+    "bytes": 436266
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.DomainService.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.DomainService",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "bbe50c2cf2332b01cf4254b006ddf8d4d7247f2c2c27f3546bf26cd0e25f3813",
+    "bytes": 122745
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Gateway.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Gateway",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "df6156f4cb5347bf6d8dc3befeccced3d89a785b4a2bb3a57a42e4634e9bb57f",
+    "bytes": 297793
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Gateway.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Gateway",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "27fa023d34ea7223aaf5193f7dd0f4fe4a2c86e390295af9ea4a16973f28a516",
+    "bytes": 110395
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.RestApi.Generators.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.RestApi.Generators",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "edb4b428fc6bf7b978b3c57a838fe5201d761ac847e6596e277bcb349c078af9",
+    "bytes": 57051
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.RestApi.Generators.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.RestApi.Generators",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "58400299b91766ded8d0aa2171f7b3031b19ddcb4131cf9ea9a258d413f462b1",
+    "bytes": 17080
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Server.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Server",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "1b5dd2a21c7155bcea2750188f4c4ead8f0c949a122f88b13d1b63d6a0523d4c",
+    "bytes": 1394575
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Server.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Server",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "a6457ed8a6492edfd89744578c26d09ad84106225b991e4c7a2f8254bdb1e222",
+    "bytes": 465240
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.ServiceDefaults.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.ServiceDefaults",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "c6c4b4e421f3890de30a1fe5a499fd1907838a70f5fc6c20c818622d2e0e49cc",
+    "bytes": 250799
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.ServiceDefaults.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.ServiceDefaults",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "c4c22df13e08c0950f9d5f01ffa7bd91b930b65e0ac393ff57d349ae6ecb7038",
+    "bytes": 74474
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.SignalR.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.SignalR",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "79ea50db67d45c836fdd7b4595ff23499ce08d305e52027f512cf54093a1aecb",
+    "bytes": 33333
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.SignalR.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.SignalR",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "e75063386f74d8982b6b4b533da927534553fdaad6cf15c7a03acd2799623ba3",
+    "bytes": 17357
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Testing",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "c9714dd5042f3e42bcc6de051475fa9f09078dab9acf40bf029239adba7cb928",
+    "bytes": 121891
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Testing",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "45febe99d7652201d61b1c2c26779c3f7e7b25d36065478d5745ea61c875d9b5",
+    "bytes": 46235
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.Integration.5.1.1.nupkg",
+    "id": "Hexalith.EventStore.Testing.Integration",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "8d4523eb362a32072939c6253f5ffa51f11ead48dbf822e23a3f8b9a353200f1",
+    "bytes": 52640
+  },
+  {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/qualified-source-candidates/Hexalith.EventStore.Testing.Integration.5.1.1.snupkg",
+    "id": "Hexalith.EventStore.Testing.Integration",
+    "version": "5.1.1",
+    "source": "f792bba6c0564d3c36dda6ad1c2fc55b0b0a6331",
+    "sha256": "cfb460dbfbf3ae4d2d4ec996981c358cdb822aeda3754a0f1d03e3ee1d45c1fe",
+    "bytes": 24623
+  }
+]

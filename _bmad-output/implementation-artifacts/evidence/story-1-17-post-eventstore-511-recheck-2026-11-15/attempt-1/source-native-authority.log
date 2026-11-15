@@ -1,0 +1,388 @@
+  Discovering: Hexalith.Folders.Server.Tests
+  Discovered:  Hexalith.Folders.Server.Tests
+  Starting:    Hexalith.Folders.Server.Tests
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "zero") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MutationSensitivityFailsBeforeBodyWritesOrAdmission(decision: Redacted, status: NotFound) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs(116,0): at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MutationSensitivityFailsBeforeBodyWritesOrAdmission(WorkspaceFileSensitivityDecision decision, HttpStatusCode status)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "positive") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "missing") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "foreign") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MutationSensitivityFailsBeforeBodyWritesOrAdmission(decision: Unavailable, status: ServiceUnavailable) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs(116,0): at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MutationSensitivityFailsBeforeBodyWritesOrAdmission(WorkspaceFileSensitivityDecision decision, HttpStatusCode status)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "erased") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(scenario: "malformed") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(String scenario)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactNativeObservationPreservesZeroAndPositiveHeadsAndRejectsUnsafeEvidence(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(incompleteEvidence: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(Boolean incompleteEvidence)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.NoncooperativeSourceCannotOutliveExistingThreeSecondCeiling [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.NoncooperativeSourceCannotOutliveExistingThreeSecondCeiling()
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.NoncooperativeSourceCannotOutliveExistingThreeSecondCeiling()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(incompleteEvidence: True) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(Boolean incompleteEvidence)
+           at InvokeStub_WorkspaceContentProductionTests.PendingSecondClassificationRechecksAuthorityBeforeObservingThirdEntry(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: False, sensitivity: Allowed) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.CanceledCallerDoesNotObserveSourceEvenInsideOwnActorScope [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.CanceledCallerDoesNotObserveSourceEvenInsideOwnActorScope()
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.CanceledCallerDoesNotObserveSourceEvenInsideOwnActorScope()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: False, sensitivity: Redacted) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at InvokeStub_WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: False, sensitivity: Unavailable) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at InvokeStub_WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: True, sensitivity: Allowed) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at InvokeStub_WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: True, scope: "exact") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: True, sensitivity: Redacted) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at InvokeStub_WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(incompleteEvidence: True, sensitivity: Unavailable) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Boolean incompleteEvidence, WorkspaceFileSensitivityDecision sensitivity)
+           at InvokeStub_WorkspaceContentProductionTests.NamespaceClassificationRechecksAuthorityBeforeConsumingEachAwaitedResult(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: False, scope: "exact") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: True, scope: "tenant") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(change: "revoke") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(String change)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: False, scope: "tenant") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: True, scope: "aggregate") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(change: "remove") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(String change)
+           at InvokeStub_WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(organization: False, scope: "aggregate") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Client, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Boolean organization, String scope)
+           at InvokeStub_NativeSourceHeadReaderTests.ExactOwnActorScopesNeverStandInForAnotherSource(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(change: "policy") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(String change)
+           at InvokeStub_WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(change: "watermark") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(String change)
+           at InvokeStub_WorkspaceContentProductionTests.RangeCannotDisclose416AfterCurrentStateChangesDuringSensitivityAwait(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.BatchLeaseExpiryAfterPreparationRejectsTheFinalMetadataDecision [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+           at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionFixture.CreateAsync(Boolean expireAfterPreparation)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentProductionTests.cs(38,0): at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.BatchLeaseExpiryAfterPreparationRejectsTheFinalMetadataDecision()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.EquivalentReplayUsesAcceptedEvidenceAfterLeaseExpiryOrTaskClosure(closed: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.EquivalentReplayUsesAcceptedEvidenceAfterLeaseExpiryOrTaskClosure(Boolean closed)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.EquivalentReplayUsesAcceptedEvidenceAfterLeaseExpiryOrTaskClosure(closed: True) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.EquivalentReplayUsesAcceptedEvidenceAfterLeaseExpiryOrTaskClosure(Boolean closed)
+           at InvokeStub_WorkspaceContentProductionTests.EquivalentReplayUsesAcceptedEvidenceAfterLeaseExpiryOrTaskClosure(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MultipartReplayVerifiesActualBytesBeforeAcceptedSourceShortcut [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.MultipartReplayVerifiesActualBytesBeforeAcceptedSourceShortcut()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.ProducedRangeSearchAndGlobWireShapesDeserializeWithCanonicalWatermarksAndTruncation [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.ProducedRangeSearchAndGlobWireShapesDeserializeWithCanonicalWatermarksAndTruncation()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.DirectLegacyContentReauthorizationPreservesTheRequestTaskInValidatorContexts [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentProductionTests.DirectLegacyContentReauthorizationPreservesTheRequestTaskInValidatorContexts()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "[]") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "42") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "null") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "true") [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "{\"workspaceId\":\"workspace-a\",\"taskId\":\"task-a\",\"re"···) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(json: "{\"workspaceId\":\"workspace-a\",\"taskId\":\"task-a\",\"re"···) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(69,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.MutationProcessorRejectsNonObjectAndMalformedBatchShapes(String json)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: null, workspace: "workspace_0123456789", generation: 0) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: "content_ABCDEF", workspace: "workspace_0123456789", generation: 0) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: "content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, workspace: "workspace_0123456789", generation: 0) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: "content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, workspace: null, generation: 0) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: "content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, workspace: "../unsafe", generation: 0) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(receipt: "content_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, workspace: "workspace_0123456789", generation: -1) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+        src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs(34,0): at Hexalith.Folders.Server.FoldersServerServiceCollectionExtensions.AddFoldersDomainServices(IServiceCollection services)
+        src/Hexalith.Folders.Server/FoldersServerModule.cs(98,0): at Hexalith.Folders.Server.FoldersServerModule.AddFoldersServer(IServiceCollection services)
+        tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs(115,0): at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.ProcessorRejectsMalformedErasureShapeWithoutThrowing(String receipt, String workspace, Int64 generation)
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.CommittedReceiptRemainsProtectedAfterNewStagedContentOrRemovalAndTerminalP7D(removal: False) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.CommittedReceiptRemainsProtectedAfterNewStagedContentOrRemovalAndTerminalP7D(Boolean removal)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.CommittedReceiptRemainsProtectedAfterNewStagedContentOrRemovalAndTerminalP7D(removal: True) [FAIL]
+      System.IO.FileNotFoundException : Could not load file or assembly 'Hexalith.EventStore.Contracts, Version=5.1.1.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+      
+      Stack Trace:
+           at Hexalith.Folders.Server.Tests.WorkspaceContentErasureGrantTests.CommittedReceiptRemainsProtectedAfterNewStagedContentOrRemovalAndTerminalP7D(Boolean removal)
+           at InvokeStub_WorkspaceContentErasureGrantTests.CommittedReceiptRemainsProtectedAfterNewStagedContentOrRemovalAndTerminalP7D(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Finished:    Hexalith.Folders.Server.Tests (ID = '56a482c0475c0bf0a5ce218c7eaf44a8db1c54d5828c5678967ef978a23050f5')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Server.Tests  Total: 64, Errors: 0, Failed: 48, Skipped: 0, Not Run: 0, Time: 0.234s
