@@ -1,0 +1,48 @@
+  Hexalith.Folders.Contracts -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/bin/Release/net11.0/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/bin/Release/net11.0/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Sample -> /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample/bin/Release/net11.0/Hexalith.Folders.Sample.dll
+  Hexalith.Folders.Sample.Tests -> /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample.Tests/bin/Release/net11.0/Hexalith.Folders.Sample.Tests.dll
+  Hexalith.Folders -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/bin/Release/net11.0/Hexalith.Folders.dll
+  Hexalith.Folders.EventStore -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/bin/Release/net11.0/Hexalith.Folders.EventStore.dll
+  Hexalith.Folders.ServiceDefaults -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/bin/Release/net11.0/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.Folders.Server -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/bin/Release/net11.0/Hexalith.Folders.Server.dll
+  Hexalith.Folders.UI -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/bin/Release/net11.0/Hexalith.Folders.UI.dll
+  Hexalith.Folders.Workers -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/bin/Release/net11.0/Hexalith.Folders.Workers.dll
+  Hexalith.Folders.Aspire -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/bin/Release/net11.0/Hexalith.Folders.Aspire.dll
+  Platform version catalog validated: Hexalith.EventStore.Aspire/5.1.1, CommunityToolkit.Aspire.Hosting.Dapr/13.6.2-beta.959, required range 13.6.2-beta.959 for net11.0.
+  Hexalith.Builds.Tooling -> /home/administrator/projects/hexalith/folders/references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/bin/Debug/net11.0/Hexalith.Builds.Tooling.dll
+  Hexalith.Folders.AppHost -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/bin/Release/net11.0/Hexalith.Folders.AppHost.dll
+  Hexalith.Folders.Cli -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Cli/bin/Release/net11.0/Hexalith.Folders.Cli.dll
+  Hexalith.Folders.Client.Generation.Shared -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Generation/Shared/bin/Release/net10.0/Hexalith.Folders.Client.Generation.Shared.dll
+  Hexalith.Folders.Mcp -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Mcp/bin/Release/net11.0/Hexalith.Folders.Mcp.dll
+  Hexalith.Folders.Testing -> /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/bin/Release/net11.0/Hexalith.Folders.Testing.dll
+  Task36FoldObserver -> /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/bin/Debug/net11.0/Task36FoldObserver.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Debug/net11.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Debug/net11.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Debug/net11.0/Hexalith.Tenants.dll
+  Hexalith.Folders.AppHost.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Release/net11.0/Hexalith.Folders.AppHost.Tests.dll
+  Hexalith.Tenants.Contracts -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net11.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net11.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants -> /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Release/net11.0/Hexalith.Tenants.dll
+  Hexalith.Folders.Cli.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Cli.Tests/bin/Release/net11.0/Hexalith.Folders.Cli.Tests.dll
+  Hexalith.Folders.Client.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/bin/Release/net11.0/Hexalith.Folders.Client.Tests.dll
+  Hexalith.Folders.Contracts.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll
+  Hexalith.Folders.EventStore.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/bin/Release/net11.0/Hexalith.Folders.EventStore.Tests.dll
+  Hexalith.Folders.IntegrationTests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/bin/Release/net11.0/Hexalith.Folders.IntegrationTests.dll
+  Hexalith.Folders.LoadTests -> /home/administrator/projects/hexalith/folders/tests/load/bin/Release/net11.0/Hexalith.Folders.LoadTests.dll
+  Hexalith.Folders.LoadTests.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.LoadTests.Tests/bin/Release/net11.0/Hexalith.Folders.LoadTests.Tests.dll
+  Hexalith.Folders.Mcp.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Mcp.Tests/bin/Release/net11.0/Hexalith.Folders.Mcp.Tests.dll
+  Hexalith.Folders.Server.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Server.Tests.dll
+  Hexalith.Folders.Testing.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Testing.Tests/bin/Release/net11.0/Hexalith.Folders.Testing.Tests.dll
+  Hexalith.Folders.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Release/net11.0/Hexalith.Folders.Tests.dll
+  Hexalith.Folders.UI.E2E.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net11.0/Hexalith.Folders.UI.E2E.Tests.dll
+  Hexalith.Folders.UI.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/bin/Release/net11.0/Hexalith.Folders.UI.Tests.dll
+  Hexalith.Folders.Workers.Tests -> /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Release/net11.0/Hexalith.Folders.Workers.Tests.dll
+  Hexalith.Folders.ParityOracleGenerator -> /home/administrator/projects/hexalith/folders/tests/tools/parity-oracle-generator/bin/Release/net11.0/Hexalith.Folders.ParityOracleGenerator.dll
+  Hexalith.Folders.PatternExamples -> /home/administrator/projects/hexalith/folders/tests/tools/pattern-examples/bin/Release/net11.0/Hexalith.Folders.PatternExamples.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:01:17.17

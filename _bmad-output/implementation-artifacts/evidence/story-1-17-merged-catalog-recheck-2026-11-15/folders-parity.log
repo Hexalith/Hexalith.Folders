@@ -1,0 +1,2214 @@
+CONTRACT-PARITY-CI category=server-vs-spine project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.105s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.098s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.128s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.428s
+CONTRACT-PARITY-CI category=previous-spine project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.256s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.266s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.986s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.735s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.881s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.795s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.806s
+CONTRACT-PARITY-CI category=generated-client project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.107s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.091s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.109s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 5.527s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.102s
+CONTRACT-PARITY-CI category=idempotency-helpers project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.271s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.134s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.124s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.101s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.097s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.087s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.135s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.100s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.130s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.098s
+CONTRACT-PARITY-CI category=parity-oracle-schema project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.193s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.143s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.138s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.094s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.100s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.798s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.848s
+CONTRACT-PARITY-CI category=parity-oracle-determinism project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.283s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.635s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.725s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.985s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.688s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.668s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.705s
+CONTRACT-PARITY-CI category=pd10-v2-conformance-set project=tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 5, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.613s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 21, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 4.922s
+  Discovering: Hexalith.Folders.Contracts.Tests
+  Discovered:  Hexalith.Folders.Contracts.Tests
+  Starting:    Hexalith.Folders.Contracts.Tests
+  Finished:    Hexalith.Folders.Contracts.Tests (ID = 'f076f14eb17acfc921dca6ba8317fc67627f354639cd67605ba6d410a249b3a7')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.547s
+CONTRACT-PARITY-CI category=sdk-transport-parity project=tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 216, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.185s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.138s
+  Discovering: Hexalith.Folders.Client.Tests
+  Discovered:  Hexalith.Folders.Client.Tests
+  Starting:    Hexalith.Folders.Client.Tests
+  Finished:    Hexalith.Folders.Client.Tests (ID = '15632e95aa36f0a026cc42b7b1fb162af55bd68aec6794db3ae49c991051e11d')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Client.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.122s
+CONTRACT-PARITY-CI category=rest-sdk-golden-parity project=tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj
+  Discovering: Hexalith.Folders.IntegrationTests
+  Discovered:  Hexalith.Folders.IntegrationTests
+  Starting:    Hexalith.Folders.IntegrationTests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 33.3703ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 4.6685ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.0412ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.0682ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.1381ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.1422ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.8760ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.1959ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.3170ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.0447ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 2.4016ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.2205ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 - application/problem+json 1.0183ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 - application/problem+json 1.0631ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 - application/problem+json 1.1747ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 - application/problem+json 1.1407ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 2.2706ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9323ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8928ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9147ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9204ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8771ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9997ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8576ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Denied authentication_failure correlation-rest-neg task-rest-neg MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - 401 - application/problem+json 142.9706ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json 68
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 401 - application/problem+json 1.6372ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 3.9087ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.4020ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.1248ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.0935ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-bindings/provider_binding_0001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/provider-bindings/{providerBindingRef}'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProviderReadiness Success operation_completed correlation_binding_read task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProviderBindingHttpResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/provider-bindings/{providerBindingRef}'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-bindings/provider_binding_0001 - 200 263 application/json;+charset=utf-8 134.2069ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr-audit task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder-a/lifecycle-status - 200 - application/json;+charset=utf-8 113.1856ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 68
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 1.5211ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/jsonp;+charset=utf-8 68
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 0.3579ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 96
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 1.6195ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 96
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 0.2425ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 400 - application/problem+json 1.5399ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - 400 - application/problem+json 0.3646ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - 404 - application/problem+json 0.7297ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence - 404 - application/problem+json 0.5997ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence?tenantId=tenant-a&tenantId=tenant-b - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence?tenantId=tenant-a&tenantId=tenant-b - 404 - application/problem+json 2.0264ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence?principalId=user-a&principalId=user-b - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/provider-readiness/support-evidence?principalId=user-a&principalId=user-b - 404 - application/problem+json 0.6723ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 4.0050ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/not-declared - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/not-declared - 404 - application/problem+json 0.5496ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 404 - application/problem+json 1.3015ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.0290ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 400 293 application/problem+json 2.8152ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - application/json 90
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ValidateProviderReadiness operation_family=readiness-and-provider-evidence result=allow correlation_id=correlation_readiness_operator_001
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProviderReadiness Success operation_completed correlation_readiness_operator_001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProviderReadinessOperatorHttpResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - 200 520 application/json;+charset=utf-8 128.2081ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 202 0 - 1.3115ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 202 0 - 0.8795ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted correlation-rest-echo task-echo-rest-0001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 52.6678ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-rest-echo task-echo-rest-0001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 182.2194ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000002/archive - application/json 68
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted correlation-sdk-echo task-echo-sdk-0001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 4.9281ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-sdk-echo task-echo-sdk-0001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000002/archive - 202 156 application/json;+charset=utf-8 9.1256ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 68
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 202 0 - 1.4664ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - application/json;+charset=utf-8 1
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 400 - application/problem+json 0.2980ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/provider-readiness/validations - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProviderReadiness Success operation_completed corr-provider-readiness task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProviderReadinessOperatorHttpResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/provider-readiness/validations - 200 - application/json;+charset=utf-8 118.3545ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - application/json 90
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ValidateProviderReadiness operation_family=readiness-and-provider-evidence result=allow correlation_id=corr-provider-readiness-sdk
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProviderReadiness Success operation_completed corr-provider-readiness-sdk task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProviderReadinessOperatorHttpResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/provider-readiness/validations'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - 200 513 application/json;+charset=utf-8 4.0140ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/repository-backed - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/repository-backed'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr-create-rest task-create-rest MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 41.3306ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr-create-rest task-create-rest MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/repository-backed'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/repository-backed - 202 - application/json;+charset=utf-8 49.9033ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 436
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=CreateRepositoryBackedFolder operation_family=folder-administration result=allow correlation_id=correlation_create_sdk
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/repository-backed'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted correlation_create_sdk task_create_sdk_001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 3.3249ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation_create_sdk task_create_sdk_001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/repository-backed'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 202 159 application/json;+charset=utf-8 5.1725ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-prepare/workspaces/workspace-a/preparation - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr-prepare task-prepare MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 21.9702ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr-prepare task-prepare MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-prepare/workspaces/workspace-a/preparation - 202 - application/json;+charset=utf-8 26.7997ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-lock/workspaces/workspace-a/lock - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr-lock task-lock MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 6.8828ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed LockOperation Success operation_completed corr-lock task-lock MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-lock/workspaces/workspace-a/lock - 202 - application/json;+charset=utf-8 13.9878ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-addfile/workspaces/workspace-a/files/add - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr-addfile task-addfile MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 29.5623ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed FileOperation Success operation_completed corr-addfile task-addfile MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-addfile/workspaces/workspace-a/files/add - 202 - application/json;+charset=utf-8 91.5830ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-commit/workspaces/workspace-a/commits - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr-commit task-commit MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 8.6929ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed CommitOperation Success operation_completed corr-commit task-commit MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-commit/workspaces/workspace-a/commits - 202 - application/json;+charset=utf-8 15.8720ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ListFolderFiles operation_family=context-read result=deny correlation_id=correlation_context_denied
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - 404 - application/problem+json 0.3684ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ListFolderFiles operation_family=context-read result=allow correlation_id=correlation_context_001
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed correlation_context_001 task_context_0001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileTreeResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - 200 591 application/json;+charset=utf-8 8.6948ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ListFolderFiles operation_family=context-read result=allow correlation_id=corr-context-sdk
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ContextQuery Success operation_completed corr-context-sdk task-context-sdk MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FileTreeResultResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_context_001/workspaces/workspace_000001/context/tree?limit=10 - 200 591 application/json;+charset=utf-8 1.9111ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder_status_0001/workspaces/workspace_000001/status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Unavailable projection_unavailable corr-status task-status MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder_status_0001/workspaces/workspace_000001/status - 503 - application/problem+json 4.5098ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_status_0001/workspaces/workspace_000001/status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetWorkspaceStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=correlation_status_sdk
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Unavailable projection_unavailable correlation_status_sdk task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_status_0001/workspaces/workspace_000001/status - 503 374 application/problem+json 1.7994ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder_lifecycle_1/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_lifecycle task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder_lifecycle_1/lifecycle-status - 200 - application/json;+charset=utf-8 1.8918ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_lifecycle_1/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=correlation_lifecycle
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation_lifecycle task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_lifecycle_1/lifecycle-status - 200 233 application/json;+charset=utf-8 1.4799ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 1.2207ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 400 - application/problem+json 0.6328ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.8945ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 404 - application/problem+json 3.8050ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.8447ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.6058ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.4939ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.2617ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.2477ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.2115ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.2036ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.1935ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 0.1702ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 200 - application/json 3.2260ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 429
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 422.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 422 402 application/problem+json 1.4622ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - application/json 322
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 422.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - 422 402 application/problem+json 1.4406ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 1048577
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 401 - application/problem+json 2.0130ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 1048577
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 404 - application/problem+json 1.2318ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 1048577
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 413 - application/problem+json 1.5857ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 413 - application/problem+json 4.3696ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 1
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 400 - application/problem+json 2.7160ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - application/json;+charset=utf-8 425
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - 428 364 application/problem+json 3.3862ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 404 - application/problem+json 3.3230ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8992ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/branch-ref-policy - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/branch-ref-policy - 200 363 application/json 1.7848ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/branch-ref-policy - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/branch-ref-policy - 200 363 application/json 0.5052ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - application/json 90
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/provider-readiness/validations - 429 357 application/problem+json 1.4652ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - application/json;+charset=utf-8 425
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - 423 307 application/problem+json 1.0396ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - application/json;+charset=utf-8 425
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - 202 159 application/json 1.6135ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_shared_123456 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder_000000001/lifecycle-status - 200 - application/json;+charset=utf-8 112.8208ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_shared_123456 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 200 231 application/json;+charset=utf-8 3.7154ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 96
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 0.9581ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 429
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 409 445 application/problem+json 1.4280ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json 429
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 503.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 450 application/problem+json 1.4739ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8632ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.8466ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed Correlation_Uppercase_0001 Task_Uppercase_000000001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 202 168 application/json;+charset=utf-8 127.3851ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 200 - application/json 2.4016ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 200 - application/json 1.0755ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-absent/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-absent/status - 404 - application/problem+json 2.2286ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+fail: Pd10V2CandidateCompatibilitySeam[1018]
+      PD10 candidate authorization evaluation failed for GetTaskStatus: InvalidOperationException.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 503 - application/problem+json 1.9938ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 -
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.InvalidOperationException: audit unavailable
+         at Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.ThrowingPd10AuthorizationAuditSink.WriteAsync(Pd10AuthorizationAuditRecord record, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs:line 3899
+         at Hexalith.Folders.Server.Pd10V2CandidateCompatibilitySeam.AuditAsync(HttpContext context, String operation, String operationFamily, String result) in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs:line 1530
+         at Hexalith.Folders.Server.Authorization.Pd10ProtectedOperationExecutor.ExecuteAsync[T](Pd10AuthorizationContext context, Func`3 auditDecision, Func`2 validateRequestEnvelope, Func`2 verifyTaskFolderBinding, Func`2 observeProtectedResource, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationExecutor.cs:line 78
+         at Hexalith.Folders.Server.Pd10V2CandidateCompatibilitySeam.<>c.<<UsePd10V2CandidateCompatibilitySeam>b__22_0>d.MoveNext() in /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs:line 276
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 500 - text/plain;+charset=utf-8 4.2372ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.8279ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 422 312 application/problem+json 1.6570ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 409 354 application/problem+json 1.1749ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - application/json;+charset=utf-8 109
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/repository-backed - 503 357 application/problem+json 1.1919ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - application/json;+charset=utf-8 168
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - 422 312 application/problem+json 1.1537ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - application/json;+charset=utf-8 168
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - 409 354 application/problem+json 1.1833ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - application/json;+charset=utf-8 168
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/repository-bindings - 503 357 application/problem+json 1.0977ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders - application/json;+charset=utf-8 2
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders - 404 - application/problem+json 0.6601ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.4863ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 404 - application/problem+json 0.8789ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 404 - application/problem+json 1.2938ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?tenantId=tenant-a&tenantId=tenant-b - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?tenantId=tenant-a&tenantId=tenant-b - 404 - application/problem+json 0.7948ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?principalId=user-a&principalId=user-b - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?principalId=user-a&principalId=user-b - 404 - application/problem+json 0.8832ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 0.9668ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - application/json;+charset=utf-8 1048577
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 400 - application/problem+json 0.4989ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9003ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9913ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.4386ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.6492ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 1.2759ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.3685ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status - 400 - application/problem+json 0.3091ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?tenantId=tenant-a - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?tenantId=tenant-a - 400 - application/problem+json 0.2612ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?principalId=user-a - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/tasks/task-status-0001/status?principalId=user-a - 400 - application/problem+json 0.1875ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000001/archive - 400 - application/problem+json 1.0566ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed correlation-audit-allow task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 200 231 application/json;+charset=utf-8 111.1145ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000002/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000002/lifecycle-status - 404 - application/problem+json 1.2337ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/Folder_0000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed Correlation_Uppercase_0001 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/Folder_0000000001/lifecycle-status - 200 232 application/json;+charset=utf-8 111.0193ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted correlation-rest-archive task-rest MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 4.0168ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-rest-archive task-rest MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder-a/archive - 202 - application/json;+charset=utf-8 123.0284ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000002/archive - application/json 68
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted correlation-sdk-archive task_sdk_0000001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 2.4045ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed correlation-sdk-archive task_sdk_0000001 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_000000002/archive - 202 157 application/json;+charset=utf-8 5.3807ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 0.9316ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - application/json;+charset=utf-8 425
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - 423 302 application/problem+json 1.6090ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - application/json;+charset=utf-8 425
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/api/v2/folders/folder_000000001/workspaces/workspace_000001/files/change - 428 354 application/problem+json 1.0959ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - - -
+fail: Pd10V2CandidateCompatibilitySeam[1018]
+      PD10 candidate authorization evaluation failed for GetFolderLifecycleStatus: InvalidOperationException.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_000000001/lifecycle-status - 503 - application/problem+json 1.0081ms
+  Finished:    Hexalith.Folders.IntegrationTests (ID = 'ca4080ddedd8ce99a642dc6f467368e4e266eec07d78b59931b4f71681758580')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 97, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 15.622s
+CONTRACT-PARITY-CI category=cli-behavioral-parity project=tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj
+  Discovering: Hexalith.Folders.Cli.Tests
+  Discovered:  Hexalith.Folders.Cli.Tests
+  Starting:    Hexalith.Folders.Cli.Tests
+  Finished:    Hexalith.Folders.Cli.Tests (ID = '86f33c8277b72ab4148f31cf63358036a6c056a22402b133d223d70f4ef188fb')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Cli.Tests  Total: 620, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.328s
+  Discovering: Hexalith.Folders.Cli.Tests
+  Discovered:  Hexalith.Folders.Cli.Tests
+  Starting:    Hexalith.Folders.Cli.Tests
+  Finished:    Hexalith.Folders.Cli.Tests (ID = '86f33c8277b72ab4148f31cf63358036a6c056a22402b133d223d70f4ef188fb')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Cli.Tests  Total: 12, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.193s
+CONTRACT-PARITY-CI category=mcp-behavioral-parity project=tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj
+  Discovering: Hexalith.Folders.Mcp.Tests
+  Discovered:  Hexalith.Folders.Mcp.Tests
+  Starting:    Hexalith.Folders.Mcp.Tests
+  Finished:    Hexalith.Folders.Mcp.Tests (ID = '8a0743212023ac373260158a00cb9b71ab811c9eb2167345dbf0eef58ee8b981')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 571, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.364s
+  Discovering: Hexalith.Folders.Mcp.Tests
+  Discovered:  Hexalith.Folders.Mcp.Tests
+  Starting:    Hexalith.Folders.Mcp.Tests
+  Finished:    Hexalith.Folders.Mcp.Tests (ID = '8a0743212023ac373260158a00cb9b71ab811c9eb2167345dbf0eef58ee8b981')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.186s
+  Discovering: Hexalith.Folders.Mcp.Tests
+  Discovered:  Hexalith.Folders.Mcp.Tests
+  Starting:    Hexalith.Folders.Mcp.Tests
+  Finished:    Hexalith.Folders.Mcp.Tests (ID = '8a0743212023ac373260158a00cb9b71ab811c9eb2167345dbf0eef58ee8b981')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 9, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.277s
+  Discovering: Hexalith.Folders.Mcp.Tests
+  Discovered:  Hexalith.Folders.Mcp.Tests
+  Starting:    Hexalith.Folders.Mcp.Tests
+  Finished:    Hexalith.Folders.Mcp.Tests (ID = '8a0743212023ac373260158a00cb9b71ab811c9eb2167345dbf0eef58ee8b981')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.185s
+  Discovering: Hexalith.Folders.Mcp.Tests
+  Discovered:  Hexalith.Folders.Mcp.Tests
+  Starting:    Hexalith.Folders.Mcp.Tests
+  Finished:    Hexalith.Folders.Mcp.Tests (ID = '8a0743212023ac373260158a00cb9b71ab811c9eb2167345dbf0eef58ee8b981')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Mcp.Tests  Total: 58, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.117s
+CONTRACT-PARITY-CI category=mixed-surface-handoff project=tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj
+  Discovering: Hexalith.Folders.IntegrationTests
+  Discovered:  Hexalith.Folders.IntegrationTests
+  Starting:    Hexalith.Folders.IntegrationTests
+  Finished:    Hexalith.Folders.IntegrationTests (ID = 'ca4080ddedd8ce99a642dc6f467368e4e266eec07d78b59931b4f71681758580')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 587, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.468s
+  Discovering: Hexalith.Folders.IntegrationTests
+  Discovered:  Hexalith.Folders.IntegrationTests
+  Starting:    Hexalith.Folders.IntegrationTests
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Denied authentication_failure corr_err_rest task_err_rest MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 401 - application/problem+json 160.9561ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=actor_absent tenant=tenant_absent operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=correlation_absent
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 401 - application/problem+json 7.4278ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=actor_absent tenant=tenant_absent operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=correlation_absent
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 401 - application/problem+json 0.9554ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=actor_absent tenant=tenant_absent operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=correlation_absent
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 401 - application/problem+json 0.3350ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr_replay_fixed_0000000000 task_replay_fixed_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 51.8243ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr_replay_fixed_0000000000 task_replay_fixed_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 202 - application/json;+charset=utf-8 181.3749ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_replay_fixed_0000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_replay_fixed_0000000000 task_replay_fixed_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 5.2311ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 173 application/json;+charset=utf-8 26.9797ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_replay_fixed_0000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_replay_fixed_0000000000 task_replay_fixed_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 11.4025ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 173 application/json;+charset=utf-8 13.5452ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_replay_fixed_0000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_replay_fixed_0000000000 task_replay_fixed_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 0.6384ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 173 application/json;+charset=utf-8 1.8521ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr_handoff_1234567890abcde task_handoff_1234567890abcdefgh MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 4.4818ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr_handoff_1234567890abcde task_handoff_1234567890abcdefgh MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 202 - application/json;+charset=utf-8 126.8491ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_handoff_1234567890abcde
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_handoff_1234567890abcde task_handoff_1234567890abcdefgh MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 2.4647ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 176 application/json;+charset=utf-8 5.1108ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_handoff_1234567890abcde
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_handoff_1234567890abcde task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 6.2141ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_handoff_1234567890abcde
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_handoff_1234567890abcde task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.7350ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder_handoff_0001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_handoff_1234567890abcde task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder_handoff_0001/lifecycle-status - 200 - application/json;+charset=utf-8 0.4513ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_handoff_1234567890abcde
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_handoff_1234567890abcde task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.5028ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_handoff_1234567890abcde
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_handoff_1234567890abcde task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.3945ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr_conflict_fixed_00000000 task_conflict_fixed_000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 3.2929ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr_conflict_fixed_00000000 task_conflict_fixed_000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 202 - application/json;+charset=utf-8 103.0050ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_conflict_fixed_00000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection corr_conflict_fixed_00000000 task_conflict_fixed_000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 3.9709ms
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 409 376 application/problem+json 11.8605ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 67
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_conflict_fixed_00000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection corr_conflict_fixed_00000000 task_conflict_fixed_000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 10.5866ms
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 409 376 application/problem+json 12.9253ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_conflict_fixed_00000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Rejected domain_rejection corr_conflict_fixed_00000000 task_conflict_fixed_000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 0.5502ms
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 409 376 application/problem+json 1.6094ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Denied authorization_denied correlation_absent task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 404.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 404 - application/problem+json 3.9428ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Denied authorization_denied corr_acl_denied_0000000000 task_acl_denied_0000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[1]
+      Setting HTTP status code 404.
+info: Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 404 - application/problem+json 102.8105ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=corr_acl_denied_0000000000
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 404 - application/problem+json 0.8191ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=corr_acl_denied_0000000000
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 404 - application/problem+json 0.3189ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=deny correlation_id=corr_acl_denied_0000000000
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 404 - application/problem+json 0.2864ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr_audit_fixed_000000000000 task_audit_fixed_000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 2.8679ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr_audit_fixed_000000000000 task_audit_fixed_000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 202 - application/json;+charset=utf-8 102.6011ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_audit_fixed_000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_audit_fixed_000000000000 task_audit_fixed_000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 1.9573ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 175 application/json;+charset=utf-8 4.8455ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v1/folders/folder_handoff_0001/lifecycle-status - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_audit_fixed_000000000000 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v1/folders/folder_handoff_0001/lifecycle-status - 200 - application/json;+charset=utf-8 1.1843ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_audit_fixed_000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_audit_fixed_000000000000 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.4791ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_audit_fixed_000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_audit_fixed_000000000000 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.3691ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - - -
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=GetFolderLifecycleStatus operation_family=status-permission-and-lock-inspection result=allow correlation_id=corr_audit_fixed_000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestQuery Success operation_completed corr_audit_fixed_000000000000 task_absent MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FolderLifecycleStatusResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /api/v1/folders/{folderId}/lifecycle-status'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/api/v2/folders/folder_handoff_0001/lifecycle-status - 200 251 application/json;+charset=utf-8 0.3776ms
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/administrator/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Success accepted corr_echo_fixed_00000000000000 task_echo_fixed_00000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 2.9612ms
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed RestMutation Success operation_completed corr_echo_fixed_00000000000000 task_echo_fixed_00000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v1/folders/folder_handoff_0001/archive - 202 - application/json;+charset=utf-8 101.0502ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_echo_fixed_00000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_echo_fixed_00000000000000 task_echo_fixed_00000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 1.9119ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 177 application/json;+charset=utf-8 4.8515ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_echo_fixed_00000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_echo_fixed_00000000000000 task_echo_fixed_00000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 10.0534ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 177 application/json;+charset=utf-8 11.4718ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - application/json 68
+info: Hexalith.Folders.Server.Authorization.LoggingPd10AuthorizationAuditSink[1017]
+      PD10 authorization decision actor=user-a tenant=tenant-a operation=ArchiveFolder operation_family=folder-administration result=allow correlation_id=corr_echo_fixed_00000000000000
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/process - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /process'
+info: Hexalith.Folders.Observability.FolderTelemetryEmitter[0]
+      Folder operation observed ProcessCommand Replayed idempotent_replay corr_echo_fixed_00000000000000 task_echo_fixed_00000000000000 MetadataOnly
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[1]
+      Setting HTTP status code 200.
+info: Microsoft.AspNetCore.Http.Result.OkObjectResult[3]
+      Writing value of type 'DomainServiceWireResult' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /process'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/process - 200 - application/json;+charset=utf-8 0.4897ms
+info: Microsoft.AspNetCore.Http.Result.JsonResult[1]
+      Setting HTTP status code 202.
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'AcceptedCommandResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /api/v1/folders/{folderId}/archive'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/api/v2/folders/folder_handoff_0001/archive - 202 177 application/json;+charset=utf-8 1.4068ms
+  Finished:    Hexalith.Folders.IntegrationTests (ID = 'ca4080ddedd8ce99a642dc6f467368e4e266eec07d78b59931b4f71681758580')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.IntegrationTests  Total: 8, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.383s

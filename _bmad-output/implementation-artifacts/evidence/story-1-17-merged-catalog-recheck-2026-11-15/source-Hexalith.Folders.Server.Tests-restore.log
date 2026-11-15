@@ -1,0 +1,22 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj (in 92 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj (in 3 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj (in 185 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 187 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/Hexalith.McpCli.Analyzers.csproj (in 193 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj (in 190 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj (in 194 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj (in 200 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 92 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 11 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 3 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj (in 202 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 196 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj (in 4 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj (in 214 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj (in 216 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/tools/Task36FoldObserver/Task36FoldObserver.csproj (in 218 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj (in 28 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj (in 214 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 23 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj (in 223 ms).
