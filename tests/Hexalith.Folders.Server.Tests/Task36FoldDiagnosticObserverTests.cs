@@ -49,7 +49,7 @@ public sealed class Task36FoldDiagnosticObserverTests
         try
         {
             OperationalStatusTestStore store = new();
-            var writer = new OperationalStatusProjectionWriter(store, store, store);
+            var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
             var handler = new OperationalStatusProjectionHandler(writer);
             ServiceCollection services = new();
             services.AddSingleton<IAsyncDomainProjectionHandler>(handler);
@@ -81,7 +81,7 @@ public sealed class Task36FoldDiagnosticObserverTests
 
             // Ordinary writer/Workers catch-up uses its own fold and must not be counted as SDK handler entry.
             (await writer.ApplyAsync("tenant-a", "worker-folder", "worker-delivery",
-                [OperationalStatusEventReader.ReadStored(Request("worker-folder", 2).Events[0])], token)).IsSuccess.ShouldBeTrue();
+                [OperationalStatusTestData.Stored(Request("worker-folder", 2).Events[0])], token)).IsSuccess.ShouldBeTrue();
             store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "worker-folder"))!
                 .Sequence.ShouldBe(1);
             FoldRows(path).Count.ShouldBe(1);
@@ -109,8 +109,12 @@ public sealed class Task36FoldDiagnosticObserverTests
             provider.GetServices<IAsyncDomainProjectionHandler>().Single().ShouldBeSameAs(handler);
 
             async Task<ProjectionDispatchOutcome> DispatchAsync(ProjectionRequest request, string id)
-                => (await DomainProjectionDispatcher.DispatchAsync(provider,
+            {
+                foreach (var source in request.Events)
+                    OperationalStatusTestData.NativeSource.Remember(request.TenantId, request.AggregateId, source);
+                return (await DomainProjectionDispatcher.DispatchAsync(provider,
                     new(request, [OperationalStatusKeys.ProjectionType], id, "observed-catalog"), new(), registry, token).ConfigureAwait(false)).Outcomes.Single();
+            }
         }
         finally { Directory.Delete(directory, recursive: true); }
     }

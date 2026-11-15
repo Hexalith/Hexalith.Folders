@@ -17,7 +17,7 @@ public sealed class OperationalStatusRetentionTests
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddDays(399) };
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken);
         operations.Where(item => item.Key != OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")
             && item.Key != OperationalStatusKeys.TaskCompletion("tenant-a", "folder-a", "task-a"))
@@ -47,7 +47,7 @@ public sealed class OperationalStatusRetentionTests
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        (await new OperationalStatusProjectionWriter(store, store, store, clock).ApplyAsync("tenant-a", "folder-a", "initial",
+        (await new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "initial",
             sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         var reader = Reader(store, clock, sources.Length);
         string task = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
@@ -69,7 +69,7 @@ public sealed class OperationalStatusRetentionTests
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddMinutes(-minutes) };
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        (await new OperationalStatusProjectionWriter(store, store, store, clock).ApplyAsync("tenant-a", "folder-a", "initial",
+        (await new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "initial",
             sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await Reader(store, clock, sources.Length).GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(expected);
     }
@@ -78,10 +78,10 @@ public sealed class OperationalStatusRetentionTests
     public async Task DomainHostAheadOfPersistenceClockCanCloseAndRebuildATaskAsync()
     {
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now))
-            .Select(item => OperationalStatusEventReader.ReadStored(item.Source! with { Timestamp = item.Timestamp.AddMinutes(-5) })).ToArray();
+            .Select(item => OperationalStatusTestData.Stored(item.Source! with { Timestamp = item.Timestamp.AddMinutes(-5) })).ToArray();
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddMinutes(-5) };
-        var writer = new OperationalStatusProjectionWriter(store, store, store, clock);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "clock-skew", sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken)).ShouldNotBeEmpty();
         (await Reader(store, clock, sources.Length).GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.Available);
@@ -91,10 +91,10 @@ public sealed class OperationalStatusRetentionTests
     public async Task HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync()
     {
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now))
-            .Select(item => OperationalStatusEventReader.ReadStored(item.Source! with { Timestamp = item.Timestamp.AddMinutes(-5) })).ToArray();
+            .Select(item => OperationalStatusTestData.Stored(item.Source! with { Timestamp = item.Timestamp.AddMinutes(-5) })).ToArray();
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now + OperationalStatusKeys.Retention - TimeSpan.FromMinutes(1) };
-        var writer = new OperationalStatusProjectionWriter(store, store, store, clock);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken);
         var task = operations.Single(item => item.Key == OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a"));
         var receipt = operations.Single(item => item.Key == OperationalStatusKeys.Receipt("tenant-a", "folder-a", sources.Length));
@@ -114,7 +114,7 @@ public sealed class OperationalStatusRetentionTests
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddDays(399) };
         store.BatchOptions.TimeProvider = clock;
         var sources = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
-        var writer = new OperationalStatusProjectionWriter(store, store, store, clock);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 1, TestContext.Current.CancellationToken);
         ReadModelBatch staged = new(new("statestore", "tenant-a", "folders", "folder-a", "operational-status", "delayed-source-deadline"), operations)
         { RetainManifestForRecovery = true };
@@ -141,7 +141,7 @@ public sealed class OperationalStatusRetentionTests
     }
 
     private static EventStoreOperationalStatusReadModel Reader(OperationalStatusTestStore store, OperationalStatusClock clock, long head)
-        => new(new(store, store), clock, new OperationalStatusSequenceReader { Head = head });
+        => new(new(store, store), clock, new OperationalStatusSequenceReader { Head = head }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
     private static TaskStatusReadModelRequest TaskRequest()
         => new("tenant-a", "task-a", "reader", "read_task_status", "corr", "eventually_consistent")
         { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" };

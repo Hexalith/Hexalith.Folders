@@ -14,7 +14,7 @@ namespace Hexalith.Folders.AppHost.Tests;
 /// <summary>Qualifies actual realm enrollment and supported caller-list composition without starting a topology.</summary>
 public sealed class FolderDurabilitySourceReadConfigurationTests
 {
-    /// <summary>The real issuer grants only stream-read to each own service identity and never changes a human.</summary>
+    /// <summary>The real issuer grants exact metadata and native scan operations to each service identity without changing a human.</summary>
     [Fact]
     public void ActualSourceRealmHasOnlyIndependentServiceCredentialsAndMetadataScopes()
     {
@@ -39,7 +39,7 @@ public sealed class FolderDurabilitySourceReadConfigurationTests
             client["fullScopeAllowed"]!.GetValue<bool>().ShouldBeFalse();
             client["defaultClientScopes"]!.AsArray().ShouldBeEmpty();
             client["optionalClientScopes"]!.AsArray().Select(scope => scope!.GetValue<string>()).ShouldBe(new[]
-                { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read" });
+                { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read", "eventstore-operation.eventstore.stream-scan-native" });
             client["secret"]!.GetValue<string>().ShouldBe("${HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET}");
             client["protocolMappers"]!.AsArray().Single()!["config"]!["claim.value"]!.GetValue<string>().ShouldBe("service");
         }
@@ -65,6 +65,8 @@ public sealed class FolderDurabilitySourceReadConfigurationTests
         {
             receiver["Authentication__BoundStreamRead__MetadataOnlyCallers__" + caller].ShouldBe("true");
             receiver["Authentication__BoundStreamRead__AllowedDomains__" + caller].ShouldBe("folders");
+            receiver["Authentication__NativeSourceScan__AllowedDomains__" + caller].ShouldBe("folders");
+            receiver["Authentication__NativeSourceScan__PublicKeys__" + caller].ShouldNotBe(receiver["Authentication__BoundStreamRead__PublicKeys__" + caller]);
         }
         serverEnvironment["Authentication__WorkloadIssuer__Workload"].ShouldBe("folders");
         workerEnvironment["Authentication__WorkloadIssuer__Workload"].ShouldBe("folders-workers");
@@ -72,10 +74,18 @@ public sealed class FolderDurabilitySourceReadConfigurationTests
             workerEnvironment["Authentication__WorkloadIssuer__ClientSecret"]).ShouldBeFalse();
         ReferenceEquals(serverEnvironment["Authentication__BoundStreamRead__PrivateKey"],
             workerEnvironment["Authentication__BoundStreamRead__PrivateKey"]).ShouldBeFalse();
+        ReferenceEquals(serverEnvironment["Authentication__NativeSourceScan__PrivateKey"],
+            workerEnvironment["Authentication__NativeSourceScan__PrivateKey"]).ShouldBeFalse();
+        ReferenceEquals(serverEnvironment["Authentication__NativeSourceScan__PrivateKey"],
+            serverEnvironment["Authentication__BoundStreamRead__PrivateKey"]).ShouldBeFalse();
+        ReferenceEquals(workerEnvironment["Authentication__NativeSourceScan__PrivateKey"],
+            workerEnvironment["Authentication__BoundStreamRead__PrivateKey"]).ShouldBeFalse();
         builder.Resources.OfType<ParameterResource>().Where(parameter => parameter.Name.EndsWith("-source-client-secret", StringComparison.Ordinal)
-            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)).Count().ShouldBe(4);
+            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)
+            || parameter.Name.EndsWith("-source-scan-proof-key", StringComparison.Ordinal)).Count().ShouldBe(6);
         builder.Resources.OfType<ParameterResource>().Where(parameter => parameter.Name.EndsWith("-source-client-secret", StringComparison.Ordinal)
-            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)).ShouldAllBe(parameter => parameter.Secret);
+            || parameter.Name.EndsWith("-source-proof-key", StringComparison.Ordinal)
+            || parameter.Name.EndsWith("-source-scan-proof-key", StringComparison.Ordinal)).ShouldAllBe(parameter => parameter.Secret);
 
         string[] before = Callers(receiver);
         string[] actual = ["tenants-isolated", "folders-isolated", "folders-workers-isolated", "folders-proof-a", "folders-proof-b"];

@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.Testing" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
     <ProjectReference Include="../tools/Task36FoldObserver/Task36FoldObserver.csproj" ReferenceOutputAssembly="false" IsAspireProjectResource="false" />
     <!-- Aspire registers the Tenants runtime with SuppressBuild; compile its selected owner for catalog model tests. -->

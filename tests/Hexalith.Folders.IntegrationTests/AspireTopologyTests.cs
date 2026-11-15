@@ -64,6 +64,8 @@ public sealed class AspireTopologyTests
                 config.GetProperty("claim.name").GetString().ShouldBe("eventstore:operation");
                 if (name == "eventstore-operation.eventstore.stream-read")
                     config.GetProperty("claim.value").GetString().ShouldBe("eventstore:stream-read");
+                else if (name == "eventstore-operation.eventstore.stream-scan-native")
+                    config.GetProperty("claim.value").GetString().ShouldBe("eventstore:stream-scan-native");
                 else
                 {
                     name.StartsWith("eventstore-operation.domain-service.", StringComparison.Ordinal).ShouldBeTrue();
@@ -72,6 +74,7 @@ public sealed class AspireTopologyTests
             }
         }
         optional.ShouldNotContain("eventstore-operation.eventstore.stream-read");
+        optional.ShouldNotContain("eventstore-operation.eventstore.stream-scan-native");
         foreach (string sourceClientId in new[] { "folders", "folders-workers" })
         {
             JsonElement sourceClient = root.GetProperty("clients").EnumerateArray().Single(item =>
@@ -86,7 +89,7 @@ public sealed class AspireTopologyTests
                 ? "${HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET}" : "${HEXALITH_FOLDERS_WORKERS_SOURCE_CLIENT_SECRET}");
             sourceClient.GetProperty("defaultClientScopes").GetArrayLength().ShouldBe(0);
             sourceClient.GetProperty("optionalClientScopes").EnumerateArray().Select(item => item.GetString()!)
-                .Order(StringComparer.Ordinal).ShouldBe(new[] { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read" });
+                .Order(StringComparer.Ordinal).ShouldBe(new[] { "eventstore-audience.eventstore", "eventstore-operation.eventstore.stream-read", "eventstore-operation.eventstore.stream-scan-native" });
             JsonElement surface = sourceClient.GetProperty("protocolMappers").EnumerateArray().ShouldHaveSingleItem();
             surface.GetProperty("protocolMapper").GetString().ShouldBe("oidc-hardcoded-claim-mapper");
             surface.GetProperty("config").GetProperty("claim.name").GetString().ShouldBe("eventstore:surface");

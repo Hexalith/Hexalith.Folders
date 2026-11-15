@@ -177,7 +177,7 @@ if (security is not null)
     _ = foldersWorkers.WithJwtBearerSecurity(security);
 
     // These existing hosts both reach fresh folder/organization source heads. Each has
-    // its own issuer credential and RSA resource key, and only metadata-read enrollment.
+    // its own issuer credential and separate RSA keys for metadata reads and native scans.
     foreach ((IResourceBuilder<ProjectResource> host, string name, string secretVariable) in new[]
     {
         (folders, "folders", "HEXALITH_FOLDERS_SOURCE_CLIENT_SECRET"),
@@ -198,13 +198,19 @@ if (security is not null)
         using RSA sourceKey = RSA.Create(2048);
         string privateKey = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
         var sourcePrivateKey = builder.AddParameter(name + "-source-proof-key", () => privateKey, secret: true);
+        using RSA scanKey = RSA.Create(2048);
+        string scanPrivateKey = Convert.ToBase64String(scanKey.ExportPkcs8PrivateKey());
+        var scanProofKey = builder.AddParameter(name + "-source-scan-proof-key", () => scanPrivateKey, secret: true);
         security.Keycloak.WithEnvironment(secretVariable, sourceSecret);
         host.WithEventStoreWorkloadClientCredentials(name, sourceSecret)
             .WithEnvironment("Authentication__WorkloadIssuer__Workload", name)
-            .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey);
+            .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey)
+            .WithEnvironment("Authentication__NativeSourceScan__PrivateKey", scanProofKey);
         eventStore.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + name, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
             .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + name, "folders")
             .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + name, "true")
+            .WithEnvironment("Authentication__NativeSourceScan__PublicKeys__" + name, Convert.ToBase64String(scanKey.ExportSubjectPublicKeyInfo()))
+            .WithEnvironment("Authentication__NativeSourceScan__AllowedDomains__" + name, "folders")
             .WithEventStoreTrustedEffectSubmitter(name);
     }
 

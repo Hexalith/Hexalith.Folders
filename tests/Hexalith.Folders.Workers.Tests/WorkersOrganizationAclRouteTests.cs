@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Client.Streams;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
@@ -13,6 +14,7 @@ using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.Folders;
+using Hexalith.Folders.Tests.OperationalStatus;
 using Hexalith.Folders.Workers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -495,6 +497,10 @@ public sealed class WorkersOrganizationAclRouteTests
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         if (logs is not null) builder.Logging.AddProvider(logs);
         builder.Services.AddFoldersTenantEventWorkers();
+        var nativeSource = new OperationalStatusNativeSource();
+        builder.Services.RemoveAll<INativeSourceScanner>();
+        builder.Services.AddSingleton(nativeSource);
+        builder.Services.AddSingleton(nativeSource.Scanner);
         builder.Services.RemoveAll<IReadModelStore>();
         builder.Services.AddSingleton(store);
         builder.Services.RemoveAll<IReadModelConditionalEraser>();
@@ -509,7 +515,8 @@ public sealed class WorkersOrganizationAclRouteTests
 
     private static HttpClient AuthenticatedClient(WebApplication app)
     {
-        HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        HttpClient client = new(new OperationalStatusNativeSourceClientHandler(app.Services.GetRequiredService<OperationalStatusNativeSource>()))
+        { BaseAddress = new Uri(app.Urls.First()) };
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
         return client;
     }
@@ -593,6 +600,10 @@ public sealed class WorkersOrganizationAclRouteTests
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         builder.Services.AddFoldersTenantEventWorkers();
+        var nativeSource = new OperationalStatusNativeSource();
+        builder.Services.RemoveAll<INativeSourceScanner>();
+        builder.Services.AddSingleton(nativeSource);
+        builder.Services.AddSingleton(nativeSource.Scanner);
         builder.Services.RemoveAll<IReadModelStore>();
         builder.Services.AddSingleton<IReadModelStore>(store);
         builder.Services.RemoveAll<IReadModelConditionalEraser>();
@@ -606,7 +617,8 @@ public sealed class WorkersOrganizationAclRouteTests
         await app.StartAsync(TestContext.Current.CancellationToken);
         try
         {
-            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpClient client = new(new OperationalStatusNativeSourceClientHandler(app.Services.GetRequiredService<OperationalStatusNativeSource>()))
+            { BaseAddress = new Uri(app.Urls.First()) };
             OrganizationAclBaselineInitialized baseline = new("tenant-a", "tenant-a", "correlation-a",
                 "task-a", "key-a", "fingerprint-a");
             EventStoreDomainEventEnvelope first = Envelope("message-a", 1, baseline);

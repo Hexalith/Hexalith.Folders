@@ -10,6 +10,12 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.EventStore.Tests" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' and '$(EnablePrivateCatalogInvocationProof)' == 'true' and '$(HexalithEventStoreFromSource)' == 'true'">
+    <DefineConstants>$(DefineConstants);PRIVATE_ORIGINAL_SOURCE_PROOF</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug' and '$(EnablePrivateCatalogInvocationProof)' == 'true' and '$(HexalithEventStoreFromSource)' == 'true'">
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Gateway\Hexalith.EventStore.Gateway.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />

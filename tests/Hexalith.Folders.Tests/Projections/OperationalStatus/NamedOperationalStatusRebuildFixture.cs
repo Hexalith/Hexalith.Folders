@@ -21,6 +21,8 @@ internal static class NamedOperationalStatusRebuildFixture
         IReadOnlyList<(string FolderId, IReadOnlyList<OperationalStatusEvent> Events)>? additionalOwners = null)
     {
         ServiceCollection services = new();
+        services.AddSingleton(OperationalStatusTestData.Scanner);
+        foreach (var item in events) OperationalStatusTestData.NativeSource.Remember(tenantId, folderId, item.Source!);
         services.AddSingleton<IReadModelStore>(store);
         services.AddSingleton<IReadModelBatchStore>(store);
         services.AddSingleton<IReadModelBatchStagingStore>(store);

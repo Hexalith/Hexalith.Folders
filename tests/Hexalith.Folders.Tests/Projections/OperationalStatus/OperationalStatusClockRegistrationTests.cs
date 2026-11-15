@@ -42,11 +42,12 @@ public sealed class OperationalStatusClockRegistrationTests
         services.AddEventStoreReadModelStore(options => options.TimeProvider = clock);
         if (registration == 1) services.AddFoldersServer();
         services.AddFoldersOperationalStatusPersistence();
+        services.AddSingleton(OperationalStatusTestData.Scanner);
         OperationalStatusSequenceReader sequence = new() { Head = 8 };
         services.AddSingleton<IOrganizationStreamSequenceReader>(sequence);
         using ServiceProvider provider = services.BuildServiceProvider();
         OperationalStatusProjectionWriter writer = registration == 2
-            ? new(store, store, store, clock)
+            ? new(store, store, store, clock, OperationalStatusTestData.Scanner)
             : provider.GetRequiredService<OperationalStatusProjectionWriter>();
         SharedProjectionEpochCoordinator coordinator = provider.GetRequiredService<SharedProjectionEpochCoordinator>();
         SharedProjectionScope scope = OperationalStatusGeneration.Scope("tenant-a");
@@ -90,7 +91,7 @@ public sealed class OperationalStatusClockRegistrationTests
             await coordinator.CommitAsync(scope, operationId, cancellationToken: token).ConfigureAwait(false);
         }
 
-        OperationalStatusEvent Rejection(long position) => OperationalStatusEventReader.ReadStored(source[0].Source! with
+        OperationalStatusEvent Rejection(long position) => OperationalStatusTestData.Stored(source[0].Source! with
         {
             SequenceNumber = position,
             GlobalPosition = position,

@@ -32,6 +32,7 @@ using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Testing;
 using Hexalith.Folders.Testing.Providers;
+using Hexalith.Folders.Tests.OperationalStatus;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Server.Content;
@@ -479,13 +480,13 @@ public sealed class GoldenLifecycleParityTests
             new FolderWorkspaceLifecycleEventRecorded("tenant-a", "tenant-a", CandidateFolderA, "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared,
                 null, "prepare-operation", "correlation-a", CandidateTaskStatus, "prepared-key", "prepared-fingerprint", Now),
         ];
-        OperationalStatusEvent[] events = history.Select((value, index) => OperationalStatusEventReader.ReadStored(
+        OperationalStatusEvent[] events = history.Select((value, index) => OperationalStatusTestData.Stored(
             new ProjectionEventDto(value.GetType().FullName!, JsonSerializer.SerializeToUtf8Bytes(value, value.GetType()),
                 "json", index + 1, Now, value.CorrelationId, "message-" + index)
             { MetadataVersion = 1, GlobalPosition = index + 1 })).ToArray();
         sequenceReader.GetCurrentSequenceAsync("tenant-a", CandidateFolderA, Arg.Any<CancellationToken>())
             .Returns(Task.FromResult((long)events.Length));
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", CandidateFolderA, "delivery-a", events,
             TestContext.Current.CancellationToken).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
         string taskKey = OperationalStatusKeys.Task("tenant-a", CandidateFolderA, CandidateTaskStatus);

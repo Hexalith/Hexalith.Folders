@@ -109,6 +109,7 @@ public sealed class WorkloadEnrollmentComponentTests
         builder.AddProject<Projects.Hexalith_Folders_Server>("folders-replica").WithDaprSidecar(sidecar => sidecar.WithOptions(new DaprSidecarOptions { AppId = "folders" }));
         string suffix = "-" + Convert.ToHexString(RandomNumberGenerator.GetBytes(6)).ToLowerInvariant();
         var proofs = new Dictionary<string, string>(StringComparer.Ordinal);
+        var scanProofs = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (ProjectResource resource in PlatformWorkloadEnrollmentInventory.Cohort(builder))
         {
             var sidecar = resource.Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar;
@@ -118,6 +119,9 @@ public sealed class WorkloadEnrollmentComponentTests
             using RSA proof = RSA.Create(2048);
             proofs[resource.Name] = Convert.ToBase64String(proof.ExportPkcs8PrivateKey());
             builder.CreateResourceBuilder(resource).WithEnvironment("Authentication__BoundStreamRead__PrivateKey", proofs[resource.Name]);
+            using RSA scanProof = RSA.Create(2048);
+            scanProofs[resource.Name] = Convert.ToBase64String(scanProof.ExportPkcs8PrivateKey());
+            builder.CreateResourceBuilder(resource).WithEnvironment("Authentication__NativeSourceScan__PrivateKey", scanProofs[resource.Name]);
         }
         const string tenant = "selected-component-tenant";
         string receiptPath = Environment.GetEnvironmentVariable(PlatformRunOwnedWorkloadEnrollment.ReceiptEnvironmentVariable)!;
@@ -161,7 +165,7 @@ public sealed class WorkloadEnrollmentComponentTests
         JsonObject original = JsonNode.Parse(manifestBytes)!.AsObject();
         JsonArray clients = original["clients"]!.AsArray();
         clients.Count.ShouldBe(8);
-        clients.Sum(client => client!["probes"]!.AsArray().Count).ShouldBe(19);
+        clients.Sum(client => client!["probes"]!.AsArray().Count).ShouldBe(25);
         clients.Select(client => client!["workload"]!.GetValue<string>()).Distinct().Count().ShouldBe(6);
         string Workload(string name) => clients.Single(client => client!["resource"]!.GetValue<string>() == name)!["workload"]!.GetValue<string>();
         Workload("folders-workers-replica").ShouldBe(Workload("folders-workers"));
@@ -200,6 +204,8 @@ public sealed class WorkloadEnrollmentComponentTests
             values["Authentication__WorkloadIssuer__EnableResourceBindingRequests"].ShouldBe("true");
             values["Authentication__WorkloadJwtBearer__Audience"].ShouldBe(resource.Name == "eventstore" ? "eventstore" : Workload(resource.Name));
             (values["Authentication__BoundStreamRead__PrivateKey"] is string actualProof && actualProof == proofs[resource.Name]).ShouldBeTrue("Independent RSA proof remains unchanged.");
+            (values["Authentication__NativeSourceScan__PrivateKey"] is string actualScanProof && actualScanProof == scanProofs[resource.Name])
+                .ShouldBeTrue("Independent native scan RSA proof remains unchanged.");
         }
         using JsonDocument sdkManifest = JsonDocument.Parse(manifestBytes);
         foreach (string name in new[] { "tenants", "folders", "folders-workers-proof-a" })
@@ -215,7 +221,7 @@ public sealed class WorkloadEnrollmentComponentTests
     {
         var configuration = new Dictionary<string, string?>(StringComparer.Ordinal);
         foreach ((string name, object value) in environment.Where(pair => pair.Key.StartsWith("Authentication__Workload", StringComparison.Ordinal)
-            || pair.Key == "Authentication__BoundStreamRead__PrivateKey"))
+            || pair.Key is "Authentication__BoundStreamRead__PrivateKey" or "Authentication__NativeSourceScan__PrivateKey"))
             configuration[name.Replace("__", ":", StringComparison.Ordinal)] = value is IValueProvider parameter
                 ? await parameter.GetValueAsync(TestContext.Current.CancellationToken).ConfigureAwait(true) : value.ToString();
         configuration["DAPR_HTTP_ENDPOINT"] = "http://localhost:3500";
@@ -258,30 +264,47 @@ public sealed class WorkloadEnrollmentComponentTests
             (await sdk.IssueAsync(new(audience, operation, altered), TestContext.Current.CancellationToken).ConfigureAwait(true) is null)
                 .ShouldBeTrue("Altered bindings refuse without fallback.");
             if (bindings.Count == 0) continue;
+            bool scan = operation == "eventstore:stream-scan-native";
             using RSA proof = RSA.Create();
-            proof.ImportPkcs8PrivateKey(Convert.FromBase64String(configuration["Authentication:BoundStreamRead:PrivateKey"]!), out _);
+            proof.ImportPkcs8PrivateKey(Convert.FromBase64String(configuration[scan ? "Authentication:NativeSourceScan:PrivateKey" : "Authentication:BoundStreamRead:PrivateKey"]!), out _);
             foreach (string fault in new[] { "none", "physical-audience", "tenant", "domain" })
             {
                 WebApplicationBuilder sourceHost = WebApplication.CreateBuilder();
                 sourceHost.Logging.ClearProviders();
                 sourceHost.Configuration.AddInMemoryCollection(configuration);
                 using var transport = new RecordingDurabilityHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.ServiceUnavailable));
-                sourceHost.Services.AddEventStoreGatewayNativeSourceMetadataReader("folders", fault == "physical-audience" ? physicalGateway : "eventstore")
-                    .ConfigurePrimaryHttpMessageHandler(() => transport);
+                if (scan)
+                    sourceHost.Services.AddEventStoreGatewayNativeSourceScanner("folders", fault == "physical-audience" ? physicalGateway : "eventstore")
+                        .ConfigurePrimaryHttpMessageHandler(() => transport);
+                else
+                    sourceHost.Services.AddEventStoreGatewayNativeSourceMetadataReader("folders", fault == "physical-audience" ? physicalGateway : "eventstore")
+                        .ConfigurePrimaryHttpMessageHandler(() => transport);
                 WebApplication sourceApp = sourceHost.Build();
                 await using var sourceCleanup = sourceApp.ConfigureAwait(true);
-                INativeSourceMetadataReader source = sourceApp.Services.GetRequiredService<INativeSourceMetadataReader>();
                 var identity = new AggregateIdentity(fault == "tenant" ? "foreign-tenant" : bindings["eventstore:bound-tenant"], fault == "domain" ? "other" : "folders", "component-source");
-                (await source.ReadAsync(identity, TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldBeNull();
+                if (scan)
+                {
+                    var result = await sourceApp.Services.GetRequiredService<INativeSourceScanner>()
+                        .ScanAsync<long>(identity, static () => throw new InvalidOperationException("Unavailable source cannot create a fold."),
+                            TestContext.Current.CancellationToken).ConfigureAwait(true);
+                    result.Observation.ShouldBeNull();
+                }
+                else
+                    (await sourceApp.Services.GetRequiredService<INativeSourceMetadataReader>()
+                        .ReadAsync(identity, TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldBeNull();
                 transport.Requests.Count.ShouldBe(fault == "none" ? 1 : 0);
                 if (fault != "none") continue;
                 var sent = transport.Requests.Single();
                 sent.Headers["dapr-app-id"].ShouldBe(physicalGateway);
-                new Uri(sent.Uri).AbsolutePath.ShouldBe("/api/v1/streams/read/workload");
+                new Uri(sent.Uri).AbsolutePath.ShouldBe(scan ? "/api/v1/streams/scan/workload" : "/api/v1/streams/read/workload");
                 Verify(sent.Headers[EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName], probe);
                 StreamReadRequest request = JsonSerializer.Deserialize<StreamReadRequest>(sent.Body, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
-                BoundStreamReadProof.Verify(sent.Headers[BoundStreamReadProof.HeaderName], request, client.GetProperty("workload").GetString()!,
-                    Convert.ToBase64String(proof.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
+                if (scan)
+                    BoundNativeSourceScanProof.Verify(sent.Headers[BoundNativeSourceScanProof.HeaderName], request, client.GetProperty("workload").GetString()!,
+                        Convert.ToBase64String(proof.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
+                else
+                    BoundStreamReadProof.Verify(sent.Headers[BoundStreamReadProof.HeaderName], request, client.GetProperty("workload").GetString()!,
+                        Convert.ToBase64String(proof.ExportSubjectPublicKeyInfo()), DateTimeOffset.UtcNow).ShouldBeTrue();
             }
         }
     }

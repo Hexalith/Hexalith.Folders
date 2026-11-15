@@ -1,4 +1,5 @@
 using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Client.Streams;
 using Dapr.Client;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
@@ -103,7 +104,7 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersTenantAccess();
         services.AddEventStoreReadModelStore();
         services.TryAddSingleton(static sp => new OperationalStatusProjectionWriter(
-            sp.GetRequiredService<SharedProjectionEpochCoordinator>(), sp.GetService<IUtcClock>()));
+            sp.GetRequiredService<SharedProjectionEpochCoordinator>(), sp.GetService<IUtcClock>(), sp.GetRequiredService<INativeSourceScanner>()));
         services.TryAddSingleton<EventStoreOperationalStatusReadModel>();
         services.RemoveAll<IFolderLifecycleStatusReadModel>();
         services.AddSingleton<IFolderLifecycleStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());

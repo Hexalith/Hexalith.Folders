@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Client.Streams;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
@@ -306,6 +307,9 @@ public sealed class SemanticIndexingEndpointE2ETests
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
         builder.Services.AddFoldersTenantEventWorkers();
+        var nativeSource = new OperationalStatusNativeSource();
+        builder.Services.RemoveAll<INativeSourceScanner>();
+        builder.Services.AddSingleton(nativeSource.Scanner);
         builder.Services.RemoveAll<IReadModelStore>();
         builder.Services.RemoveAll<EventStoreSemanticIndexingBridgeStore>();
         builder.Services.RemoveAll<ISemanticIndexingBridgeReadModel>();
@@ -329,7 +333,8 @@ public sealed class SemanticIndexingEndpointE2ETests
         app.MapFoldersTenantEventWorkerEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-        HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        HttpClient client = new(new OperationalStatusNativeSourceClientHandler(nativeSource))
+        { BaseAddress = new Uri(app.Urls.First()) };
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
         IReadOnlyList<IFolderEvent> prefix = OperationalStatusTestData.LockedPrefix(OccurredAt);
         for (int index = 0; index < prefix.Count; index++)

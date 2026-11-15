@@ -29,7 +29,7 @@ public sealed class OperationalStatusRoundFiveTests
         OperationalStatusTestStore store = new();
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "native-file-bounds",
             sources, sources.Length, token)).IsSuccess.ShouldBeTrue();
-        OperationalStatusProjectionWriter writer = new(store, store, store);
+        OperationalStatusProjectionWriter writer = new(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var plan = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, token);
         plan.Max(item => item.CanonicalValue.Length).ShouldBeLessThan(256 * 1024);
         var checkpoint = store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!;
@@ -77,7 +77,7 @@ public sealed class OperationalStatusRoundFiveTests
         var sources = OperationalStatusTestData.Sources(history);
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, token)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", taskId);
         var original = store.Snapshot<TaskStatusReadModelSnapshot>("statestore", key)!;
@@ -109,7 +109,7 @@ public sealed class OperationalStatusRoundFiveTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "initial", sources, token)).IsSuccess.ShouldBeTrue();
+        (await new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "initial", sources, token)).IsSuccess.ShouldBeTrue();
         (await Reader(store, new(), 9).GetAsync(Request("new-task"), token)).Status.ShouldBe(TaskStatusReadModelStatus.Stale);
         (await Reader(store, new(), 8).GetAsync(Request("new-task"), token)).Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
         (await Reader(store, new(), 9).GetAsync(new WorkspaceStatusReadModelRequest("tenant-a", "folder-a", "new-workspace",
@@ -125,7 +125,7 @@ public sealed class OperationalStatusRoundFiveTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        OperationalStatusProjectionWriter writer = new(store, store, store);
+        OperationalStatusProjectionWriter writer = new(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, token)).IsSuccess.ShouldBeTrue();
         string checkpointKey = OperationalStatusKeys.Checkpoint("tenant-a", "folder-a");
         var old = store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpointKey)! with
@@ -135,7 +135,7 @@ public sealed class OperationalStatusRoundFiveTests
         OperationalStatusFold.Valid(old, "tenant-a", "folder-a").ShouldBeTrue();
         // Reading an intact source-bound old row is safe, but old compacted state proves no historical closure inventory.
         (await Reader(store, new(), sources.Length).GetAsync(Request("task-a"), token)).Status.ShouldBe(TaskStatusReadModelStatus.Available);
-        var grant = OperationalStatusEventReader.ReadStored(OperationalStatusTestData.Envelope(RoundFiveOperationalHistory.Grant(OperationalStatusTestData.Now), 9));
+        var grant = OperationalStatusTestData.Stored(OperationalStatusTestData.Envelope(RoundFiveOperationalHistory.Grant(OperationalStatusTestData.Now), 9));
         await Should.ThrowAsync<OperationalStatusUnavailableException>(() => writer.ApplyAsync("tenant-a", "folder-a", "old-live", [grant], token));
         (await new OperationalStatusProjectionHandler(writer).ProjectAsync(new("tenant-a", "folders", "folder-a", [grant.Source!]),
             "old-named-live", token)).Status.ShouldBe(Hexalith.EventStore.Contracts.Projections.ProjectionDispatchStatus.Indeterminate);
@@ -162,7 +162,7 @@ public sealed class OperationalStatusRoundFiveTests
         var original = OperationalStatusTestData.Sources(history);
         OperationalStatusClock clock = new();
         OperationalStatusTestStore store = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "original", original, token)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", task);
         var closed = store.Snapshot<OperationalStatusTaskCompletion>("statestore", OperationalStatusKeys.TaskCompletion("tenant-a", "folder-a", task));
@@ -207,7 +207,7 @@ public sealed class OperationalStatusRoundFiveTests
         using CancellationTokenSource cancellation = new();
         CancelingOperationalEvents source = new(sources, cancellation, 40);
         OperationalStatusTestStore store = new();
-        await Should.ThrowAsync<OperationCanceledException>(() => new OperationalStatusProjectionWriter(store, store, store)
+        await Should.ThrowAsync<OperationCanceledException>(() => new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner)
             .PrepareRebuildAsync("tenant-a", "folder-a", source, source.Count, cancellation.Token));
         source.Visited.ShouldBe(40);
         store.Count.ShouldBe(0);
@@ -220,7 +220,7 @@ public sealed class OperationalStatusRoundFiveTests
         using CancellationTokenSource cancellation = new();
         CancelingOperationalClock clock = new(cancellation, 12);
         OperationalStatusTestStore store = new();
-        await Should.ThrowAsync<OperationCanceledException>(() => new OperationalStatusProjectionWriter(store, store, store, clock)
+        await Should.ThrowAsync<OperationCanceledException>(() => new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner)
             .PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, cancellation.Token));
         clock.Reads.ShouldBeInRange(12, 13);
         store.Count.ShouldBe(0);
@@ -234,7 +234,7 @@ public sealed class OperationalStatusRoundFiveTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
         (await writer.ApplyAsync("tenant-a", "folder-a", "original", sources, token)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
@@ -255,7 +255,7 @@ public sealed class OperationalStatusRoundFiveTests
                 .ReadAsync<OperationalStatusTaskCompletion>(OperationalStatusGeneration.Scope("tenant-a"), completionKey, token));
         }
         clock.UtcNow = OperationalStatusTestData.Now.AddDays(401);
-        var grant = OperationalStatusEventReader.ReadStored(OperationalStatusTestData.Envelope(RoundFiveOperationalHistory.Grant(clock.UtcNow), 9));
+        var grant = OperationalStatusTestData.Stored(OperationalStatusTestData.Envelope(RoundFiveOperationalHistory.Grant(clock.UtcNow), 9));
         var named = new OperationalStatusProjectionHandler(writer);
         (await named.ProjectAsync(new("tenant-a", "folders", "folder-a", [grant.Source!]), "lost-authority", token))
             .Status.ShouldBe(Hexalith.EventStore.Contracts.Projections.ProjectionDispatchStatus.Indeterminate);
@@ -318,11 +318,11 @@ public sealed class OperationalStatusRoundFiveTests
         };
         file = file with { ContentBinding = binding };
         OperationalStatusTestStore store = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store);
+        OperationalStatusProjectionWriter writer = new(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "prefix", source, token)).IsSuccess.ShouldBeTrue();
         string checkpoint = OperationalStatusKeys.Checkpoint("tenant-a", "folder-a");
         string before = JsonSerializer.Serialize(store.Snapshot<OperationalStatusCheckpoint>("statestore", checkpoint));
-        var invalid = OperationalStatusEventReader.ReadStored(OperationalStatusTestData.Envelope(file, source.Length + 1));
+        var invalid = OperationalStatusTestData.Stored(OperationalStatusTestData.Envelope(file, source.Length + 1));
         await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "malformed-publication", [invalid], token));
         (await new OperationalStatusProjectionHandler(writer).ProjectAsync(new("tenant-a", "folders", "folder-a", [invalid.Source!]),
             "named-malformed-publication", token)).Status.ShouldBe(Hexalith.EventStore.Contracts.Projections.ProjectionDispatchStatus.Failed);
@@ -350,7 +350,7 @@ public sealed class OperationalStatusRoundFiveTests
         });
         var prefix = OperationalStatusTestData.Sources(history.Take(6));
         OperationalStatusTestStore store = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store);
+        OperationalStatusProjectionWriter writer = new(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", prefix, token)).IsSuccess.ShouldBeTrue();
         var before = store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"));
         if (defect == "task")
@@ -370,7 +370,7 @@ public sealed class OperationalStatusRoundFiveTests
     }
 
     private static EventStoreOperationalStatusReadModel Reader(OperationalStatusTestStore store, OperationalStatusClock clock, long head)
-        => new(new(store, store), clock, new OperationalStatusSequenceReader { Head = head });
+        => new(new(store, store), clock, new OperationalStatusSequenceReader { Head = head }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
     private static TaskStatusReadModelRequest Request(string task)
         => new("tenant-a", task, "reader", "read_task_status", "correlation", "eventually_consistent")
         { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" };

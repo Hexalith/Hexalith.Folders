@@ -3,6 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.Contracts.Identity;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -11,9 +13,13 @@ namespace Hexalith.Folders.Queries.Folders;
 
 /// <summary>Reads committed operational metadata after the query layer has authorized the caller.</summary>
 public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCoordinator coordinator, IUtcClock clock,
-    IOrganizationStreamSequenceReader sequenceReader) : IFolderLifecycleStatusReadModel, IWorkspaceLockStatusReadModel,
+    IOrganizationStreamSequenceReader sequenceReader, INativeSourceScanner? scanner) : IFolderLifecycleStatusReadModel, IWorkspaceLockStatusReadModel,
     IWorkspaceStatusReadModel, IWorkspaceCleanupStatusReadModel, ITaskStatusReadModel
 {
+    /// <summary>Preserves the original constructor; historical reads without independent scan authority refuse safely.</summary>
+    public EventStoreOperationalStatusReadModel(SharedProjectionEpochCoordinator coordinator, IUtcClock clock,
+        IOrganizationStreamSequenceReader sequenceReader) : this(coordinator, clock, sequenceReader, null) { }
+
     private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
     private static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(5);
 
@@ -339,6 +345,27 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         }
         if (head > checkpoint.Sequence)
             return (null, absent with { Stale = true, ReasonCode = "projection_stale" }, "stale");
+        bool historical = !requireCurrentSequence && (row is TaskStatusReadModelSnapshot selectedTask
+            ? selectedTask.TaskId != checkpoint.State.WorkspaceTaskId
+            : row is OperationalWorkspaceStatus selectedWorkspace && selectedWorkspace.Workspace.WorkspaceId != checkpoint.State.WorkspaceId);
+        if (historical)
+        {
+            if (scanner is null || evidence is null) throw new OperationalStatusUnavailableException();
+            var native = await scanner.ScanAsync(new AggregateIdentity(tenantId, "folders", folderId),
+                () => new OperationalStatusNativeSourceFold(tenantId, folderId, key), cancellationToken).ConfigureAwait(false);
+            if (native.Observation?.Proof.HeadSequence != checkpoint.Sequence || native.Value is not { } facts
+                || facts.Sequence != checkpoint.Sequence || facts.SourceDigest != checkpoint.SourceDigest
+                || facts.ValueDigest != OperationalStatusIntegrity.Digest(row)
+                || facts.ViewSequence != evidence.Sequence || facts.ViewSourceDigest != evidence.SourceDigest)
+                throw new OperationalStatusUnavailableException();
+            if (clock.UtcNow - freshness.ObservedAt >= OperationalStatusKeys.Retention) return (null, freshness, "missing");
+            var after = await ReadSelectedAsync(scope, selectedKeys.ToArray(), checkpointKey, cancellationToken).ConfigureAwait(false);
+            if (!after.IsAvailable || after.IsStale || after.IsDegraded || after.Value is null
+                || after.Generation != selected.Generation || selectedKeys.Any(selectedKey =>
+                    selected.Value[selectedKey]?.ToJsonString() != after.Value[selectedKey]?.ToJsonString()))
+                throw new OperationalStatusUnavailableException();
+        }
+        cancellationToken.ThrowIfCancellationRequested();
         return (row, freshness, "available");
     }
 

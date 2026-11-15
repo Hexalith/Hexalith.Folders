@@ -9,6 +9,28 @@ namespace Hexalith.Folders.Tests.OperationalStatus;
 
 internal static class OperationalStatusTestData
 {
+    private static readonly AsyncLocal<OperationalStatusNativeSource?> Source = new();
+    /// <summary>Gets this test execution context's independent original native source.</summary>
+    public static OperationalStatusNativeSource NativeSource => Source.Value ??= new();
+    /// <summary>Gets the actual owner scanner over the independent original-source fixture.</summary>
+    public static Hexalith.EventStore.Client.Streams.INativeSourceScanner Scanner => NativeSource.Scanner;
+
+    /// <summary>Enrols original fixture bytes before supplying them to a component.</summary>
+    public static OperationalStatusEvent Stored(ProjectionEventDto source)
+    {
+        var value = OperationalStatusEventReader.ReadStored(source);
+        NativeSource.Remember(value.Event?.ManagedTenantId ?? "tenant-a", value.Event?.FolderId ?? "folder-a", source);
+        return value;
+    }
+
+    /// <summary>Enrols original fixture bytes before supplying them to a component.</summary>
+    public static OperationalStatusEvent Stored(EventStoreDomainEventEnvelope source)
+    {
+        var value = OperationalStatusEventReader.ReadStored(source);
+        NativeSource.Remember(source.TenantId, source.AggregateId, value.Source!);
+        return value;
+    }
+
     public static readonly DateTimeOffset Now = new(2026, 10, 18, 12, 0, 0, TimeSpan.Zero);
     public static FolderCreated Created(string tenant = "tenant-a", string folder = "folder-a")
         => new(tenant, tenant, folder, "Folder", null, null, [], FolderLifecycleState.Active,
@@ -35,9 +57,14 @@ internal static class OperationalStatusTestData
             occurredAt, occurredAt, occurredAt.AddHours(1), "principal-a", "correlation-a", "task-a",
             "release-key", "release-fingerprint", occurredAt)];
     public static EventStoreDomainEventEnvelope Envelope(IFolderEvent value, long sequence = 1)
-        => new("message-" + sequence, value.FolderId, value.ManagedTenantId, value.GetType().FullName!, sequence,
+    {
+        var envelope = new EventStoreDomainEventEnvelope("message-" + sequence, value.FolderId, value.ManagedTenantId, value.GetType().FullName!, sequence,
             value.OccurredAt, value.CorrelationId, "json", JsonSerializer.SerializeToUtf8Bytes(value, value.GetType()))
         { Domain = "folders", MetadataVersion = 1, GlobalPosition = sequence };
+        NativeSource.Remember(value.ManagedTenantId, value.FolderId, new(envelope.EventTypeName, envelope.Payload, envelope.SerializationFormat,
+            sequence, envelope.Timestamp, envelope.CorrelationId, envelope.MessageId) { MetadataVersion = 1, GlobalPosition = sequence });
+        return envelope;
+    }
     public static OperationalStatusEvent[] Sources(IEnumerable<IFolderEvent> history)
         => history.Select((value, index) => OperationalStatusEventReader.ReadStored(Envelope(value, index + 1))).ToArray();
     public static ProjectionRequest Projection(IEnumerable<IFolderEvent> history)

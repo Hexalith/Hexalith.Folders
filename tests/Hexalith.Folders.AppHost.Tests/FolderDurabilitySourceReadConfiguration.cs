@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Hexalith.Folders.AppHost.Tests;
 
-/// <summary>Selects only the actual disposable source-reader identities, preserving their metadata-only issuer scopes.</summary>
+/// <summary>Selects actual disposable source identities, preserving metadata and separate native scan scopes.</summary>
 internal static class FolderDurabilitySourceReadConfiguration
 {
     /// <summary>Replaces canonical source clients with each independently credentialed actual physical caller.</summary>
@@ -24,7 +24,7 @@ internal static class FolderDurabilitySourceReadConfiguration
                 throw new ArgumentException("A source caller collides with another issuer identity.", nameof(callers));
             JsonObject client = template.DeepClone().AsObject();
             client["clientId"] = callers[index];
-            client["name"] = "Isolated source metadata reader " + index;
+            client["name"] = "Isolated source metadata reader and native scanner " + index;
             client["secret"] = "${HEXALITH_FOLDERS_SOURCE_" + index + "_CLIENT_SECRET}";
             clients.Add(client);
         }

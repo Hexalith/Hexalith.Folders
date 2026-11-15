@@ -287,7 +287,7 @@ The first five rows are complete on the current source graph, with broad contrac
 
 **Review-seven corrections — one additional cycle approved 2026-11-14 (current):**
 
-- [ ] `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs`,
+- [x] `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs`,
   `src/Hexalith.Folders/Projections/OperationalStatus/` and persistence/read regressions:
   establish independently source-bound current applicability for historical nonterminal,
   native-release and failed tasks. Restoring an older coherent row/evidence/applicability triple
@@ -309,7 +309,7 @@ The first five rows are complete on the current source graph, with broad contrac
   divergence after validated owner classification. Provider/organization accepted and lawful unknown
   rejection prefixes must agree between live and named processing and permit subsequent valid
   configuration, with no fabricated provider/Folder output or durable acknowledgement on refusal.
-- [ ] `OperationalStatusProjectionWriter.cs`, bounded source identity validation and C3/named rebuild
+- [x] `OperationalStatusProjectionWriter.cs`, bounded source identity validation and C3/named rebuild
   regressions: reject reuse of an old MessageId at a new source position after its 400-day derived
   receipt expires. Reconcile live and complete-source reconstruction through existing SDK/source
   authority; absence of expired evidence never proves uniqueness. Preserve original expiry,
@@ -3898,3 +3898,9 @@ The refreshed ordinary consumer suites pass5747 cases (Domain2461, Server1434, W
 Final review-seven notification qualification — 2026-11-14: the unchanged tracing-off strict class passes1/1, zero failures/errors/skips,434.997 seconds. All106 post-live PE/PDB/assets pairs and241 scoped SDK loaded observations match the audited current producer, with no observations outside the selected scope. Source/head/runtime drift is zero, the frozen block and three protected bodies remain exact, and all task-owned descendants/containers/directories are gone. The raw cleanup snapshot also records one newly observed, unattributed SDK container; read-only inspection establishes no owner, and it is left untouched. No global-empty cleanup or external-owner claim is made. All preexisting container IDs remain present.
 
 SM4 remains open: command acknowledgment p95=9237.965ms against1000ms; status read p95=999.025ms against500ms; Workers delivery p95=222.652ms against1000ms. These are unchanged-budget record-only results. The [current implementation packet](evidence/story-12-2-review7-implementation-20261114.json) and [five-row matrix](evidence/story-12-2-review7-implementation-matrix-20261114.json) bind executed passing coverage separately from the still-reproduced historical-applicability and post-C3 MessageId authority defects. Both source-authority tasks remain unchecked, every affected acceptance row remains incomplete, and Story12.2/sprint/whole-story closure remain in progress. Prior failed/flaky attempts, the superseded71/72 claim and previous strict producer are preserved explicitly. Parent independent review, owner capability/enrollment, SM4 and the existing governance/release/exposure gates remain open.
+
+### Historical source-authority prerequisite qualified — 2026-11-15
+
+The separately authorized [source-authority prerequisite](spec-12-2-historical-source-authority.md) is complete. EventStore supplies bounded authenticated native scans; exact Folders Server/Workers grants and independent original-source checks close both remaining review-seven tasks above. Current reviewed qualification rebuilds the source graph, passes 6,489 affected tests, both retained reproductions and all three unchanged strict bodies, and verifies 290 producer copies plus 1,415 loaded observations. All confirmed independent-review and parent patch findings are fixed; no finding is deferred. Exact inputs, failures, scope inventories, source/PDB/assets identities and cleanup are retained in the [reviewed evidence](evidence/story-12-2-source-authority-reviewed-20261115.json).
+
+The protected bodies and this frozen block remain exact. Capacity evidence for the explicitly selected EventStore.Testing original-primary source is identified separately from production actor evidence. SM4 record-only p95 remains above its unchanged budgets; whole Story 12.2 and its performance, release and governance gates remain in-progress. This is source-only work: no publication, deployment, package/gitlink/pin update, commit, push or public-v2 exposure.

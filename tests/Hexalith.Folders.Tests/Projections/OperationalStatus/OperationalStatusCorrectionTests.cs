@@ -48,7 +48,7 @@ public sealed class OperationalStatusCorrectionTests
     public async Task RebuildRepairsEveryDamagedTerminalFieldAndRestoresAvailableResult()
     {
         OperationalStatusTestStore store = new();
-        var writer = new OperationalStatusProjectionWriter(store, store, store);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var sources = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
@@ -79,7 +79,7 @@ public sealed class OperationalStatusCorrectionTests
     public async Task OldDirtyTaskReadCannotAdvertiseRetryWhenCheckpointAdvancesToUnknownOutcome()
     {
         OperationalStatusTestStore store = new();
-        var writer = new OperationalStatusProjectionWriter(store, store, store);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var history = FolderLifecycleReplayFixture.CommitUnknownOutcomeLifecycle(false);
         int stagedIndex = history.ToList().FindIndex(static value => value is WorkspaceFileMutationAccepted);
         var staged = history.Take(stagedIndex + 1).ToList();
@@ -108,7 +108,7 @@ public sealed class OperationalStatusCorrectionTests
                 .ConfigureAwait(false)).IsSuccess.ShouldBeTrue();
         });
         var reader = new EventStoreOperationalStatusReadModel(new(racing, store), new OperationalStatusClock(),
-            new OperationalStatusSequenceReader { Head = source.Length });
+            new OperationalStatusSequenceReader { Head = source.Length }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var result = await reader.GetAsync(TaskRequest(), TestContext.Current.CancellationToken);
         advanced.ShouldBeTrue();
         if (result.Status == TaskStatusReadModelStatus.Available)
@@ -144,7 +144,7 @@ public sealed class OperationalStatusCorrectionTests
             with
         { WorkspaceId = "workspace-b", LockId = "lock-b", OccurredAt = OperationalStatusTestData.Now.AddSeconds(5) };
         var reorderedTail = OperationalStatusFold.Apply("tenant-a", "folder-a", reordered,
-            [OperationalStatusEventReader.ReadStored(OperationalStatusTestData.Envelope(release, sources.Length + 1))]);
+            [OperationalStatusTestData.Stored(OperationalStatusTestData.Envelope(release, sources.Length + 1))]);
         reorderedTail.Tasks["task-a"].LastOperationId.ShouldBe("lock-a");
         for (int split = 1; split < sources.Length; split++)
         {
@@ -156,7 +156,7 @@ public sealed class OperationalStatusCorrectionTests
         }
         OperationalStatusTestStore store = new();
         foreach (var item in sources)
-            (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "live-" + item.Sequence,
+            (await new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "live-" + item.Sequence,
                 [item], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await Reader(store, sources.Length).GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Snapshot!.LastOperationId.ShouldBe("lock-a");
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "rebuild", sources,
@@ -169,7 +169,7 @@ public sealed class OperationalStatusCorrectionTests
     {
         OperationalStatusTestStore store = new();
         var source = OperationalStatusTestData.Sources(RepeatedTaskHistory());
-        var writer = new OperationalStatusProjectionWriter(store, store, store);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "delivery", source, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Workspace("tenant-a", "folder-a", "workspace-a");
         var original = store.Snapshot<OperationalWorkspaceStatus>("statestore", key)!;
@@ -214,7 +214,7 @@ public sealed class OperationalStatusCorrectionTests
     {
         OperationalStatusTestStore store = new();
         var source = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        await Should.ThrowAsync<InvalidOperationException>(() => new OperationalStatusProjectionWriter(store, store, store)
+        await Should.ThrowAsync<InvalidOperationException>(() => new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner)
             .PrepareRebuildAsync("tenant-a", "folder-a", source[..^1], source.Length, TestContext.Current.CancellationToken));
         store.Count.ShouldBe(0);
     }
@@ -241,7 +241,7 @@ public sealed class OperationalStatusCorrectionTests
     }
 
     private static EventStoreOperationalStatusReadModel Reader(OperationalStatusTestStore store, long head)
-        => new(new(store, store), new OperationalStatusClock { UtcNow = OperationalStatusTestData.Now.AddHours(1) }, new OperationalStatusSequenceReader { Head = head });
+        => new(new(store, store), new OperationalStatusClock { UtcNow = OperationalStatusTestData.Now.AddHours(1) }, new OperationalStatusSequenceReader { Head = head }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
     private static TaskStatusReadModelRequest TaskRequest()
         => new("tenant-a", "task-a", "reader", "read_task_status", "corr", "eventually_consistent")
         { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" };

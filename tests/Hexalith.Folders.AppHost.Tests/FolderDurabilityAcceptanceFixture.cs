@@ -71,6 +71,7 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     private string _metadataWorkloadToken = string.Empty;
     private string? _namedCatalogFingerprint;
     private FolderDurabilityTenantMaintenance? _tenantMaintenance;
+    private Hexalith.EventStore.Testing.OriginalSource.SyntheticOriginalSourceClient? _originalPrimary;
 
     /// <summary>Gets whether the explicit integration opt-in is present.</summary>
     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
@@ -372,6 +373,11 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         }
         List<(string AggregateId, ProjectionEventDto[] Events)> owners = [(aggregateId, events)];
         if (additionalOwners is not null) owners.AddRange(additionalOwners);
+        if (_originalPrimary is not null)
+            foreach (var owner in owners)
+                if (!await _originalPrimary.AppendAsync(TenantId, "folders", owner.AggregateId, owner.Events,
+                    TestContext.Current.CancellationToken).ConfigureAwait(false))
+                    throw new InvalidOperationException("Synthetic original-primary rebuild source conflicts with committed originals.");
         string catalog = await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
         DomainSharedProjectionRebuildIdentity identity = new(TenantId, "folders", OperationalStatusKeys.ProjectionType,
             dispatchId, catalog);
@@ -462,6 +468,10 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Delivers an original capacity-test source through the authenticated SDK named dispatcher.</summary>
     public async Task<ProjectionDispatchOutcome> NamedDeliveryAsync(string aggregateId, ProjectionEventDto source)
     {
+        if (_originalPrimary is not null)
+            // A conflict preserves source bytes and still exercises the unchanged SDK negative assertion.
+            _ = await _originalPrimary.AppendAsync(TenantId, "folders", aggregateId, [source],
+                TestContext.Current.CancellationToken).ConfigureAwait(false);
         await RefreshWorkloadTokensAsync().ConfigureAwait(false);
         using HttpClient client = App.CreateHttpClient("folders", "http");
         string catalog = _namedCatalogFingerprint ?? await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
@@ -1056,6 +1066,23 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             .WithEnvironment(folderRegistration + "Version", "v1");
         gateway.WithEnvironment("Authentication__WorkloadIssuer__ClientId", AppId("eventstore"))
             .WithEnvironment("Authentication__WorkloadIssuer__Workload", AppId("eventstore"));
+        if (Environment.GetEnvironmentVariable("FOLDERS_BOUNDED_HISTORY_ORIGINAL_SOURCE") == "1")
+        {
+            string originals = Path.Combine(_temporaryDirectory, "synthetic-original-primary");
+            Directory.CreateDirectory(originals);
+            if (OperatingSystem.IsLinux()) File.SetUnixFileMode(originals, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+            _originalPrimary = new(originals, _runId);
+            const string originalProfile = "EventStore__Testing__OriginalSource__";
+            gateway.WithEnvironment(originalProfile + "Enabled", "true")
+                .WithEnvironment(originalProfile + "Mode", Hexalith.EventStore.Testing.OriginalSource.SyntheticOriginalSourceOptions.SelectedMode)
+                .WithEnvironment(originalProfile + "RunId", _runId)
+                .WithEnvironment(originalProfile + "Directory", originals)
+                .WithEnvironment(originalProfile + "Tenant", TenantId)
+                .WithEnvironment(originalProfile + "Domain", "folders")
+                .WithEnvironment(originalProfile + "AggregatePrefix", "capacity-");
+            Console.WriteLine("SYNTHETIC_ORIGINAL_PRIMARY " + JsonSerializer.Serialize(new { runId = _runId, tenant = TenantId,
+                domain = "folders", resourceNamespace = "capacity-", directory = originals, mode = "synthetic-original-primary-v1" }));
+        }
         foreach (string name in new[] { "folders", "tenants" })
         {
             _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == name))
@@ -1115,16 +1142,22 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             using RSA sourceKey = RSA.Create(2048);
             string sourcePrivateValue = Convert.ToBase64String(sourceKey.ExportPkcs8PrivateKey());
             var sourcePrivateKey = _builder.AddParameter("durability-source-key-" + index, () => sourcePrivateValue, secret: true);
+            using RSA scanKey = RSA.Create(2048);
+            string scanPrivateValue = Convert.ToBase64String(scanKey.ExportPkcs8PrivateKey());
+            var scanPrivateKey = _builder.AddParameter("durability-source-scan-key-" + index, () => scanPrivateValue, secret: true);
             foreach (ProjectResource sourceHost in _builder.Resources.OfType<ProjectResource>().Where(project => AppId(project.Name) == caller))
             {
                 _builder.CreateResourceBuilder(sourceHost).WithEventStoreWorkloadClientCredentials(caller, sourceSecret)
                     .WithEnvironment("Authentication__WorkloadIssuer__Workload", caller)
                     .WithEnvironment("Authentication__BoundStreamRead__PrivateKey", sourcePrivateKey)
+                    .WithEnvironment("Authentication__NativeSourceScan__PrivateKey", scanPrivateKey)
                     .WithEnvironment("EventStore__Gateway__AppId", AppId("eventstore"));
             }
             gateway.WithEnvironment("Authentication__BoundStreamRead__PublicKeys__" + caller, Convert.ToBase64String(sourceKey.ExportSubjectPublicKeyInfo()))
                 .WithEnvironment("Authentication__BoundStreamRead__AllowedDomains__" + caller, "folders")
                 .WithEnvironment("Authentication__BoundStreamRead__MetadataOnlyCallers__" + caller, "true")
+                .WithEnvironment("Authentication__NativeSourceScan__PublicKeys__" + caller, Convert.ToBase64String(scanKey.ExportSubjectPublicKeyInfo()))
+                .WithEnvironment("Authentication__NativeSourceScan__AllowedDomains__" + caller, "folders")
                 .WithEventStoreTrustedEffectSubmitter(caller);
         }
 

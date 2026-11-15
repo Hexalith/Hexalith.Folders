@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text.Json;
 using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Client.Streams;
+using Hexalith.EventStore.Contracts.Identity;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
@@ -13,20 +15,30 @@ public sealed class OperationalStatusProjectionWriter
     private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
     private readonly SharedProjectionEpochCoordinator _coordinator;
     private readonly IUtcClock _clock;
+    private readonly INativeSourceScanner? _scanner;
 
     /// <summary>Creates a writer using the platform's recoverable batch and generation services.</summary>
+    [System.Runtime.CompilerServices.OverloadResolutionPriority(1)]
     public OperationalStatusProjectionWriter(IReadModelStore store, IReadModelBatchStore batches,
         IReadModelPendingBatchRecoveryStore recovery, IUtcClock? clock = null)
+        : this(store, batches, recovery, clock, null) { }
+
+    /// <summary>Creates a writer with independently enrolled native identity authority.</summary>
+    public OperationalStatusProjectionWriter(IReadModelStore store, IReadModelBatchStore batches,
+        IReadModelPendingBatchRecoveryStore recovery, IUtcClock? clock = null, INativeSourceScanner? scanner = null)
     {
         ArgumentNullException.ThrowIfNull(recovery);
         _clock = clock ?? new SystemUtcClock();
+        _scanner = scanner;
         _coordinator = new(store, batches, new OperationalStatusTimeProvider(_clock));
     }
 
-    internal OperationalStatusProjectionWriter(SharedProjectionEpochCoordinator coordinator, IUtcClock? clock)
+    /// <summary>Uses the actual registered SDK coordinator and independently enrolled native scanner.</summary>
+    internal OperationalStatusProjectionWriter(SharedProjectionEpochCoordinator coordinator, IUtcClock? clock, INativeSourceScanner scanner)
     {
         _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
         _clock = clock ?? new SystemUtcClock();
+        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
     }
 
     /// <summary>Persists each source delivery before permitting acknowledgment.</summary>
@@ -70,6 +82,7 @@ public sealed class OperationalStatusProjectionWriter
                         && anchor.Sequence >= source.SequenceNumber)
                     {
                         RequireTailIdentity(anchor, item);
+                        await RequireNativeIdentityAsync(tenantId, folderId, item, anchor, cancellationToken).ConfigureAwait(false);
                         continue; // C3-expired replay must not refresh rows, receipts, or SDK writer metadata.
                     }
                 }
@@ -136,7 +149,11 @@ public sealed class OperationalStatusProjectionWriter
         if (source.Sequence <= (current?.Sequence ?? 0))
         {
             RequireTailIdentity(current!, source);
-            if (Expired(SourceTime(source, source.Timestamp))) return [];
+            if (Expired(SourceTime(source, source.Timestamp)))
+            {
+                await RequireNativeIdentityAsync(tenantId, folderId, source, current, cancellationToken).ConfigureAwait(false);
+                return [];
+            }
             if (receipt is null || message != receipt || receipt.EventDigest != source.Digest
                 || receipt.MessageId != source.MessageId || receipt.Sequence != source.Sequence || !receipt.Valid())
                 throw new InvalidOperationException("Operational source identity conflict.");
@@ -147,6 +164,27 @@ public sealed class OperationalStatusProjectionWriter
         if (current is { SchemaVersion: < 4 })
             throw new OperationalStatusUnavailableException(); // Old compacted anchors have no complete retained closure inventory; rebuild from source.
         if (receipt is not null || message is not null) throw new InvalidOperationException("Operational message identity is reused.");
+        await RequireNativeIdentityAsync(tenantId, folderId, source, current, cancellationToken).ConfigureAwait(false);
+        // The remote scan can outlive a concurrent writer's lawful completion. Observe the selected
+        // checkpoint again before combining it with current views; do not plan from the old anchor.
+        OperationalStatusCheckpoint? confirmed = (await ReadAsync<OperationalStatusCheckpoint>(scope, generation,
+            OperationalStatusKeys.Checkpoint(tenantId, folderId), cancellationToken).ConfigureAwait(false)).Value;
+        if (confirmed?.IntegrityDigest != current?.IntegrityDigest)
+        {
+            if (confirmed is null || !OperationalStatusFold.Valid(confirmed, tenantId, folderId)
+                || source.Sequence > confirmed.Sequence) throw new OperationalStatusUnavailableException();
+            RequireTailIdentity(confirmed, source);
+            if (Expired(SourceTime(source, source.Timestamp))) return [];
+            receipt = (await ReadAsync<OperationalStatusReceipt>(scope, generation,
+                OperationalStatusKeys.Receipt(tenantId, folderId, source.Sequence), cancellationToken).ConfigureAwait(false)).Value;
+            message = (await ReadAsync<OperationalStatusReceipt>(scope, generation,
+                OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), cancellationToken).ConfigureAwait(false)).Value;
+            if (receipt is null || message != receipt || receipt.EventDigest != source.Digest
+                || receipt.MessageId != source.MessageId || receipt.Sequence != source.Sequence || !receipt.Valid())
+                throw new InvalidOperationException("Operational source identity conflict.");
+            await RequireCurrentViewsAsync(scope, generation, confirmed, receipt.RequiredViews, cancellationToken).ConfigureAwait(false);
+            return [];
+        }
         if (source.Event is null && current is not null)
             await RequireCurrentViewsAsync(scope, generation, current, null, cancellationToken).ConfigureAwait(false);
         OperationalStatusFoldResult next = OperationalStatusFold.Apply(tenantId, folderId, current, [source], bounded: true);
@@ -218,6 +256,21 @@ public sealed class OperationalStatusProjectionWriter
         return operations;
     }
 
+    private async Task RequireNativeIdentityAsync(string tenantId, string folderId, OperationalStatusEvent source,
+        OperationalStatusCheckpoint? current, CancellationToken cancellationToken)
+    {
+        if (_scanner is null) throw new OperationalStatusUnavailableException();
+        var identity = new AggregateIdentity(tenantId, "folders", folderId);
+        NativeSourceScanResult<OperationalStatusNativeSourceFacts> native = await _scanner.ScanAsync(identity,
+            () => new OperationalStatusNativeSourceFold(tenantId, folderId, candidate: source, checkpointSequence: current?.Sequence), cancellationToken).ConfigureAwait(false);
+        if (native.Observation is null || native.Value is not { } facts || facts.Sequence != native.Observation.Proof.HeadSequence)
+            throw new OperationalStatusUnavailableException();
+        if (current is not null && facts.CheckpointSourceDigest != current.SourceDigest)
+            throw new InvalidOperationException("Operational checkpoint contradicts the current native prefix.");
+        if (facts.MessageReused || facts.CandidateConflict) throw new InvalidOperationException("Operational message identity conflicts with its native source.");
+        if (!facts.CandidateFound) throw new OperationalStatusUnavailableException();
+    }
+
     private async Task RequireCurrentViewsAsync(SharedProjectionScope scope, long generation,
         OperationalStatusCheckpoint checkpoint, OperationalStatusViewBinding? requiredViews, CancellationToken cancellationToken)
     {
@@ -263,6 +316,36 @@ public sealed class OperationalStatusProjectionWriter
                     : key == OperationalStatusKeys.Workspace(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceId ?? "")
                         && (!checkpoint.WorkspaceEvidence.TryGetValue(checkpoint.State.WorkspaceId ?? "", out string? workspaceDigest) || workspaceDigest != actual)))
                 throw new OperationalStatusUnavailableException();
+            bool historical = taskValue is not null ? taskValue.TaskId != checkpoint.State.WorkspaceTaskId
+                : workspaceValue is not null && workspaceValue.Workspace.WorkspaceId != checkpoint.State.WorkspaceId;
+            if (historical)
+            {
+                if (_scanner is null) throw new OperationalStatusUnavailableException();
+                var source = await _scanner.ScanAsync(new AggregateIdentity(checkpoint.ManagedTenantId, "folders", checkpoint.FolderId),
+                    () => new OperationalStatusNativeSourceFold(checkpoint.ManagedTenantId, checkpoint.FolderId, key,
+                        checkpointSequence: checkpoint.Sequence, viewCutSequence: checkpoint.Sequence), cancellationToken).ConfigureAwait(false);
+                if (source.Observation is null || source.Value is not { } facts
+                    || facts.CheckpointSourceDigest != checkpoint.SourceDigest || facts.ValueDigest != actual
+                    || facts.ViewSequence != proof.Sequence || facts.ViewSourceDigest != proof.SourceDigest)
+                    throw new OperationalStatusUnavailableException();
+                string checkpointKey = OperationalStatusKeys.Checkpoint(checkpoint.ManagedTenantId, checkpoint.FolderId);
+                string evidenceKey = OperationalStatusKeys.Evidence(key);
+                string applicabilityKey = OperationalStatusKeys.Applicability(key);
+                // Physical generation reads also run during SDK catch-up, when current public
+                // ReadMany correctly reports stale. Fence their generation before and after.
+                if ((await _coordinator.GetStatusAsync(scope, cancellationToken).ConfigureAwait(false)).ActiveGeneration != generation)
+                    throw new OperationalStatusUnavailableException();
+                var afterCheckpoint = (await ReadAsync<OperationalStatusCheckpoint>(scope, generation, checkpointKey, cancellationToken).ConfigureAwait(false)).Value;
+                var afterValue = (await ReadAsync<System.Text.Json.Nodes.JsonObject>(scope, generation, key, cancellationToken).ConfigureAwait(false)).Value;
+                var afterEvidence = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation, evidenceKey, cancellationToken).ConfigureAwait(false)).Value;
+                var afterApplicability = (await ReadAsync<OperationalStatusViewApplicability>(scope, generation, applicabilityKey, cancellationToken).ConfigureAwait(false)).Value;
+                if ((await _coordinator.GetStatusAsync(scope, cancellationToken).ConfigureAwait(false)).ActiveGeneration != generation
+                    || afterCheckpoint is null || !OperationalStatusFold.Valid(afterCheckpoint, checkpoint.ManagedTenantId, checkpoint.FolderId)
+                    || afterCheckpoint?.IntegrityDigest != checkpoint.IntegrityDigest
+                    || !System.Text.Json.Nodes.JsonNode.DeepEquals(value, afterValue)
+                    || afterEvidence != proof || afterApplicability != applicability)
+                    throw new OperationalStatusUnavailableException();
+            }
             if (taskValue is not null)
             {
                 var completion = (await ReadAsync<OperationalStatusTaskCompletion>(scope, generation,

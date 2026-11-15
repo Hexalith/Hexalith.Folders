@@ -42,7 +42,7 @@ A single event-write tokenizer supplies immutable confidential correlation ident
 
 ## UX & Interaction Patterns
 
-The read-only metadata console distinguishes lifecycle, lock, task outcome, freshness, and disclosure. Unknown provider outcomes show bounded confirmation progress; exhausted uncertainty requires human escalation without repair controls. Confidential `withheld` values expose correlation references and never promise recoverability. Withheld, redacted, unknown, missing, stale, and unavailable remain distinct states. Bodies, diffs, and secrets remain excluded.
+The read-only metadata console distinguishes lifecycle, lock, task outcome, freshness, and disclosure. Unknown provider outcomes show bounded confirmation progress; exhausted uncertainty requires human escalation without repair controls. Confidential `withheld` values expose correlation references and never promise recoverability. Withheld, redacted, unknown, missing, stale, and unavailable remain distinct states. Bodies, diffs, and secrets remain excluded. Proposed durability-position and replay-panel fields remain design assumptions rather than acceptance facts.
 
 ## Cross-Story Dependencies
 
@@ -51,3 +51,5 @@ Story 12.2 consumes Story 12.1's durable ordered events and accepted event-evolu
 Epics 4, 6, and 10 retain transition-evidence, diagnostics, and search-bridge ownership. Production recovery remains an external prerequisite for dependent hardening. Cross-folder lock work in 4.23 consumes this durable foundation and preserves canonical repository/ref identity and authorization timing.
 
 Approved timing, file-policy, and provider-compatibility decisions remain authoritative. Historical v1 compatibility is superseded by the Story 1.17/A6b v2 target. Planning hold and execution-manifest ancestry must be reconciled with revision-bound owner decisions; historical evidence alone does not prove current conformance, enable public v2, authorize exposure, or regenerate sprint status.
+
+The approved November planning amendment requires the Story 12.2 strict fixture to obtain workload-binding enrollment from a Platform authority enrolled for its own run. Persistent, staging, and production authority enrollment stays with the realm owner. This changes the external prerequisite only: parent frozen acceptance remains unchanged. Neither planning recovery nor a current implementation authorization permits public v2 exposure or general sprint-status regeneration.

@@ -5,6 +5,8 @@
   <ItemGroup>
     <!-- Reuse the SDK's byte/CAS persistence double; the production content protocol remains under test. -->
     <Compile Include="../shared/EventStore/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
+    <Compile Include="../shared/OperationalStatus/OperationalStatusNativeSource.cs" Link="OperationalStatus/OperationalStatusNativeSource.cs" />
+    <Compile Include="../shared/OperationalStatus/OperationalStatusTestData.cs" Link="OperationalStatus/OperationalStatusTestData.cs" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only
          AddHexalithEventStore + AddEventStoreDomainModule) to assert the full five-sidecar topology. -->

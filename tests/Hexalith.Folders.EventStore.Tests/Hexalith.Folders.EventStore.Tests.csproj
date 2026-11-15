@@ -2,6 +2,9 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' and '$(EnablePrivateCatalogInvocationProof)' == 'true' and '$(HexalithEventStoreFromSource)' == 'true'">
+    <DefineConstants>$(DefineConstants);PRIVATE_ORIGINAL_SOURCE_PROOF</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <None Update="Fixtures/legacy-idempotency-descriptors.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

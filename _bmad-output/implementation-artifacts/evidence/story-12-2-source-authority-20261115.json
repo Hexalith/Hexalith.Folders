@@ -1,0 +1,567 @@
+{
+  "status": "qualified-pending-independent-review",
+  "scope": "source-only; no publication/deployment/package/gitlink/pin/commit/push/public-v2",
+  "full_retained_index": {
+    "path": ".artifacts/story-12-2-source-authority-20261115-parent/retained-evidence/story-12-2-source-authority-20261115.json",
+    "sha256": "945cdf11ff450cff89f526bbd71ab73b95f5e4aa153d99e148dba0e6cf33e7e8"
+  },
+  "producers": {
+    "path": ".artifacts/story-12-2-source-authority-20261115-parent/final-producer-identities.json",
+    "sha256": "8a9406442950885912a773709f6158c7d0d546f1ffbba3201cc1755f81ad6c52",
+    "count": 290,
+    "audit_path": ".artifacts/story-12-2-source-authority-20261115-parent/final-51-post-tests-audit.json",
+    "audit_sha256": "8c8b581c8d34ce428ee5aa25cae997de6dbb7034d8dd00bcef3fb99cda12a0b7",
+    "pdb_document_index_path": ".artifacts/story-12-2-source-authority-20261115-parent/final-51-post-tests-pdb.json",
+    "pdb_document_index_sha256": "5a80cc5a8a488b88b2d089638fadb366df9bbc8ecff739fc93f4da3fb84545b1"
+  },
+  "source_graph": {
+    "revisions": [
+      {
+        "repository": "/home/administrator/projects/hexalith/folders",
+        "head": "c01f3833844164a7eb2e3af4016123dbb96f3737"
+      },
+      {
+        "repository": "references/Hexalith.AI.Tools",
+        "head": "17a37d83db193f0b7494c1b931fd1e82a67c1424"
+      },
+      {
+        "repository": "references/Hexalith.Builds",
+        "head": "99f7c86072ca7b35e3fbbaee4606a559a847805a"
+      },
+      {
+        "repository": "references/Hexalith.Commons",
+        "head": "fbf4e94233821f6ca336af91a06feaaeb7a16855"
+      },
+      {
+        "repository": "references/Hexalith.EventStore",
+        "head": "749d162538b321e80401a4b69a7f706ba656c9e0"
+      },
+      {
+        "repository": "references/Hexalith.FrontComposer",
+        "head": "366de54c995cfd29b51f73e1dfafe8256753f5fe"
+      },
+      {
+        "repository": "references/Hexalith.McpCli",
+        "head": "4ffb33e84fd12a2642deb19b3492ce67ae670cee"
+      },
+      {
+        "repository": "references/Hexalith.Memories",
+        "head": "2c2e9b58990638ededf22e8e67ff5c12de75b434"
+      },
+      {
+        "repository": "references/Hexalith.Parties",
+        "head": "0911387de9edaefbeb8a93437ce760e8e9a366f1"
+      },
+      {
+        "repository": "references/Hexalith.Platform",
+        "head": "9ccbd4c7f8f3b6143e7b4f7b20a0e192de932ac1"
+      },
+      {
+        "repository": "references/Hexalith.PolymorphicSerializations",
+        "head": "e97b56930e213f674b64c157551f499b0473ec43"
+      },
+      {
+        "repository": "references/Hexalith.Projects",
+        "head": "fe7a8430cb765e5f262eb74938aa032741eea0a6"
+      },
+      {
+        "repository": "references/Hexalith.Tenants",
+        "head": "d89f234c4f020373aaabe0e3699ecdb5097b1079"
+      }
+    ],
+    "source_copy": {
+      "expected_files": 131236,
+      "mismatches": [],
+      "unexpected_ordinary_source_build_inputs": [],
+      "source_manifest_sha256": "00e13abb32fc62b68dedbe43785274b704441b294c1e5cceba963cf96ac463e4"
+    },
+    "source_flags": {
+      "Configuration": "Debug",
+      "UseHexalithProjectReferences": true,
+      "UseNuGetDeps": false,
+      "HexalithEventStoreVersion": "5.1.0",
+      "VersionSuffix": "story12-2-qualification",
+      "EnablePrivateCatalogInvocationProof": true
+    },
+    "normal_analyzers": true,
+    "all_hexalith_asset_edges_are_projects": true,
+    "changed_compile_inputs": 87,
+    "missing_changed_compile_inputs": [],
+    "unexpected_compile_documents": [],
+    "producer_copies": 290
+  },
+  "protected_bodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+  },
+  "parent_frozen_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "affected_tests": [
+    {
+      "label": "final-51-full-Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "2482",
+          "skipped": "2",
+          "time": "93.387",
+          "total": "2484"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-Server.Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "11",
+          "passed": "1434",
+          "skipped": "0",
+          "time": "200.593",
+          "total": "1445"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-Workers.Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "186",
+          "skipped": "0",
+          "time": "5.027",
+          "total": "186"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-IntegrationTests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "854",
+          "skipped": "0",
+          "time": "37.598",
+          "total": "854"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-Contracts.Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "689",
+          "skipped": "0",
+          "time": "44.445",
+          "total": "689"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-EventStore.Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "125",
+          "skipped": "0",
+          "time": "4.874",
+          "total": "125"
+        }
+      ]
+    },
+    {
+      "label": "final-51-full-AppHost.Tests",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "6",
+          "passed": "177",
+          "skipped": "10",
+          "time": "5.275",
+          "total": "193"
+        }
+      ]
+    },
+    {
+      "label": "final-51-sdk-client",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "103",
+          "skipped": "0",
+          "time": "0.662",
+          "total": "103"
+        }
+      ]
+    },
+    {
+      "label": "final-51-sdk-server",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "259",
+          "skipped": "0",
+          "time": "16.159",
+          "total": "259"
+        }
+      ]
+    },
+    {
+      "label": "final-51-sdk-domainservice",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "80",
+          "skipped": "0",
+          "time": "0.773",
+          "total": "80"
+        }
+      ]
+    },
+    {
+      "label": "final-51-sdk-testing",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "0",
+          "passed": "21",
+          "skipped": "0",
+          "time": "3.599",
+          "total": "21"
+        }
+      ]
+    },
+    {
+      "label": "final-51-enrollment",
+      "exit_code": 0,
+      "assemblies": [
+        {
+          "errors": "0",
+          "failed": "0",
+          "not-run": "1",
+          "passed": "42",
+          "skipped": "0",
+          "time": "1.753",
+          "total": "43"
+        }
+      ]
+    },
+    {
+      "label": "final-51-retained-probes",
+      "exit_code": 0,
+      "assemblies": []
+    }
+  ],
+  "retained_reproductions": [
+    {
+      "kind": "historical-native",
+      "original_source_sha256": "e7b18c3ecabdd217931555fbc39ad5c1338915e43daf9cdc23c9a703dbbd519d",
+      "adapted_source_sha256": "5d795481f4bcb412af3e5fe9be965d9fca31393883b4bfefe95d1b0b711a4ee9",
+      "compile_exit": 0,
+      "run_exit": 0,
+      "observations": [
+        "ORIGINAL_SOURCE_SHA256=32FB0C16C7FD647667F5FD68F5E1E55F246D005D28602966D8C2739043912EDE",
+        "HISTORICAL_NATIVE good=Available/ready restored=Unavailable/ completion=absent"
+      ]
+    },
+    {
+      "kind": "expired-message",
+      "original_source_sha256": "4ecc9312fc83558104c7d53a7c2bbdc2c3f47fd8795f767ff0e82d3afaa51ddf",
+      "adapted_source_sha256": "3928c448a7dfd21cfeb10f7025e2ed3c90e01536f5460f882fbc93b3d551337d",
+      "compile_exit": 0,
+      "run_exit": 0,
+      "observations": [
+        "initial=Completed",
+        "expireEvidence=True",
+        "expireEvidence=True",
+        "ORIGINAL_SOURCE_SHA256=A2D7B668160494DA817C92F9ABFFAC9D1E87E67F69E9C8D7090475B4B46A0822",
+        "reusedNewPosition=refused:InvalidOperationException",
+        "liveCheckpoint=2",
+        "rebuild=InvalidOperationException:Operational source sequence gap."
+      ]
+    }
+  ],
+  "matrix": {
+    "index": {
+      "path": ".artifacts/story-12-2-source-authority-20261115-parent/retained-evidence/story-12-2-source-authority-20261115-matrix.json",
+      "sha256": "18dab801f0c0810d031c0d9fb7534869683d524a816633c592fa1457a4d1f2bd"
+    },
+    "rows": {
+      "historical": {
+        "coverage": "Native acquire/release/task B, nonterminal and failed/unknown/reconciliation task/workspace old triples; unavailable reads and duplicate ack before repair; lawful named repair/live duplicate or rejection; earliest closure and original expiry.",
+        "tests": [
+          "OperationalStatusNativeSourceAuthorityTests.NativeReleaseHistoricalTripleRequiresCurrentSourceAndNamedRepairRestoresLawfulDelivery",
+          "OperationalStatusNativeSourceAuthorityTests.HistoricalFailedUnknownTaskAndWorkspaceRejectCoherentOldTriples",
+          "OperationalStatusNativeSourceAuthorityTests.HistoricalSourceFoldKeepsEarliestCompletionAcrossRepeatedTaskBindings"
+        ],
+        "passing_cases": 8
+      },
+      "identity": {
+        "coverage": "401-day expired receipts, reused versus new ID, exact duplicate, same-position payload/message/global conflicts, expired nontail replay, independently captured checkpoint prefix.",
+        "tests": [
+          "OperationalStatusNativeSourceAuthorityTests.ExpiredIdentityIsIndependentlyCheckedBeforeJournalAndNewIdentityRemainsLawful",
+          "OperationalStatusNativeSourceAuthorityTests.ConflictingOriginalPositionCannotPassNativeIdentityBeforeAdmissionOrExpiredReplay",
+          "OperationalStatusNativeSourceAuthorityTests.ChangedNativePredecessorCannotBeStitchedToExistingCheckpoint"
+        ],
+        "passing_cases": 9
+      },
+      "observation": {
+        "coverage": "Inherited selected generation, mid-scan promotion/growth, source-authorized repair, prefix mismatch/gap/missing proof/unsupported fold and unavailable source; selected checkpoint rechecks.",
+        "tests": [
+          "OperationalStatusNativeSourceAuthorityTests.InheritedHistoricalSelectionRechecksGenerationAndCurrentHeadAfterScan",
+          "NativeSourceScannerTests.GrowthDiscardsPartialFoldAndStartsFresh",
+          "NativeSourceScannerTests.UnverifiableSourceNeverReleasesSelectedValue",
+          "OperationalStatusRoundSixTests.CheckpointOrGenerationChangeBetweenPinnedReadsCannotPublishMixedAuthorityAsync",
+          "OperationalStatusNativeSourceAuthorityTests.HistoricalDuplicateRechecksRowsAndGenerationAfterScan"
+        ],
+        "passing_cases": 12
+      },
+      "capacity_cancellation": {
+        "coverage": "10,001/32,769 source positions and growth, bounded original-source selection through existing historical task loop, caller cancellation, exact sixteen-slot ownership until actual completion, prepared CAS refusal and cold persisted end-state. Unchanged bounded-history strict passed for 10,001 plus growth using explicitly selected EventStore.Testing original-primary pages; authenticated native receiver capacities 10,001 and 32,769 plus restart/growth passed independently.",
+        "tests": [
+          "OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues",
+          "NativeSourceScannerTests.BoundedPagesFoldHistoriesBeyondCompleteReaderBounds",
+          "NativeSourceScannerTests.NoncooperativeProviderCannotReleaseEvidenceAfterCancellation",
+          "GatewayNativeSourceMetadataAdmissionTests.NativeScanKeepsAllSixteenAbandonedProviderSlotsUntilActualCompletion",
+          "OperationalStatusNativeSourceAuthorityTests.InheritedHistoricalSelectionRechecksGenerationAndCurrentHeadAfterScan",
+          "SharedProjectionWriteConflictTests.ConflictRetainsPreparedJournalUntilAColdRetryActuallyCompletes"
+        ],
+        "passing_cases": 10
+      },
+      "authorization": {
+        "coverage": "Actual middleware positive and caller/operation/tenant/domain/missing-binding/proof/purpose/page/resource/human refusals before actor access; metadata-only range guard preserved; real SDK registration and 2MiB response refusal; exact scan enrollment independently observed without credential bytes. Current real issuer component and run-owned exact enrollment pass; actual strict topology grants are retained in the runtime inventory.",
+        "tests": [
+          "NativeSourceScannerAuthorizationTests.ExactScanRequiresIssuerBindingsSeparateEnrollmentAndPageProofBeforeSource",
+          "NativeSourceScannerTests.ExactScanProofCannotAuthorizeChangedPagesScopesOrOrdinaryReadPurpose",
+          "NativeSourceScannerCompositionTests.SeparateScanClientPreservesDefaultGatewayAndRefusesUnprovableScope",
+          "NativeSourceMetadataCatalogObservationTests.SourceOnlyReceiverEnrollmentIsPartOfTheIndependentCatalogObservation"
+        ],
+        "passing_cases": 8
+      }
+    }
+  },
+  "runtime": {
+    "index": {
+      "path": ".artifacts/story-12-2-source-authority-20261115-parent/retained-evidence/story-12-2-source-authority-20261115-runtime.json",
+      "sha256": "f58bbd7f4d117024a764a0d8414055cf32399f60bf1c0dfadf43e3a901832b19"
+    },
+    "jobs": [
+      {
+        "label": "final-51-strict-OperationalStatusBoundedHistoryAcceptanceTests-lease3600",
+        "exit_code": 0,
+        "assemblies": [
+          {
+            "name": "/tmp/hexalith-job.DpYLvb6z/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-15",
+            "run-time": "03:14:54",
+            "errors": "0",
+            "failed": "0",
+            "passed": "1",
+            "skipped": "0",
+            "time": "1799.996",
+            "total": "1"
+          }
+        ],
+        "loaded": {
+          "observed_rows": 409,
+          "distinct_libraries": 80,
+          "distinct_processes": 14,
+          "issues": []
+        },
+        "source_or_head_drift": [],
+        "runtime_file_drift": [],
+        "cleanup": {
+          "remaining_observed_descendants": [],
+          "remaining_owned_containers": [],
+          "remaining_unattributed_containers": [],
+          "remaining_observed_directories": []
+        },
+        "explicit_fixture_selection": {
+          "FOLDERS_BOUNDED_HISTORY_ORIGINAL_SOURCE": "1",
+          "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+        }
+      },
+      {
+        "label": "final-51-issuer-live-retry1",
+        "exit_code": 0,
+        "assemblies": null,
+        "loaded": {
+          "observed_rows": 16,
+          "distinct_libraries": 16,
+          "distinct_processes": 2,
+          "issues": []
+        },
+        "source_or_head_drift": [],
+        "runtime_file_drift": [],
+        "cleanup": {
+          "remaining_observed_descendants": [],
+          "remaining_owned_containers": [],
+          "remaining_unattributed_containers": [
+            {
+              "ID": "960ce2ae477ca838203564f0f8f48699ddf1dd7dfba14136dc36a90f90325944",
+              "Names": "fc-native15019-a01660cfa89b",
+              "Image": "mcr.microsoft.com/dotnet/sdk@sha256:7913685c883a29dd8ba79da96172f5c6b29ed9be706ebe95935e3ef45f19c9c1",
+              "Status": "Up 1 second",
+              "image_id": "sha256:7913685c883a29dd8ba79da96172f5c6b29ed9be706ebe95935e3ef45f19c9c1"
+            }
+          ],
+          "remaining_observed_directories": []
+        },
+        "explicit_fixture_selection": {
+          "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+        }
+      },
+      {
+        "label": "final-51-run-owned-live",
+        "exit_code": 0,
+        "assemblies": null,
+        "loaded": {
+          "observed_rows": 10,
+          "distinct_libraries": 10,
+          "distinct_processes": 1,
+          "issues": []
+        },
+        "source_or_head_drift": [],
+        "runtime_file_drift": [],
+        "cleanup": {
+          "remaining_observed_descendants": [],
+          "remaining_owned_containers": [],
+          "remaining_unattributed_containers": [],
+          "remaining_observed_directories": []
+        },
+        "explicit_fixture_selection": {
+          "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+        }
+      },
+      {
+        "label": "final-51-strict-OperationalStatusDurabilityAcceptanceTests",
+        "exit_code": 0,
+        "assemblies": [
+          {
+            "name": "/tmp/hexalith-job.DpYLvb6z/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-15",
+            "run-time": "03:47:34",
+            "errors": "0",
+            "failed": "0",
+            "passed": "1",
+            "skipped": "0",
+            "time": "531.655",
+            "total": "1"
+          }
+        ],
+        "loaded": {
+          "observed_rows": 594,
+          "distinct_libraries": 80,
+          "distinct_processes": 22,
+          "issues": []
+        },
+        "source_or_head_drift": [],
+        "runtime_file_drift": [],
+        "cleanup": {
+          "remaining_observed_descendants": [],
+          "remaining_owned_containers": [],
+          "remaining_unattributed_containers": [],
+          "remaining_observed_directories": []
+        },
+        "explicit_fixture_selection": {
+          "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+        }
+      },
+      {
+        "label": "final-51-strict-FolderDurabilityAcceptanceTests",
+        "exit_code": 0,
+        "assemblies": [
+          {
+            "name": "/tmp/hexalith-job.DpYLvb6z/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-11-15",
+            "run-time": "03:56:38",
+            "errors": "0",
+            "failed": "0",
+            "passed": "1",
+            "skipped": "0",
+            "time": "208.822",
+            "total": "1"
+          }
+        ],
+        "loaded": {
+          "observed_rows": 333,
+          "distinct_libraries": 80,
+          "distinct_processes": 14,
+          "issues": []
+        },
+        "source_or_head_drift": [],
+        "runtime_file_drift": [],
+        "cleanup": {
+          "remaining_observed_descendants": [],
+          "remaining_owned_containers": [],
+          "remaining_unattributed_containers": [],
+          "remaining_observed_directories": []
+        },
+        "explicit_fixture_selection": {
+          "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+        }
+      }
+    ]
+  },
+  "retained_failures": {
+    "count": 49,
+    "exact_receipts_and_commands_in": {
+      "path": ".artifacts/story-12-2-source-authority-20261115-parent/retained-evidence/story-12-2-source-authority-20261115.json",
+      "sha256": "945cdf11ff450cff89f526bbd71ab73b95f5e4aa153d99e148dba0e6cf33e7e8"
+    },
+    "bounded_900_second_lease": "fixed-owner-deadline-expired; original receipt and separately attributed cleanup recovery retained",
+    "issuer_startup": "Docker run failed before SDK tests; unchanged fresh retry passed; both attempts retained"
+  },
+  "bounded_launcher_selection": {
+    "supported_source": "references/Hexalith.Platform/docs/security/workload-binding-enrollment.md:203",
+    "supported_range_seconds": [
+      1,
+      86400
+    ],
+    "selection_seconds": 3600,
+    "selected_before_new_launch": true,
+    "prior900second_run_retained": true,
+    "application_source_and_frozen_test_deadlines_changed": false,
+    "reason": "The900second fixture upper bound expired after the original10001owner had staged,restarted,committed and verified; the unchanged body still had inheritance,growth and negative controls. A fresh finite supported launcher lease qualifies these original phases."
+  },
+  "qualification_limits": [
+    "Whole Story 12.2 stays in-progress: SM4 performance, release/publication and governance gates are not closed.",
+    "The frozen bounded strict body supplies synthetic histories. Its explicitly selected Debug/Development/private EventStore.Testing original-primary store is separate from production native actors and derived state; other strict runs use production actors.",
+    "The broad Platform composition suite is blocked by pre-existing CA2007/CA1062 analyzer failures; the unchanged affected enrollment class and three helpers passed in an isolated harness with unchanged build/analyzer configuration.",
+    "Python enrollment suite 44/45 in private TMPDIR; unchanged cross-UID control passed in its own reliably cleaned workspace. No permission policy was weakened.",
+    "The first 15-minute parent launcher lease expired after staging/restart/commit/verify. Its exact failure and attributed cleanup are retained; the fresh bounded run selected the supported finite 3600-second launcher lease before launch, with application/test deadlines unchanged.",
+    "Earlier 5.0.1 and earlier 5.1 passes are historical input-bound evidence, not qualification for these final producers.",
+    "One unowned SDK container appeared during issuer retry observation and disappeared independently before read-only follow-up inspection. It was left untouched; its original receipt retains the observation."
+  ]
+}

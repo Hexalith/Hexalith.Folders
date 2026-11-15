@@ -22,7 +22,7 @@ public sealed class OperationalStatusRoundSevenTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         List<IFolderEvent> history = [.. OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now)];
         var source = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "locked", source[..^1], token)).IsSuccess.ShouldBeTrue();
@@ -53,12 +53,12 @@ public sealed class OperationalStatusRoundSevenTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var original = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()])[0];
         (await writer.ApplyAsync("tenant-a", "folder-a", "original", [original], token)).IsSuccess.ShouldBeTrue();
         clock.UtcNow += OperationalStatusKeys.Retention + TimeSpan.FromDays(1);
         var retained = original.Source!;
-        var conflict = OperationalStatusEventReader.ReadStored(changedPayload
+        var conflict = OperationalStatusTestData.Stored(changedPayload
             ? retained with { Payload = JsonSerializer.SerializeToUtf8Bytes(OperationalStatusTestData.Created() with { DisplayName = "Changed" }) }
             : retained with { MessageId = "different-tail-message" });
         await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "conflict", [conflict], token));
@@ -81,8 +81,8 @@ public sealed class OperationalStatusRoundSevenTests
         var source = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()])[0].Source! with
         { EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected", Payload = bytes };
         await Should.ThrowAsync<InvalidOperationException>(async () =>
-            await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "invalid",
-                [OperationalStatusEventReader.ReadStored(source)], token).ConfigureAwait(true));
+            await new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "invalid",
+                [OperationalStatusTestData.Stored(source)], token).ConfigureAwait(true));
         store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")).ShouldBeNull();
     }
 }

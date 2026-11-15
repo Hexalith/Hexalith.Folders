@@ -298,6 +298,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "eventstore-operation.eventstore.stream-scan-native",
+      "description": "Exact native source scan operation; separate receiver enrollment and purpose-bound resource/page proof remain required.",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "workload-operation",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "eventstore:operation",
+            "claim.value": "eventstore:stream-scan-native",
+            "jsonType.label": "String",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "clients": [
@@ -529,7 +555,8 @@
       "defaultClientScopes": [],
       "optionalClientScopes": [
         "eventstore-audience.eventstore",
-        "eventstore-operation.eventstore.stream-read"
+        "eventstore-operation.eventstore.stream-read",
+        "eventstore-operation.eventstore.stream-scan-native"
       ],
       "protocolMappers": [
         {
@@ -567,7 +594,8 @@
       "defaultClientScopes": [],
       "optionalClientScopes": [
         "eventstore-audience.eventstore",
-        "eventstore-operation.eventstore.stream-read"
+        "eventstore-operation.eventstore.stream-read",
+        "eventstore-operation.eventstore.stream-scan-native"
       ],
       "protocolMappers": [
         {

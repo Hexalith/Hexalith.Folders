@@ -34,7 +34,7 @@ internal sealed class FoldersEventStoreHostFactory(bool enableSignalR = false) :
         builder.ConfigureServices(static services =>
         {
             foreach (ServiceDescriptor descriptor in services.Where(static descriptor => descriptor.ServiceType == typeof(IHostedService)
-                && descriptor.ImplementationType?.Name is not ("EventStoreHttpHostSecurityStartupValidator" or "EventStoreAuthorizationStartupValidator")).ToArray())
+                && descriptor.ImplementationType?.Name is not ("EventStoreHttpHostSecurityStartupValidator" or "EventStoreAuthorizationStartupValidator" or "SyntheticOriginalSourceWorker")).ToArray())
                 services.Remove(descriptor);
         });
     }

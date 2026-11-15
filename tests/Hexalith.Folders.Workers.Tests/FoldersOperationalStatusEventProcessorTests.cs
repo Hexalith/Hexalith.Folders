@@ -18,7 +18,7 @@ public sealed class FoldersOperationalStatusEventProcessorTests
     {
         var history = OperationalStatusTestData.LockedPrefix(OperationalStatusTestData.Now);
         OperationalStatusTestStore store = new();
-        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store));
+        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store, scanner: OperationalStatusTestData.Scanner));
         foreach (var value in history.Take(history.Count - 1).Select((value, index) => OperationalStatusTestData.Envelope(value, index + 1)))
             await processor.ProcessAsync(value, TestContext.Current.CancellationToken);
         var acquired = history.OfType<Hexalith.Folders.Aggregates.Folder.WorkspaceLockAcquired>().Single();
@@ -49,7 +49,7 @@ public sealed class FoldersOperationalStatusEventProcessorTests
     public async Task DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment()
     {
         OperationalStatusTestStore store = new();
-        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store));
+        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store, scanner: OperationalStatusTestData.Scanner));
         var source = OperationalStatusTestData.Envelope(OperationalStatusTestData.Created());
         await processor.ProcessAsync(source, TestContext.Current.CancellationToken);
         await processor.ProcessAsync(source, TestContext.Current.CancellationToken);
@@ -68,10 +68,10 @@ public sealed class FoldersOperationalStatusEventProcessorTests
         store.BatchFaultHook = (phase, _, _) => phase is ReadModelBatchPhase.AfterCommit or ReadModelBatchPhase.Reconcile
             ? throw new IOException("Injected crash") : Task.CompletedTask;
         var source = OperationalStatusTestData.Envelope(OperationalStatusTestData.Created());
-        await Should.ThrowAsync<InvalidOperationException>(() => new FoldersOperationalStatusEventProcessor(new(store, store, store))
+        await Should.ThrowAsync<InvalidOperationException>(() => new FoldersOperationalStatusEventProcessor(new(store, store, store, scanner: OperationalStatusTestData.Scanner))
             .ProcessAsync(source, TestContext.Current.CancellationToken));
         store.BatchFaultHook = null;
-        await new FoldersOperationalStatusEventProcessor(new(store, store, store)).ProcessAsync(source, TestContext.Current.CancellationToken);
+        await new FoldersOperationalStatusEventProcessor(new(store, store, store, scanner: OperationalStatusTestData.Scanner)).ProcessAsync(source, TestContext.Current.CancellationToken);
         store.HasPendingEnvelope(OperationalStatusKeys.StoreName, OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")).ShouldBeFalse();
         store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName, OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.Sequence.ShouldBe(1);
     }
@@ -82,7 +82,7 @@ public sealed class FoldersOperationalStatusEventProcessorTests
     public async Task WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes(bool reusedMessage)
     {
         OperationalStatusTestStore store = new();
-        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store));
+        var processor = new FoldersOperationalStatusEventProcessor(new(store, store, store, scanner: OperationalStatusTestData.Scanner));
         var source = OperationalStatusTestData.Envelope(OperationalStatusTestData.Created());
         await processor.ProcessAsync(source, TestContext.Current.CancellationToken);
         var rejected = source with

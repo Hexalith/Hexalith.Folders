@@ -17,7 +17,7 @@ public sealed class OperationalStatusRoundSixTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         List<Hexalith.Folders.Aggregates.Folder.IFolderEvent> history = [.. OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now)];
         var source = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "closed", source, token)).IsSuccess.ShouldBeTrue();
@@ -42,7 +42,7 @@ public sealed class OperationalStatusRoundSixTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         List<Hexalith.Folders.Aggregates.Folder.IFolderEvent> history = [.. OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now)];
         var source = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "locked", source[..^1], token)).IsSuccess.ShouldBeTrue();
@@ -81,7 +81,7 @@ public sealed class OperationalStatusRoundSixTests
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
         var source = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        (await new OperationalStatusProjectionWriter(store, store, store, clock).ApplyAsync("tenant-a", "folder-a", "initial", source, token)).IsSuccess.ShouldBeTrue();
+        (await new OperationalStatusProjectionWriter(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "initial", source, token)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
         var malformed = System.Text.Json.Nodes.JsonNode.Parse(scalar ? "\"invalid\"" : "{\"sequence\":\"invalid\"}")!;
         store.SeedRaw("statestore", OperationalStatusKeys.Applicability(key), malformed);
@@ -111,7 +111,7 @@ public sealed class OperationalStatusRoundSixTests
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
         var source = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", source, token)).IsSuccess.ShouldBeTrue();
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
         string authorityKey = OperationalStatusKeys.Applicability(key);
@@ -141,7 +141,7 @@ public sealed class OperationalStatusRoundSixTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var source = OperationalStatusTestData.Sources(OperationalStatusTestData.LockedPrefix(OperationalStatusTestData.Now));
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", source, token)).IsSuccess.ShouldBeTrue();
         string receipt = store.PhysicalKey(OperationalStatusKeys.Receipt("tenant-a", "folder-a", source.Length));
@@ -157,10 +157,10 @@ public sealed class OperationalStatusRoundSixTests
                 (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "mid-read-promotion", source,
                     source.Length, token, clock: clock).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
             else
-                (await writer.ApplyAsync("tenant-a", "folder-a", "mid-read-rejection", [OperationalStatusEventReader.ReadStored(rejection)], token).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
+                (await writer.ApplyAsync("tenant-a", "folder-a", "mid-read-rejection", [OperationalStatusTestData.Stored(rejection)], token).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
         });
         var reader = new EventStoreOperationalStatusReadModel(new(reads, store, clock), clock,
-            new OperationalStatusSequenceReader { Head = promotion ? source.Length : source.Length + 1 });
+            new OperationalStatusSequenceReader { Head = promotion ? source.Length : source.Length + 1 }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await reader.GetAsync(TaskRequest(), token)).Status.ShouldBe(TaskStatusReadModelStatus.Unavailable);
         (await reader.GetAsync(TaskRequest(), token)).Status.ShouldBe(TaskStatusReadModelStatus.Available);
     }
@@ -176,7 +176,7 @@ public sealed class OperationalStatusRoundSixTests
         var history = terminal ? OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now)
             : Hexalith.Folders.Tests.Aggregates.Folder.FolderLifecycleReplayFixture.CommitUnknownOutcomeLifecycle(true);
         var source = OperationalStatusTestData.Sources(history);
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", source, token)).IsSuccess.ShouldBeTrue();
         var before = (await Reader(store, clock, source.Length).GetAsync(TaskRequest(), token)).Snapshot!;
         var rejection = source[^1].Source! with
@@ -185,9 +185,9 @@ public sealed class OperationalStatusRoundSixTests
             EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
             Payload = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }),
         };
-        (await writer.ApplyAsync("tenant-a", "folder-a", "pure-rejection", [OperationalStatusEventReader.ReadStored(rejection)], token)).IsSuccess.ShouldBeTrue();
+        (await writer.ApplyAsync("tenant-a", "folder-a", "pure-rejection", [OperationalStatusTestData.Stored(rejection)], token)).IsSuccess.ShouldBeTrue();
         var other = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b")]);
-        other[0] = OperationalStatusEventReader.ReadStored(other[0].Source! with { GlobalPosition = source.Length + 2, MessageId = "other-owner" });
+        other[0] = OperationalStatusTestData.Stored(other[0].Source! with { GlobalPosition = source.Length + 2, MessageId = "other-owner" });
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-b", "inherited-generation", other,
             source.Length + 2, token, clock: clock)).IsSuccess.ShouldBeTrue();
         var after = await Reader(store, clock, source.Length + 1).GetAsync(TaskRequest(), token);
@@ -201,7 +201,7 @@ public sealed class OperationalStatusRoundSixTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         var source = OperationalStatusTestData.Sources(OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now));
         (await writer.ApplyAsync("tenant-a", "folder-a", "before-close", source[..^1], token)).IsSuccess.ShouldBeTrue();
         string taskKey = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
@@ -230,7 +230,7 @@ public sealed class OperationalStatusRoundSixTests
         CancellationToken token = TestContext.Current.CancellationToken;
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new();
-        OperationalStatusProjectionWriter writer = new(store, store, store, clock);
+        OperationalStatusProjectionWriter writer = new(store, store, store, clock, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
         List<Hexalith.Folders.Aggregates.Folder.IFolderEvent> history = [.. OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now)];
         var source = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "closed", source, token)).IsSuccess.ShouldBeTrue();
@@ -247,7 +247,7 @@ public sealed class OperationalStatusRoundSixTests
     }
 
     private static EventStoreOperationalStatusReadModel Reader(OperationalStatusTestStore store, OperationalStatusClock clock, long head)
-        => new(new SharedProjectionEpochCoordinator(store, store, clock), clock, new OperationalStatusSequenceReader { Head = head });
+        => new(new SharedProjectionEpochCoordinator(store, store, clock), clock, new OperationalStatusSequenceReader { Head = head }, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner);
 
     private static TaskStatusReadModelRequest TaskRequest()
         => new("tenant-a", "task-a", "reader", "read_task_status", "correlation", "read_your_writes")

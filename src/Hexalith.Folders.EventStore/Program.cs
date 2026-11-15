@@ -26,6 +26,13 @@ if (string.IsNullOrEmpty(builder.Configuration["EventStore:RouteCatalog:Developm
     builder.Services.AddFoldersIdempotencyIntentAdapters();
 builder.Services.AddEventStoreDomainQueryRouting();
 builder.Services.AddEventStoreSignalR(builder.Configuration);
+#if PRIVATE_ORIGINAL_SOURCE_PROOF
+Hexalith.EventStore.Testing.OriginalSource.SyntheticOriginalSourceServiceCollectionExtensions.AddPrivateSyntheticOriginalSource(
+    builder.Services, builder.Configuration, builder.Environment);
+#else
+if (builder.Configuration.GetValue<bool>("EventStore:Testing:OriginalSource:Enabled"))
+    throw new InvalidOperationException("Synthetic original-primary fixture requires an explicitly selected Debug source proof build.");
+#endif
 
 WebApplication app = builder.Build();
 

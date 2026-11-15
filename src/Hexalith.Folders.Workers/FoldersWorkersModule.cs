@@ -85,6 +85,7 @@ public static partial class FoldersWorkersModule
         services.AddFoldersLayeredAuthorization();
         services.AddEventStoreReadModelStore();
         services.AddEventStoreGatewayNativeSourceMetadataReader("folders");
+        services.AddEventStoreGatewayNativeSourceScanner("folders");
         services.TryAddSingleton<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         services.RemoveAll<IEffectivePermissionsReadModel>();
         services.TryAddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();

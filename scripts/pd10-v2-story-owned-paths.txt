@@ -672,6 +672,8 @@ src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusFoldResult.c
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusGeneration.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusIntegrity.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusKeys.cs
+src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusNativeSourceFacts.cs
+src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusNativeSourceFold.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusReceipt.cs
 src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusStateFold.cs
@@ -1132,6 +1134,7 @@ tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenance.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceAcceptanceTests.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTests.cs
 tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityTenantMaintenanceTimer.cs
+tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
 tests/Hexalith.Folders.AppHost.Tests/WorkloadEnrollmentComponentTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandOptionsFreshnessTests.cs
 tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs
@@ -1199,6 +1202,10 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.YamlTest
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs
+tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostFactory.cs
+tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj
+tests/Hexalith.Folders.EventStore.Tests/OriginalSourceHostCompositionCollection.cs
+tests/Hexalith.Folders.EventStore.Tests/SyntheticOriginalSourceHostCompositionTests.cs
 tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs
 tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
 tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs
@@ -1487,6 +1494,7 @@ tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCloc
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCorrectionTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFixture.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFoldTests.cs
+tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusNativeSourceAuthorityTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReadInterleavingStore.cs
 tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs
@@ -1592,6 +1600,8 @@ tests/shared/NativeContent/NativeContentGateway.cs
 tests/shared/NativeContent/NativeContentSeedAuthority.cs
 tests/shared/NativeContent/NativeContentTimer.cs
 tests/shared/OperationalStatus/OperationalStatusClock.cs
+tests/shared/OperationalStatus/OperationalStatusNativeSource.cs
+tests/shared/OperationalStatus/OperationalStatusNativeSourceClientHandler.cs
 tests/shared/OperationalStatus/OperationalStatusReadObserver.cs
 tests/shared/OperationalStatus/OperationalStatusSequenceReader.cs
 tests/shared/OperationalStatus/OperationalStatusTestData.cs

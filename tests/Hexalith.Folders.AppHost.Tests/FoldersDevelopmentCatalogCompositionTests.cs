@@ -44,7 +44,8 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
             var envelope = RouteCatalogCodec.Decode(await File.ReadAllBytesAsync(Path.Combine(catalog.Directory, "catalog.json"), TestContext.Current.CancellationToken).ConfigureAwait(true), catalog.RootDigest);
             envelope.SchemaVersion.ShouldBe(3);
             envelope.Idempotency.Count(entry => entry.Domain == "folders").ShouldBe(18);
-            envelope.Idempotency.Count(entry => entry.Domain != "folders").ShouldBe(12);
+            envelope.Idempotency.Count(entry => entry.Domain != "folders").ShouldBe(13);
+            envelope.Idempotency.ShouldContain(entry => entry.Domain == "tenants" && entry.OperationId == "tenants:refresh-tenant-access");
             envelope.Routes.Where(route => route.RouteId.StartsWith("folders-", StringComparison.Ordinal)).ShouldAllBe(route => route.AppId == "folders-selected");
             envelope.Idempotency.ShouldAllBe(entry => entry.ConsumerAppId == "eventstore-selected");
             envelope.Idempotency.Single(entry => entry.OperationId == "commit-workspace").RetentionTier.ShouldBe("commit");
