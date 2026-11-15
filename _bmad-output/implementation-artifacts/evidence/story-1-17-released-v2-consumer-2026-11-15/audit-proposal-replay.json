@@ -1,0 +1,57 @@
+{
+  "source": "91ab4166c1d3b143b85712a07fc53f6a255d5c0a",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--quiet",
+        "--shared",
+        "--no-checkout",
+        "{owning-builds}",
+        "{private-builds}"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "{private-builds}",
+        "fetch",
+        "--quiet",
+        "{packet}/provisional-audit/source.bundle",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "{private-builds}",
+        "checkout",
+        "--quiet",
+        "--detach",
+        "FETCH_HEAD"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-package-version-audit.ps1",
+        "-AuditPath",
+        "{packet}/provisional-audit/package-version-audit.proposed.json"
+      ],
+      "exit_code": 0,
+      "output": "Package version audit validation passed for 317 packages, 157 families, and 1 source(s).\n"
+    }
+  ]
+}

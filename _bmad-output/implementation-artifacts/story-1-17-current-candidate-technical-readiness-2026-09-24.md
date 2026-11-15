@@ -1162,3 +1162,26 @@ Diagnosis: the Builds catalog now selects EventStore 5.1.1. Tenants keeps a loca
 The Folders-owned fix in `Directory.Build.targets` applies EventStore's existing rule to Folders' own edges. In a local source graph without a verified workspace mapping, Folders carries its EventStore selection on direct and SDK-promoted Tenants source references. Tenants keeps its package pin, and package graphs are unchanged. No package version, dependency revision, runtime source, test expectation or gate changed.
 
 The released Client/Contracts `1.4.0` pair is not the current candidate. Contracts source is unchanged since `v1.4.0`. Client source differs only in 776 NSwag/NJsonSchema generator version attributes and the generator's audit flags, and a current pack would target net11.0 instead of net10.0. Folders has 33 commits after `v1.4.0`, including feature commit `c4510025e2b4812c770d7f85de8ec465d9981649` and Story 12.2/4.18/4.22 runtime changes. The 2026-11-15 receipt's workspace replay now reports the expected Builds catalog drift; its retained replay still passes. No current A6b/Section 9/A8 approval, release, hosted artifact or operational acceptance follows. Keep V1Only, unset T0, null activation authority, all fourteen staging checks unexecuted, parent in-progress and tracker backlog.
+
+
+## Addendum 2026-11-15: released v2.0.0 consumer adoption and provisional catalog audit
+
+The [replayable receipt](evidence/story-1-17-released-v2-consumer-2026-11-15/receipt.json) supersedes the `1.4.0` consumer and unreleased-current-candidate summaries for local package readiness. Release `43755274209` published all five `2.0.0` packages from `209dacbdb42fcde728d9e190781b69945bccc93b`. Its ten GitHub assets are retained dated evidence; this run freshly downloaded all five signed NuGet archives, matching every prior raw hash and repository commit. Client SHA-256 is `1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8`; Contracts is `6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f`. Both target net11.0.
+
+| Local gate | Final result |
+| --- | --- |
+| Projects Release/package CI solution | Zero warnings/errors against the owning shared `2.0.0` selection |
+| Direct lifecycle/permissions; file metadata | 47/47; 34/34 |
+| Request-scoped registration; delegated owner reads | 4/4; 13/13 |
+| Folder and file-reference outcome mapping | 12/12; 14/14 |
+| Signed archive and loaded runtime identity | Client/Contracts match both Server and test runtime copies |
+| Folders Release/package and Debug/source CI solutions | Zero warnings/errors in both profiles |
+| Contract parity; governance | 12/12 categories; 217/217 + 7/7 + 3/3 |
+| Catalog authority and compatibility | 357 positive/negative probes, seventeen authority controls, four canonical families; Platform and exception validation pass |
+| Pending candidate | All 1,635 rows unchanged; two generations match raw `8b3ab8eb2fb99e4a9eb07262bcb8281d8d1eee6d8f8d2d3999d1c76d76a10a0f`, ordered set `51b2005fed2239c72d6d8ad244a69ed8b12653477b10b9aa879612fe9e17ca4d` |
+
+Owning Builds changes are the single Folders family default `1.4.0` to `2.0.0` and coverage in its existing catalog authority guard. Projects has no new local Folders pin or runtime patch. The original owner audit is preserved and correctly refuses these uncommitted bytes. The [provisional review proposal](evidence/story-1-17-released-v2-consumer-2026-11-15/provisional-audit/result.json) passes deterministic validation for 317 packages/157 families in a private committed snapshot, preserving 312 unrelated package rows, 156 family decisions and every one of 9,451 previous historical observations. Its temporary commit and bundle supply review/replay inputs, not acceptance of the live owner tuple. Regenerate after actual catalog landing.
+
+All jobs used `run-with-temp`; existing packages were read-only fallbacks and missing versions restored privately from NuGet.org. The first solution attempt lacked an explicit tooling package at a manually constructed primary-cache path; seeding that unchanged cached package fixed the setup. The final local runtime bundle is unpublished and includes no hosted deployment claim. Existing AppHost resource references also build their declared Debug executables; production libraries and adapter tests use Release/packages. No topology was started.
+
+The receipt binds thirteen unchanged HEADs/indices, 13,139 private/current source comparisons and 195 protected inputs. Original spec/readiness/migration text remains an identical prefix. Retained artifact replay and optimized corruption/control probes are provided by the packet verifier. Entry remains **HOLD**: immutable hosted Projects artifact, current Platform/tool/catalog/composition/intake acceptance, target/consumer/data disposition under the attempt lock, hosted identity/delegation, operators/UTC slots/thresholds, staging, observation/recovery and authorized closure are still required. Preserve `V1Only`, unset T0, null activation authority, fourteen unexecuted staging checks, original tasks and tracker `backlog`. No owning repository commit, push, publication, deployment or operational activation occurred; temporary commits were confined to disposable audit verification clones.

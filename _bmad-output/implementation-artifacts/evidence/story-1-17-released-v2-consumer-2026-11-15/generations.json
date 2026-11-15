@@ -1,0 +1,28 @@
+[
+  {
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--repository-root",
+      "{workspace}",
+      "--output",
+      "{temp}/generation-1.yaml"
+    ],
+    "exit_code": 0,
+    "sha256": "8b3ab8eb2fb99e4a9eb07262bcb8281d8d1eee6d8f8d2d3999d1c76d76a10a0f",
+    "matches_pending": true
+  },
+  {
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--repository-root",
+      "{workspace}",
+      "--output",
+      "{temp}/generation-2.yaml"
+    ],
+    "exit_code": 0,
+    "sha256": "8b3ab8eb2fb99e4a9eb07262bcb8281d8d1eee6d8f8d2d3999d1c76d76a10a0f",
+    "matches_pending": true
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "verified_at_utc": "2026-11-15T20:15:56.545352+00:00",
+  "status": "verified",
+  "version": "2.0.0",
+  "source": "209dacbdb42fcde728d9e190781b69945bccc93b",
+  "release_url": "https://github.com/Hexalith/Hexalith.Folders/releases/tag/v2.0.0",
+  "published_at": "2026-11-15T20:03:11Z",
+  "github_asset_names": [
+    "Hexalith.Folders.2.0.0.nupkg",
+    "Hexalith.Folders.2.0.0.snupkg",
+    "Hexalith.Folders.Aspire.2.0.0.nupkg",
+    "Hexalith.Folders.Aspire.2.0.0.snupkg",
+    "Hexalith.Folders.Client.2.0.0.nupkg",
+    "Hexalith.Folders.Client.2.0.0.snupkg",
+    "Hexalith.Folders.Contracts.2.0.0.nupkg",
+    "Hexalith.Folders.Contracts.2.0.0.snupkg",
+    "Hexalith.Folders.Testing.2.0.0.nupkg",
+    "Hexalith.Folders.Testing.2.0.0.snupkg"
+  ],
+  "packages": [
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "version": "2.0.0",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.contracts/2.0.0/hexalith.folders.contracts.2.0.0.nupkg",
+      "public_archive_sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+      "github_archive_sha256": "b2b37b05c3812bd0e42c4d485257d48ec7bc915f52a0090b3fa62ca24a3bcbb0",
+      "payload_matches_github_excluding_repository_signature": true,
+      "payload_member_count": 6
+    },
+    {
+      "id": "Hexalith.Folders",
+      "version": "2.0.0",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders/2.0.0/hexalith.folders.2.0.0.nupkg",
+      "public_archive_sha256": "138eea720b7540d6f0d618484166573093e4d74b277a7c312318d2aca6d335db",
+      "github_archive_sha256": "c3268835a21ca2663520976c24c09e524e662ffda4f63cf2c37e7ffae9b3a9e7",
+      "payload_matches_github_excluding_repository_signature": true,
+      "payload_member_count": 6
+    },
+    {
+      "id": "Hexalith.Folders.Client",
+      "version": "2.0.0",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.client/2.0.0/hexalith.folders.client.2.0.0.nupkg",
+      "public_archive_sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+      "github_archive_sha256": "ce04d37b8951e7bed6520be5f0a858698c5865796ea33dec9d0f566f10c94921",
+      "payload_matches_github_excluding_repository_signature": true,
+      "payload_member_count": 6
+    },
+    {
+      "id": "Hexalith.Folders.Aspire",
+      "version": "2.0.0",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.aspire/2.0.0/hexalith.folders.aspire.2.0.0.nupkg",
+      "public_archive_sha256": "98418bcd0251866754da700cb795dfaf8b0664fd23df023c8d76db189b914984",
+      "github_archive_sha256": "a8e53b28333cef2b6a4ae4bdc71f40cc6484f244d92201e54104b97847b52fe6",
+      "payload_matches_github_excluding_repository_signature": true,
+      "payload_member_count": 6
+    },
+    {
+      "id": "Hexalith.Folders.Testing",
+      "version": "2.0.0",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.folders.testing/2.0.0/hexalith.folders.testing.2.0.0.nupkg",
+      "public_archive_sha256": "39ad926877aacd28bf7148782817e691e98423836e9a2da691eacd714a015d7b",
+      "github_archive_sha256": "7ce604e5571ad85b96a269d03328ab5480b4ba21c8897d00a097c0d08bf2c66d",
+      "payload_matches_github_excluding_repository_signature": true,
+      "payload_member_count": 6
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "validated-provisional-only",
+  "recorded_utc": "2026-11-15T21:12:16.336570+00:00",
+  "owner_base": "04bdcaf929198e69321c226dda5ab40f7b3839ce",
+  "temporary_source_commit": "91ab4166c1d3b143b85712a07fc53f6a255d5c0a",
+  "owning_head_or_index_changed": false,
+  "live_audit_replaced": false,
+  "proposal": "package-version-audit.proposed.json",
+  "proposal_sha256": "49d747c67af4d2ccbd71ce88da7a57c1f2a285888638236821446ef088bc87ca",
+  "source_bundle": "source.bundle",
+  "source_bundle_sha256": "01a3812b4f6abc83a146b8d207b8b8522e1733743de0c6c0f31f945d4d7ad833",
+  "source_patch": "source.patch",
+  "source_patch_sha256": "913f1c29e6ddaf01ea0bf989ee387d831da259fac61eef00a6f726bb0e328b16",
+  "catalog_sha256": "7df5b2462cd0d823dd7d813bfbe248f6cc9e27768b735728fcfcb2869c783a83",
+  "prior_audit_sha256": "1a6babe322cbd3c9bb6209579638101ff9188ee40e34ce10da46fae32b0bc918",
+  "refreshed_packages": 5,
+  "preserved_packages": 312,
+  "preserved_families": 156,
+  "prior_historical_observations_preserved": 9451,
+  "meaning": "Offline-review proposal bound to a disposable source commit. Regenerate after actual owning catalog landing; this is no current owner audit acceptance."
+}

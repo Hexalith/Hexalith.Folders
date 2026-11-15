@@ -1,0 +1,17 @@
+[
+  {
+    "name": "seed-cached-packages",
+    "argv": [
+      "cp",
+      "-a",
+      "--reflink=auto",
+      "/home/administrator/.nuget/packages",
+      "{temp}/packages"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:53:52.009807+00:00",
+    "elapsed_seconds": 38.961,
+    "exit_code": -15,
+    "log": "seed-cached-packages.log"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "modified package archive",
+    "verifier_exit_code": 1,
+    "expected_refusal": "Retained file changed"
+  },
+  {
+    "name": "rebound unsafe activation authority",
+    "verifier_exit_code": 1,
+    "expected_refusal": "Unsafe operational controls"
+  }
+]

@@ -1,0 +1,410 @@
+[
+  {
+    "name": "copy-folders",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}",
+      "{workspace}"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:07.693682+00:00",
+    "elapsed_seconds": 0.015,
+    "exit_code": 0,
+    "log": "copy-folders.log"
+  },
+  {
+    "name": "copy-Hexalith.Tenants",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Tenants",
+      "{workspace}/references/Hexalith.Tenants"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:24.968118+00:00",
+    "elapsed_seconds": 0.007,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Tenants.log"
+  },
+  {
+    "name": "copy-Hexalith.AI.Tools",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.AI.Tools",
+      "{workspace}/references/Hexalith.AI.Tools"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:26.563009+00:00",
+    "elapsed_seconds": 0.01,
+    "exit_code": 0,
+    "log": "copy-Hexalith.AI.Tools.log"
+  },
+  {
+    "name": "copy-Hexalith.EventStore",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.EventStore",
+      "{workspace}/references/Hexalith.EventStore"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:26.583349+00:00",
+    "elapsed_seconds": 0.011,
+    "exit_code": 0,
+    "log": "copy-Hexalith.EventStore.log"
+  },
+  {
+    "name": "copy-Hexalith.FrontComposer",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.FrontComposer",
+      "{workspace}/references/Hexalith.FrontComposer"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:28.461731+00:00",
+    "elapsed_seconds": 0.007,
+    "exit_code": 0,
+    "log": "copy-Hexalith.FrontComposer.log"
+  },
+  {
+    "name": "copy-Hexalith.Memories",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Memories",
+      "{workspace}/references/Hexalith.Memories"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:29.685897+00:00",
+    "elapsed_seconds": 0.011,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Memories.log"
+  },
+  {
+    "name": "copy-Hexalith.Commons",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Commons",
+      "{workspace}/references/Hexalith.Commons"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:30.078118+00:00",
+    "elapsed_seconds": 0.008,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Commons.log"
+  },
+  {
+    "name": "copy-Hexalith.Builds",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Builds",
+      "{workspace}/references/Hexalith.Builds"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:30.119290+00:00",
+    "elapsed_seconds": 0.008,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Builds.log"
+  },
+  {
+    "name": "copy-Hexalith.PolymorphicSerializations",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.PolymorphicSerializations",
+      "{workspace}/references/Hexalith.PolymorphicSerializations"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:30.697584+00:00",
+    "elapsed_seconds": 0.008,
+    "exit_code": 0,
+    "log": "copy-Hexalith.PolymorphicSerializations.log"
+  },
+  {
+    "name": "copy-Hexalith.Projects",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Projects",
+      "{workspace}/references/Hexalith.Projects"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:30.717456+00:00",
+    "elapsed_seconds": 0.009,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Projects.log"
+  },
+  {
+    "name": "copy-Hexalith.Platform",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Platform",
+      "{workspace}/references/Hexalith.Platform"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:49.249907+00:00",
+    "elapsed_seconds": 0.009,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Platform.log"
+  },
+  {
+    "name": "copy-Hexalith.McpCli",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.McpCli",
+      "{workspace}/references/Hexalith.McpCli"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:55:58.160931+00:00",
+    "elapsed_seconds": 0.009,
+    "exit_code": 0,
+    "log": "copy-Hexalith.McpCli.log"
+  },
+  {
+    "name": "copy-Hexalith.Parties",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{source}/references/Hexalith.Parties",
+      "{workspace}/references/Hexalith.Parties"
+    ],
+    "cwd": "{source}",
+    "started_utc": "2026-11-15T20:56:03.312207+00:00",
+    "elapsed_seconds": 0.007,
+    "exit_code": 0,
+    "log": "copy-Hexalith.Parties.log"
+  },
+  {
+    "name": "dotnet-info",
+    "argv": [
+      "dotnet",
+      "--info"
+    ],
+    "cwd": "{workspace}",
+    "started_utc": "2026-11-15T20:56:05.888388+00:00",
+    "elapsed_seconds": 0.022,
+    "exit_code": 0,
+    "log": "dotnet-info.log"
+  },
+  {
+    "name": "catalog-validation",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-central-package-versions.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:56:05.910489+00:00",
+    "elapsed_seconds": 1.663,
+    "exit_code": 0,
+    "log": "catalog-validation.log"
+  },
+  {
+    "name": "catalog-authority",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/test-authoritative-package-catalog.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:56:07.573705+00:00",
+    "elapsed_seconds": 80.575,
+    "exit_code": 0,
+    "log": "catalog-authority.log"
+  },
+  {
+    "name": "catalog-platform",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-platform-version-catalog.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:57:28.145076+00:00",
+    "elapsed_seconds": 2.09,
+    "exit_code": 0,
+    "log": "catalog-platform.log"
+  },
+  {
+    "name": "catalog-exceptions",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-package-version-exceptions.ps1",
+      "-InventoryPath",
+      "Tools/package-version-exceptions.json",
+      "-CatalogPath",
+      "Props/Directory.Packages.props"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:57:30.235574+00:00",
+    "elapsed_seconds": 1.123,
+    "exit_code": 0,
+    "log": "catalog-exceptions.log"
+  },
+  {
+    "name": "audit-precommit-refusal",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/audit-central-package-versions.ps1",
+      "-ChangedFamily",
+      "hexalith-folders",
+      "-PriorAuditPath",
+      "Tools/package-version-audit.json",
+      "-OutputPath",
+      "{temp}/audit-proposal.json"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:57:31.359342+00:00",
+    "elapsed_seconds": 4.956,
+    "exit_code": 1,
+    "log": "audit-precommit-refusal.log"
+  },
+  {
+    "name": "audit-current-refusal",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-package-version-audit.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T20:57:36.315472+00:00",
+    "elapsed_seconds": 24.008,
+    "exit_code": 1,
+    "log": "audit-current-refusal.log"
+  },
+  {
+    "name": "projects-release-restore",
+    "argv": [
+      "dotnet",
+      "restore",
+      "Hexalith.Projects.CI.slnx",
+      "-p:Configuration=Release",
+      "--configfile",
+      "nuget.config",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:UseNuGetDeps=true",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "-p:RestoreFallbackFolders=/home/administrator/.nuget/packages",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Projects",
+    "started_utc": "2026-11-15T20:58:00.322945+00:00",
+    "elapsed_seconds": 3.7,
+    "exit_code": 0,
+    "log": "projects-release-restore.log"
+  },
+  {
+    "name": "projects-release-build",
+    "argv": [
+      "dotnet",
+      "build",
+      "Hexalith.Projects.CI.slnx",
+      "--configuration",
+      "Release",
+      "--no-restore",
+      "-warnaserror",
+      "-p:UseHexalithProjectReferences=false",
+      "-p:UseNuGetDeps=true",
+      "-p:NuGetAudit=true",
+      "-p:NuGetAuditMode=all",
+      "-p:NuGetAuditLevel=low",
+      "-p:RestoreFallbackFolders=/home/administrator/.nuget/packages",
+      "-m:1",
+      "--disable-build-servers"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Projects",
+    "started_utc": "2026-11-15T20:58:04.023655+00:00",
+    "elapsed_seconds": 61.466,
+    "exit_code": 1,
+    "log": "projects-release-build.log"
+  }
+]

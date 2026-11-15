@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "status": "local-consumer-verified-operational-hold",
+  "recorded_utc": "2026-11-15T21:09:07.615955+00:00",
+  "spec": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+  "readiness": "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+  "migration": "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+  "source_revisions": {
+    ".": "1f10509ac65059e2ee1475ec4a47a093d04768d8",
+    "references/Hexalith.Tenants": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.EventStore": "981fabaa3cf44fc2a71eed73549f4fb0d847e2a6",
+    "references/Hexalith.FrontComposer": "695d23149c56a6104e81d23a54116b4fb914df95",
+    "references/Hexalith.Memories": "61a2caef3f3b7d556a856100b04b05feddddfb34",
+    "references/Hexalith.Commons": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "references/Hexalith.Builds": "04bdcaf929198e69321c226dda5ab40f7b3839ce",
+    "references/Hexalith.PolymorphicSerializations": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "references/Hexalith.Projects": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+    "references/Hexalith.Platform": "f55a641fa8d0ad6a75c59710a42bb65964de67d0",
+    "references/Hexalith.McpCli": "4cf120c410a668d08c6ba70d59962c3a2c031952",
+    "references/Hexalith.Parties": "762ea76d33af315a87b112abc6730c7ae21b2cb9"
+  },
+  "published_folders_source": "209dacbdb42fcde728d9e190781b69945bccc93b",
+  "published_version": "2.0.0",
+  "release_evidence": "final/publication-verification.retained.json",
+  "release_observation": "previous successful Release43755274209 and ten GitHub assets retained; five signed NuGet archives freshly downloaded and rehashed in this run",
+  "catalog_committed": false,
+  "catalog_selection": {
+    "property": "HexalithFoldersVersion",
+    "before": "1.4.0",
+    "after": "2.0.0",
+    "affected_packages": [
+      "Hexalith.Folders.Contracts",
+      "Hexalith.Folders",
+      "Hexalith.Folders.Client",
+      "Hexalith.Folders.Aspire",
+      "Hexalith.Folders.Testing"
+    ],
+    "owner": "references/Hexalith.Builds",
+    "patch": "builds-working.patch",
+    "patch_sha256": "913f1c29e6ddaf01ea0bf989ee387d831da259fac61eef00a6f726bb0e328b16",
+    "resulting_catalog": "catalog.after.props",
+    "resulting_catalog_sha256": "7df5b2462cd0d823dd7d813bfbe248f6cc9e27768b735728fcfcb2869c783a83"
+  },
+  "projects_local_version_override": false,
+  "source_inputs": "final/source-inputs.json",
+  "source_input_count": 13139,
+  "command_ledger": "final/commands.json",
+  "test_selectors": [
+    "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+    "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests",
+    "Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests",
+    "Hexalith.Projects.Server.Tests.Queries.DelegatedProjectAdvisoryConversationDirectoryTests",
+    "Hexalith.Projects.Server.Tests.Folders.ProjectFolderValidationOutcomeMapperTests",
+    "Hexalith.Projects.Server.Tests.Folders.ProjectFileReferenceValidationOutcomeMapperTests"
+  ],
+  "test_counts": {
+    "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests": 47,
+    "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests": 34,
+    "Hexalith.Projects.Server.Tests.DelegatedProjectDirectoryRegistrationTests": 4,
+    "Hexalith.Projects.Server.Tests.Queries.DelegatedProjectAdvisoryConversationDirectoryTests": 13,
+    "Hexalith.Projects.Server.Tests.Folders.ProjectFolderValidationOutcomeMapperTests": 12,
+    "Hexalith.Projects.Server.Tests.Folders.ProjectFileReferenceValidationOutcomeMapperTests": 14
+  },
+  "test_total": 124,
+  "runtime_package_bindings": "final/runtime-bindings.json",
+  "local_projects_artifact": "final/projects-local-artifact.json",
+  "hosted_projects_artifact": null,
+  "profile_limit": "Projects production libraries and adapter tests use Release/package; its existing AppHost executable resources also build their declared Debug source projects. This is no hosted topology execution.",
+  "candidate_inventory": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+  "candidate_artifacts": 1635,
+  "candidate_sha256": "8b3ab8eb2fb99e4a9eb07262bcb8281d8d1eee6d8f8d2d3999d1c76d76a10a0f",
+  "candidate_set_sha256": "51b2005fed2239c72d6d8ad244a69ed8b12653477b10b9aa879612fe9e17ca4d",
+  "candidate_generations": "generations.json",
+  "protected_inputs": 195,
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog"
+  },
+  "consumer_call_inventory": [
+    {
+      "operation": "GetFolderLifecycleStatusAsync",
+      "adapter": "FoldersProjectFolderDirectory",
+      "triggers": [
+        "SetProjectFolder",
+        "ProposeNewProject",
+        "direct reference refresh"
+      ],
+      "kind": "read"
+    },
+    {
+      "operation": "GetEffectivePermissionsAsync",
+      "adapter": "FoldersProjectFolderDirectory",
+      "triggers": [
+        "successful lifecycle validation in the same direct operations"
+      ],
+      "kind": "read"
+    },
+    {
+      "operation": "GetFolderFileMetadataAsync",
+      "adapter": "FoldersProjectFileReferenceDirectory",
+      "triggers": [
+        "LinkFileReference",
+        "ProposeNewProject",
+        "explicit file-reference directory refresh"
+      ],
+      "kind": "metadata-only read"
+    },
+    {
+      "operation": "FolderOwnerReadQuery via DelegatedOwnerQueryClient.InvokeAsync",
+      "adapter": "DelegatedProjectFolderDirectory",
+      "triggers": [
+        "verified workload reference refresh",
+        "Project read/advisory/legacy resolution authorization"
+      ],
+      "kind": "delegated owner read; direct fallback only when no verified workload caller exists"
+    }
+  ],
+  "source_periodic_caller": "No periodic Folders caller identified in inspected Projects source; deployed schedules and consumer census remain unverified.",
+  "setup_failures": [
+    {
+      "path": "preparation-attempt-1",
+      "result": "Full cache-copy setup interrupted before build; owned copy process exited and scratch was cleaned."
+    },
+    {
+      "path": "projects-release-build.log",
+      "result": "Initial primary/fallback cache layout omitted the tooling4.48.2 manual HintPath; final run seeds that existing package privately. No product source workaround."
+    },
+    {
+      "path": "provisional-audit-attempt-1",
+      "result": "First temporary source snapshot bundle command used a raw revision without a named tip and Git refused an empty bundle. Corrected to HEAD in the final private attempt; no owner Git change."
+    }
+  ],
+  "remaining": [
+    {
+      "owner": "Hexalith.Builds maintainer",
+      "requirement": "Review/commit the two-file catalog adoption, then regenerate and validate the revision-bound hexalith-folders audit. Existing audit is intentionally unchanged and currently refuses six catalog/selection differences.",
+      "commands_after_commit": [
+        "run-with-temp pwsh -NoProfile -File Tools/audit-central-package-versions.ps1 -ChangedFamily hexalith-folders -PriorAuditPath Tools/package-version-audit.json -OutputPath Tools/package-version-audit.json",
+        "run-with-temp pwsh -NoProfile -File Tools/validate-package-version-audit.ps1"
+      ],
+      "evidence": [
+        "final/audit-precommit-refusal.log",
+        "final/audit-current-refusal.log"
+      ]
+    },
+    {
+      "owner": "Projects release/deployment owner",
+      "requirement": "Land the approved Builds selection in the consuming tuple and supply an immutable hosted Projects image/deployment artifact and deployed delegation. The local runtime bundle supplies no release/deployment identity."
+    },
+    {
+      "owner": "Platform operational owner",
+      "requirement": "Supply current executable source/tool/catalog/composition/intake qualification and attempt-locked target/consumer/data disposition, hosted identity/delegation, named operators, UTC slots, thresholds, staging, observation and recovery."
+    },
+    {
+      "owner": "Story1.17 decision owner",
+      "requirement": "Accept evidence for the actual first-install or existing-v1 branch and authorize closure/tracker transition only after all applicable operational gates pass."
+    }
+  ],
+  "provisional_audit": {
+    "status": "validated-provisional-only",
+    "recorded_utc": "2026-11-15T21:12:16.336570+00:00",
+    "owner_base": "04bdcaf929198e69321c226dda5ab40f7b3839ce",
+    "temporary_source_commit": "91ab4166c1d3b143b85712a07fc53f6a255d5c0a",
+    "owning_head_or_index_changed": false,
+    "live_audit_replaced": false,
+    "proposal": "package-version-audit.proposed.json",
+    "proposal_sha256": "49d747c67af4d2ccbd71ce88da7a57c1f2a285888638236821446ef088bc87ca",
+    "source_bundle": "source.bundle",
+    "source_bundle_sha256": "01a3812b4f6abc83a146b8d207b8b8522e1733743de0c6c0f31f945d4d7ad833",
+    "source_patch": "source.patch",
+    "source_patch_sha256": "913f1c29e6ddaf01ea0bf989ee387d831da259fac61eef00a6f726bb0e328b16",
+    "catalog_sha256": "7df5b2462cd0d823dd7d813bfbe248f6cc9e27768b735728fcfcb2869c783a83",
+    "prior_audit_sha256": "1a6babe322cbd3c9bb6209579638101ff9188ee40e34ce10da46fae32b0bc918",
+    "refreshed_packages": 5,
+    "preserved_packages": 312,
+    "preserved_families": 156,
+    "prior_historical_observations_preserved": 9451,
+    "meaning": "Offline-review proposal bound to a disposable source commit. Regenerate after actual owning catalog landing; this is no current owner audit acceptance.",
+    "evidence_directory": "provisional-audit"
+  }
+}

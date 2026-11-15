@@ -1,0 +1,4 @@
+build(deps): prepare the Folders 2.0.0 catalog
+
+Temporary Story 1.17 verification snapshot only. This commit stays
+in a disposable clone and supplies no owning-repository acceptance.

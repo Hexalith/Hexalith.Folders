@@ -1,0 +1,85 @@
+[
+  {
+    "name": "private-clone",
+    "argv": [
+      "git",
+      "-c",
+      "submodule.recurse=false",
+      "clone",
+      "--quiet",
+      "--shared",
+      "--no-checkout",
+      "{workspace}/references/Hexalith.Builds",
+      "{private-builds}"
+    ],
+    "cwd": "{workspace}",
+    "exit_code": 0,
+    "log": "private-clone.log"
+  },
+  {
+    "name": "private-read-tree",
+    "argv": [
+      "git",
+      "read-tree",
+      "HEAD"
+    ],
+    "cwd": "{private-builds}",
+    "exit_code": 0,
+    "log": "private-read-tree.log"
+  },
+  {
+    "name": "private-commitlint",
+    "argv": [
+      "node",
+      "node_modules/@commitlint/cli/cli.js",
+      "--edit",
+      "{temp}/temporary-source-message.txt"
+    ],
+    "cwd": "{private-builds}",
+    "exit_code": 0,
+    "log": "private-commitlint.log"
+  },
+  {
+    "name": "private-stage",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "Props/Directory.Packages.props",
+      "Tools/test-authoritative-package-catalog.ps1"
+    ],
+    "cwd": "{private-builds}",
+    "exit_code": 0,
+    "log": "private-stage.log"
+  },
+  {
+    "name": "private-source-commit",
+    "argv": [
+      "git",
+      "-c",
+      "user.name=Story 1.17 verification",
+      "-c",
+      "user.email=story117-verification@invalid",
+      "commit",
+      "--file",
+      "{temp}/temporary-source-message.txt"
+    ],
+    "cwd": "{private-builds}",
+    "exit_code": 0,
+    "log": "private-source-commit.log"
+  },
+  {
+    "name": "private-source-bundle",
+    "argv": [
+      "git",
+      "bundle",
+      "create",
+      "{workspace}/_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/provisional-audit/source.bundle",
+      "0eaf87b3b9cf6e0758b6ed54071ce36530fa4ae8",
+      "^04bdcaf929198e69321c226dda5ab40f7b3839ce"
+    ],
+    "cwd": "{private-builds}",
+    "exit_code": 128,
+    "log": "private-source-bundle.log"
+  }
+]

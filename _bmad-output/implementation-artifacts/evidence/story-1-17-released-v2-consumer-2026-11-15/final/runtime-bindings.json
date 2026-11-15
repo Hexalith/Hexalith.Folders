@@ -1,0 +1,34 @@
+[
+  {
+    "project": "server",
+    "package": "Hexalith.Folders.Contracts/2.0.0",
+    "archive_sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+    "runtime_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098",
+    "runtime": "references/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Folders.Contracts.dll",
+    "payload_member": "lib/net11.0/Hexalith.Folders.Contracts.dll"
+  },
+  {
+    "project": "server",
+    "package": "Hexalith.Folders.Client/2.0.0",
+    "archive_sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+    "runtime_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65",
+    "runtime": "references/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Folders.Client.dll",
+    "payload_member": "lib/net11.0/Hexalith.Folders.Client.dll"
+  },
+  {
+    "project": "tests",
+    "package": "Hexalith.Folders.Contracts/2.0.0",
+    "archive_sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+    "runtime_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098",
+    "runtime": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.dll",
+    "payload_member": "lib/net11.0/Hexalith.Folders.Contracts.dll"
+  },
+  {
+    "project": "tests",
+    "package": "Hexalith.Folders.Client/2.0.0",
+    "archive_sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+    "runtime_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65",
+    "runtime": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Folders.Client.dll",
+    "payload_member": "lib/net11.0/Hexalith.Folders.Client.dll"
+  }
+]

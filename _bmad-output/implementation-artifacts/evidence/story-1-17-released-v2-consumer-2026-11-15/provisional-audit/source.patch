@@ -1,0 +1,33 @@
+diff --git a/Props/Directory.Packages.props b/Props/Directory.Packages.props
+index b2fb2b94..89c2b567 100644
+--- a/Props/Directory.Packages.props
++++ b/Props/Directory.Packages.props
+@@ -154,7 +154,7 @@
+     <HexalithAspNetCoreOpenApiVersion Condition="('$(UseHexalithProjectReferences)' != 'true' or '$(HexalithEventStoreFromSource)' == 'false') and '$(HexalithEventStoreVersion)' == '4.2.0' and ('$(HexalithPartiesSdk42CatalogView)' == 'true' or '$(HexalithPlatformSdk42CatalogView)' == 'true' or '$(HexalithBuildsPackagedHostSdk42CatalogView)' == 'true')">10.0.15</HexalithAspNetCoreOpenApiVersion>
+     <HexalithOpenApiVersion Condition="('$(UseHexalithProjectReferences)' != 'true' or '$(HexalithEventStoreFromSource)' == 'false') and '$(HexalithEventStoreVersion)' == '4.2.0' and ('$(HexalithPartiesSdk42CatalogView)' == 'true' or '$(HexalithPlatformSdk42CatalogView)' == 'true' or '$(HexalithBuildsPackagedHostSdk42CatalogView)' == 'true')">2.13.0</HexalithOpenApiVersion>
+     <HexalithFrontComposerVersion Condition="'$(HexalithFrontComposerVersion)' == ''">6.0.0</HexalithFrontComposerVersion>
+-    <HexalithFoldersVersion Condition="'$(HexalithFoldersVersion)' == ''">1.4.0</HexalithFoldersVersion>
++    <HexalithFoldersVersion Condition="'$(HexalithFoldersVersion)' == ''">2.0.0</HexalithFoldersVersion>
+     <!-- Retain the qualified MCP2 package ABI only for the finite SDK4.2 roles; source MCP keeps its current catalog. -->
+     <HexalithMcpCliVersion Condition="'$(HexalithMcpCliVersion)' == '' and '$(HexalithEventStoreVersion)' == '4.2.0' and ('$(UseHexalithProjectReferences)' != 'true' or '$(HexalithMcpCliFromSource)' == 'false') and ('$(HexalithPartiesSdk42CatalogView)' == 'true' or '$(HexalithPlatformSdk42CatalogView)' == 'true' or '$(HexalithBuildsPackagedHostSdk42CatalogView)' == 'true')">2.0.1</HexalithMcpCliVersion>
+     <HexalithMcpCliVersion Condition="'$(HexalithMcpCliVersion)' == ''">3.0.0</HexalithMcpCliVersion>
+diff --git a/Tools/test-authoritative-package-catalog.ps1 b/Tools/test-authoritative-package-catalog.ps1
+index 416ce777..a04a319b 100644
+--- a/Tools/test-authoritative-package-catalog.ps1
++++ b/Tools/test-authoritative-package-catalog.ps1
+@@ -17,6 +17,7 @@ try {
+         -getProperty:HexalithEventStoreVersion `
+         -getProperty:HexalithMcpCliVersion `
+         -getProperty:HexalithTenantsVersion `
++        -getProperty:HexalithFoldersVersion `
+         -getProperty:HexalithFrontComposerVersion `
+         -getItem:PackageVersion 1> $stdout 2> $stderr
+     $exitCode = $LASTEXITCODE
+@@ -147,6 +148,7 @@ $cohortFamilies = [ordered] @{
+     'Hexalith.EventStore.' = @{ Property = 'HexalithEventStoreVersion'; Version = '5.1.1' }
+     'Hexalith.McpCli.' = @{ Property = 'HexalithMcpCliVersion'; Version = '3.0.0' }
+     'Hexalith.Tenants.' = @{ Property = 'HexalithTenantsVersion'; Version = '8.0.0' }
++    'Hexalith.Folders' = @{ Property = 'HexalithFoldersVersion'; Version = '2.0.0' }
+ }
+ [xml] $catalog = Get-Content -LiteralPath $catalogPath -Raw
+ foreach ($family in $cohortFamilies.GetEnumerator()) {

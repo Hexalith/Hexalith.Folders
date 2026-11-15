@@ -1,0 +1,7 @@
+{
+  "status": "passed-local-consumer",
+  "published_version": "2.0.0",
+  "package_cache": "existing cache used as read-only fallback; missing versions restored privately from NuGet.org",
+  "audit": "blocked until reviewed catalog declarations are committed in owning Builds repository",
+  "operational_acceptance": false
+}
