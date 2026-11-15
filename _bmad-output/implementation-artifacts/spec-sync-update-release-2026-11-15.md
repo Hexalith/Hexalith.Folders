@@ -43,7 +43,7 @@ The user authorizes implementation, commits, pushes, release dispatch and use of
 - [x] Verify SDK, NuGet and npm currency; update actual outdated supported dependencies and stale shared audit provenance through owning tools.
 - [x] Diagnose current CI failures, repair the demonstrated maintenance defects with existing regression checks, and record unresolved dependency qualification/runtime failures.
 - [x] Validate changes in private workspaces with tooling tests, relevant builds/tests and the five-package dry run.
-- [ ] Commit and push changed owners first, then root content and pointers; validate every authored commit message.
+- [x] Commit and push changed owners first, then root content and pointers; validate every authored commit message.
 - [ ] Obtain green hosted checks for the exact source, dispatch Release, satisfy authorized production review, and independently verify all five NuGet archives and ten GitHub package/symbol assets.
 
 **Acceptance Criteria:**
@@ -80,6 +80,8 @@ The completed baseline primary CI also exposes `ScaffoldContractTests.ProjectRef
 Final review corrections passed: Memories ProfileTests 2/2 and release dispatch 17/17, McpCli workflow guards 4/4, packed closure 1/1, and complete Testing.Tests 75/75. The private-edge mutation removed its condition and correctly failed the existing architecture selector; restoring exact bytes passed. Pending inventory was regenerated after final source bytes; both edited C# tests pass whitespace validation. The corrected broad Memories qualification command remains blocked with 3 failures/28 errors among 60 cases, all tracing to its absent nested Builds checkout and incomplete prerequisite records. Current candidate assertions now pass.
 
 All twelve selected root heads are clean, equal their live remote main refs, and have no initialized nested checkouts; the full inventory is retained in `.codex/sync-release-2026-11-15/submodule-selections.json`. Builds audit afeee370137aaf961451e4f6881a61251273e674, Memories 003e3d8677292739bb7978efea95415210c78719 and McpCli 7a496c37936c415eab711dfd8724364b795926ce are pushed and remotely verified. The Memories direct-main push reported bypass of its PR requirement and three expected status checks; focused checks pass, and no ecosystem-wide hosted green claim is made.
+
+Hosted follow-up: Folders source cc8274d10e65217ef05dbff22dfef2abfd1be174 passed commitlint, contract-spine, browser and accessibility checks while its longer CI tiers were still running. Builds CI 43740420664 exposed two stale 5.1.0 Gateway expectations in `Tools/test_evaluated_catalog_modes.py`, predating the audit-only edit. Both now expect the actual 5.1.1 selection; retained SDK4.2 and ABI assertions are unchanged. `run-with-temp python3 Tools/test_evaluated_catalog_modes.py` passed all 4 tests. The exact commit message passed Builds commitlint; 264e17d3185c87b72b0757dd66a13040793756bb is pushed and remotely verified. Record that owner head and restart exact-source CI before release. The package catalog, shipping source, release execution pins and accepted tuples are unchanged by this follow-up.
 
 ## Spec Change Log
 
