@@ -22,7 +22,7 @@ def write_consumer(root: pathlib.Path, name: str, packages: list[str], version: 
     project = directory / f"{name}.csproj"
     root_element = element_tree.Element("Project", {"Sdk": "Microsoft.NET.Sdk"})
     properties = element_tree.SubElement(root_element, "PropertyGroup")
-    element_tree.SubElement(properties, "TargetFramework").text = "net10.0"
+    element_tree.SubElement(properties, "TargetFramework").text = "net11.0"
     element_tree.SubElement(properties, "Nullable").text = "enable"
     element_tree.SubElement(properties, "ImplicitUsings").text = "enable"
     references = element_tree.SubElement(root_element, "ItemGroup")

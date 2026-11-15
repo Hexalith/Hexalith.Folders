@@ -562,7 +562,7 @@ class NightlyDriftGateTests(unittest.TestCase):
 
             assembly = root / (
                 "tests/Hexalith.Folders.Tests/bin/"
-                f"{assembly_configuration or configuration}/net10.0/Hexalith.Folders.Tests.dll"
+                f"{assembly_configuration or configuration}/net11.0/Hexalith.Folders.Tests.dll"
             )
             assembly.parent.mkdir(parents=True)
             assembly.touch()
@@ -643,7 +643,7 @@ raise SystemExit(int(os.environ['NIGHTLY_TEST_EXIT']))
                 self.assertIn(f"-p:UseNuGetDeps={package_mode}", calls[1])
                 self.assertEqual(configuration, calls[1][calls[1].index("--configuration") + 1])
                 for call in calls[2:]:
-                    self.assertIn(f"/bin/{configuration}/net10.0/", call[0])
+                    self.assertIn(f"/bin/{configuration}/net11.0/", call[0])
                     self.assertIn("-class", call)
                 self.assertEqual(4, len(calls))
                 self.assertEqual(["passed", "passed"], [row["hermetic_status"] for row in report["provider_status"]])
@@ -730,7 +730,7 @@ class ScheduledPolicyGateTests(unittest.TestCase):
                 shutil.copyfile(ROOT / relative, destination)
             assembly = root / (
                 "tests/Hexalith.Folders.Contracts.Tests/bin/"
-                f"{assembly_configuration or configuration}/net10.0/Hexalith.Folders.Contracts.Tests.dll"
+                f"{assembly_configuration or configuration}/net11.0/Hexalith.Folders.Contracts.Tests.dll"
             )
             assembly.parent.mkdir(parents=True)
             assembly.touch()
