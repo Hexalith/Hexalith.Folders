@@ -11,7 +11,8 @@ change `planning-story-manifest.yaml`.
 
 The assembly declares module `folders`, String identifiers, Explicit wire types,
 public tenant selection and the default McpCli serializer. Its only package
-dependency is `Hexalith.McpCli.Abstractions` 2.0.1, centrally pinned by Builds.
+dependency is `Hexalith.McpCli.Abstractions` 3.0.0, centrally pinned by Builds
+(current dependency maintenance update, 2026-11-15).
 There are 13 Commands and 28 Queries. The seven seed-backed
 `operations_console_projection` diagnostics remain undecorated and deferred;
 each still requires a product-approved C13 not-applicable declaration.

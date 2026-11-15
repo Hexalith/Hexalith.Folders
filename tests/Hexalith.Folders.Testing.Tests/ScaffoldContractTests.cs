@@ -192,7 +192,14 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Contracts"]);
         // Trusted ACL admission reuses the domain validator and principal-kind parser.
-        AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.Folders"]);
+        AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.EventStore.Testing", "Hexalith.Folders"]);
+        // Raw XML includes the private source proof edge; keep it restricted to the exact Debug opt-in.
+        XDocument eventStoreProject = XDocument.Load(Path.Combine(root, "src", "Hexalith.Folders.EventStore", "Hexalith.Folders.EventStore.csproj"));
+        XElement privateTestingReference = DescendantsByLocalName(eventStoreProject, "ProjectReference")
+            .Single(reference => Path.GetFileNameWithoutExtension(Normalize((string?)reference.Attribute("Include") ?? string.Empty)) == "Hexalith.EventStore.Testing");
+        XElement privateProofGroup = privateTestingReference.Parent.ShouldNotBeNull();
+        privateProofGroup.Name.LocalName.ShouldBe("ItemGroup");
+        ((string?)privateProofGroup.Attribute("Condition")).ShouldBe("'$(Configuration)' == 'Debug' and '$(EnablePrivateCatalogInvocationProof)' == 'true' and '$(HexalithEventStoreFromSource)' == 'true'");
         AssertReferences(references, "Hexalith.Folders.EventStore.Tests", ["Hexalith.Folders.EventStore", "Hexalith.Folders.Server"]);
         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Testing", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Task36FoldObserver"]);
@@ -209,7 +216,7 @@ public sealed class ScaffoldContractTests
         // component (and to reuse FoldersSemanticIndexingDefaults). Memories.Contracts flows in transitively; this is
         // a test project, so it is not subject to the production Memories-isolation rule (see ForbiddenReferencesAreNotIntroduced).
         // The build-only Tenants reference supplies the selected owner assemblies for the catalog composition test.
-        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Client", "Hexalith.Folders.Workers", "Hexalith.Tenants", "Task36FoldObserver"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Client", "Hexalith.Folders.Workers", "Hexalith.Tenants", "Task36FoldObserver"]);
         AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }

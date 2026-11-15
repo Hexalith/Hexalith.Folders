@@ -35,8 +35,11 @@ internal sealed class OperationalStatusNativeSource : IEventStoreGatewayClient
             if (!force && _observedHeads.TryGetValue(identity.ActorId, out long observed) && value.SequenceNumber <= observed) return;
             stream[value.SequenceNumber] = new(value.SequenceNumber, value.EventTypeName, value.Payload.ToArray(), value.SerializationFormat,
                 value.MetadataVersion ?? 1, value.MessageId!, value.CorrelationId, null, value.Timestamp, value.UserId)
-                { GlobalPosition = value.GlobalPosition, PayloadVersion = value.StoredPayloadVersion,
-                    NativeEventDigest = Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value))) };
+            {
+                GlobalPosition = value.GlobalPosition,
+                PayloadVersion = value.StoredPayloadVersion,
+                NativeEventDigest = Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value)))
+            };
             _proofs.Remove(identity.ActorId);
         }
     }
@@ -64,7 +67,8 @@ internal sealed class OperationalStatusNativeSource : IEventStoreGatewayClient
                 .Take(request.PageSize).ToArray();
             return Task.FromResult(new StreamReadPage(identity.TenantId, identity.Domain, identity.AggregateId, events,
                 new(request.FromSequence, request.ToSequence, events.LastOrDefault()?.SequenceNumber, proof.HeadSequence,
-                    events.Length, events.Length > 0 && events[^1].SequenceNumber < request.ToSequence, null) { NativeProof = proof }));
+                    events.Length, events.Length > 0 && events[^1].SequenceNumber < request.ToSequence, null)
+                { NativeProof = proof }));
         }
     }
 

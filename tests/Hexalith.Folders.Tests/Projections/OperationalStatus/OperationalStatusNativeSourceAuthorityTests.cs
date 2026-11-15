@@ -32,8 +32,16 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         var old = new[] { key, OperationalStatusKeys.Evidence(key), OperationalStatusKeys.Applicability(key) }
             .ToDictionary(value => value, value => store.Snapshot<JsonNode>("statestore", value)!);
         history.Add(acquire with { Operation = "release", ExpiresAt = acquire.EffectiveAt, IdempotencyKey = "native-release" });
-        history.Add(acquire with { TaskId = "task-b", LockId = "native-lock-2", LockFence = 2, IdempotencyKey = "native-acquire-2",
-            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2), ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62), OccurredAt = OperationalStatusTestData.Now.AddSeconds(2) });
+        history.Add(acquire with
+        {
+            TaskId = "task-b",
+            LockId = "native-lock-2",
+            LockFence = 2,
+            IdempotencyKey = "native-acquire-2",
+            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2),
+            ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62),
+            OccurredAt = OperationalStatusTestData.Now.AddSeconds(2)
+        });
         sources = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "continued", sources[7..], token)).IsSuccess.ShouldBeTrue();
         var other = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b")]);
@@ -66,8 +74,16 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         var old = new[] { key, OperationalStatusKeys.Evidence(key), OperationalStatusKeys.Applicability(key) }
             .ToDictionary(value => value, value => store.Snapshot<JsonNode>("statestore", value)!);
         history.Add(acquire with { Operation = "release", ExpiresAt = acquire.EffectiveAt, IdempotencyKey = "native-release" });
-        history.Add(acquire with { TaskId = "task-b", LockId = "native-lock-2", LockFence = 2, IdempotencyKey = "native-acquire-2",
-            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2), ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62), OccurredAt = OperationalStatusTestData.Now.AddSeconds(2) });
+        history.Add(acquire with
+        {
+            TaskId = "task-b",
+            LockId = "native-lock-2",
+            LockFence = 2,
+            IdempotencyKey = "native-acquire-2",
+            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2),
+            ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62),
+            OccurredAt = OperationalStatusTestData.Now.AddSeconds(2)
+        });
         sources = OperationalStatusTestData.Sources(history);
         (await writer.ApplyAsync("tenant-a", "folder-a", "continued", sources[7..], token)).IsSuccess.ShouldBeTrue();
         var reader = new EventStoreOperationalStatusReadModel(new(store, store, clock), clock,
@@ -219,8 +235,14 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         (await Available()).ShouldBeFalse();
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "historical-outcome-repair", sources, sources.Length, token, clock: clock)).IsSuccess.ShouldBeTrue();
         (await Available()).ShouldBeTrue();
-        var rejection = OperationalStatusTestData.Stored(sources[0].Source! with { SequenceNumber = sources.Length + 1, GlobalPosition = sources.Length + 1, MessageId = "lawful-rejection",
-            EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected", Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }) });
+        var rejection = OperationalStatusTestData.Stored(sources[0].Source! with
+        {
+            SequenceNumber = sources.Length + 1,
+            GlobalPosition = sources.Length + 1,
+            MessageId = "lawful-rejection",
+            EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
+            Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" })
+        });
         (await writer.ApplyAsync("tenant-a", "folder-a", "lawful-after-repair", [rejection], token)).IsSuccess.ShouldBeTrue();
     }
 
@@ -233,8 +255,14 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         var store = new OperationalStatusTestStore(); var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: OperationalStatusTestData.Scanner);
         (await writer.ApplyAsync("tenant-a", "folder-a", "first", [first], token)).IsSuccess.ShouldBeTrue();
         OperationalStatusTestData.NativeSource.Remember("tenant-a", "folder-a", first.Source! with { Payload = JsonSerializer.SerializeToUtf8Bytes(OperationalStatusTestData.Created() with { DisplayName = "changed-native-prefix" }) }, force: true);
-        var next = OperationalStatusTestData.Stored(first.Source! with { SequenceNumber = 2, GlobalPosition = 2, MessageId = "next-message",
-            EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected", Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }) });
+        var next = OperationalStatusTestData.Stored(first.Source! with
+        {
+            SequenceNumber = 2,
+            GlobalPosition = 2,
+            MessageId = "next-message",
+            EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
+            Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" })
+        });
         await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "changed-prefix", [next], token));
         store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.Sequence.ShouldBe(1);
     }
@@ -267,9 +295,14 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         OperationalStatusTestData.NativeSource.OnRead = () =>
         {
             OperationalStatusTestData.NativeSource.OnRead = null;
-            growth = OperationalStatusTestData.Stored(sources[0].Source! with { SequenceNumber = sources.Length + 1, GlobalPosition = sources.Length + 2,
-                MessageId = "mid-scan-growth", EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
-                Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }) });
+            growth = OperationalStatusTestData.Stored(sources[0].Source! with
+            {
+                SequenceNumber = sources.Length + 1,
+                GlobalPosition = sources.Length + 2,
+                MessageId = "mid-scan-growth",
+                EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" })
+            });
         };
         (await reader.GetAsync(Request(), token)).Status.ShouldBe(TaskStatusReadModelStatus.Unavailable);
         sequence.Head++;
@@ -290,8 +323,15 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
         var prepared = history.OfType<WorkspacePreparationRequested>().Single(); var locked = history.OfType<WorkspaceLockAcquired>().Single();
         var released = history.OfType<WorkspaceLockReleased>().Single();
         history.Add(prepared with { WorkspaceId = "workspace-b", OccurredAt = OperationalStatusTestData.Now.AddSeconds(1) });
-        history.Add(locked with { WorkspaceId = "workspace-b", LockId = "lock-b", OccurredAt = OperationalStatusTestData.Now.AddSeconds(2),
-            AcquiredAt = OperationalStatusTestData.Now.AddSeconds(2), EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2), ExpiresAt = OperationalStatusTestData.Now.AddHours(1).AddSeconds(2) });
+        history.Add(locked with
+        {
+            WorkspaceId = "workspace-b",
+            LockId = "lock-b",
+            OccurredAt = OperationalStatusTestData.Now.AddSeconds(2),
+            AcquiredAt = OperationalStatusTestData.Now.AddSeconds(2),
+            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2),
+            ExpiresAt = OperationalStatusTestData.Now.AddHours(1).AddSeconds(2)
+        });
         history.Add(released with { WorkspaceId = "workspace-b", LockId = "lock-b", OccurredAt = OperationalStatusTestData.Now.AddSeconds(3) });
         history.Add(prepared with { WorkspaceId = "workspace-c", TaskId = "task-c", OccurredAt = OperationalStatusTestData.Now.AddSeconds(4) });
         var source = OperationalStatusTestData.Sources(history); var store = new OperationalStatusTestStore(); var clock = new OperationalStatusClock();
@@ -318,8 +358,16 @@ public sealed class OperationalStatusNativeSourceAuthorityTests
             "principal-a", "correlation-a", "task-a", "native-acquire-1", "fp", OperationalStatusTestData.Now.AddSeconds(1));
         history.Add(acquire);
         history.Add(acquire with { Operation = "release", ExpiresAt = acquire.EffectiveAt, IdempotencyKey = "native-release" });
-        history.Add(acquire with { TaskId = "task-b", LockId = "native-lock-2", LockFence = 2, IdempotencyKey = "native-acquire-2",
-            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2), ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62), OccurredAt = OperationalStatusTestData.Now.AddSeconds(2) });
+        history.Add(acquire with
+        {
+            TaskId = "task-b",
+            LockId = "native-lock-2",
+            LockFence = 2,
+            IdempotencyKey = "native-acquire-2",
+            EffectiveAt = OperationalStatusTestData.Now.AddSeconds(2),
+            ExpiresAt = OperationalStatusTestData.Now.AddSeconds(62),
+            OccurredAt = OperationalStatusTestData.Now.AddSeconds(2)
+        });
         var sources = OperationalStatusTestData.Sources(history);
         (await new OperationalStatusProjectionWriter(store, store, store, clock, OperationalStatusTestData.Scanner)
             .ApplyAsync("tenant-a", "folder-a", "source", sources, token)).IsSuccess.ShouldBeTrue();

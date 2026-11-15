@@ -67,7 +67,8 @@ internal sealed class OperationalStatusNativeSourceFold(string tenantId, string 
             // and defer checksum materialization until the next state-changing domain fold.
             _checkpoint = _checkpoint with
             {
-                Sequence = item.Sequence, SourceDigest = _sourceDigest,
+                Sequence = item.Sequence,
+                SourceDigest = _sourceDigest,
                 ObservedAt = item.Timestamp > _checkpoint.ObservedAt ? item.Timestamp : _checkpoint.ObservedAt,
                 EventDigests = new Dictionary<long, string> { [item.Sequence] = item.Digest },
                 MessageIds = new Dictionary<long, string> { [item.Sequence] = item.MessageId },

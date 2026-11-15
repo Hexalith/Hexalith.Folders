@@ -1080,8 +1080,15 @@ public class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 .WithEnvironment(originalProfile + "Tenant", TenantId)
                 .WithEnvironment(originalProfile + "Domain", "folders")
                 .WithEnvironment(originalProfile + "AggregatePrefix", "capacity-");
-            Console.WriteLine("SYNTHETIC_ORIGINAL_PRIMARY " + JsonSerializer.Serialize(new { runId = _runId, tenant = TenantId,
-                domain = "folders", resourceNamespace = "capacity-", directory = originals, mode = "synthetic-original-primary-v1" }));
+            Console.WriteLine("SYNTHETIC_ORIGINAL_PRIMARY " + JsonSerializer.Serialize(new
+            {
+                runId = _runId,
+                tenant = TenantId,
+                domain = "folders",
+                resourceNamespace = "capacity-",
+                directory = originals,
+                mode = "synthetic-original-primary-v1"
+            }));
         }
         foreach (string name in new[] { "folders", "tenants" })
         {

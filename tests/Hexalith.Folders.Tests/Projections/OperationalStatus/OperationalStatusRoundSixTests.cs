@@ -147,7 +147,9 @@ public sealed class OperationalStatusRoundSixTests
         string receipt = store.PhysicalKey(OperationalStatusKeys.Receipt("tenant-a", "folder-a", source.Length));
         var rejection = source[^1].Source! with
         {
-            SequenceNumber = source.Length + 1, GlobalPosition = source.Length + 1, MessageId = "later-rejection",
+            SequenceNumber = source.Length + 1,
+            GlobalPosition = source.Length + 1,
+            MessageId = "later-rejection",
             EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
             Payload = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }),
         };
@@ -181,7 +183,9 @@ public sealed class OperationalStatusRoundSixTests
         var before = (await Reader(store, clock, source.Length).GetAsync(TaskRequest(), token)).Snapshot!;
         var rejection = source[^1].Source! with
         {
-            SequenceNumber = source.Length + 1, GlobalPosition = source.Length + 1, MessageId = "pure-rejection",
+            SequenceNumber = source.Length + 1,
+            GlobalPosition = source.Length + 1,
+            MessageId = "pure-rejection",
             EventTypeName = "Hexalith.Folders.Server.FolderCommandRejected",
             Payload = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { Code = "UnsupportedCommandType", CommandType = "future_command" }),
         };

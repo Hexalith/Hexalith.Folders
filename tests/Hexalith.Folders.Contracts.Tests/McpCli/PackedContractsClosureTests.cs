@@ -60,7 +60,8 @@ public sealed class PackedContractsClosureTests
             using Stream stream = nuspec.Open();
             XDocument manifest = XDocument.Load(stream);
             manifest.Descendants().Where(node => node.Name.LocalName == "dependency")
-                .Select(node => (string)node.Attribute("id")!).ShouldBe(["Hexalith.McpCli.Abstractions"]);
+                .Select(node => ((string)node.Attribute("id")!, (string)node.Attribute("version")!))
+                .ShouldBe([("Hexalith.McpCli.Abstractions", "3.0.0")]);
             manifest.Descendants().Where(node => node.Name.LocalName is "frameworkReference" or "frameworkAssembly")
                 .Select(node => (string?)node.Attribute("name") ?? (string?)node.Attribute("assemblyName"))
                 .ShouldAllBe(name => name == "Microsoft.NETCore.App");
@@ -70,7 +71,7 @@ public sealed class PackedContractsClosureTests
             assets["project"]!["frameworks"]!["net11.0"]!["frameworkReferences"]!.AsObject()
                 .Select(item => item.Key).ShouldBe(["Microsoft.NETCore.App"]);
             assets["libraries"]!.AsObject().Select(item => item.Key)
-                .ShouldBe(["Hexalith.McpCli.Abstractions/2.0.1"]);
+                .ShouldBe(["Hexalith.McpCli.Abstractions/3.0.0"]);
             ZipArchiveEntry assembly = package.GetEntry("lib/net11.0/Hexalith.Folders.Contracts.dll")!;
             assembly.ShouldNotBeNull();
             using Stream assemblyStream = assembly.Open();

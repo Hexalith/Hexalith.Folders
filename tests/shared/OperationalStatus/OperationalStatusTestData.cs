@@ -62,7 +62,8 @@ internal static class OperationalStatusTestData
             value.OccurredAt, value.CorrelationId, "json", JsonSerializer.SerializeToUtf8Bytes(value, value.GetType()))
         { Domain = "folders", MetadataVersion = 1, GlobalPosition = sequence };
         NativeSource.Remember(value.ManagedTenantId, value.FolderId, new(envelope.EventTypeName, envelope.Payload, envelope.SerializationFormat,
-            sequence, envelope.Timestamp, envelope.CorrelationId, envelope.MessageId) { MetadataVersion = 1, GlobalPosition = sequence });
+            sequence, envelope.Timestamp, envelope.CorrelationId, envelope.MessageId)
+        { MetadataVersion = 1, GlobalPosition = sequence });
         return envelope;
     }
     public static OperationalStatusEvent[] Sources(IEnumerable<IFolderEvent> history)
