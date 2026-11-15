@@ -3,6 +3,7 @@ title: 'Story 4.22: Implement the PD11 guard-discriminated lifecycle'
 type: 'feature'
 created: '2026-11-02'
 status: 'ready-for-dev'
+baseline_commit: '7c62b98a9e0e0ec7a4da7bd2e99bb8c8a113c0db'
 route: 'dispatch'
 review_loop_iteration: 0
 story_key: '4-22-implement-the-pd11-guard-discriminated-lifecycle'
@@ -67,6 +68,16 @@ context:
 - Given restart or replay, when staged work and both clocks are reconstructed, then task binding, retention eligibility and metadata evidence match durable events.
 
 ## Implementation Notes
+
+### 2026-11-15 prerequisite verification
+
+Implementation is blocked before source changes. No execution or release authority is inferred from this build request; the frozen prerequisite remains in force pending an explicit scope decision.
+
+- Story 1.17 is not accepted: `sprint-status.yaml` records it as `backlog`, and [its current closure spec](spec-1-17-complete-pd10-v2-migration-and-closure.md) remains `in-progress` with release, deployment, observation, recovery, and closure evidence incomplete.
+- The [approval register](../planning-artifacts/planning-authority-relock-approval-register.yaml) records `story_1_17_closure_authorized: false`, `ordinary_story_execution_authorized: false`, and `every_other_ordinary_story: held`. The removed general planning hold does not establish Story 1.17 acceptance.
+- `sha256sum _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md` passed the exact payload checks: A7 is `b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f`; A7b is `1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1`. Both match the approval register and the C6/C3 recorded bindings.
+- No production source, contract, test, or submodule changes were made. Builds and tests were not run because the pre-code prerequisite failed. Execution tasks and acceptance criteria remain incomplete; the sprint lifecycle remains unchanged.
+- Resume after recorded Story 1.17 acceptance and execution authorization, or after an explicit human amendment of the frozen prerequisite. Retain the release hold.
 
 ## Spec Change Log
 
