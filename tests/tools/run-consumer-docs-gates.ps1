@@ -111,7 +111,7 @@ function Invoke-XunitInProcessFallback {
 
     $script:usedXunitFallback = $true
     Write-Host "CONSUMER-DOCS category=static-consumer-references fallback=xunit-in-process reason=$Reason"
-    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net11.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-ConsumerDocsReport -Status 'failed' -ExitCode 1
         Write-Error 'CONSUMER-DOCS-GATE-VACUOUS: xUnit in-process runner missing for ConsumerDocsConformanceTests.'

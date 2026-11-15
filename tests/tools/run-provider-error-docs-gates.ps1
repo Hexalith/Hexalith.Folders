@@ -118,7 +118,7 @@ function Invoke-XunitInProcessFallback {
 
     $script:usedXunitFallback = $true
     Write-Host "PROVIDER-ERROR-DOCS category=static-provider-error-references fallback=xunit-in-process reason=$Reason"
-    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net11.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-ProviderErrorDocsReport -Status 'failed' -ExitCode 1
         Write-Error 'PROVIDER-ERROR-DOCS-GATE-VACUOUS: xUnit in-process runner missing for ProviderErrorDocsConformanceTests.'

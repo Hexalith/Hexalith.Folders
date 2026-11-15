@@ -321,7 +321,7 @@ public sealed class ScaffoldContractTests
         sdk.GetProperty("rollForward").GetString().ShouldBe("latestPatch");
         sdk.GetProperty("allowPrerelease").GetBoolean().ShouldBeFalse();
 
-        DescendantsByLocalName(buildProps, "TargetFramework").Single().Value.ShouldBe("net10.0");
+        DescendantsByLocalName(buildProps, "TargetFramework").Single().Value.ShouldBe("net11.0");
         DescendantsByLocalName(buildProps, "Nullable").Single().Value.ShouldBe("enable");
         DescendantsByLocalName(buildProps, "ImplicitUsings").Single().Value.ShouldBe("enable");
         DescendantsByLocalName(buildProps, "TreatWarningsAsErrors").Single().Value.ShouldBe("true");

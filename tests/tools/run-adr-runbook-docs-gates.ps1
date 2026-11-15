@@ -153,7 +153,7 @@ function Invoke-XunitInProcessFallback {
 
     $script:usedXunitFallback = $true
     Write-Host "ADR-RUNBOOK-DOCS category=static-adr-runbook-docs fallback=xunit-in-process reason=$Reason"
-    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net11.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-AdrRunbookDocsReport -Status 'failed' -ExitCode 1
         Write-Error 'ADR-RUNBOOK-DOCS-GATE-VACUOUS: xUnit in-process runner missing for AdrRunbookDocsConformanceTests.'

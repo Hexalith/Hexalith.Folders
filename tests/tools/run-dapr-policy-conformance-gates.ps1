@@ -80,7 +80,7 @@ function Invoke-XunitInProcessFallback {
 
     $script:usedXunitFallback = $true
     Write-Host "DAPR-POLICY category=static-policy-shape fallback=xunit-in-process reason=$Reason"
-    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net11.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode 1
         Write-Error 'DAPR-POLICY-GATE-VACUOUS: xUnit in-process runner missing for DaprPolicyConformanceTests.'

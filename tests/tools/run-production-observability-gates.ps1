@@ -107,7 +107,7 @@ function Invoke-XunitInProcessFallback {
 
     $script:usedXunitFallback = $true
     Write-Host "PRODUCTION-OBSERVABILITY category=static-observability-shape fallback=xunit-in-process reason=$Reason"
-    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net11.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-ProductionObservabilityReport -Status 'failed' -ExitCode 1
         Write-Error 'PRODUCTION-OBSERVABILITY-GATE-VACUOUS: xUnit in-process runner missing for ProductionObservabilityConformanceTests.'
