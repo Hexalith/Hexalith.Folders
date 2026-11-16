@@ -1,0 +1,70 @@
+{
+  "repositories": {
+    ".": {
+      "head": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+      "index_sha256": "5822b2f596671180fc77791144798b3444db8d639a5b02f05e8ea08d0870c648"
+    },
+    "references/Hexalith.Tenants": {
+      "head": "ab67fd6bc308b5a641b0ca398d776e347193c168",
+      "index_sha256": "ae71cf72334ccac4c85d1e6f1e2a632e9865f9159129b38fb108dcd076963601"
+    },
+    "references/Hexalith.AI.Tools": {
+      "head": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+      "index_sha256": "354801f23d9a6bbedb2cb2cd6add4da416ba233eb536425d2495434e13f32e71"
+    },
+    "references/Hexalith.EventStore": {
+      "head": "8b6d5bee5217b3f4bbd8fd689ad887aca863961b",
+      "index_sha256": "86b2bd5f8689b0210c8b0fcddd2a1e32bed63a8132a57c3869a4f1301e993d7f"
+    },
+    "references/Hexalith.FrontComposer": {
+      "head": "f26304dabf7153c7075fa8c4a82dc8fc537c5ed0",
+      "index_sha256": "e31e73a5fbec10ce0d9a00cb3064732bd77d6954723579572a05ed61cd398a8b"
+    },
+    "references/Hexalith.Memories": {
+      "head": "dd422905e563d0c23b7232df910a0c41d82d7b03",
+      "index_sha256": "d1079c4bc525e5d52fb4091732366554e73966019c2386d2794ec40b56377121"
+    },
+    "references/Hexalith.Commons": {
+      "head": "49187d47da882d5470deac982bb383486c90202c",
+      "index_sha256": "7495414b68dfb9d6084a9c63b3c70b24464fac9d5ce2476dda2e35d8c4b87892"
+    },
+    "references/Hexalith.Builds": {
+      "head": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+      "index_sha256": "cdfe05650153d7a851f1e1c66eabfd04a04af6f0626e2005365e59546a3d8d36"
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "head": "2cbec6a66e2174adc7c5d431c1b1f0d28abd5647",
+      "index_sha256": "b74d38db632e7f4e26d1287c3f4ef998d7e5f8667c31cc44382e491a96907bf6"
+    },
+    "references/Hexalith.Projects": {
+      "head": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+      "index_sha256": "298a262f081980869dd8fb0f8967eb26aa8d88c19ed8a1f82cea6a5305eff9ba"
+    },
+    "references/Hexalith.Platform": {
+      "head": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+      "index_sha256": "2317a9d951534feebdb5074df1c09ffbabd1a7f8be48e7be966139b369b8bbda"
+    },
+    "references/Hexalith.McpCli": {
+      "head": "979e1e126c6d7010997f4f20b2bb3defae81333e",
+      "index_sha256": "b4493ea821c1363170940d8c8a41992ef67353e5e52d0f88782a7bfab070907a"
+    },
+    "references/Hexalith.Parties": {
+      "head": "a575021fc97a8eda664711089270b60f5e570ded",
+      "index_sha256": "fc68dd1a62ae082740c27663d123bb2be587d50d8ab525a8743e22a29ab5fd55"
+    }
+  },
+  "protected": {
+    "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json": "a7c0104ca676c3a5255f362bf2fbd94a057e5bd43cc6d1ce7eab455dc488326d",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "e8d945cc5bbb91265c8bf56d2c978e338fb4573ae4e5e7de8621b5787169dbe0",
+    "_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md": "e00a3503425e8a96ab235255f70175b1e34bed2d6a5a3975723bef17a7653206",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "4fd23cd1252b356ab24048f52150aec6b991d5a129a13c2890e159f7c5c2636d",
+    "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+    "eng/story117-platform-qualification-current/staging-checks.json": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51",
+    "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md": "9413d7368d34a49c3ecd2bd0eeeddd957803afe34ce589af11a664c6cf595d86",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/SHA256SUMS": "3d94d6152e9f508411060223dde0aba42337aefb2243a339680bb10b455973b1",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/SHA256SUMS": "0a6fa2ff6f8b7aa7e1bd686da4e603433ea54393881c751e2a04be2569d817d5",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/SHA256SUMS": "2d29cb4244dfdf959a48b7f58bbd3c01489517d86e0da66015b31fd07d1cfee5",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/test-summary.json": "f8d757f64fb09b11921684732a06eb944399786511a458b6d573b22eb33fc464"
+  },
+  "historical_packet_integrity": "All members of all three prior SHA256SUMS inventories rehashed successfully."
+}

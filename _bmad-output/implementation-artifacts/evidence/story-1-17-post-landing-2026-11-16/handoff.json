@@ -1,0 +1,329 @@
+{
+  "schema_version": 1,
+  "status": "post-landing-reconciled-external-operational-hold",
+  "recorded_at_utc": "2026-11-16T14:10:50.839812+00:00",
+  "previous_handoff": "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json",
+  "previous_handoff_sha256": "a7c0104ca676c3a5255f362bf2fbd94a057e5bd43cc6d1ce7eab455dc488326d",
+  "superseded_scope": "Current repair landing, CI observations and Platform tuple inputs/remaining-work descriptions only. Historical approvals, results, operational prerequisites and controls retain their original scope. The historical Projects owner runbook is superseded only where it says repairs are uncommitted or uses outdated source/tool pins.",
+  "source_revisions": {
+    ".": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+    "references/Hexalith.Tenants": "ab67fd6bc308b5a641b0ca398d776e347193c168",
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "8b6d5bee5217b3f4bbd8fd689ad887aca863961b",
+    "references/Hexalith.FrontComposer": "f26304dabf7153c7075fa8c4a82dc8fc537c5ed0",
+    "references/Hexalith.Memories": "dd422905e563d0c23b7232df910a0c41d82d7b03",
+    "references/Hexalith.Commons": "49187d47da882d5470deac982bb383486c90202c",
+    "references/Hexalith.Builds": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+    "references/Hexalith.PolymorphicSerializations": "2cbec6a66e2174adc7c5d431c1b1f0d28abd5647",
+    "references/Hexalith.Projects": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+    "references/Hexalith.Platform": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+    "references/Hexalith.McpCli": "979e1e126c6d7010997f4f20b2bb3defae81333e",
+    "references/Hexalith.Parties": "a575021fc97a8eda664711089270b60f5e570ded"
+  },
+  "story_closed": false,
+  "bounded_reconciliation_complete": true,
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog",
+    "staging_checks_total": 14
+  },
+  "tracking": {
+    "transition_authorized": false,
+    "applied_delta": {},
+    "parent_status": "in-progress",
+    "story_1_17": "backlog",
+    "story_11_6_scope": "No tracker edit; user-confirmed implementation/verification completion is not reopened."
+  },
+  "completed_do_not_repeat": {
+    "folders_v2_publication": "Retained signed v2.0.0 source/package/payload identities pass historical replay.",
+    "audit_landing_commit": "82ec1f26d946f3191c2f7b5b7c104b52802a5f27",
+    "audit_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+    "audit_validation": "passed: 317 packages, 157 families, 1 source",
+    "DEC-A8-HOLD": "satisfied; no renewed approval",
+    "story_11_6": "implementation and verification complete per user; no repeat work"
+  },
+  "released_pair_reference": {
+    "handoff": "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json",
+    "sha256": "a7c0104ca676c3a5255f362bf2fbd94a057e5bd43cc6d1ce7eab455dc488326d",
+    "version": "2.0.0",
+    "source": "209dacbdb42fcde728d9e190781b69945bccc93b",
+    "scope": "Unchanged historical signed package/archive/DLL identities; no new publication or hosted artifact is inferred."
+  },
+  "historical_local_qualification": {
+    "receipt": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/receipt.json",
+    "source": "bf9f98969efa036fd60700c627e712b4375e654a",
+    "result": {
+      "passed": 2837,
+      "failed": 0,
+      "skipped": 1,
+      "focused_fixtures_passed": 20,
+      "isolated_package_api_consumers_passed": 5
+    },
+    "reuse_limit": "Two repair files match exactly; Directory.Packages.props adds one XML comment. Dependency gitlinks advanced; no current executable/test/runtime acceptance is transferred.",
+    "skip": "Existing isolated Story 6.1 Dapr persistence lane; not an executed hosted/runtime acceptance."
+  },
+  "projects": {
+    "source": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+    "repair_commit": "b08b201b24ffe980daa2b785183c1deda8ec9f33",
+    "repair_landed": true,
+    "source_bindings": "source-bindings.json",
+    "declared_builds_pin": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+    "ci_observed_at_utc": "2026-11-16T14:05:29.845Z",
+    "ci": {
+      "id": 43881420098,
+      "name": "CI",
+      "head_sha": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+      "status": "pending",
+      "conclusion": null,
+      "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43881420098",
+      "run_attempt": 1,
+      "referenced_workflows": [
+        {
+          "path": "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b",
+          "sha": "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b"
+        }
+      ]
+    },
+    "jobs_observation": {
+      "observed_at_utc": "2026-11-16T14:08:36.555Z",
+      "total_count": 0
+    },
+    "artifacts_observation": {
+      "observed_at_utc": "2026-11-16T14:08:36.406Z",
+      "total_count": 0
+    },
+    "current_product_acceptance": false,
+    "fresh_runtime_g6_qualification": "pending",
+    "managed_apphost_e2e": "pending; scheduled lane, no qualification from this push"
+  },
+  "platform": {
+    "source": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+    "tool_version": "6.0.5",
+    "tool_range": "[6.0.5, 7.0.0-0)",
+    "producer": {
+      "repository": "https://github.com/Hexalith/Hexalith.Builds.git",
+      "sourceRevision": "e2bbbd0893f586e4d447ef8358ff747ea3d34435",
+      "catalog": {
+        "path": "Props/Directory.Packages.props",
+        "blob": "42441eb4cefcff2f9c582fcda630d9ad15887df2",
+        "sha256": "d098dab50977041a536508f6df7e934f95678a4a0abedd80b28e9bae19ee0637"
+      }
+    },
+    "candidate_acceptance": false,
+    "old_documentation_mismatch_resolved": true,
+    "companion_replay_obligations_retired": true,
+    "historical_hosted_tuple": {
+      "observed_at_utc": "2026-11-16T14:05:29.786Z",
+      "run": {
+        "id": 43846045454,
+        "name": "Platform tuple CI preflight",
+        "head_sha": "215ae18c972e6ea8ccb27032dfc11a57b098f047",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Platform/actions/runs/43846045454",
+        "run_attempt": 1,
+        "referenced_workflows": []
+      },
+      "jobs": [
+        {
+          "id": 133226351727,
+          "name": "resolve-sources",
+          "conclusion": "success"
+        },
+        {
+          "id": 133226543042,
+          "name": "tuple",
+          "conclusion": "success"
+        },
+        {
+          "id": 133253899719,
+          "name": "tuple-verdict",
+          "conclusion": "success"
+        }
+      ],
+      "jobs_observed_at_utc": "2026-11-16T14:05:30.276Z"
+    },
+    "delta_from_hosted_subject": [
+      "_bmad-output/implementation-artifacts/spec-2-13-retire-the-historical-tuple-replay-lanes-from-platform-ci.md",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml"
+    ],
+    "scope_limit": "Hosted success belongs to the recorded source. Documentation-only successors establish unchanged code/selected inputs, not new runtime/image/registration or Story 1.17 acceptance."
+  },
+  "folders_ci_observation": {
+    "observed_at_utc": "2026-11-16T14:08:36.732Z",
+    "runs": [
+      {
+        "id": 43881492052,
+        "name": "Commitlint",
+        "head_sha": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43881492052",
+        "run_attempt": 1,
+        "referenced_workflows": [
+          {
+            "path": "Hexalith/Hexalith.Builds/.github/workflows/commitlint.yml@main",
+            "ref": "refs/heads/main",
+            "sha": "fdda17c0a4538b0f7c99f813c20ca24b49006530"
+          }
+        ]
+      },
+      {
+        "id": 43881490912,
+        "name": "contract-spine-gates",
+        "head_sha": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43881490912",
+        "run_attempt": 1,
+        "referenced_workflows": []
+      },
+      {
+        "id": 43881492868,
+        "name": "CodeQL",
+        "head_sha": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43881492868",
+        "run_attempt": 1,
+        "referenced_workflows": [
+          {
+            "path": "Hexalith/Hexalith.Builds/.github/workflows/codeql.yml@main",
+            "ref": "refs/heads/main",
+            "sha": "fdda17c0a4538b0f7c99f813c20ca24b49006530"
+          }
+        ]
+      },
+      {
+        "id": 43881492421,
+        "name": "CI",
+        "head_sha": "dafa51b0866cc19c18d4448300b7931dad9158f0",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/43881492421",
+        "run_attempt": 1,
+        "referenced_workflows": [
+          {
+            "path": "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b",
+            "sha": "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b"
+          }
+        ]
+      }
+    ]
+  },
+  "hosted_projects_artifact": null,
+  "hosted_folders_artifact": null,
+  "applicable_branch": null,
+  "branch_reason": "Await actual post-lock target/consumer/data disposition; conditional first-install and existing-v1 fallback are already accepted.",
+  "mutating_v2_admission": "blocked until explicit completed-write reconciliation/disposition and accountable owner are resolved; artifact reversal/workload removal is insufficient",
+  "remaining": [
+    {
+      "id": "projects-artifact",
+      "owner": "Projects release/deployment/package maintainer with McpCli and EventStore/Builds package owners; Platform maintainer @jpiquot for registration; coordinate workflow defects with CiCd",
+      "status": "blocked",
+      "missing": [
+        "Passing exact committed-source CI for Projects 981ceef13a1abc88219925e73c51a23eb9ac50c2. Repair landing is complete; observed CI 43881420098 is pending, with no jobs or artifacts returned by the retained first-page queries.",
+        "Owner-selected SDK host-image production lane and immutable retention destination, target platform/RID and base-image digest, exact candidate configuration/manifests and protected secret references. Existing release automation is NuGet-only.",
+        "Retained immutable Projects Server image/provenance bound to full committed source, selected dependency/tool/catalog tuple, exact signed Folders 2.0.0 archive/DLL hashes and actual included DLLs plus configuration/manifests.",
+        "Accountable Projects/Platform enrollment handoff and projects/domain source/image bindings at the reviewed direct Platform revision; required scoped auth, routing/state components, separate smoke and required E2E mappings."
+      ],
+      "next_action": "Observe the existing exact-source CI run without dispatching a replacement. The repair commit has landed. Projects release/deployment maintainer supplies the reviewed SDK host production lane, immutable retention destination, platform/RID, base digest and candidate configuration/manifests, then produces the immutable Server artifact with exact signed Folders 2.0.0 archive/DLL bindings. Projects and Platform owners complete actual source/image registration, scoped auth/state/routing, separate smoke and required E2E coverage. Fresh G-6 and scheduled managed-AppHost E2E remain separate gates; this push does not qualify them.",
+      "depends_on": [],
+      "local_repair_complete": true,
+      "product_package_blockers_resolved_locally": true,
+      "repair_landed": true
+    },
+    {
+      "id": "folders-artifact",
+      "owner": "Folders release maintainer with Platform composition/deployment owner",
+      "status": "blocked",
+      "missing": [
+        "Retained immutable Folders Server/Workers/UI image and applicable composed EventStore extension/configuration identities, source provenance and binding to the published 2.0.0 packages"
+      ],
+      "next_action": "Supply content-addressed host artifacts and candidate configuration/manifests through the owner lane; preserve completed NuGet publication. Collect actual served identities and deployment receipts during qualified locked staging/production attempts.",
+      "depends_on": []
+    },
+    {
+      "id": "platform-mapping-tool-intake",
+      "owner": "Platform maintainer @jpiquot with Builds and module owners",
+      "status": "blocked",
+      "missing": [
+        "Owner decision for the exact current executable-source mapping and strict source/package composition qualification.",
+        "Module-specific source/image/tool/catalog intake and applicable staging-policy consumer adoption; generic historical tuple CI does not qualify Folders/Projects enrollment or runtime.",
+        "Folders declaration and accountable Folders/Projects registration handoffs and actual source/image bindings.",
+        "Nonempty Projects smoke coverage and complete required critical-flow E2E mappings; establish the selected executable closure against all current Platform direct-owner pins."
+      ],
+      "next_action": "Use current Platform 829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf and its configured 6.0.5/source e2bbbd0893f586e4d447ef8358ff747ea3d34435/catalog d098dab50977041a536508f6df7e934f95678a4a0abedd80b28e9bae19ee0637. The old documentation mismatch and companion-replay obligations are resolved. Retain hosted tuple success at its original 215ae18c972e6ea8ccb27032dfc11a57b098f047 subject. Complete current mapping and module enrollment section 5 before ordinary runtime/image qualification; candidateAcceptance remains false.",
+      "depends_on": []
+    },
+    {
+      "id": "attempt-target-data",
+      "owner": "Administrator with Platform and module/data operators",
+      "status": "blocked",
+      "missing": [
+        "Qualified actual attempt lock and epoch",
+        "Fresh target, existing installation/consumer and retained-data disposition",
+        "Named operators/deputy, numeric thresholds and current UTC slots",
+        "For existing-v1: pre-switch UTC telemetry baseline with version/consumer/status counts, errors, latency, trace/attribution evidence, numeric evaluation thresholds and schedule-fit proof before T0+168 hours"
+      ],
+      "next_action": "Acquire each environment attempt lock/epoch before its mutations; verify target UID and fresh existing consumer/schedule/data disposition, then select the already accepted branch. Staging and production use distinct attempt records; production admission repeats disposition under its new lock/epoch after staging qualification. Unknown remains HOLD.",
+      "depends_on": [
+        "projects-artifact",
+        "folders-artifact",
+        "platform-mapping-tool-intake"
+      ]
+    },
+    {
+      "id": "staging-recovery-rollout",
+      "owner": "Platform executor, module/identity owners, Administrator and applicable EventStore/recovery deputy",
+      "status": "blocked",
+      "missing": [
+        "Exact current real-service staging required-flow E2E and separate smoke/recovery evidence",
+        "Actual applicable-branch activation/deployment, observation and recovery results; migration retirement only when applicable"
+      ],
+      "next_action": "Review candidate callers, schedules and identity requirements before staging. Under the qualified staging lock, serve exact retained artifacts and verify real-service E2E, hosted delegation, durable state and applicable recovery; qualify only the latest issued serialized E2E attempt if fully passing. A newer queued/running/non-passing attempt blocks older passes. After staging qualification, acquire the production lock/new epoch, repeat target/data and exclusive freshness admission, then deploy/activate and collect served identities, smoke/observation/recovery results.",
+      "depends_on": [
+        "attempt-target-data"
+      ]
+    },
+    {
+      "id": "hosted-inventory",
+      "owner": "Projects deployment maintainer, identity owner and Platform operator",
+      "status": "blocked",
+      "missing": [
+        "Verified deployed direct/delegated consumer census and every periodic schedule",
+        "Hosted authentication, audience, grant, proof and projects attribution qualification",
+        "For existing-v1 exit: no Projects v1 calls after successful v2 smoke, no unexplained v2 errors and all periodic calls observed before retirement/deadline"
+      ],
+      "next_action": "Before mutations, inventory existing consumers/schedules and review the candidate call plan under the relevant lock. Complete final hosted inventory from actual locked staging/production receipts, including every required schedule completion, identity/delegation outcomes and census limits; source nonmatches prove no absence.",
+      "depends_on": [
+        "staging-recovery-rollout"
+      ]
+    },
+    {
+      "id": "closure-tracking",
+      "owner": "Story 1.17 decision owner Jerome",
+      "status": "blocked",
+      "missing": [
+        "Explicit closure decision on complete applicable-branch evidence",
+        "Exact authorized tracker/planning lifecycle delta"
+      ],
+      "next_action": "Assess actual operational results after all preceding gates pass, record the closure decision and authorize the precise tracking transition; apply only that delta.",
+      "depends_on": [
+        "staging-recovery-rollout",
+        "hosted-inventory"
+      ]
+    }
+  ],
+  "remote_limits": "Exact-source run lists limited to ten entries, jobs/artifacts to first 100 rows. Observations are dated, separate reads; empty artifact/job collections are scoped to that CI run at observation. No registry, cluster, deployed consumer, data, lock/epoch or global absence census.",
+  "operational_inheritance": {
+    "owner_intake": "_bmad-output/implementation-artifacts/story-1-17-closure-owner-intake-2026-11-16.md",
+    "applicable_branch_and_rollout_requirements": "Inherit the complete previous handoff and owner-intake requirements unchanged, including distinct staging/production locks, latest-issued full-pass E2E semantics, exclusive 24-hour staging admission freshness, applicable recovery and existing-v1 telemetry/24-hour traffic/168-hour retirement requirements.",
+    "staging_checks_executed": 0
+  },
+  "git_or_external_mutations_performed": false
+}

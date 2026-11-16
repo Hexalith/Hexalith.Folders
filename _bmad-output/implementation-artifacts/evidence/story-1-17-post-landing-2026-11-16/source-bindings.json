@@ -1,0 +1,88 @@
+{
+  "projects_head": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+  "repair_commit": "b08b201b24ffe980daa2b785183c1deda8ec9f33",
+  "repair_is_ancestor": true,
+  "repair_files": {
+    "Directory.Packages.props": {
+      "retained_qualified_sha256": "a80026664fa0913c45fe181b23b4fd449b157427aa9d1af0a33a2670c7819598",
+      "worktree_sha256": "7fab9ed9ed3927248f7b755e42b9cca2d41857528206e950c4ee21694c7c59c1",
+      "committed_blob_sha256": "7fab9ed9ed3927248f7b755e42b9cca2d41857528206e950c4ee21694c7c59c1",
+      "repair_commit_blob_sha256": "7fab9ed9ed3927248f7b755e42b9cca2d41857528206e950c4ee21694c7c59c1",
+      "retained_comparison": "One added XML comment only; removing the exact recorded comment reproduces the retained qualified raw hash."
+    },
+    "tools/release-packages.json": {
+      "retained_qualified_sha256": "71d6bb332e4152e201c42ca45d8e743a0f2f01b72df057c25669d65646886edb",
+      "worktree_sha256": "71d6bb332e4152e201c42ca45d8e743a0f2f01b72df057c25669d65646886edb",
+      "committed_blob_sha256": "71d6bb332e4152e201c42ca45d8e743a0f2f01b72df057c25669d65646886edb",
+      "repair_commit_blob_sha256": "71d6bb332e4152e201c42ca45d8e743a0f2f01b72df057c25669d65646886edb",
+      "retained_comparison": "byte-identical to retained qualified input"
+    },
+    "tests/tools/test_release_package_tools.py": {
+      "retained_qualified_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+      "worktree_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+      "committed_blob_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+      "repair_commit_blob_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+      "retained_comparison": "byte-identical to retained qualified input"
+    }
+  },
+  "projects_declared_gitlinks": {
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "8b6d5bee5217b3f4bbd8fd689ad887aca863961b",
+    "references/Hexalith.Tenants": "ab67fd6bc308b5a641b0ca398d776e347193c168",
+    "references/Hexalith.FrontComposer": "f26304dabf7153c7075fa8c4a82dc8fc537c5ed0",
+    "references/Hexalith.Conversations": "65782e7fe986cb10825de5777b5824b021dd7d95",
+    "references/Hexalith.Folders": "aee8d791803e7a439d1ffdc9b2174ac6487394a6",
+    "references/Hexalith.Parties": "a575021fc97a8eda664711089270b60f5e570ded",
+    "references/Hexalith.Commons": "49187d47da882d5470deac982bb383486c90202c",
+    "references/Hexalith.Builds": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+    "references/Hexalith.Memories": "dd422905e563d0c23b7232df910a0c41d82d7b03",
+    "references/Hexalith.Platform": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+    "references/Hexalith.McpCli": "979e1e126c6d7010997f4f20b2bb3defae81333e"
+  },
+  "platform_head": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+  "platform_hosted_run_subject": "215ae18c972e6ea8ccb27032dfc11a57b098f047",
+  "platform_delta_from_hosted_subject": [
+    "_bmad-output/implementation-artifacts/spec-2-13-retire-the-historical-tuple-replay-lanes-from-platform-ci.md",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml"
+  ],
+  "platform_declared_gitlinks": {
+    "references/Hexalith.AI.Tools": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "references/Hexalith.Agents": "4a65f67d040bec4d646a830ed72b65c0e8951048",
+    "references/Hexalith.Builds": "e2bbbd0893f586e4d447ef8358ff747ea3d34435",
+    "references/Hexalith.ChatBot": "6a4ca07b18e9b58500dc79dfede1f308da36c828",
+    "references/Hexalith.Commons": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+    "references/Hexalith.Conversations": "c34dc3c1e0469765c75ea608f2960381f649579c",
+    "references/Hexalith.EventStore": "df976e0051b9e2eaa9d3592b3054a0317d83d0cb",
+    "references/Hexalith.Folders": "89e2fbb6bd965eae2008db4501e7b79cc6e1c8e1",
+    "references/Hexalith.FrontComposer": "7063810a3eb940a8d803fcb977bde5a0a8a2ab59",
+    "references/Hexalith.McpCli": "23072f04f423eea3f30456fe5af13d2d382624fe",
+    "references/Hexalith.Memories": "f20e8b8145a6c00310a2aed3d0c8758844b65fdc",
+    "references/Hexalith.Parties": "a494093da3e2656c49e539392284cd1b10f799b3",
+    "references/Hexalith.PolymorphicSerializations": "e97b56930e213f674b64c157551f499b0473ec43",
+    "references/Hexalith.Projects": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+    "references/Hexalith.Tenants": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+    "references/Hexalith.Timesheets": "aafdae771e81f152671d18c506a0470ce0deee7f",
+    "references/Hexalith.Works": "b2985d22b3bfbc6d86bcde28a5da722ae7f930c3"
+  },
+  "platform_inputs": {
+    "eng/builds-tuple.json": "00c83aaffe8c5fe2594b21adeaf895c13cc7cae80b770cee14ad764ce87252be",
+    ".config/dotnet-tools.json": "680da1508b6de254cf99f061dc2d5da9d3bfdce7059fc9570516aa65b9c4e952",
+    "hexalith-platform.json": "37c7bfade7b584522dc4acfbff49d078938429098135cedf65f4d5f6fba23db1",
+    "eng/current-tuple-source.json": "3aa236502e7f3f46896ef8a05942c3ecb8ea65c5708f4a6c43712078a9ab3d8c",
+    "src/Hexalith.Platform.Composition/PlatformServerBindings.cs": "69b4a1f9755341255f4962bb34b4c50f404b838d82c60f387a2108caa63d1a59",
+    "eng/tuple-source-preparation.md": "0f54b2d4601008e313fdbf71c38db2674d95671da8c134afc765da827266a8f4",
+    "docs/domain-module-enrollment.md": "3f03f515cce64ee4b4046bcf9c10005d17f396ff35bc6301927851e320080e41"
+  },
+  "projects_inputs": {
+    "module/hexalith.module-manifest.v2.json": "7028d15cca15ac35fb8172a43537e45000307127f42499196817ca5a3772a754",
+    "src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj": "532d75b6a36540122759bab0d4c1eb792b180622f8a50a2f3a0ac40b3de51705",
+    ".github/workflows/ci.yml": "48a2d59ee025a4361d3fa834ab9c7abd725fa8608dbb70303107a4ee7b1beed1",
+    "tools/qualification/g6-current-policy-2026-11-12-dapr-net1191.json": "941a8399316f34f4156ea101d6dc043630e8d0ab52fd1f2b349613735cfb4361"
+  },
+  "missing_owner_inputs": {
+    "folders_root_module_absent": true,
+    "projects_platform_handoff_absent": true,
+    "projects_smoke_surfaces": []
+  },
+  "limits": "Repair landed with one additional XML comment. Dependency gitlinks advanced. Historical local tests do not qualify this new tuple. Platform hosted success retains its original commit despite documentation-only successors."
+}

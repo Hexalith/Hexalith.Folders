@@ -1,0 +1,145 @@
+{
+  "scope": "Eight reviewer mutations, resealed only in private TMPDIR copies; each rejected in normal and optimized Python. These are verifier checks, not application tests.",
+  "results": [
+    {
+      "case": "folders-ci",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Folders CI projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "platform-tool",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Platform tool projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "duplicated-sources",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Duplicated source identity differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "historical-qualification",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Historical qualification projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "released-pair",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Released pair projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "hosted-jobs",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Hosted job projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "owner-observations",
+      "optimized": false,
+      "packet_only": false,
+      "expected_rejection": "Owner input observations differ",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "packet-only-controls",
+      "optimized": false,
+      "packet_only": true,
+      "expected_rejection": "Inherited control differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "folders-ci",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Folders CI projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "platform-tool",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Platform tool projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "duplicated-sources",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Duplicated source identity differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "historical-qualification",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Historical qualification projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "released-pair",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Released pair projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "hosted-jobs",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Hosted job projection differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "owner-observations",
+      "optimized": true,
+      "packet_only": false,
+      "expected_rejection": "Owner input observations differ",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "packet-only-controls",
+      "optimized": true,
+      "packet_only": true,
+      "expected_rejection": "Inherited control differs",
+      "exit_code": 1,
+      "rejected_as_expected": true
+    },
+    {
+      "case": "unchanged-packet-full-replay",
+      "optimized": false,
+      "exit_code": 0,
+      "output": "PASS: packet, six dated remote responses, committed repairs, source comparison, thirteen repositories, prior packets and controls."
+    },
+    {
+      "case": "unchanged-packet-full-replay",
+      "optimized": true,
+      "exit_code": 0,
+      "output": "PASS: packet, six dated remote responses, committed repairs, source comparison, thirteen repositories, prior packets and controls."
+    }
+  ]
+}

@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "status": "closure-prepared-external-operational-hold",
+  "previous_handoff": "_bmad-output/implementation-artifacts/story-1-17-audit-refreshed-handoff-2026-11-16.json",
+  "previous_handoff_sha256": "af498b8e1a96badeb21e51f3ddb117bf60dc3074312a4de0be6703b9eeb1602c",
+  "authorization": "User follow-up fix authorizes correcting the two reported Projects package blockers after the fixture repair. Preserve prior evidence and controls; no commit, push, publish, deploy, activate, audit refresh or tracker transition.",
+  "preparation_complete": true,
+  "story_closed": false,
+  "source_revisions": {
+    ".": "917295efa8b96c8100c1950bf0970be657325a3a",
+    "references/Hexalith.Tenants": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d",
+    "references/Hexalith.FrontComposer": "33e71036c04f2b99955376e9c90cbb1fc3a81e64",
+    "references/Hexalith.Memories": "9d87500eaf4c39ce0cec0cb3a03e5dd62c167106",
+    "references/Hexalith.Commons": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "references/Hexalith.Builds": "65fd22f37b9fad64b595841923cdbe050563ab99",
+    "references/Hexalith.PolymorphicSerializations": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "references/Hexalith.Projects": "bf9f98969efa036fd60700c627e712b4375e654a",
+    "references/Hexalith.Platform": "5691d313ab20bf7ad40243e40a80b6a58ed04650",
+    "references/Hexalith.McpCli": "ab92da41988c4d423c05ea3f5ab401ed0db1fc32",
+    "references/Hexalith.Parties": "d4a71068bc1366ba67699aa9ec68cf24c0645c71"
+  },
+  "released_pair": {
+    "version": "2.0.0",
+    "source": "209dacbdb42fcde728d9e190781b69945bccc93b",
+    "retained_packages": [
+      {
+        "id": "Hexalith.Folders.Contracts",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Contracts.2.0.0.nupkg",
+        "sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Contracts.dll",
+        "payload_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098"
+      },
+      {
+        "id": "Hexalith.Folders",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.2.0.0.nupkg",
+        "sha256": "138eea720b7540d6f0d618484166573093e4d74b277a7c312318d2aca6d335db",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.dll",
+        "payload_sha256": "b5adbf20780738bb5c0583c5b711ca412d4dd79f3f517bac6d0bc7b7b682e3be"
+      },
+      {
+        "id": "Hexalith.Folders.Client",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Client.2.0.0.nupkg",
+        "sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Client.dll",
+        "payload_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65"
+      },
+      {
+        "id": "Hexalith.Folders.Aspire",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Aspire.2.0.0.nupkg",
+        "sha256": "98418bcd0251866754da700cb795dfaf8b0664fd23df023c8d76db189b914984",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Aspire.dll",
+        "payload_sha256": "bd4de8c097109170da027939d54231c06b0ab1d39caeaad6390977e755fb37fa"
+      },
+      {
+        "id": "Hexalith.Folders.Testing",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Testing.2.0.0.nupkg",
+        "sha256": "39ad926877aacd28bf7148782817e691e98423836e9a2da691eacd714a015d7b",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Testing.dll",
+        "payload_sha256": "5c9f9c9a6e3c6fa80564b4bd0be8b6acf25ec0498033f50ebf7bc86c12c87362"
+      }
+    ],
+    "observation_limit": "Rehashed retained signed archives only; no new download, feed or CI observation."
+  },
+  "completed_do_not_repeat": {
+    "folders_v2_publication": "Retained signed v2.0.0 source/package/payload identities pass historical replay.",
+    "audit_landing_commit": "82ec1f26d946f3191c2f7b5b7c104b52802a5f27",
+    "audit_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+    "audit_validation": "passed: 317 packages, 157 families, 1 source",
+    "DEC-A8-HOLD": "satisfied; no renewed approval",
+    "story_11_6": "implementation and verification complete per user; no repeat work"
+  },
+  "current_tuple_qualification": "Local package alignment verified on Projects base bf9f98969efa036fd60700c627e712b4375e654a plus retained uncommitted patch. McpCli.Abstractions 3.0.0 and EventStore.Contracts 5.1.1 agree with all four applicable manifest closures. Full Release solution build with declared executable resource inputs passes with zero warnings/errors. Product tests: 2837 passed, zero failed, one existing isolated-Dapr skip across eight projects. All 20 fixtures, strict five-package validation, five real isolated API consumers, OpenAPI fingerprint and FrontComposer inspect pass. Server build contains exact retained Folders Client/Contracts 2.0.0 DLL payloads. No exact committed-source CI, current tool/catalog/source mapping, distributed Dapr or hosted artifact qualification is inferred.",
+  "hosted_projects_artifact": null,
+  "hosted_folders_artifact": null,
+  "applicable_branch": null,
+  "branch_reason": "Await actual post-lock target/consumer/data disposition; conditional first-install and existing-v1 fallback are already accepted.",
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog",
+    "staging_checks_total": 14
+  },
+  "tracking": {
+    "transition_authorized": false,
+    "applied_delta": {},
+    "parent_status": "in-progress",
+    "story_1_17": "backlog",
+    "story_11_6_scope": "No tracker edit; user-confirmed implementation/verification completion is not reopened."
+  },
+  "owner_intake": "_bmad-output/implementation-artifacts/story-1-17-closure-owner-intake-2026-11-16.md",
+  "evidence": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/receipt.json",
+  "source_consumer_inventory": "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/consumer-inventory.json",
+  "remaining": [
+    {
+      "id": "projects-artifact",
+      "owner": "Projects release/deployment/package maintainer with McpCli and EventStore/Builds package owners; Platform maintainer @jpiquot for registration; coordinate workflow defects with CiCd",
+      "status": "blocked",
+      "missing": [
+        "Passing exact committed-source CI after separately authorized landing of the local fixture/package alignment. Local product/package/consumer checks pass; the original named CI run remains failed and was not rerun.",
+        "Owner-selected SDK host-image production lane and immutable retention destination, target platform/RID and base-image digest, exact candidate configuration/manifests and protected secret references. Existing release automation is NuGet-only.",
+        "Retained immutable Projects Server image/provenance bound to full committed source, selected dependency/tool/catalog tuple, exact signed Folders 2.0.0 archive/DLL hashes and actual included DLLs plus configuration/manifests.",
+        "Accountable Projects/Platform enrollment handoff and projects/domain source/image bindings at the reviewed direct Platform revision; required scoped auth, routing/state components, separate smoke and required E2E mappings."
+      ],
+      "next_action": "Use references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md. Package blockers are repaired and locally verified. After separately authorized landing, Projects release/deployment maintainer obtains passing exact-source CI, supplies the host production lane/retention/platform/RID/base-image and candidate configuration inputs, and produces the immutable Server artifact bound to retained signed Folders 2.0.0 archives and exact DLLs. Projects with Platform @jpiquot completes enrollment section 5 at the reviewed direct revision, including runtime/tool/catalog, auth/state, smoke and E2E mappings. Do not repeat NuGet publication or audit. Actual deployment/served identities remain for later qualified locked attempts.",
+      "depends_on": [],
+      "local_repair_complete": true,
+      "product_package_blockers_resolved_locally": true
+    },
+    {
+      "id": "folders-artifact",
+      "owner": "Folders release maintainer with Platform composition/deployment owner",
+      "status": "blocked",
+      "missing": [
+        "Retained immutable Folders Server/Workers/UI image and applicable composed EventStore extension/configuration identities, source provenance and binding to the published 2.0.0 packages"
+      ],
+      "next_action": "Supply content-addressed host artifacts and candidate configuration/manifests through the owner lane; preserve completed NuGet publication. Collect actual served identities and deployment receipts during qualified locked staging/production attempts.",
+      "depends_on": []
+    },
+    {
+      "id": "platform-mapping-tool-intake",
+      "owner": "Platform maintainer @jpiquot with Builds and module owners",
+      "status": "blocked",
+      "missing": [
+        "Current executable-source mapping decision and strict source/package composition qualification",
+        "Accepted exact tool/catalog tuple and applicable staging-policy consumer adoption",
+        "Folders declaration and accountable Folders/Projects Platform registration handoffs and bindings",
+        "Separate nonempty Projects smoke declaration and complete required critical-flow E2E mappings; inspect all 17 Platform direct-owner pins and establish selected executable closure"
+      ],
+      "next_action": "Review current-mapping-inputs.json, resolve the configured 4.45.0 versus README 6.0.5 discrepancy and differing Parties declarations; issue the scoped current mapping decision and complete Platform enrollment section 5 before ordinary runtime qualification.",
+      "depends_on": []
+    },
+    {
+      "id": "attempt-target-data",
+      "owner": "Administrator with Platform and module/data operators",
+      "status": "blocked",
+      "missing": [
+        "Qualified actual attempt lock and epoch",
+        "Fresh target, existing installation/consumer and retained-data disposition",
+        "Named operators/deputy, numeric thresholds and current UTC slots",
+        "For existing-v1: pre-switch UTC telemetry baseline with version/consumer/status counts, errors, latency, trace/attribution evidence, numeric evaluation thresholds and schedule-fit proof before T0+168 hours"
+      ],
+      "next_action": "Acquire each environment attempt lock/epoch before its mutations; verify target UID and fresh existing consumer/schedule/data disposition, then select the already accepted branch. Staging and production use distinct attempt records; production admission repeats disposition under its new lock/epoch after staging qualification. Unknown remains HOLD.",
+      "depends_on": [
+        "projects-artifact",
+        "folders-artifact",
+        "platform-mapping-tool-intake"
+      ]
+    },
+    {
+      "id": "staging-recovery-rollout",
+      "owner": "Platform executor, module/identity owners, Administrator and applicable EventStore/recovery deputy",
+      "status": "blocked",
+      "missing": [
+        "Exact current real-service staging required-flow E2E and separate smoke/recovery evidence",
+        "Actual applicable-branch activation/deployment, observation and recovery results; migration retirement only when applicable"
+      ],
+      "next_action": "Review candidate callers, schedules and identity requirements before staging. Under the qualified staging lock, serve exact retained artifacts and verify real-service E2E, hosted delegation, durable state and applicable recovery; qualify only the latest issued serialized E2E attempt if fully passing. A newer queued/running/non-passing attempt blocks older passes. After staging qualification, acquire the production lock/new epoch, repeat target/data and exclusive freshness admission, then deploy/activate and collect served identities, smoke/observation/recovery results.",
+      "depends_on": [
+        "attempt-target-data"
+      ]
+    },
+    {
+      "id": "hosted-inventory",
+      "owner": "Projects deployment maintainer, identity owner and Platform operator",
+      "status": "blocked",
+      "missing": [
+        "Verified deployed direct/delegated consumer census and every periodic schedule",
+        "Hosted authentication, audience, grant, proof and projects attribution qualification",
+        "For existing-v1 exit: no Projects v1 calls after successful v2 smoke, no unexplained v2 errors and all periodic calls observed before retirement/deadline"
+      ],
+      "next_action": "Before mutations, inventory existing consumers/schedules and review the candidate call plan under the relevant lock. Complete final hosted inventory from actual locked staging/production receipts, including every required schedule completion, identity/delegation outcomes and census limits; source nonmatches prove no absence.",
+      "depends_on": [
+        "staging-recovery-rollout"
+      ]
+    },
+    {
+      "id": "closure-tracking",
+      "owner": "Story 1.17 decision owner Jerome",
+      "status": "blocked",
+      "missing": [
+        "Explicit closure decision on complete applicable-branch evidence",
+        "Exact authorized tracker/planning lifecycle delta"
+      ],
+      "next_action": "Assess actual operational results after all preceding gates pass, record the closure decision and authorize the precise tracking transition; apply only that delta.",
+      "depends_on": [
+        "staging-recovery-rollout",
+        "hosted-inventory"
+      ]
+    }
+  ],
+  "activation_or_publish_actions_performed": false,
+  "remote_limits": "First page only: up to ten Projects releases/runs and ten Folders/Projects environment records; latest inspected production records are package release workflows. No cluster, registry workload, installed delegation or global absence observation.",
+  "mutating_v2_admission": "blocked until explicit completed-write reconciliation/disposition and accountable owner are resolved; artifact reversal/workload removal is insufficient",
+  "external_source_drift": {
+    "observed_at_utc": "2026-11-16T10:48:25.426280+00:00",
+    "initial_replay_exit_code": 1,
+    "initial_replay_message": "FAIL: Declaration comparison changed: Memories",
+    "initial_mapping_snapshot": "current-mapping-inputs.initial.json",
+    "initial_snapshot_sha256": "09a7ee7912d68c9797df280ba192368a5ccbe43075f1e51120777802c186e55a",
+    "changes": [
+      {
+        "path": "references/Hexalith.Memories/module/hexalith.module-manifest.v2.json",
+        "previous_sha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+        "current_sha256": "288d990c92ac8cce5bc7a35ae737188795f9ddbc2e44923bf789fdabdf983162",
+        "owner": "Memories",
+        "classification": "Byte-only line-ending normalization observed during replay; LF-normalized and parsed declaration content unchanged, Git working tree clean. Origin is not established and no file was rewritten by this preparation."
+      }
+    ],
+    "disposition": "Preserved current raw bytes, retained initial byte snapshot and classified normalization explicitly. Git HEAD/index and semantic declaration content are unchanged; no new owner gate or source-change claim.",
+    "lf_normalized_and_parsed_content_equal": true,
+    "memories_git_status": "clean"
+  },
+  "updated_at_utc": "2026-11-16T12:18:43.386729+00:00",
+  "historical_closure_preparation_evidence": "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/receipt.json",
+  "prior_closure_handoff_snapshot": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/closure-handoff.before.json",
+    "sha256": "2f0928c55b16188d88f1a1c7371176974add40e7b631697c474fd66b66854032",
+    "scope": "Exact supplied handoff bytes; historical preparation packet remains unchanged. Its exact-workspace replay is historical after this fixture and handoff update."
+  },
+  "projects_ci_repair": {
+    "status": "local-fixture-repair-verified-product-owner-hold",
+    "source_head": "bf9f98969efa036fd60700c627e712b4375e654a",
+    "committed_candidate": null,
+    "fixture": "references/Hexalith.Projects/tests/tools/test_release_package_tools.py",
+    "fixture_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+    "patch": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/projects-fixture.patch",
+    "patch_sha256": "d136101367e0e881e18e227a10ec56ba0d7609a390ace6a656a3589cb27b72bb",
+    "reported_run": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43838261389",
+    "reported_run_status": "failure; product jobs skipped; not rerun",
+    "focused_fixtures": {
+      "passed": 20,
+      "failed": 0
+    },
+    "local_product_tests": {
+      "passed": 1357,
+      "failed": 0,
+      "skipped": 0,
+      "projects": [
+        "Contracts",
+        "Client",
+        "core",
+        "UI",
+        "Mcp",
+        "Cli"
+      ],
+      "not_executed": [
+        "Server.Tests (NU1109 build failure)",
+        "Integration (solution restore NU1109)",
+        "real API package consumers (strict package graph failed)",
+        "current runtime/G-6/managed AppHost E2E (no qualifying committed tuple or runtime owner inputs)"
+      ]
+    },
+    "builds_declared_pin": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+    "ci_builds_execution_pin": "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b",
+    "workspace_builds_head": "65fd22f37b9fad64b595841923cdbe050563ab99",
+    "product_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/product-results.json",
+    "package_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/package-results.json",
+    "owner_next_action": "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md",
+    "limits": "Disposable diagnostic Release/package-mode snapshots, unchanged audits/warnings, no dependency overrides; no immutable host or deployment evidence.",
+    "package_boundary_replay": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/package-replay/results.json",
+    "actual_rejected_candidate_metadata": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/package-replay/dependency-report.json"
+  },
+  "owner_intake_updates": {
+    "superseded_scope": "Only the Projects fixture/product/artifact row in the original owner intake; all other operational requirements remain as recorded.",
+    "current_projects_owner_action": "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md",
+    "reason": "Current Projects owner action supersedes both historical fixture and dependency blocker rows: fixture and package alignment are locally verified; exact committed CI and immutable host/configuration/Platform enrollment remain pending."
+  },
+  "historical_fixture_repair_evidence": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/receipt.json",
+  "projects_package_alignment": {
+    "status": "local-package-blockers-fixed-verified",
+    "supersedes": "Prior Projects NU1109 and strict package graph blockers; earlier fixture and failed-snapshot observations remain dated evidence.",
+    "source_head": "bf9f98969efa036fd60700c627e712b4375e654a",
+    "committed_candidate": null,
+    "dependency_versions": {
+      "Hexalith.McpCli.Abstractions": "3.0.0",
+      "Hexalith.EventStore.Contracts": "5.1.1",
+      "Hexalith.Folders.Client": "2.0.0",
+      "Hexalith.Folders.Contracts": "2.0.0"
+    },
+    "patch": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/projects-product.patch",
+    "patch_sha256": "441273cb65bbb8b1874c0fbef9a6d614de8ddb8df318bea1c1d5e0e5260baac4",
+    "test_summary": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/test-summary.json",
+    "product_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/product/product-results.json",
+    "solution_and_generated_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/product-qualified/product-results.json",
+    "integration_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/integration-qualified/product-results.json",
+    "package_results": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/packages-qualified/results.json",
+    "server_folders_payload_binding": "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/product-qualified/server-folders-payload-binding.json",
+    "owner_next_action": "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md",
+    "limits": "Local uncommitted diagnostic artifacts only. Base HEAD provenance plus patch/source manifests do not constitute a newly committed release, immutable host, enrolled current catalog or deployed identity."
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "projects": [
+    {
+      "project": "contracts",
+      "total": 207,
+      "passed": 207,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-contracts-tests.log"
+    },
+    {
+      "project": "client",
+      "total": 125,
+      "passed": 125,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-client-tests.log"
+    },
+    {
+      "project": "core",
+      "total": 691,
+      "passed": 691,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-core-tests.log"
+    },
+    {
+      "project": "server",
+      "total": 1356,
+      "passed": 1355,
+      "failed": 0,
+      "skipped": 1,
+      "log": "product/product-server-tests.log"
+    },
+    {
+      "project": "ui",
+      "total": 277,
+      "passed": 277,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-ui-tests.log"
+    },
+    {
+      "project": "mcp",
+      "total": 35,
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-mcp-tests.log"
+    },
+    {
+      "project": "cli",
+      "total": 22,
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0,
+      "log": "product/product-cli-tests.log"
+    },
+    {
+      "project": "integration",
+      "total": 125,
+      "passed": 125,
+      "failed": 0,
+      "skipped": 0,
+      "log": "integration-qualified/product-integration-tests.log"
+    }
+  ],
+  "passed": 2837,
+  "skipped": 1,
+  "failed": 0,
+  "total": 2838,
+  "existing_skip": {
+    "test": "SupportedProjectReadHttpTests.ProtectedSdkDispatchAndReadsSurviveHostAndStoreClientRestart",
+    "reason": "Requires the isolated Story 6.1 Dapr persistence lane.",
+    "environment_keys": [
+      "STORY61_DAPR_HTTP_ENDPOINT",
+      "STORY61_DAPR_GRPC_ENDPOINT"
+    ]
+  },
+  "focused_fixtures": {
+    "passed": 20,
+    "failed": 0
+  },
+  "isolated_package_api_consumers": {
+    "passed": 5,
+    "failed": 0
+  },
+  "additional_focused_checks": {
+    "McpCli_decoration_tests": 2,
+    "OpenAPI_fingerprint_tests": 101,
+    "FrontComposer_inspect": "passed with no warnings"
+  },
+  "counting": "Focused decoration/fingerprint cases are included in full project totals, not added again."
+}
