@@ -35,6 +35,16 @@ class PackageMetadata:
     dependencies: tuple[tuple[str, str], ...]
 
 
+def validate_package_output_directory(output_directory: pathlib.Path) -> pathlib.Path:
+    """Require the repository's package directory without accepting a symlink."""
+
+    output = output_directory.resolve()
+    expected_output = (ROOT / "nupkgs").resolve()
+    if output != expected_output or output_directory.is_symlink():
+        raise ValueError(f"output directory must be the repository-owned package directory: {expected_output}")
+    return output
+
+
 def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
     """Build one object while failing closed on duplicate JSON properties."""
 

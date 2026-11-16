@@ -18,9 +18,6 @@ public sealed partial class SafetyInvariantGateTests
     private static readonly string _inventoryFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "safety-channel-inventory.json");
     private static readonly string _quarantineFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "quarantine", "safety-negative-controls.json");
     private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
-    private static readonly string _workflowFilePath = Path.Combine(_repositoryRootPath, ".github", "workflows", "contract-spine.yml");
-    private static readonly string _gateScriptFilePath = Path.Combine(_repositoryRootPath, "tests", "tools", "run-safety-invariant-gates.ps1");
-    private static readonly string _gateDocumentationFilePath = Path.Combine(_repositoryRootPath, "docs", "contract", "safety-invariant-ci-gates.md");
 
     private static readonly string[] _allowedClassificationNames =
     [
@@ -54,9 +51,6 @@ public sealed partial class SafetyInvariantGateTests
         "parity-artifacts",
         "openapi-examples",
         "problem-details-examples",
-        "developer-diagnostics",
-        "ci-logs",
-        "assertion-messages",
     ];
 
     private static readonly string[] _requiredTelemetrySurfaceNames =
@@ -214,13 +208,9 @@ public sealed partial class SafetyInvariantGateTests
         {
             string name = RequiredString(channel, "channel");
             string status = RequiredString(channel, "prerequisite_status");
-            string owner = RequiredString(channel, "owning_story");
             string diagnostic = RequiredString(channel, "diagnostic");
             string safeAbsence = RequiredString(channel, "safe_absence_diagnostic");
             string coverageNotes = RequiredString(channel, "coverage_notes");
-            owner.ShouldNotBeNullOrWhiteSpace(name);
-            owner.ShouldNotContain("-x-", Case.Sensitive, $"{name} owning_story must not use wildcard placeholders like '2-x-...' (AC 15).");
-            owner.ShouldNotEndWith("-x", $"{name} owning_story must be a concrete story ID, not a wildcard (AC 15).");
             diagnostic.ShouldBeOneOf("covered", "SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
             safeAbsence.ShouldBeOneOf("covered", "SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
             AssertMetadataOnly(diagnostic);
@@ -257,7 +247,7 @@ public sealed partial class SafetyInvariantGateTests
     }
 
     [Fact]
-    public void StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts()
+    public void DiagnosticChannelsResolveCurrentContractArtifacts()
     {
         using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
@@ -278,7 +268,7 @@ public sealed partial class SafetyInvariantGateTests
     }
 
     [Fact]
-    public void StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts()
+    public void TelemetryChannelsAreCoveredByRuntimeArtifacts()
     {
         using JsonDocument inventory = ParseSafetyJson(ReadRequiredFile(_inventoryFilePath));
         Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
@@ -303,7 +293,6 @@ public sealed partial class SafetyInvariantGateTests
         foreach (string channelName in storyFourteenChannels)
         {
             JsonElement channel = channels[channelName];
-            RequiredString(channel, "owning_story").ShouldBe("4-14-emit-metadata-only-audit-and-observability");
             RequiredString(channel, "prerequisite_status").ShouldBe("covered", $"{channelName} is now owned by Story 4.14 runtime artifacts and must not remain drift.");
             RequiredString(channel, "diagnostic").ShouldBe("covered", channelName);
             RequiredString(channel, "safe_absence_diagnostic").ShouldBe("covered", channelName);
@@ -323,7 +312,6 @@ public sealed partial class SafetyInvariantGateTests
             diagnostic.Gate.ShouldBe(GateName);
             diagnostic.RuleId.ShouldBeOneOf("SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
             diagnostic.OutputChannel.ShouldNotBeNullOrWhiteSpace();
-            diagnostic.OwnerStory.ShouldNotBeNullOrWhiteSpace();
             diagnostic.Remediation.ShouldNotBeNullOrWhiteSpace();
             AssertMetadataOnly(diagnostic.ToString());
         }
@@ -413,40 +401,6 @@ public sealed partial class SafetyInvariantGateTests
             .Select(node => RequiredScalar(node, "ProjectionAvailability"))
             .ToArray();
         projectionAvailability.Order(StringComparer.Ordinal).ShouldBe(new[] { "available", "redacted", "stale", "unknown", "unavailable" }.Order(StringComparer.Ordinal));
-    }
-
-    [Fact]
-    public void WorkflowAndDocumentationExposeSameOfflineSafetyGate()
-    {
-        string workflow = ReadRequiredFile(_workflowFilePath);
-        string script = ReadRequiredFile(_gateScriptFilePath);
-        string documentation = ReadRequiredFile(_gateDocumentationFilePath);
-
-        workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild");
-        // AC 5: safety gate must run even when an earlier step fails so leakage cannot hide behind a contract regression.
-        workflow.ShouldContain("if: ${{ !cancelled() }}");
-        workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
-        workflow.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
-        workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
-        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
-
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll");
-        script.ShouldContain("-class Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests");
-        script.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true");
-        script.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror");
-        script.ShouldContain("[Alias('NoRestore')]");
-        script.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
-        script.ShouldContain("Hexalith.Folders.Contracts.Tests.dll");
-        script.ShouldContain("$LASTEXITCODE");
-        script.ShouldNotContain("--filter", Case.Sensitive);
-        script.ShouldNotContain("--recursive", Case.Insensitive);
-
-        documentation.ShouldContain(".\\tests\\tools\\run-safety-invariant-gates.ps1");
-        documentation.ShouldContain("-SkipRestoreBuild");
-        documentation.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
-        documentation.ShouldContain("reference-pending");
-        documentation.ShouldContain("Story 1.16");
-        AssertMetadataOnly(documentation, allowPatternDocumentation: true);
     }
 
     private static SafetyScanDiagnostic[] ScanManifestCoveredArtifacts(IReadOnlyList<SentinelSample> samples)

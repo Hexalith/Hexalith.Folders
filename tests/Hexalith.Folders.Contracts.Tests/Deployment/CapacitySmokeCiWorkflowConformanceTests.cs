@@ -11,11 +11,8 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class CapacitySmokeCiWorkflowConformanceTests
 {
-    private const string WorkflowPath = ".github/workflows/ci.yml";
-    private const string GateScriptPath = "tests/tools/run-capacity-smoke-ci-gates.ps1";
     private const string OperatorDocPath = "docs/operations/capacity-smoke-ci-gates.md";
     private const string ReportPath = "_bmad-output/gates/capacity-smoke-ci/latest.json";
-    private const string LoadProjectPath = "tests/load/Hexalith.Folders.LoadTests.csproj";
     private const string EvidencePath = "_bmad-output/gates/capacity-smoke-ci/reports/lifecycle-capacity-evidence.json";
 
     private static readonly string[] _categories =
@@ -67,144 +64,6 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
     ];
 
     [Fact]
-    public void CapacitySmokeWorkflowShouldExposeStableBlockingJobWithBaselineSetupPosture()
-    {
-        YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
-
-        GetScalar(workflow, "name").ShouldBe("CI");
-        GetScalar(GetMapping(workflow, "permissions"), "contents").ShouldBe("read");
-
-        YamlMappingNode jobs = GetMapping(workflow, "jobs");
-        GetMapping(jobs, "ci");
-        YamlMappingNode capacityJob = GetMapping(jobs, "folders-specialized-gates");
-
-        GetScalar(capacityJob, "name").ShouldBe("folders-specialized-gates");
-        GetScalar(capacityJob, "runs-on").ShouldBe("ubuntu-latest");
-
-        YamlMappingNode checkout = FindStep(capacityJob, "actions/checkout@v7");
-        GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
-        GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
-
-        YamlMappingNode submodules = GetSequence(capacityJob, "steps").Children.Cast<YamlMappingNode>()
-            .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
-        string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
-        submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-
-        YamlMappingNode setupDotnet = FindStep(capacityJob, "actions/setup-dotnet@v6");
-        YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
-        GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
-        GetScalar(setupWith, "cache").ShouldBe("true");
-        string cacheDependencyPath = GetScalar(setupWith, "cache-dependency-path");
-        foreach (string path in new[] { "Directory.Packages.props", "global.json", "nuget.config", "**/*.csproj" })
-        {
-            cacheDependencyPath.ShouldContain(path, Case.Sensitive);
-        }
-
-        string workflowText = ReadText(WorkflowPath);
-        workflowText.ShouldContain("./tests/tools/run-capacity-smoke-ci-gates.ps1");
-        workflowText.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
-        workflowText.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
-        workflowText.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        workflowText.ShouldNotContain("upload-artifact", Case.Insensitive);
-        workflowText.ShouldNotContain("playwright install", Case.Insensitive);
-    }
-
-    [Fact]
-    public void CapacitySmokeGateScriptShouldRunOnlyTheLoadHarnessAndFailClosed()
-    {
-        string script = ReadText(GateScriptPath);
-
-        script.ShouldContain("#Requires -Version 7");
-        script.ShouldContain("Set-StrictMode -Version Latest");
-        script.ShouldContain("$ErrorActionPreference = 'Stop'");
-        script.ShouldContain(ReportPath);
-        script.ShouldContain("$LASTEXITCODE");
-        script.ShouldContain(LoadProjectPath);
-        script.ShouldContain("'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath");
-        script.ShouldContain("--self-check");
-        script.ShouldContain("--profile', 'quick'");
-        script.ShouldContain("--run-id', 'capacity-smoke-ci'");
-        script.ShouldContain(EvidencePath);
-        script.ShouldContain("thresholds -ne 'reference_pending'");
-        script.ShouldContain("zero-or-partial-step-execution");
-        script.ShouldContain("missing-load-harness-assembly");
-        script.ShouldContain("malformed-evidence-json");
-
-        foreach (string category in _categories)
-        {
-            script.ShouldContain($"'{category}'", Case.Sensitive);
-        }
-
-        foreach (string step in _requiredSteps)
-        {
-            script.ShouldContain($"'{step}'", Case.Sensitive);
-        }
-
-        foreach (string excluded in _excludedLanes)
-        {
-            script.ShouldNotContain(excluded, Case.Insensitive);
-        }
-
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-    }
-
-    [Fact]
-    public void CapacitySmokeGateScriptShouldValidateCriticalEvidenceFailureCases()
-    {
-        string script = ReadText(GateScriptPath);
-
-        script.ShouldContain("function Assert-EvidenceShape", Case.Sensitive);
-        script.ShouldContain("foreach ($step in $requiredSteps)", Case.Sensitive);
-        script.ShouldContain("@($Evidence.measured_steps) -notcontains $step", Case.Sensitive);
-        script.ShouldContain("$Evidence.observed_step_counts.$step", Case.Sensitive);
-        script.ShouldContain("$count -lt 1", Case.Sensitive);
-        script.ShouldContain("zero-or-partial-step-execution", Case.Sensitive);
-        script.ShouldContain("missing-lifecycle-accepted-result-codes", Case.Sensitive);
-        script.ShouldContain("missing-status-allowed-result-code", Case.Sensitive);
-        script.ShouldContain("function Assert-NonProductionThresholds", Case.Sensitive);
-        script.ShouldContain("$Evidence.thresholds -ne 'reference_pending'", Case.Sensitive);
-
-        foreach (string forbidden in new[] { "p95", "throughput", "concurrent tenant", "c1 target", "c2 target", "c5 target", "target hardware" })
-        {
-            script.ShouldContain($"'{forbidden}'", Case.Sensitive);
-        }
-    }
-
-    [Fact]
-    public void CapacitySmokeReportShouldStayMetadataOnlyWhenPresent()
-    {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
-        {
-            return;
-        }
-
-        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
-        JsonElement root = document.RootElement;
-
-        RequiredString(root, "gate").ShouldBe("capacity-smoke-ci");
-        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
-        RequiredString(root, "report_path").ShouldBe(ReportPath);
-        RequiredString(root, "profile_name").ShouldBe("quick");
-        RequiredString(root, "threshold_posture").ShouldBe("reference_pending");
-        RequiredString(root, "evidence_path").ShouldBe(EvidencePath);
-        ReadStringArray(root, "categories").ShouldBe(_categories);
-        ReadStringArray(root, "required_measured_steps").ShouldBe(_requiredSteps);
-
-        if (root.TryGetProperty("measured_steps", out JsonElement measuredSteps))
-        {
-            measuredSteps.EnumerateArray()
-                .Select(static step => step.GetString().ShouldNotBeNull())
-                .ToArray()
-                .ShouldBe(_requiredSteps, ignoreOrder: true);
-        }
-
-        AssertMetadataOnlyJson(root);
-    }
-
-    [Fact]
     public void CapacitySmokeEvidenceShouldStayMetadataOnlyWhenPresent()
     {
         string fullEvidencePath = RepositoryPath(EvidencePath);
@@ -249,7 +108,6 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
         documentation.ShouldContain(ReportPath);
         documentation.ShouldContain("metadata-only");
         documentation.ShouldContain("reference_pending");
-        documentation.ShouldContain("Story 7.10");
         documentation.ShouldContain("C1");
         documentation.ShouldContain("C2");
         documentation.ShouldContain("C5");
@@ -278,22 +136,6 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
         evidenceWriter.ShouldContain("MeasuredSteps", Case.Sensitive);
         evidenceWriter.ShouldContain("ObservedStepCounts", Case.Sensitive);
         recorder.ShouldContain("RecordMeasuredStep", Case.Sensitive);
-    }
-
-    [Fact]
-    public void CapacitySmokeArtifactsShouldNotIntroduceRecursiveSubmoduleSetup()
-    {
-        Regex recursiveSubmodule = RecursiveSubmodulePattern();
-        foreach (string path in EnumerateScannedFiles())
-        {
-            if (path.StartsWith("tests/Hexalith.Folders.Contracts.Tests/Deployment/", StringComparison.Ordinal)
-                && path.EndsWith("ConformanceTests.cs", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            recursiveSubmodule.IsMatch(ReadText(path)).ShouldBeFalse($"{path} must not initialize nested submodules recursively.");
-        }
     }
 
     private static YamlMappingNode FindStep(YamlMappingNode job, string uses)

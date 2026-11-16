@@ -18,7 +18,6 @@ $calibrationReportRelativePath = '_bmad-output/gates/capacity-calibration/report
 $evidenceRelativePath = '_bmad-output/gates/capacity-calibration/reports/lifecycle-capacity-evidence.json'
 $loadProjectPath = 'tests/load/Hexalith.Folders.LoadTests.csproj'
 $sourceCommit = (& git -C $repositoryRoot rev-parse HEAD 2>$null).Trim()
-$pushed = $false
 $results = @()
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 
@@ -447,8 +446,6 @@ function Assert-TargetComparison {
 }
 
 try {
-    Push-Location $repositoryRoot
-    $pushed = $true
 
     New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
     Write-CapacityCalibrationReport -Status 'discovered' -Evidence $null
@@ -495,15 +492,6 @@ catch {
         [Console]::Error.WriteLine("CAPACITY-CALIBRATION-FAILED: reason=unexpected-failure type=$($_.Exception.GetType().Name)")
     }
 
-    if ($pushed) {
-        Pop-Location
-        $pushed = $false
-    }
 
     exit 1
-}
-finally {
-    if ($pushed) {
-        Pop-Location
-    }
 }

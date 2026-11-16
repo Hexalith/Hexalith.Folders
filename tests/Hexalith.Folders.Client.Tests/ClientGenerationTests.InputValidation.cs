@@ -15,7 +15,7 @@ public sealed partial class ClientGenerationTests
         string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "Hexalith.Folders.Client.Generation.csproj");
         ProcessResult build = RunProcess("dotnet", $"build \"{project}\" -c \"{BuildConfiguration}\" -m:1 -nr:false -p:NuGetAudit=false -v:q", RepositoryRoot, 120_000);
         build.ExitCode.ShouldBe(0, RedactDiagnosticOutput(build.Output, RepositoryRoot));
-        return Path.Combine(Path.GetDirectoryName(project)!, "bin", BuildConfiguration, "net10.0", "Hexalith.Folders.Client.Generation.dll");
+        return Path.Combine(Path.GetDirectoryName(project)!, "bin", BuildConfiguration, "net11.0", "Hexalith.Folders.Client.Generation.dll");
     });
 
     [Theory]
@@ -309,7 +309,7 @@ public sealed partial class ClientGenerationTests
         File.WriteAllText(configurationPath, configuration.ToString());
 
         string clientProject = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-        ProcessResult tool = RunProcess("dotnet", $"msbuild \"{clientProject}\" -getProperty:NSwagExe_Net100 -verbosity:quiet", RepositoryRoot, 120_000);
+        ProcessResult tool = RunProcess("dotnet", $"msbuild \"{clientProject}\" -getProperty:NSwagExe_Net110 -verbosity:quiet", RepositoryRoot, 120_000);
         tool.ExitCode.ShouldBe(0, RedactDiagnosticOutput(tool.Output, temp));
         string command = tool.Output.Trim();
         command.StartsWith("dotnet ", StringComparison.Ordinal).ShouldBeTrue(RedactDiagnosticOutput(command, temp));

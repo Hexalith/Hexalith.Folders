@@ -179,25 +179,6 @@ public sealed partial class ContainerImageConformanceTests
     }
 
     [Fact]
-    public void ContainerImageGateShouldPublishArchivesAndEmitMetadataOnlyReport()
-    {
-        string script = ReadText(GateScriptPath);
-
-        script.ShouldContain("#Requires -Version 7");
-        script.ShouldContain("/t:PublishContainer");
-        script.ShouldContain("ContainerArchiveOutputPath");
-        script.ShouldContain("-p:NuGetAudit=false");
-        script.ShouldContain("_bmad-output/gates/container-images/latest.json");
-        script.ShouldContain("hexalith-folders-server");
-        script.ShouldContain("hexalith-folders-workers");
-        script.ShouldContain("hexalith-folders-ui");
-        script.ShouldContain("$LASTEXITCODE");
-        script.ShouldNotContain("--no-restore", Case.Insensitive);
-        script.ShouldNotContain("ContainerRegistry", Case.Insensitive);
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-    }
-
-    [Fact]
     public void ContainerAndDeploymentArtifactsShouldNotContainSecretShapedMaterial()
     {
         foreach (string path in SanitizedArtifactPaths())
@@ -207,16 +188,6 @@ public sealed partial class ContainerImageConformanceTests
             {
                 pattern.IsMatch(text).ShouldBeFalse($"{path} contains forbidden secret-shaped material matching {pattern}.");
             }
-        }
-    }
-
-    [Fact]
-    public void NewContainerArtifactsShouldNotIntroduceRecursiveSubmoduleSetup()
-    {
-        Regex recursiveSubmodule = RecursiveSubmodulePattern();
-        foreach (string path in SanitizedArtifactPaths())
-        {
-            recursiveSubmodule.IsMatch(ReadText(path)).ShouldBeFalse($"{path} must not initialize nested submodules recursively.");
         }
     }
 

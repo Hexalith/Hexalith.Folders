@@ -19,7 +19,6 @@ $smokeReportRelativePath = '_bmad-output/gates/capacity-smoke-ci/reports'
 $evidenceRelativePath = '_bmad-output/gates/capacity-smoke-ci/reports/lifecycle-capacity-evidence.json'
 $loadProjectPath = 'tests/load/Hexalith.Folders.LoadTests.csproj'
 $loadReadmePath = 'tests/load/README.md'
-$pushed = $false
 $results = @()
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 
@@ -289,50 +288,41 @@ function Assert-NonProductionThresholds {
     }
 }
 
-try {
-    Push-Location $repositoryRoot
-    $pushed = $true
 
-    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
-    Write-CapacitySmokeReport -Status 'discovered' -Results $results -Evidence $null
+New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
+Write-CapacitySmokeReport -Status 'discovered' -Results $results -Evidence $null
 
-    foreach ($input in $requiredInputs) {
-        Assert-RequiredInput -RelativePath $input
-    }
-
-    Assert-LoadHarnessAssembly
-
-    Invoke-CapacityCommand -Category 'harness-self-check' -Arguments @(
-        'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
-        '--self-check',
-        '--profile', 'quick',
-        '--report-folder', $selfCheckRelativePath
-    )
-
-    Invoke-CapacityCommand -Category 'quick-lifecycle-smoke' -Arguments @(
-        'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
-        '--profile', 'quick',
-        '--run-id', 'capacity-smoke-ci',
-        '--report-folder', $smokeReportRelativePath
-    )
-
-    $evidence = Read-Evidence
-    Assert-EvidenceShape -Evidence $evidence
-    Add-Result -Category 'evidence-shape' -Status 'passed' -ExitCode 0
-    Write-CapacitySmokeReport -Status 'evidence-validated' -Results $results -Evidence $evidence
-
-    Assert-NonProductionThresholds -Evidence $evidence
-    Add-Result -Category 'non-production-thresholds' -Status 'passed' -ExitCode 0
-
-    Assert-MetadataOnlyJson -Node $evidence -Category 'metadata-only-report'
-    Write-CapacitySmokeReport -Status 'passed' -Results $results -Evidence $evidence
-    $report = Get-Content -Raw -Path $latestReportPath | ConvertFrom-Json
-    Assert-MetadataOnlyJson -Node $report -Category 'metadata-only-report'
-    Add-Result -Category 'metadata-only-report' -Status 'passed' -ExitCode 0
-    Write-CapacitySmokeReport -Status 'passed' -Results $results -Evidence $evidence
+foreach ($input in $requiredInputs) {
+    Assert-RequiredInput -RelativePath $input
 }
-finally {
-    if ($pushed) {
-        Pop-Location
-    }
-}
+
+Assert-LoadHarnessAssembly
+
+Invoke-CapacityCommand -Category 'harness-self-check' -Arguments @(
+    'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
+    '--self-check',
+    '--profile', 'quick',
+    '--report-folder', $selfCheckRelativePath
+)
+
+Invoke-CapacityCommand -Category 'quick-lifecycle-smoke' -Arguments @(
+    'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
+    '--profile', 'quick',
+    '--run-id', 'capacity-smoke-ci',
+    '--report-folder', $smokeReportRelativePath
+)
+
+$evidence = Read-Evidence
+Assert-EvidenceShape -Evidence $evidence
+Add-Result -Category 'evidence-shape' -Status 'passed' -ExitCode 0
+Write-CapacitySmokeReport -Status 'evidence-validated' -Results $results -Evidence $evidence
+
+Assert-NonProductionThresholds -Evidence $evidence
+Add-Result -Category 'non-production-thresholds' -Status 'passed' -ExitCode 0
+
+Assert-MetadataOnlyJson -Node $evidence -Category 'metadata-only-report'
+Write-CapacitySmokeReport -Status 'passed' -Results $results -Evidence $evidence
+$report = Get-Content -Raw -Path $latestReportPath | ConvertFrom-Json
+Assert-MetadataOnlyJson -Node $report -Category 'metadata-only-report'
+Add-Result -Category 'metadata-only-report' -Status 'passed' -ExitCode 0
+Write-CapacitySmokeReport -Status 'passed' -Results $results -Evidence $evidence

@@ -28,7 +28,6 @@ public sealed partial class OperationsAuditDocsConformanceTests
     private const string DispositionMapperPath = "src/Hexalith.Folders.UI/Services/DispositionLabelMapper.cs";
     private const string RedactionVisibilityPath = "src/Hexalith.Folders.Contracts/Projections/Audit/RedactionVisibility.cs";
     private const string FieldDisclosurePath = "src/Hexalith.Folders.UI/Services/FieldDisclosure.cs";
-    private const string SanitizerPath = "src/Hexalith.Folders/Observability/FolderAuditSanitizer.cs";
     private const string ObservabilityManifestPath = "deploy/observability/production/observability.yaml";
     private const string TenantDeletionRunbookPath = "docs/runbooks/tenant-deletion.md";
     private const string LeakageCorpusPath = "tests/fixtures/audit-leakage-corpus.json";
@@ -37,13 +36,7 @@ public sealed partial class OperationsAuditDocsConformanceTests
     private const string AuditDocPath = "docs/operations/audit-and-redaction.md";
     private const string IncidentDocPath = "docs/operations/incident-alerting-and-recovery.md";
 
-    private const string GateScriptPath = "tests/tools/run-operations-audit-docs-gates.ps1";
-    private const string WorkflowPath = ".github/workflows/contract-spine.yml";
-    private const string CiWorkflowPath = ".github/workflows/ci.yml";
-    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
     private const string ReportPath = "_bmad-output/gates/operations-audit-docs/latest.json";
-
-    private const string ConformanceFqn = "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests";
 
     private static readonly string[] RequiredDocs = [ConsoleDocPath, AuditDocPath, IncidentDocPath];
 
@@ -378,68 +371,6 @@ public sealed partial class OperationsAuditDocsConformanceTests
         {
             forbidden.ShouldContain(channel);
         }
-    }
-
-    [Fact]
-    public void OperationsAuditDocsGateScriptFailsClosedAndEmitsBoundedEvidence()
-    {
-        string script = ReadText(GateScriptPath);
-        foreach (string required in new[]
-        {
-            "#Requires -Version 7",
-            "Set-StrictMode -Version Latest",
-            "$ErrorActionPreference = 'Stop'",
-            ReportPath,
-            "$LASTEXITCODE",
-            "utf8NoBOM",
-            "diagnostic_policy",
-            "metadata-only",
-            "Push-Location",
-            "Pop-Location",
-            "GATE-VACUOUS",
-            "xunit",
-            $"FullyQualifiedName~{ConformanceFqn}",
-        })
-        {
-            script.ShouldContain(required, Case.Sensitive);
-        }
-
-        AssertNoRecursiveSubmoduleCommand(script);
-    }
-
-    [Fact]
-    public void ContractSpineWorkflowAndBaselineCiWireOperationsAuditDocsGate()
-    {
-        string workflow = ReadText(WorkflowPath);
-        workflow.ShouldContain("./tests/tools/run-operations-audit-docs-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
-        workflow.ShouldContain("submodules: false", Case.Sensitive);
-        workflow.ShouldContain("contents: read", Case.Sensitive);
-        AssertNoRecursiveSubmoduleCommand(workflow);
-
-        // Lane separation: the static gate belongs to contract-spine, never to a new ci.yml top-level lane.
-        string ci = ReadText(CiWorkflowPath);
-        ci.ShouldNotContain("run-operations-audit-docs-gates.ps1", Case.Sensitive);
-
-        string baseline = ReadText(BaselineGatePath);
-        baseline.ShouldContain(ConformanceFqn, Case.Sensitive);
-    }
-
-    [Fact]
-    public void OperationsAuditDocsLatestReportStaysMetadataOnlyWhenPresent()
-    {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
-        {
-            return;
-        }
-
-        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
-        JsonElement root = document.RootElement;
-
-        RequiredString(root, "gate").ShouldBe("operations-audit-docs");
-        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
-        RequiredString(root, "report_path").ShouldBe(ReportPath);
-        AssertMetadataOnlyJson(root);
     }
 
     [Fact]

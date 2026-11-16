@@ -37,7 +37,8 @@
           Condition="'$(DesignTimeBuild)' != 'true'">
     <MakeDir Directories="$(MSBuildProjectDirectory)/Generated" />
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="$(NSwagExe_Net100) run nswag.json /variables:Configuration=$(Configuration)" />
+          EnvironmentVariables="DOTNET_ROLL_FORWARD=Major"
+          Command="$(NSwagExe_Net110) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
   <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
           DependsOnTargets="GenerateHexalithFoldersClient"
@@ -45,7 +46,7 @@
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; -p:UseNuGetDeps=$(UseNuGetDeps) -p:UseHexalithProjectReferences=$(UseHexalithProjectReferences) -p:NuGetAudit=$(NuGetAudit) -p:NuGetAuditMode=$(NuGetAuditMode) -p:NuGetAuditLevel=$(NuGetAuditLevel) -p:ContinuousIntegrationBuild=$(ContinuousIntegrationBuild) -p:RestoreConfigFile=&quot;$(RestoreConfigFile)&quot; -p:EnableNETAnalyzers=$(EnableNETAnalyzers) -p:RunAnalyzers=$(RunAnalyzers) -p:RunAnalyzersDuringBuild=$(RunAnalyzersDuringBuild) -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           DependsOnTargets="GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers"
@@ -57,10 +58,12 @@
     <Touch Files="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp" AlwaysCreate="true" />
   </Target>
   <Target Name="GenerateHexalithFoldersNativeClient" Condition="'$(DesignTimeBuild)' != 'true'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(NSwagExe_Net100) run nswag-native.json" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" EnvironmentVariables="DOTNET_ROLL_FORWARD=Major"
+          Command="$(NSwagExe_Net110) run nswag-native.json" />
   </Target>
   <Target Name="VerifyHexalithFoldersNativeClient">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(NSwagExe_Net100) run nswag-native.json /variables:NativeClientOutput=obj/HexalithFoldersNativeClient.verify.cs" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" EnvironmentVariables="DOTNET_ROLL_FORWARD=Major"
+          Command="$(NSwagExe_Net110) run nswag-native.json /variables:NativeClientOutput=obj/HexalithFoldersNativeClient.verify.cs" />
     <GetFileHash Files="$(MSBuildProjectDirectory)/Generated/HexalithFoldersNativeClient.g.cs">
       <Output TaskParameter="Items" ItemName="NativeStoredHash" />
     </GetFileHash>

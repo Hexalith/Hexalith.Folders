@@ -91,7 +91,7 @@ $report = [ordered]@{
         rawSchemaDiffsRetained = $false
     }
     liveDriftCheck = [ordered]@{
-        status = 'ci-scheduled'
+        status = 'not_run'
         localBuildImpact = 'none'
         credentialsRequired = $false
     }

@@ -8,7 +8,7 @@ import pathlib
 import subprocess
 import sys
 
-from release_package_contract import ROOT, load_manifest
+from release_package_contract import ROOT, load_manifest, validate_package_output_directory
 
 
 def main() -> int:
@@ -30,10 +30,7 @@ def main() -> int:
     if len(source_revision) != 40 or any(character not in "0123456789abcdef" for character in source_revision):
         raise ValueError("source revision must be an exact lowercase commit SHA")
 
-    output = args.output_directory.resolve()
-    expected_output = (ROOT / "nupkgs").resolve()
-    if output != expected_output or args.output_directory.is_symlink():
-        raise ValueError(f"output directory must be the repository-owned package directory: {expected_output}")
+    output = validate_package_output_directory(args.output_directory)
     output.mkdir(parents=True, exist_ok=True)
     for pattern in ("*.nupkg", "*.snupkg"):
         for package in output.glob(pattern):

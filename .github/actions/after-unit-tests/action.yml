@@ -1,0 +1,32 @@
+name: Folders contract and generated artifact checks
+description: Run complete delegated projects and distinct package and capacity product checks using shared Release outputs.
+runs:
+  using: composite
+  steps:
+    - name: Verify product source whitespace
+      shell: bash
+      run: dotnet format whitespace Hexalith.Folders.CI.slnx --verify-no-changes --no-restore --include ./src/ ./tests/ ./samples/
+    - name: Verify product source analyzers
+      shell: bash
+      run: dotnet format analyzers Hexalith.Folders.CI.slnx --verify-no-changes --no-restore --severity warn --include ./src/ ./tests/ ./samples/ --exclude-diagnostics CA1822 CA2007
+    - name: Run complete Contracts project
+      shell: pwsh
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.Contracts.Tests
+    - name: Run complete Client project
+      shell: pwsh
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.Client.Tests
+    - name: Run complete core provider project
+      shell: pwsh
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.Tests
+    - name: Run complete Server project including explicit security controls
+      shell: pwsh
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.Server.Tests
+    - name: Check package archives and dependency inventory
+      shell: bash
+      run: python3 -m scripts.tests.test_release_packages
+    - name: Run capacity smoke against shared build outputs
+      shell: pwsh
+      run: ./tests/tools/run-capacity-smoke-ci-gates.ps1
+    - name: Run measured capacity calibration
+      shell: pwsh
+      run: ./tests/tools/run-capacity-calibration-gates.ps1

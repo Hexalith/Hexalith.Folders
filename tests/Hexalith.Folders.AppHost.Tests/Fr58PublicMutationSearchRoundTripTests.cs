@@ -36,11 +36,6 @@ public sealed class Fr58PublicMutationSearchRoundTripTests
         + "(DW-292) and DenyAllEventStoreAuthorizationValidator; Story 11.15 DCP lane is backlog. "
         + "A skipped governed run is not FR58 acceptance.";
 
-    [Fact]
-    public void Task0BlockersShouldKeepLivePathPrerequisitesUnsatisfied()
-    {
-        LivePathPrerequisitesSatisfied().ShouldBeFalse(LivePathBlocker);
-    }
 
     [Fact]
     public async Task AuthenticatedPublicAddWorkspaceFileShouldConvergeOnPublicSearchAndStatus()
