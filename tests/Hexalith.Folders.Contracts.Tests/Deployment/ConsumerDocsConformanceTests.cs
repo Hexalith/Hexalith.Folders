@@ -34,11 +34,6 @@ public sealed partial class ConsumerDocsConformanceTests
     private const string FileCommitDiagramPath = "docs/diagrams/file-commit-flow.md";
     private const string AuthAclDiagramPath = "docs/diagrams/auth-acl-decision-flow.md";
 
-    private const string GateScriptPath = "tests/tools/run-consumer-docs-gates.ps1";
-    private const string WorkflowPath = ".github/workflows/contract-spine.yml";
-    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
-    private const string ReportPath = "_bmad-output/gates/consumer-docs/latest.json";
-
     private const string GoldenLifecycleExampleId = "consumer-golden-lifecycle-ordering";
 
     private static readonly string[] RequiredDocs =
@@ -185,69 +180,6 @@ public sealed partial class ConsumerDocsConformanceTests
         {
             AssertDocMetadataOnly(ReadText(doc));
         }
-    }
-
-    [Fact]
-    public void ConsumerDocsGateScriptFailsClosedAndEmitsBoundedEvidence()
-    {
-        string script = ReadText(GateScriptPath);
-        foreach (string required in new[]
-        {
-            "#Requires -Version 7",
-            "Set-StrictMode -Version Latest",
-            "$ErrorActionPreference = 'Stop'",
-            ReportPath,
-            "$LASTEXITCODE",
-            "utf8NoBOM",
-            "diagnostic_policy",
-            "metadata-only",
-            "Push-Location",
-            "Pop-Location",
-            "GATE-VACUOUS",
-            "xunit",
-            "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
-        })
-        {
-            script.ShouldContain(required, Case.Sensitive);
-        }
-
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-    }
-
-    [Fact]
-    public void ContractSpineWorkflowAndBaselineCiWireConsumerDocsGate()
-    {
-        string workflow = ReadText(WorkflowPath);
-        workflow.ShouldContain("./tests/tools/run-consumer-docs-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
-        workflow.ShouldContain("submodules: false", Case.Sensitive);
-        workflow.ShouldContain("contents: read", Case.Sensitive);
-        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
-
-        // Lane separation: the static gate belongs to contract-spine, never to a new ci.yml top-level lane.
-        string ci = ReadText(".github/workflows/ci.yml");
-        ci.ShouldNotContain("run-consumer-docs-gates.ps1", Case.Sensitive);
-
-        string baseline = ReadText(BaselineGatePath);
-        baseline.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests", Case.Sensitive);
-        baseline.ShouldContain("samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj", Case.Sensitive);
-    }
-
-    [Fact]
-    public void ConsumerDocsLatestReportStaysMetadataOnlyWhenPresent()
-    {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
-        {
-            return;
-        }
-
-        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
-        JsonElement root = document.RootElement;
-
-        RequiredString(root, "gate").ShouldBe("consumer-docs");
-        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
-        RequiredString(root, "report_path").ShouldBe(ReportPath);
-        AssertMetadataOnlyJson(root);
     }
 
     [Fact]

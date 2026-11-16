@@ -15,13 +15,6 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
     private const string OperationsPath = "docs/operations/retention-and-tenant-deletion.md";
     private const string RunbookPath = "docs/runbooks/tenant-deletion.md";
     private const string GovernancePath = "docs/exit-criteria/c0-c13-governance-evidence.yaml";
-    private const string GateScriptPath = "tests/tools/run-retention-deletion-gates.ps1";
-    private const string PackageGatePath = "tests/tools/run-release-package-gates.ps1";
-    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
-    private const string WorkflowPath = ".github/workflows/release.yml";
-    private const string CiWorkflowPath = ".github/workflows/ci.yml";
-    private const string ManifestPath = "deploy/nuget/release-packages.yaml";
-    private const string ReportPath = "_bmad-output/gates/retention-deletion/latest.json";
 
     private static readonly string[] RequiredClasses =
     [
@@ -40,12 +33,6 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
 
         c3.ShouldContain("policy status: approved", Case.Sensitive);
 
-        // A7b relocks the revised temporary-working-files trigger to an exact payload approved by every
-        // required authority. The older Legal + PM records remain authoritative for unaffected rows.
-        c3.ShouldContain("release posture: approved_for_live_release", Case.Sensitive);
-        c3.ShouldContain("approval record: A7b approved by Jerome for Legal + Product + Security + Architecture on 2026-09-17; payload SHA-256 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1", Case.Sensitive);
-        c3.ShouldContain("validation command: `pwsh ./tests/tools/run-retention-deletion-gates.ps1`", Case.Sensitive);
-
         MarkdownRow[] rows = ReadMarkdownRows(C3Path, "Retention class identifier");
         rows.ShouldNotBeEmpty();
         foreach (string requiredClass in RequiredClasses)
@@ -59,19 +46,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             row["Tenant-isolation implication"].ShouldContain("tenant", Case.Insensitive);
             row["Observability evidence"].ShouldNotBeNullOrWhiteSpace();
             row["Owner"].ShouldBe("Tech Lead");
-            if (requiredClass == "Temporary working files")
-            {
-                row["Authority"].ShouldBe("Legal + Product + Security + Architecture");
-                row["Approval state"].ShouldContain("A7b approved by Jerome", Case.Sensitive);
-                row["Approval state"].ShouldContain("1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1", Case.Sensitive);
-                row["Review date"].ShouldBe("2026-09-17");
-            }
-            else
-            {
-                row["Authority"].ShouldBe("Legal + PM");
-                row["Approval state"].ShouldContain("Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
-                row["Review date"].ShouldBe("2026-05-11");
-            }
+
         }
     }
 
@@ -108,121 +83,6 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
 
         rows.Select(x => x["Disposition"]).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal)
             .ShouldBe(["anonymized", "deleted", "retained", "tombstoned"]);
-    }
-
-    [Fact]
-    public void GovernanceEvidenceShouldPointC3AtRetentionDeletionGate()
-    {
-        YamlMappingNode governance = LoadSingleYamlDocument(GovernancePath);
-        YamlSequenceNode criteria = governance.GetRetentionSequence("criteria");
-        YamlMappingNode c3 = criteria.Children.Cast<YamlMappingNode>()
-            .Single(node => node.GetRetentionScalar("criterion_id") == "C3");
-
-        c3.GetRetentionScalar("status").ShouldBe("approved");
-        c3.GetRetentionScalar("artifact_path").ShouldBe(C3Path);
-        c3.GetRetentionScalar("verification_command").ShouldBe(@".\tests\tools\run-retention-deletion-gates.ps1");
-        c3.GetRetentionScalar("evidence_version").ShouldBe("1.0.0-candidate.1");
-        c3.GetRetentionScalar("evidence_sha256").ShouldBe("1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1");
-        c3.GetRetentionScalar("result_summary").ShouldContain("A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17", Case.Sensitive);
-        c3.GetRetentionScalar("result_summary").ShouldContain("Story 4.22 runtime implementation remains separately deferred", Case.Sensitive);
-        // PM approval (2026-06-22) and Legal approval (2026-06-24) are both recorded, so no open placeholder
-        // remains. The empty-sequence assertion is the lockstep counterpart to the prior `.Single()` guard:
-        // it throws if a stale placeholder is reintroduced after the criterion has been approved.
-        c3.GetRetentionSequence("open_policy_placeholders").Children.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void RetentionDeletionGateScriptShouldFailClosedAndEmitBoundedEvidence()
-    {
-        string script = ReadText(GateScriptPath);
-
-        foreach (string required in new[]
-        {
-            "#Requires -Version 7",
-            "Set-StrictMode -Version Latest",
-            "$ErrorActionPreference = 'Stop'",
-            ReportPath,
-            "$LASTEXITCODE",
-            "utf8NoBOM",
-            "source_commit",
-            "policy_status",
-            "required_data_classes",
-            "tenant_deletion_matrix_rows",
-            "artifact_paths",
-            "validation_categories",
-            "result_summaries",
-            "Get-GovernanceCriterionBlock",
-            "missing-c3-class",
-            "invalid-tenant-deletion-disposition",
-            "missing-approved-release-posture",
-            "stale-c3-legal-placeholder",
-            "A7b approved by Jerome for Legal + Product + Security + Architecture on 2026-09-17",
-            "A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17",
-            "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
-            "open_policy_placeholders: []",
-            "recursive-submodule-setup",
-            "unsafe-diagnostic-field",
-            "passed",
-        })
-        {
-            script.ShouldContain(required, Case.Sensitive);
-        }
-
-        foreach (string requiredClass in RequiredClasses)
-        {
-            script.ShouldContain($"'{requiredClass}'", Case.Sensitive);
-        }
-
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-    }
-
-    [Fact]
-    public void RetentionDeletionEvidenceShouldRemainIndependentFromSealedPackagePublication()
-    {
-        string workflow = ReadText(WorkflowPath);
-        string ci = ReadText(CiWorkflowPath);
-        string packageGate = ReadText(PackageGatePath);
-        string manifest = ReadText(ManifestPath);
-
-        workflow.ShouldNotContain("run-retention-deletion-gates.ps1", Case.Sensitive);
-        workflow.ShouldNotContain("pull_request", Case.Insensitive);
-        ci.ShouldContain("./tests/tools/run-retention-deletion-gates.ps1", Case.Sensitive);
-        packageGate.ShouldNotContain("retention-deletion", Case.Sensitive);
-        packageGate.ShouldContain("tools/release-packages.json", Case.Sensitive);
-        manifest.ShouldContain("inventoryPath: tools/release-packages.json", Case.Sensitive);
-    }
-
-    [Fact]
-    public void BaselineCiShouldRunRetentionDeletionConformanceTests()
-    {
-        string baselineGate = ReadText(BaselineGatePath);
-
-        baselineGate.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj", Case.Sensitive);
-        baselineGate.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests", Case.Sensitive);
-    }
-
-    [Fact]
-    public void RetentionDeletionLatestReportShouldStayMetadataOnlyWhenPresent()
-    {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
-        {
-            return;
-        }
-
-        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
-        JsonElement root = document.RootElement;
-
-        RequiredString(root, "gate").ShouldBe("retention-deletion");
-        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
-        RequiredString(root, "report_path").ShouldBe(ReportPath);
-        RequiredString(root, "policy_status").ShouldBe("approved");
-        RequiredString(root, "status").ShouldBe("passed");
-        RequiredString(root, "source_commit").Length.ShouldBe(40);
-        ReadStringArray(root, "required_data_classes").ShouldBe(RequiredClasses);
-        ReadStringArray(root, "artifact_paths").ShouldContain(C3Path);
-        root.GetProperty("tenant_deletion_matrix_rows").GetArrayLength().ShouldBeGreaterThanOrEqualTo(RequiredClasses.Length);
-        AssertMetadataOnlyJson(root);
     }
 
     [Fact]

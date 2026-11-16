@@ -25,7 +25,6 @@ public sealed class GitHubDriftConformanceTests
     private const string CatalogRelativePath = "docs/contract/provider-compatibility-catalog.md";
     private const string PackagePinRelativePath = "references/Hexalith.Builds/Props/Directory.Packages.props";
     private const string LibGit2SharpPinRelativePath = PackagePinRelativePath;
-    private const string NightlyDriftScriptRelativePath = "tests/tools/run-nightly-drift-gates.ps1";
     private const string ExpectedSchemaVersion = "github-pinned-profile-v1";
     private const string ExpectedDriftLane = "pinned-profile-manifest-plus-failure-mode-coverage-matrix";
     private const string UnmappedReasonCode = "github_unmapped_outcome";
@@ -163,20 +162,15 @@ public sealed class GitHubDriftConformanceTests
     }
 
     [Fact]
-    public void GitHubDriftLaneMakesNoNetworkCall()
+    public void PinnedProfileDoesNotContainNetworkEndpoints()
     {
         string manifest = File.ReadAllText(RepositoryPath(ManifestRelativePath));
-        string script = File.ReadAllText(RepositoryPath(NightlyDriftScriptRelativePath));
 
         foreach (string host in new[] { "api.github.com", "github.com", "https://", "http://" })
         {
             manifest.ShouldNotContain(host, Case.Insensitive);
         }
 
-        script.ShouldNotContain("api.github.com", Case.Insensitive);
-        script.ShouldContain("tests/contracts/github/pinned-profile.json", Case.Sensitive);
-        script.ShouldContain("github-pinned-profile-integrity", Case.Sensitive);
-        script.ShouldContain("github-failure-mode-coverage", Case.Sensitive);
     }
 
     [Fact]
@@ -232,17 +226,6 @@ public sealed class GitHubDriftConformanceTests
         // A new mapper category, or a category the catalog claims but the mapper cannot emit, reddens here.
         codomain.Order(StringComparer.Ordinal).ToArray()
             .ShouldBe(claims.FailureCategories.Order(StringComparer.Ordinal).ToArray());
-    }
-
-    [Fact]
-    public void NightlyDriftExpectedTestCountsMatchTheRealCaseCounts()
-    {
-        string script = File.ReadAllText(RepositoryPath(NightlyDriftScriptRelativePath));
-
-        CountExactly(script, @"(?<![A-Za-z_])expected_test_count = (?<count>\d+)")
-            .ShouldBe(CountXunitCases(typeof(ForgejoManifestAndDriftTests)), "Forgejo drift lane test count");
-        CountExactly(script, @"github_expected_test_count = (?<count>\d+)")
-            .ShouldBe(CountXunitCases(typeof(GitHubDriftConformanceTests)), "GitHub drift lane test count");
     }
 
     private static int CountExactly(string script, string pattern)

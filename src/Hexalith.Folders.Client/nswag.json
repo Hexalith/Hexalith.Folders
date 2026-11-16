@@ -1,5 +1,5 @@
 {
-  "runtime": "Net100",
+  "runtime": "Net110",
   "documentGenerator": {
     "fromDocument": {
       "url": "../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",

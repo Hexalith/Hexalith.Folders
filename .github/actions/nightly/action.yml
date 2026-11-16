@@ -1,0 +1,11 @@
+name: Folders provider product checks
+description: Verify pinned provider classification and sanitized reports, then exercise the real Forgejo TLS smart HTTP provider.
+runs:
+  using: composite
+  steps:
+    - name: Check provider classification and redaction
+      shell: pwsh
+      run: ./tests/tools/run-nightly-drift-gates.ps1 -ProviderProfile pinned-snapshots
+    - name: Run real Forgejo Alpine smart HTTP smoke
+      shell: pwsh
+      run: ./tests/tools/run-forgejo-smart-http-alpine-smoke.ps1

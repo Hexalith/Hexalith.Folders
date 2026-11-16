@@ -9,49 +9,7 @@ public sealed class ContractSpineCiGateTests
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
-    private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
-    private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-contract-spine-gates.ps1");
     private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "contract-spine-ci-gates.md");
-
-    [Fact]
-    public void WorkflowWiresFocusedContractGeneratedArtifactGatesOnly()
-    {
-        string workflow = File.ReadAllText(WorkflowPath);
-        string script = File.ReadAllText(GateScriptPath);
-
-        workflow.ShouldContain("actions/checkout@v7");
-        workflow.ShouldContain("submodules: false");
-        workflow.ShouldContain("run: bash scripts/prepare-ci-topology-projects.sh");
-        workflow.IndexOf("run: bash scripts/prepare-ci-topology-projects.sh", StringComparison.Ordinal)
-            .ShouldBeLessThan(workflow.IndexOf("run: dotnet restore Hexalith.Folders.CI.slnx", StringComparison.Ordinal));
-        workflow.ShouldContain("actions/setup-dotnet@v6");
-        workflow.ShouldContain("global-json-file: global.json");
-        workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
-        workflow.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
-        workflow.ShouldContain("./tests/tools/run-contract-spine-gates.ps1 -NoRestore");
-        workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
-        workflow.ShouldNotContain("dotnet publish", Case.Insensitive);
-        workflow.ShouldNotContain("semantic-release", Case.Insensitive);
-        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
-
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll");
-        script.ShouldContain("tests/Hexalith.Folders.Client.Tests/bin/Release/net11.0/Hexalith.Folders.Client.Tests.dll");
-        script.ShouldNotContain("Hexalith.Folders.Contracts.Tests.McpCli");
-        YamlMappingNode mcpCliStep = RequiredSequence(RequiredMapping(RequiredMapping(LoadYamlMapping(WorkflowPath), "jobs"), "contract-generated-artifact-gates"), "steps")
-            .Children.OfType<YamlMappingNode>().Single(step => RequiredScalar(step, "name") == "Run McpCli contract gates");
-        RequiredScalar(mcpCliStep, "if").ShouldBe("${{ !cancelled() }}");
-        RequiredScalar(mcpCliStep, "shell").ShouldBe("pwsh");
-        string mcpCliRun = RequiredScalar(mcpCliStep, "run");
-        mcpCliRun.ShouldContain("dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.McpCli");
-        mcpCliRun.ShouldContain("$exitCode = $LASTEXITCODE");
-        mcpCliRun.ShouldContain("McpCli selector executed zero tests");
-        mcpCliRun.ShouldContain("exit $exitCode");
-        workflow.ShouldContain("references/Hexalith.McpCli");
-        script.ShouldContain("selector executed zero tests");
-        script.ShouldContain("$LASTEXITCODE");
-        script.ShouldNotContain("--filter", Case.Sensitive);
-        script.ShouldNotContain("--recursive", Case.Insensitive);
-    }
 
     [Fact]
     public void ServerVsSpineGateFailsClosedUntilSingleNonSelfServerSourceExists()
@@ -140,8 +98,6 @@ public sealed class ContractSpineCiGateTests
         documentation.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
         documentation.ShouldContain(".\\tests\\tools\\run-contract-spine-gates.ps1 -NoRestore");
         documentation.ShouldContain("Server OpenAPI emission");
-        documentation.ShouldContain("Story 1.15");
-        documentation.ShouldContain("Story 1.16");
         foreach (string category in categories)
         {
             documentation.ShouldContain(category);

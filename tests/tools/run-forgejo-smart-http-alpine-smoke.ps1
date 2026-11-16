@@ -1,9 +1,11 @@
 [CmdletBinding()]
-param()
+param(
+    [ValidatePattern('^[a-f0-9]{32}$')]
+    [string]$RunId = [Guid]::NewGuid().ToString('N')
+)
 
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$runId = [Guid]::NewGuid().ToString('N')
 $networkName = "hxf-forgejo-smoke-$runId"
 $temporaryDirectory = Join-Path ([IO.Path]::GetTempPath()) "hxf-forgejo-smoke-$runId"
 $certificatePath = Join-Path $temporaryDirectory 'cert.pem'
@@ -58,7 +60,8 @@ try {
         '--runtime', 'linux-musl-x64',
         '-m:1',
         '-p:MinVerVersionOverride=1.0.0',
-        '-p:NuGetAudit=false')
+        '-p:UseHexalithProjectReferences=false',
+        '-warnaserror')
 
     foreach ($version in @('16.0.3', '15.0.7')) {
         $containerName = "hxf-forgejo-smoke-$version-$runId"
@@ -127,7 +130,7 @@ try {
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_TOKEN',
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_CERT_SHA256',
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_VERSION',
-            'mcr.microsoft.com/dotnet/aspnet:10.0-alpine',
+            'mcr.microsoft.com/dotnet/aspnet:11.0-alpine',
             'dotnet', 'Hexalith.Folders.Tests.dll',
             '-noLogo', '-noColor', '-method', $testMethod)
         $smokeOutput = & docker @smokeArguments 2>&1
@@ -138,7 +141,7 @@ try {
         }
 
         $smokeSummary = $smokeOutput -join [Environment]::NewLine
-        if ($smokeSummary -notmatch '(?i)Total:\s*1' -or $smokeSummary -notmatch '(?i)Skipped:\s*0') {
+        if ($smokeSummary -notmatch '(?im)^\s*Hexalith\.Folders\.Tests\s+Total:\s*1,\s*Errors:\s*0,\s*Failed:\s*0,\s*Skipped:\s*0,\s*Not Run:\s*0(?:,|\s*$)') {
             throw "Forgejo $version Alpine smart-HTTP smoke did not execute exactly one non-skipped test."
         }
 

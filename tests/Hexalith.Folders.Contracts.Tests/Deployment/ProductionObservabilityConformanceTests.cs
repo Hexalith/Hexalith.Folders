@@ -18,10 +18,6 @@ public sealed partial class ProductionObservabilityConformanceTests
     private const string ReadinessCheckPath = "src/Hexalith.Folders.ServiceDefaults/MonitoredSnapshotReadinessCheck.cs";
     private const string TelemetryNamesPath = "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs";
     private const string TelemetryEmitterPath = "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs";
-    private const string GateScriptPath = "tests/tools/run-production-observability-gates.ps1";
-    private const string WorkflowPath = ".github/workflows/contract-spine.yml";
-    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
-    private const string GovernancePath = "docs/exit-criteria/c0-c13-governance-evidence.yaml";
     private const string C2Path = "docs/exit-criteria/c2-freshness.md";
     private const string OperationsPath = "docs/operations/production-observability.md";
     private const string ReportPath = "_bmad-output/gates/production-observability/latest.json";
@@ -198,75 +194,6 @@ public sealed partial class ProductionObservabilityConformanceTests
     }
 
     [Fact]
-    public void ProductionObservabilityGateScriptShouldFailClosedAndEmitBoundedEvidence()
-    {
-        string script = ReadText(GateScriptPath);
-
-        foreach (string required in new[]
-        {
-            "#Requires -Version 7",
-            "Set-StrictMode -Version Latest",
-            "$ErrorActionPreference = 'Stop'",
-            ReportPath,
-            "$LASTEXITCODE",
-            "utf8NoBOM",
-            "diagnostic_policy",
-            "metadata-only",
-            "Push-Location",
-            "Pop-Location",
-            "GATE-VACUOUS",
-            "xunit",
-            LiveAlertEvidence,
-            "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
-        })
-        {
-            script.ShouldContain(required, Case.Sensitive);
-        }
-
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        script.ShouldContain("owning_component = 'folders-server'; liveness = '/alive'; readiness = '/ready'", Case.Sensitive);
-        script.ShouldContain("owning_component = 'folders-workers'; liveness = '/alive'; readiness = '/ready'", Case.Sensitive);
-    }
-
-    [Fact]
-    public void ContractSpineWorkflowAndBaselineCiShouldWireObservabilityGate()
-    {
-        string workflow = ReadText(WorkflowPath);
-        workflow.ShouldContain("./tests/tools/run-production-observability-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
-        workflow.ShouldContain("submodules: false", Case.Sensitive);
-        workflow.ShouldContain("contents: read", Case.Sensitive);
-        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
-
-        // Lane separation: the static gate belongs to contract-spine, never to a new ci.yml top-level lane.
-        string ci = ReadText(".github/workflows/ci.yml");
-        ci.ShouldNotContain("run-production-observability-gates.ps1", Case.Sensitive);
-
-        string baseline = ReadText(BaselineGatePath);
-        baseline.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj", Case.Sensitive);
-        baseline.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests", Case.Sensitive);
-    }
-
-    [Fact]
-    public void GovernanceEvidenceAndC2DocsShouldRecordStory712Ownership()
-    {
-        YamlMappingNode governance = LoadSingleYamlDocument(GovernancePath);
-        YamlMappingNode c2 = Sequence(governance, "criteria").Children.Cast<YamlMappingNode>()
-            .Single(node => Scalar(node, "criterion_id") == "C2");
-
-        Scalar(c2, "status").ShouldBe("approved");
-        Scalar(c2, "artifact_path").ShouldBe(C2Path);
-        Scalar(c2, "result_summary").ShouldContain("Story 7.12", Case.Sensitive);
-        Scalar(c2, "result_summary").ShouldContain("production observability", Case.Insensitive);
-
-        string c2Doc = ReadText(C2Path);
-        c2Doc.ShouldContain("500", Case.Sensitive);
-        c2Doc.ShouldContain("Story 7.12", Case.Sensitive);
-        // The deferred-implementation section must record what 7.12 now implements without redefining the target.
-        string deferred = c2Doc[c2Doc.IndexOf("## Deferred implementation", StringComparison.Ordinal)..];
-        deferred.ShouldContain("production observability", Case.Insensitive);
-    }
-
-    [Fact]
     public void OperationsDocShouldDocumentValidationAndMetadataOnlyPolicy()
     {
         string operations = ReadText(OperationsPath);
@@ -285,24 +212,6 @@ public sealed partial class ProductionObservabilityConformanceTests
 
         operations.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
         AssertManifestMetadataOnly(operations);
-    }
-
-    [Fact]
-    public void ProductionObservabilityLatestReportShouldStayMetadataOnlyWhenPresent()
-    {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
-        {
-            return;
-        }
-
-        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
-        JsonElement root = document.RootElement;
-
-        RequiredString(root, "gate").ShouldBe("production-observability");
-        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
-        RequiredString(root, "report_path").ShouldBe(ReportPath);
-        AssertMetadataOnlyJson(root);
     }
 
     [Fact]

@@ -1,0 +1,13 @@
+name: Folders browser checks
+description: Run the complete UI E2E project including accessibility using the shared build and browser installation.
+runs:
+  using: composite
+  steps:
+    - name: Run complete AppHost project including explicit and cross-process controls
+      shell: pwsh
+      env:
+        HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION: 'true'
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.AppHost.Tests
+    - name: Run complete UI E2E project
+      shell: pwsh
+      run: ./tests/tools/run-complete-project-tests.ps1 -ProjectName Hexalith.Folders.UI.E2E.Tests
