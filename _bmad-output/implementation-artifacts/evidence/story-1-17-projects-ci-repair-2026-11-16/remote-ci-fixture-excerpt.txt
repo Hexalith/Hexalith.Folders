@@ -1,0 +1,44 @@
+Read-only GitHub job 133200208530, run https://github.com/Hexalith/Hexalith.Projects/actions/runs/43838261389
+
+2026-11-16T09:18:38.1507657Z ##[group]Run python3 -m unittest tests/tools/test_release_package_tools.py -v
+2026-11-16T09:18:38.1508127Z [36;1mpython3 -m unittest tests/tools/test_release_package_tools.py -v[0m
+2026-11-16T09:18:38.1551546Z shell: /usr/bin/bash -e {0}
+2026-11-16T09:18:38.1551754Z env:
+2026-11-16T09:18:38.1551933Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-16T09:18:38.1552142Z ##[endgroup]
+2026-11-16T09:18:38.2377347Z test_case_insensitive_duplicate_dependency_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_case_insensitive_duplicate_dependency_fails) ... ok
+2026-11-16T09:18:38.2428440Z test_consumer_assets_reject_project_fallback_and_mixed_candidate_versions (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_assets_reject_project_fallback_and_mixed_candidate_versions) ... ok
+2026-11-16T09:18:38.2491686Z test_consumer_build_failure_propagates (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_build_failure_propagates) ... ok
+2026-11-16T09:18:38.2547438Z test_consumer_restore_failure_propagates (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_restore_failure_propagates) ... ok
+2026-11-16T09:18:38.2604105Z test_consumer_success_invokes_restore_and_build (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_success_invokes_restore_and_build) ... ok
+2026-11-16T09:18:38.2647411Z test_empty_archive_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_empty_archive_fails) ... ok
+2026-11-16T09:18:38.2697917Z test_exact_candidates_pass (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_exact_candidates_pass) ... ok
+2026-11-16T09:18:38.2741799Z test_external_dependency_may_equal_candidate_version (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_external_dependency_may_equal_candidate_version) ... ERROR
+2026-11-16T09:18:38.2868822Z test_malformed_and_unsafe_xml_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_malformed_and_unsafe_xml_fail) ... ok
+2026-11-16T09:18:38.2920628Z test_manifest_probes_are_package_specific_real_api_compilations (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_manifest_probes_are_package_specific_real_api_compilations) ... ok
+2026-11-16T09:18:38.3031693Z test_metadata_and_provenance_drift_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_metadata_and_provenance_drift_fail) ... ok
+2026-11-16T09:18:38.3116135Z test_missing_and_stale_packages_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_missing_and_stale_packages_fail) ... ok
+2026-11-16T09:18:38.3167973Z test_missing_compile_asset_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_missing_compile_asset_fails) ... ok
+2026-11-16T09:18:38.3255639Z test_normalizer_makes_internal_ranges_exact (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_normalizer_makes_internal_ranges_exact) ... ok
+2026-11-16T09:18:54.4708543Z test_release_wrapper_sequences_and_propagates_delegated_failures (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_release_wrapper_sequences_and_propagates_delegated_failures) ... ok
+2026-11-16T09:18:54.5141548Z test_service_defaults_rejects_stale_opentelemetry_dependency_versions (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_service_defaults_rejects_stale_opentelemetry_dependency_versions) ... ok
+2026-11-16T09:18:54.5261196Z test_unexpected_dependency_and_wrong_internal_range_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unexpected_dependency_and_wrong_internal_range_fail) ... ok
+2026-11-16T09:18:54.5313448Z test_unexpected_dependency_attributes_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unexpected_dependency_attributes_fail) ... ok
+2026-11-16T09:18:54.5416271Z test_unsafe_archive_entry_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unsafe_archive_entry_fails) ... ok
+2026-11-16T09:18:56.2360546Z test_wrapper_rejects_frontcomposer_reference_in_contracts (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_wrapper_rejects_frontcomposer_reference_in_contracts) ... ok
+2026-11-16T09:18:56.2361569Z 
+2026-11-16T09:18:56.2361716Z ======================================================================
+2026-11-16T09:18:56.2362736Z ERROR: test_external_dependency_may_equal_candidate_version (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_external_dependency_may_equal_candidate_version)
+2026-11-16T09:18:56.2363969Z ----------------------------------------------------------------------
+2026-11-16T09:18:56.2364406Z Traceback (most recent call last):
+2026-11-16T09:18:56.2365279Z   File "/home/runner/work/Hexalith.Projects/Hexalith.Projects/tests/tools/test_release_package_tools.py", line 215, in test_external_dependency_may_equal_candidate_version
+2026-11-16T09:18:56.2366015Z     external_version = contracts_manifest.dependencies["Hexalith.Conversations.Contracts"]
+2026-11-16T09:18:56.2366443Z                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-16T09:18:56.2366743Z KeyError: 'Hexalith.Conversations.Contracts'
+2026-11-16T09:18:56.2366914Z 
+2026-11-16T09:18:56.2367529Z ----------------------------------------------------------------------
+2026-11-16T09:18:56.2367804Z Ran 20 tests in 18.005s
+2026-11-16T09:18:56.2367931Z 
+2026-11-16T09:18:56.2368010Z FAILED (errors=1)
+2026-11-16T09:18:56.2368280Z Consumer compiled real API from Hexalith.Projects.Contracts 9.8.7-ci.1.
+2026-11-16T09:18:56.2523981Z ##[error]Process completed with exit code 1.

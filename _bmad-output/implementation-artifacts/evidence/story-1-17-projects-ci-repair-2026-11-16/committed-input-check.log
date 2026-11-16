@@ -1,0 +1,2 @@
+guard: references/Hexalith.Builds: initialize the required separate submodule checkout at its committed pin
+CI/CD is owned by Hexalith.CiCd. Fix the product code, not the pipeline.

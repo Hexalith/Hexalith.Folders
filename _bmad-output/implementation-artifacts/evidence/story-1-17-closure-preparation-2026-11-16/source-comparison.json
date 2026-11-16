@@ -1,0 +1,259 @@
+{
+  "prior_manifest": "_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/final/source-inputs.json",
+  "prior_manifest_sha256": "5ca12db4b2fede62259c79384abb886e407432aca38363368a6732603853ead2",
+  "scope": "Tracked files excluding evidence, references, agent skills and bmad tooling, using the prior collector selection. Dated tests are not current executable qualification.",
+  "owners": {
+    ".": {
+      "head": "917295efa8b96c8100c1950bf0970be657325a3a",
+      "prior_paths": 4554,
+      "changed": [
+        {
+          "path": "_bmad-output/implementation-artifacts/epic-11-context.md",
+          "before_sha256": "de9dda837215313996a86a74a7290322059e6ec1b90736bcbe0b98781062e211",
+          "current_sha256": "6a29c359cecf3893528b893cce20facc8ed262103c072c7085736249dcfe8e84"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+          "before_sha256": "51559adbbf7edf917c85f73932193dc49de8835e2f16cc3eda6271c69dd31ca0",
+          "current_sha256": "6b39918b5ba54948dc674523f18c10e55cd88f6a7f5eb328f72d8a7787a961c0"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+          "before_sha256": "a07c3fe6a5d0ba3cd8112255f47296b5f79940f7a44fe58e5729c68d352ddae6",
+          "current_sha256": "e8d945cc5bbb91265c8bf56d2c978e338fb4573ae4e5e7de8621b5787169dbe0"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+          "before_sha256": "8b2fc2134c053b8e3ff637c7b57fcee8a8b96fad58e38bc14e7bc53268b5de9a",
+          "current_sha256": "561d2c4b15cb30aa15f536b7a4eeb9afa182e97588d22dcb7a2ea6f174c69265"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+          "before_sha256": "090340e377ed397f477eafdc229cb289b483e0975fa625905943976514f5a741",
+          "current_sha256": "59591d36bd731f7b763eed463e0a4098df27d747b808753502040f2205a74cb2"
+        }
+      ],
+      "added": [
+        {
+          "path": "_bmad-output/implementation-artifacts/spec-11-6-verify-current-adapter-safety-and-delivery-hold.md",
+          "sha256": "4f6e3c44ec127fbed839e002b10388bba229875d855fa5bc361aae4f67bba06a"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-audit-refreshed-handoff-2026-11-16.json",
+          "sha256": "af498b8e1a96badeb21e51f3ddb117bf60dc3074312a4de0be6703b9eeb1602c"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/story-1-17-landed-v2-handoff-2026-11-15.json",
+          "sha256": "dce2d816ad63d4862dd584e6b11a7e96e22dac6499d54da328d5aafdf758edd0"
+        }
+      ],
+      "removed": []
+    },
+    "references/Hexalith.Builds": {
+      "head": "65fd22f37b9fad64b595841923cdbe050563ab99",
+      "prior_paths": 3618,
+      "changed": [
+        {
+          "path": "Github/lib/release_publish.py",
+          "before_sha256": "211a8f423fa5c60f4053a98f47775aea0ddec3c5b274a58a6320b51f002c8513",
+          "current_sha256": "418f0c5335af038dcee1c182e3028c03ca46fa15bc8d2d7113c6c3036d3de929"
+        },
+        {
+          "path": "Github/lib/tests/test_release_publish.py",
+          "before_sha256": "0edc782384f2e926859cde2c4f2aebdbd98528afc896ab111961c461dd930559",
+          "current_sha256": "545f87326b3fb2440cab33c644a862e7c004407835adf3727b6ce34c4ce24f83"
+        },
+        {
+          "path": "Tools/package-version-audit.json",
+          "before_sha256": "1a6babe322cbd3c9bb6209579638101ff9188ee40e34ce10da46fae32b0bc918",
+          "current_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b"
+        }
+      ],
+      "added": [],
+      "removed": []
+    },
+    "references/Hexalith.Projects": {
+      "head": "bf9f98969efa036fd60700c627e712b4375e654a",
+      "prior_paths": 4967,
+      "changed": [
+        {
+          "path": ".gitattributes",
+          "before_sha256": "da929986fd85b8c8be2a78418991f82c1feaec29bdeba58917e6b4d856c99083",
+          "current_sha256": "158620e9b45b7f4077fbf47f78a943e7134f97c56adb39b0463150b2af45077d"
+        },
+        {
+          "path": ".gitignore",
+          "before_sha256": "30379097980fa3c192a017ae572ed3f81ab757d66c55754604ec4d3decbce162",
+          "current_sha256": "3364e3018ed0111244a5bd5015bffbb0a70d85ee23b8cbdf7f7989a661d13212"
+        },
+        {
+          "path": "Directory.Build.props",
+          "before_sha256": "08d6ad5ae2122b9407ed3e7ef1a10a3dfcee62edba03550f4bea8f1ce46ef047",
+          "current_sha256": "22fea9a8cfdd5ced9e340ce71eb0f7e645d444ca36e636efe518d9e51b2b6e96"
+        },
+        {
+          "path": "Directory.Packages.props",
+          "before_sha256": "6a57ac9c9cd504a572654f201283c83c7ef13f7827836bbfce232f1fdb744ceb",
+          "current_sha256": "f68f3c87420cf2cc274e08d6506b705aabf4ec83e9c33c3a76963c6100b6cc1c"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/deferred-work.md",
+          "before_sha256": "ae6b07f62c140adcdaed9575a5908ab53db6c3dda7b0cbf4df8df0b1aa34f253",
+          "current_sha256": "78c1289efda4fd5fc105f80065d2b7cd84239d52747e5ca1aa3dd22d4c8298cf"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/epic-6-context.md",
+          "before_sha256": "77de560036067bc0242ed5ecac7651f17b3c50c5ada1802059c38280a6f09cc8",
+          "current_sha256": "9383130dca8d64ee928e127c60e847085493da3e3e157fc0312a5b18e82b6963"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/spec-6-6-inspect-projects-through-an-authenticated-cli-read-surface.md",
+          "before_sha256": "31e24684abe49cb6e5f488c7e309f476060421d0c0aa53892df55681ed7a8a15",
+          "current_sha256": "0f5f5729f901e1559aa5c4b9a73ea586d5b149c538fdc2d6378e891c4df2215c"
+        },
+        {
+          "path": "_bmad-output/implementation-artifacts/sprint-status.yaml",
+          "before_sha256": "fac39d541f1c8d6afb8e4a88dbcbcd2986c2052bf839e4ba5be8ff937bf496d7",
+          "current_sha256": "448b740652aa17d394296f0874464837da38bf0264065fe83113fc1eb835c28f"
+        },
+        {
+          "path": "_bmad-output/planning-artifacts/epics.md",
+          "before_sha256": "8504ff166056ea19795201623b49689b612c198a325fbb3933995bcef9f6df06",
+          "current_sha256": "cb7387b5e0ee2ae8dab2e7de95e73830bc3e4276552a54d0254b5af5dae97952"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj",
+          "before_sha256": "0e982b15818ec928dd06c7add05b2c8217202360688e8b15e55897a49db1c025",
+          "current_sha256": "38bf0a5ebebd73e1c503cd2f9954f458f331db1fb7be008e007797f4c191e20c"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/GetProjectQuery.cs",
+          "before_sha256": "2e734520e96474e33e604411de0165347d5e3a46535e6383b6512158423d631e",
+          "current_sha256": "774ced2b4c6f971b9ba079b849dbc315f153830c260fb1a8142c1bd84bbebd7f"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ListProjectsQuery.cs",
+          "before_sha256": "bc56bfc58ee349d60f2404f2e658fa0cd5dcda03d4c689fa369afe6467aed6fa",
+          "current_sha256": "39ef2bbb7b1aa8f2856c8661c21d1eafe3e5c5a3cbbe171d557f723b10e24653"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ProjectAdvisoryAttachment.cs",
+          "before_sha256": "8955973a5ce7e62545817b061f0eff80a614b196bbd145ed713b47027418f9be",
+          "current_sha256": "4156176b39f255c2ca669e110a2667499881319a7d464f54591bbdbd639aacb8"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ProjectConversationItem.cs",
+          "before_sha256": "c1d9426ea717c2947df88b0eb8897a52cc824283c8487cf51ed41b3b7008477a",
+          "current_sha256": "1b740dc0f00c36c2eab5b844657ab879cff1ade9365115284ae192a8c3633aec"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ResolveProjectFromAttachmentsQuery.cs",
+          "before_sha256": "057aca6b2f96d8112394d7228693b3fa1db32bffe918941a301840f94fd521d6",
+          "current_sha256": "7928eea8dcb272c87b64b53c1357bcbf42d327b2306ca11d80134b4153336c35"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ResolveProjectFromConversationQuery.cs",
+          "before_sha256": "f66f0af63423dd8f35161c531923d685d6c888263140384aa92d6fe3af128fce",
+          "current_sha256": "28c04a7474113094c31a23e88441d501f44c41c2fc9a0cc14c91541c633da562"
+        },
+        {
+          "path": "src/Hexalith.Projects.Server/Conversations/ProjectContextConversationEvidenceMapper.cs",
+          "before_sha256": "8c45e7352faeedbfe5213de8c9c4e1a250daaab081d27a005402b4d49915d625",
+          "current_sha256": "f7df6d21e1ba942c0755fea88bcbdc8ea1e8a3dcd74e33f25f6abacde868b587"
+        },
+        {
+          "path": "src/Hexalith.Projects.Server/Conversations/ProjectConversationTranslator.cs",
+          "before_sha256": "b5e45c24c50d1bd4d3b7f9126bc011e2a3e5dc2af2230922206e57b3d3a6149a",
+          "current_sha256": "a8a4c0314dd3e936bbf341d7c7ed044dabd98a4e9b699a637809879c80210564"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Contracts.Tests/Hexalith.Projects.Contracts.Tests.csproj",
+          "before_sha256": "509e1ed40fcdf1f98a46c7902d5d8684cdedbba5b0a5cd5ae082fb275aeac7d1",
+          "current_sha256": "fcaf632fc0a2067b6c1f90935773d26e6ab9077a1e81efa5f696cb13a29e615f"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Contracts.Tests/Queries/ProjectConversationsContractTests.cs",
+          "before_sha256": "a433382ecd453da3bc2a5811700c82d69243ef82b96abfaa09e407ed1efe60e5",
+          "current_sha256": "e83f350ffe5e4b2f13e368868141f269e667da58402baa41d6189a24ad50ebf5"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Integration.Tests/LiveFixtureSiblingContractTests.cs",
+          "before_sha256": "e1b27875640eaef70b4af682b01e8cb98cc2bde06590e853b7c01b78149f54c7",
+          "current_sha256": "ec4f3e86760c6c1de06fa0036e5cee36523766ede8f0bc66f04d8edc8ff2c07d"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Conversations/ProjectContextConversationEvidenceMapperTests.cs",
+          "before_sha256": "23fd35e2ef58cc8852223f94c02f78d7070dccbde93960d4cf7f401970370eb6",
+          "current_sha256": "5a6438a3d921057fce29b035eb650eb5415261a19b530a8ff37ed71000e6acd9"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Conversations/ProjectConversationAssignmentDirectoryTests.cs",
+          "before_sha256": "bef41b5e575e825a69848bc7acefd887d9bb78624f237029a63f6cdf18c9848d",
+          "current_sha256": "b8408533a8faa0cb4f39dd7da113b53a7116a3f5fe9b82ba68b520d25c2a9b1c"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Conversations/ProjectConversationTranslatorTests.cs",
+          "before_sha256": "92d36a6bf7c9201ce13ff4ab100e6a53150636e2600dace9bb16fecf69cfed9b",
+          "current_sha256": "0ba8b10b794cf6235903da82462f747b5262e4b77ccac5c17c28ee0bce350e09"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/GetProjectContextExplanationTests.cs",
+          "before_sha256": "8de5e3de3a7569289abbf76ec58d5988acdcf239e42f0397ebd35580fca0e86d",
+          "current_sha256": "10acc715ff06b60ca259701c7e794ca5d4ed43e4a2bc774f10111d30f5ca141f"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/GetProjectContextTests.cs",
+          "before_sha256": "3972ab1c1ab2ee5bd62c69a2770fd6489a8163ccc70663009299aacd670dffa1",
+          "current_sha256": "209cd9ad26e6447e82384f41f017aff450e0382e784cd600236b4eea12e92b89"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/RefreshProjectContextTests.cs",
+          "before_sha256": "720a03b3c2b8503590c8129f1816c79bead41ddecc15354780fff94b4c2dfaab",
+          "current_sha256": "c893712f27ca2b51392db65c0b53c9e03c02967cdde821df9d74743a4a1a345d"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectGatewayHttpTests.cs",
+          "before_sha256": "ab4f9e71f6d5fdcd1e6eaf8fdaea0f79f472111a519e56bc5c72fe2981e94008",
+          "current_sha256": "59103483f7191f1a1a11a258b8349dd8368814abea8e5a65abd2a7ab9bd3e1e9"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Tests/Leakage/NoPayloadLeakageTests.cs",
+          "before_sha256": "1c2d00cdfb32389984765662ec186747cf42e529da754f37a6a67494d1a1b621",
+          "current_sha256": "2baae6c65630008fb15519452965b24f325157f73e7afcbbfc63f18369cc4b89"
+        },
+        {
+          "path": "tools/release-packages.json",
+          "before_sha256": "7fb55e980a5c493487ca2a2f78fd06f1e918db7a05a86a2bda415e463e7c3d58",
+          "current_sha256": "79e99470722e71958eebf7ae601f69f75baf9056ad2b5a62cb3b9219176b158f"
+        }
+      ],
+      "added": [
+        {
+          "path": "src/Hexalith.Projects.Contracts/ProjectsMcpCliModule.cs",
+          "sha256": "cc8bdde2c09a202564cc2c6811a02ecbdb769ee96ea8051b3c9aa30dbe24fb00"
+        },
+        {
+          "path": "src/Hexalith.Projects.Contracts/Queries/ProjectConversationIdJsonConverter.cs",
+          "sha256": "6ee53998308fede09f0be0368dccc37c9cf8e369c84e8af0aea13fb7be2355f2"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Contracts.Tests/Queries/ProjectMcpCliDecorationTests.cs",
+          "sha256": "764f8ea97a371d1aec822d8296c3a8b7f7ca785ba013ed674a2a94fdd65f7255"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Conversations/ProjectConversationItemWireTests.cs",
+          "sha256": "9d8795a588fd2f1db3888e517acb479866a47ecb3888e73aba7841c2a0f55b90"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/ProjectMcpCliReadStore.cs",
+          "sha256": "ab0f06737cd88770b631e1959be28d8b56c83fa5444c5da04dcf211f143d82a0"
+        },
+        {
+          "path": "tests/Hexalith.Projects.Server.Tests/Queries/SupportedProjectGatewayHttpTests.McpCli.cs",
+          "sha256": "3389dafc19ae9fb0be5564c63da5a096f01037ed928e0a02735d67b742585610"
+        }
+      ],
+      "removed": []
+    }
+  }
+}

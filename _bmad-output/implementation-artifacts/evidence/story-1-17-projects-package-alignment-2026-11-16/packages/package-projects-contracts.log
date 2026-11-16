@@ -1,0 +1,4 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj (in 150 ms).
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Successfully created package '/tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/candidates/Hexalith.Projects.Contracts.91.92.93-ci.1.nupkg'.

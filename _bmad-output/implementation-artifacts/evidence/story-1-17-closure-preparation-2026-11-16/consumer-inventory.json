@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "status": "source-inventory-verified-hosted-inventory-missing",
+  "projects_revision": "bf9f98969efa036fd60700c627e712b4375e654a",
+  "source_bindings": "inspected-inputs.json",
+  "runtime_package_payloads_verified_for_current_tuple": false,
+  "hosted_artifact": null,
+  "deployed_consumer_census": null,
+  "deployed_periodic_schedules": null,
+  "hosted_delegation_verification": null,
+  "operations": [
+    {
+      "id": "direct-folder-read",
+      "calls": [
+        "GetFolderLifecycleStatusAsync",
+        "GetEffectivePermissionsAsync"
+      ],
+      "ordering": "Permissions read occurs only after accepted lifecycle evidence.",
+      "adapter": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs",
+      "triggers": [
+        "Project folder assignment validation",
+        "Refresh without VerifiedQueryCaller"
+      ],
+      "semantics": "read-only"
+    },
+    {
+      "id": "direct-file-metadata",
+      "calls": [
+        "GetFolderFileMetadataAsync"
+      ],
+      "adapter": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs",
+      "triggers": [
+        "Link file reference",
+        "Propose project with file reference"
+      ],
+      "semantics": "metadata-only read-only POST"
+    },
+    {
+      "id": "delegated-folder-read",
+      "calls": [
+        "DelegatedOwnerQueryClient.InvokeAsync",
+        "Hexalith.Folders.Queries.AuthorizeFolderRead.v1"
+      ],
+      "adapter": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/DelegatedProjectFolderDirectory.cs",
+      "triggers": [
+        "Refresh with VerifiedQueryCaller",
+        "Supported project list/open reads",
+        "Advisory resolution from conversations or attachments",
+        "Retained REST advisory resolution"
+      ],
+      "transport": "Signed bound-owner POST api/v1/queries/owner-authority/workload through EventStore; owner folders /query.",
+      "semantics": "read-only owner authorization; fresh owner authority required"
+    },
+    {
+      "id": "file-reference-refresh-refusal",
+      "calls": [],
+      "adapter": "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs",
+      "triggers": [
+        "RefreshFileReferenceAsync if invoked"
+      ],
+      "semantics": "No Folders request; returns Unavailable. Do not invent successful file refresh or periodic call."
+    }
+  ],
+  "caller_sources": [
+    "ProjectsDomainServiceEndpoints.cs",
+    "Queries/ProposeNewProjectEndpoint.cs",
+    "Queries/RefreshProjectContextEndpoint.cs",
+    "Queries/ProjectReadQueryExecutor.cs",
+    "Queries/ProjectAdvisoryQueryExecutor.cs",
+    "Queries/LegacyProjectResolutionAuthorization.cs",
+    "Queries/ResolveProjectFromConversationEndpoint.cs",
+    "Queries/ResolveProjectFromAttachmentsEndpoint.cs"
+  ],
+  "authentication_limits": [
+    "Direct SDK registration uses http://folders with EventStoreGatewayTokenForwardingHandler; forwarding alone is not hosted audience/delegation validation.",
+    "Hosted owner proof enrollment, scoped workload credentials, fresh tenant/resource authority, allowed/denied/unavailable outcomes and projects attribution must be verified against exact artifacts.",
+    "No credentials or secret values are included."
+  ],
+  "periodic_source_search": "periodic-source-search.json",
+  "periodic_source_finding": "No periodic Folders caller found in the bounded Projects src search; external/deployed schedules remain unknown, not an empty set.",
+  "required_hosted_inventory_fields": [
+    "Target/environment and lock epoch, source/artifact/configuration identities",
+    "Every deployed direct/delegated caller and owning maintainer, route and read/mutation classification",
+    "Every periodic schedule, cadence, next due UTC, maximum interval and observed completion; explicit evidence if none",
+    "Identity/audience/grant/proof enrollment references without secrets; authorization negative results",
+    "Version/consumer/status request counts, timestamps and safe trace correlation; scoped and global census limits",
+    "For existing-v1: pre-switch baseline interval, version/consumer/status counts, errors, latency, trace availability and numeric evaluation thresholds",
+    "For existing-v1 exit: no Projects v1 calls after passing v2 smoke and schedule-fit/completion within T0+168 hours"
+  ],
+  "limits": "Source inspection and hashes only. Prior 124/124 tests are dated evidence for the earlier Projects tuple. This inventory does not authorize hosted delegation, routing, retirement or closure.",
+  "mutating_v2_admission": "blocked until explicit completed-write reconciliation/disposition and accountable owner are resolved; artifact reversal/workload removal is insufficient"
+}

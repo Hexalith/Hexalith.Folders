@@ -1,0 +1,25 @@
+{
+  "recorded_at_utc": "2026-11-16T10:39:01.399508+00:00",
+  "repositories_with_identical_heads_and_indices": 13,
+  "protected_files": 200,
+  "historical_documents_with_verified_original_prefix": 3,
+  "inspected_source_owner_files_unchanged": null,
+  "tracked_changes": [
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md"
+  ],
+  "failures": [],
+  "activation_actions": 0,
+  "tracker_delta": {},
+  "inspected_source_owner_files": "Initial 28 inputs unchanged; Memories declaration added as a 29th input after byte-only CRLF normalization, with clean Git state and unchanged normalized/parsed content.",
+  "external_source_changes": [
+    {
+      "path": "references/Hexalith.Memories/module/hexalith.module-manifest.v2.json",
+      "previous_sha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "current_sha256": "288d990c92ac8cce5bc7a35ae737188795f9ddbc2e44923bf789fdabdf983162",
+      "owner": "Memories",
+      "classification": "Byte-only line-ending normalization observed during replay; LF-normalized and parsed declaration content unchanged, Git working tree clean. Origin is not established and no file was rewritten by this preparation."
+    }
+  ]
+}

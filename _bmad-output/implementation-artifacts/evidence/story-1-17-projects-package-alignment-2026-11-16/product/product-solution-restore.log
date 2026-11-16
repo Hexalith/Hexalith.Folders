@@ -1,0 +1,30 @@
+  Determining projects to restore...
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Aspire/Hexalith.Projects.Aspire.csproj (in 388 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/Hexalith.Projects.UI.Contracts.csproj (in 378 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj (in 371 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/Hexalith.Projects.Client.csproj (in 377 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Tests/Hexalith.Projects.Tests.csproj (in 380 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/Hexalith.Projects.Infrastructure.csproj (in 377 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj (in 409 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj (in 377 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.UI.Tests/Hexalith.Projects.UI.Tests.csproj (in 382 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Testing/Hexalith.Projects.Testing.csproj (in 369 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Contracts.Tests/Hexalith.Projects.Contracts.Tests.csproj (in 376 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj (in 4 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/Hexalith.Projects.E2E.Fixtures.csproj (in 2 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects/Hexalith.Projects.csproj (in 3 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj (in 409 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Shared/Hexalith.Projects.Client.Generation.Shared.csproj (in 375 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Mcp/Hexalith.Projects.Mcp.csproj (in 363 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Cli.Tests/Hexalith.Projects.Cli.Tests.csproj (in 6 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Cli/Hexalith.Projects.Cli.csproj (in 9 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Hexalith.Projects.Client.Generation.csproj (in 6 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI/Hexalith.Projects.UI.csproj (in 16 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Workers/Hexalith.Projects.Workers.csproj (in 9 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Client.Tests/Hexalith.Projects.Client.Tests.csproj (in 22 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Mcp.Tests/Hexalith.Projects.Mcp.Tests.csproj (in 14 ms).
+  Restored /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj (in 28 ms).

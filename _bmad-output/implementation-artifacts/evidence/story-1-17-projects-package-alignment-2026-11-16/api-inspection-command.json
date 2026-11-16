@@ -1,0 +1,26 @@
+{
+  "command": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "diff",
+    "--library",
+    "/home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/2.0.1/lib/net10.0/Hexalith.McpCli.Abstractions.dll../home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/3.0.0/lib/net11.0/Hexalith.McpCli.Abstractions.dll",
+    "--json"
+  ],
+  "tool_version": "0.27.0+25095d2",
+  "cwd": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-11-16T12:24:37.409485+00:00",
+  "completed_at_utc": "2026-11-16T12:24:38.352538+00:00",
+  "exit_code": 0,
+  "input_sha256": {
+    "/home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/2.0.1/lib/net10.0/Hexalith.McpCli.Abstractions.dll": "aeb390050b08451827b147a958ba355e1e5c96de526834221645028b85c26c2e",
+    "/home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/3.0.0/lib/net11.0/Hexalith.McpCli.Abstractions.dll": "d84cb2a7e6823756633c374a8cec55ae088962ea1b508be53b7604de7ca13e88",
+    "/home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/2.0.1/hexalith.mcpcli.abstractions.2.0.1.nupkg": "5c384c717119e7830d6369ecaa17161f64eda35d0ed6d9115f92d24547356f08",
+    "/home/administrator/.nuget/packages/hexalith.mcpcli.abstractions/3.0.0/hexalith.mcpcli.abstractions.3.0.0.nupkg": "86e42c528f9eda27919e9bd1c9ded01d92fd0c9c177c2a637281d1462373f03a"
+  },
+  "output": "mcpcli-api-diff-bound.json",
+  "output_sha256": "751d1af5236b1fa216b6fe456906325889f97848944a327ccaaba8ce422ed158",
+  "scope": "Fresh post-review public API comparison of the exact cached DLL bytes. 2.0.1 targets net10; 3.0.0 targets net11, matching the unchanged Projects net11 target."
+}

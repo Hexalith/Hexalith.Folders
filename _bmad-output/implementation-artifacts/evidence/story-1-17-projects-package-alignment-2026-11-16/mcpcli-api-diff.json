@@ -1,0 +1,39 @@
+{
+  "outcome": "available",
+  "document": {
+    "before": {
+      "identity": {
+        "name": "Hexalith.McpCli.Abstractions",
+        "version": "2.0.1.0",
+        "culture": null,
+        "publicKeyToken": null
+      },
+      "scope": 3,
+      "isComplete": true,
+      "issues": []
+    },
+    "after": {
+      "identity": {
+        "name": "Hexalith.McpCli.Abstractions",
+        "version": "3.0.0.0",
+        "culture": null,
+        "publicKeyToken": null
+      },
+      "scope": 3,
+      "isComplete": true,
+      "issues": []
+    },
+    "summary": {
+      "changedTypeCount": 0,
+      "addedTypeCount": 0,
+      "removedTypeCount": 0,
+      "changedMemberCount": 0,
+      "breakingCount": 0,
+      "additiveCount": 0,
+      "potentiallyBreakingCount": 0
+    },
+    "rows": [],
+    "outsideOrdinaryRowCount": 0,
+    "summaryScope": "selectedTypesBeforeRowWindow"
+  }
+}

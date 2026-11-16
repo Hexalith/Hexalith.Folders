@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-16 10:32:29 UTC",
+  "scope": "Read-only GitHub observations; release assets are packages, not hosted workload proof.",
+  "requests": [
+    {
+      "name": "projects-releases",
+      "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/releases?per_page=10",
+      "pages_read": 1,
+      "returned_releases": [
+        {
+          "id": 442712590,
+          "tag": "v1.2.4",
+          "draft": false,
+          "published_at": "2026-11-12T09:12:42Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.2.4",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.2.4.nupkg",
+              "id": 738816679,
+              "digest": "sha256:65fb6b166476b50d2ae8e11a12985cfd067572c27ccc73ea195c41aa9b44dbbc",
+              "size": 81621
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.2.4.nupkg",
+              "id": 738816569,
+              "digest": "sha256:edaf01f74b03a0fe4188fc9d9947cbc0c0a88ac0de8b5cf6f84c780db14be177",
+              "size": 64480
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.2.4.nupkg",
+              "id": 738816763,
+              "digest": "sha256:57721b2324a4fa1f67f4fa5a07c80f2dab9b2e390b189ddc736c2c99b16cddb1",
+              "size": 292826
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.2.4.nupkg",
+              "id": 738816628,
+              "digest": "sha256:9dd3c8ac940f2ce54297cd063561f00fa76b3af35a230b30a89064a2b2439b1b",
+              "size": 11489
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.2.4.nupkg",
+              "id": 738816718,
+              "digest": "sha256:b905817fb579bb3be19cb2f8116d260926250a811b19faf80692d1d21460a60c",
+              "size": 21966
+            }
+          ]
+        },
+        {
+          "id": 431037119,
+          "tag": "v1.2.3",
+          "draft": false,
+          "published_at": "2026-11-02T03:18:56Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.2.3",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.2.3.nupkg",
+              "id": 700358355,
+              "digest": "sha256:7ffc8dcda8912892d62e1d7352f4274e3d9947ad8ba42891dae832df3c104495",
+              "size": 81219
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.2.3.nupkg",
+              "id": 700358383,
+              "digest": "sha256:05602b8e954ce3c21842a8348d1e822a38792ce50be720e67f61a91814841109",
+              "size": 64101
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.2.3.nupkg",
+              "id": 700358472,
+              "digest": "sha256:cef4a53ec4bc2050ec6d4133cafcf5119c4b6269286d26aa52ff79f025c37d71",
+              "size": 289270
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.2.3.nupkg",
+              "id": 700358411,
+              "digest": "sha256:e2d94a67bf86fc4cf746c28aa1b699fa489cc3bc52318e10eba780a5d1ef07e3",
+              "size": 11003
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.2.3.nupkg",
+              "id": 700358454,
+              "digest": "sha256:03997951ebd3045144a54f65a4ec299b1d5f6181d83bda64d6ee631d2256883d",
+              "size": 21540
+            }
+          ]
+        },
+        {
+          "id": 430763859,
+          "tag": "v1.2.2",
+          "draft": false,
+          "published_at": "2026-11-01T18:12:08Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.2.2",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.2.2.nupkg",
+              "id": 699112403,
+              "digest": "sha256:c4d5f2a99fed5ee57ae7c0f376eeda91bf1758b616a485823ec659e46516ec21",
+              "size": 81212
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.2.2.nupkg",
+              "id": 699112292,
+              "digest": "sha256:4e8014e1739da5eef551db024201602820d4a6c537aa9b7d6a5ce8e9c78b1a5a",
+              "size": 64102
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.2.2.nupkg",
+              "id": 699112490,
+              "digest": "sha256:8153000ed35b36565fff853a3639e1ce681345019af59bf196a85875e44ad4fc",
+              "size": 289259
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.2.2.nupkg",
+              "id": 699112228,
+              "digest": "sha256:dceb366e6da558b09af6f4f408bb0f6784c4d698617fbc416dbdf5db8675fbf8",
+              "size": 10995
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.2.2.nupkg",
+              "id": 699112340,
+              "digest": "sha256:5bd3f2eea9a5da81ffd47cc988071d8fbb3fc2256b0ab507648886f698c244d4",
+              "size": 21537
+            }
+          ]
+        },
+        {
+          "id": 430131674,
+          "tag": "v1.2.1",
+          "draft": false,
+          "published_at": "2026-10-31T19:11:41Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.2.1",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.2.1.nupkg",
+              "id": 696245316,
+              "digest": "sha256:85dd49642f310ef0bdca872a6942ead7c1f71165007ca69ad8e4a7b1e7e65c52",
+              "size": 81205
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.2.1.nupkg",
+              "id": 696245272,
+              "digest": "sha256:5434b18be76f48133f07014877eeef6d7bf14e71b3804b3f22b18860dbab057d",
+              "size": 64093
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.2.1.nupkg",
+              "id": 696245368,
+              "digest": "sha256:60dcd950cda302aff053bafe285ef3438eabec75d043ab856ff9802486841923",
+              "size": 289265
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.2.1.nupkg",
+              "id": 696245290,
+              "digest": "sha256:5595100d9ad7dde08b319216982f0583e4d20649b1d913a444b91c83dabb8909",
+              "size": 10995
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.2.1.nupkg",
+              "id": 696245341,
+              "digest": "sha256:bbc269036c5f23911fd45ac8917b04096f0478679b22c75d7e436c868de9a290",
+              "size": 21540
+            }
+          ]
+        },
+        {
+          "id": 420885644,
+          "tag": "v1.2.0",
+          "draft": false,
+          "published_at": "2026-10-22T15:25:51Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.2.0",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.2.0.nupkg",
+              "id": 666253013,
+              "digest": "sha256:245615208feed248edbd8685374589460f8d28628dfd29478bef59568fb742e4",
+              "size": 81180
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.2.0.nupkg",
+              "id": 666252969,
+              "digest": "sha256:044a795e1f87129e4056e4d595293863df2f51a108001231877f44bd57b521fb",
+              "size": 64086
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.2.0.nupkg",
+              "id": 666253171,
+              "digest": "sha256:3e2ebf88540feca1030144fe7c9d167cec3575dddd5a82168d60d476493a7998",
+              "size": 288635
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.2.0.nupkg",
+              "id": 666253071,
+              "digest": "sha256:574d001f2eab8c3ff4c6cb184bec9a362bcc218aa0513c00554127160a0af1c2",
+              "size": 10981
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.2.0.nupkg",
+              "id": 666253111,
+              "digest": "sha256:3808f4e5e04da969065db9f8dbf255f9594a083b233a33b3fd8b56c38a25d9ca",
+              "size": 21527
+            }
+          ]
+        },
+        {
+          "id": 392280004,
+          "tag": "v1.0.0",
+          "draft": false,
+          "published_at": "2026-09-20T01:53:18Z",
+          "target_commitish": "main",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/releases/tag/v1.0.0",
+          "assets": [
+            {
+              "name": "Hexalith.Projects.1.0.0.nupkg",
+              "id": 575883705,
+              "digest": "sha256:e5cd89223f984faa666528eeeab1d24cd1b95ce5254a6651ac1677100d92f215",
+              "size": 78094
+            },
+            {
+              "name": "Hexalith.Projects.Client.1.0.0.nupkg",
+              "id": 575883673,
+              "digest": "sha256:ae84db412b6dd6eee3260f900ef119a4165fbd681181f795b0f3d21f6eceff94",
+              "size": 64095
+            },
+            {
+              "name": "Hexalith.Projects.Contracts.1.0.0.nupkg",
+              "id": 575883776,
+              "digest": "sha256:d52e1bff3604640d37b3935e7d847b9c3436937aa22793c1b2175dc946a16e9f",
+              "size": 227196
+            },
+            {
+              "name": "Hexalith.Projects.ServiceDefaults.1.0.0.nupkg",
+              "id": 575883738,
+              "digest": "sha256:ed868c71a7f07be11fafe94ddfab7770b25ab808978055d86464a10d9da3df34",
+              "size": 10997
+            },
+            {
+              "name": "Hexalith.Projects.Testing.1.0.0.nupkg",
+              "id": 575883759,
+              "digest": "sha256:ee6d307b1f9b1644c84ed3975f9a4dab1df2ed59cd6ec06b9fff4bdaeda376b7",
+              "size": 18997
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "projects-main",
+      "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/branches/main",
+      "result": "bf9f98969efa036fd60700c627e712b4375e654a"
+    },
+    {
+      "name": "projects-runs",
+      "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/actions/runs?per_page=10",
+      "limit": 10,
+      "result": [
+        {
+          "id": 43838261389,
+          "name": "CI",
+          "head_sha": "bf9f98969efa036fd60700c627e712b4375e654a",
+          "status": "completed",
+          "conclusion": "failure",
+          "event": "schedule",
+          "created_at": "2026-11-16T09:16:31Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43838261389"
+        },
+        {
+          "id": 43830831274,
+          "name": "CI",
+          "head_sha": "bf9f98969efa036fd60700c627e712b4375e654a",
+          "status": "completed",
+          "conclusion": "failure",
+          "event": "push",
+          "created_at": "2026-11-16T08:23:36Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43830831274"
+        },
+        {
+          "id": 43830831205,
+          "name": "Commitlint",
+          "head_sha": "bf9f98969efa036fd60700c627e712b4375e654a",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-16T08:23:36Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43830831205"
+        },
+        {
+          "id": 43830831198,
+          "name": "CodeQL",
+          "head_sha": "bf9f98969efa036fd60700c627e712b4375e654a",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-16T08:23:36Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43830831198"
+        },
+        {
+          "id": 43772496565,
+          "name": "Commitlint",
+          "head_sha": "4eed8cafe838feaedcc1471cbdda75d9bb7a952c",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-15T23:01:24Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43772496565"
+        },
+        {
+          "id": 43772496372,
+          "name": "CodeQL",
+          "head_sha": "4eed8cafe838feaedcc1471cbdda75d9bb7a952c",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-15T23:01:24Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43772496372"
+        },
+        {
+          "id": 43772496346,
+          "name": "CI",
+          "head_sha": "4eed8cafe838feaedcc1471cbdda75d9bb7a952c",
+          "status": "completed",
+          "conclusion": "failure",
+          "event": "push",
+          "created_at": "2026-11-15T23:01:24Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43772496346"
+        },
+        {
+          "id": 43737633229,
+          "name": "CodeQL",
+          "head_sha": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-15T16:49:29Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43737633229"
+        },
+        {
+          "id": 43737632335,
+          "name": "Commitlint",
+          "head_sha": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "created_at": "2026-11-15T16:49:28Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43737632335"
+        },
+        {
+          "id": 43737632329,
+          "name": "CI",
+          "head_sha": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+          "status": "completed",
+          "conclusion": "failure",
+          "event": "push",
+          "created_at": "2026-11-15T16:49:28Z",
+          "url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43737632329"
+        }
+      ]
+    },
+    {
+      "name": "projects-current-ci-jobs",
+      "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/actions/runs/43838261389/jobs",
+      "result": [
+        {
+          "id": 133200208530,
+          "name": "Validate workflow policy",
+          "status": "completed",
+          "conclusion": "failure",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Checkout repository",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Validate production-authority scheduling guard",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Validate BMAD Loop hook relay",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Validate shared skill renderer",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Validate Git whitespace policy",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6
+            },
+            {
+              "name": "Validate Build Auto workspace ownership",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7
+            },
+            {
+              "name": "Validate BMAD legacy cleanup atomicity",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8
+            },
+            {
+              "name": "Validate BMAD merge atomicity",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Validate release package tool fixtures",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 10
+            },
+            {
+              "name": "Validate release workflow shell behavior",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 11
+            },
+            {
+              "name": "Validate G-6 packet gitlink check fixtures",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 12
+            },
+            {
+              "name": "Validate status-aware G-6 gate fixtures",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 13
+            },
+            {
+              "name": "Initialize Builds for current G-6 policy fixtures",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 14
+            },
+            {
+              "name": "Validate current G-6 change selection",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 15
+            },
+            {
+              "name": "Validate workflow policy regression fixtures",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 16
+            },
+            {
+              "name": "Validate CI/CD invariants",
+              "status": "completed",
+              "conclusion": "skipped",
+              "number": 17
+            },
+            {
+              "name": "Post Checkout repository",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 34
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 35
+            }
+          ]
+        },
+        {
+          "id": 133201434276,
+          "name": "ci",
+          "status": "completed",
+          "conclusion": "skipped",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": null
+        },
+        {
+          "id": 133201434627,
+          "name": "G-6 current runtime qualification",
+          "status": "completed",
+          "conclusion": "skipped",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": null
+        },
+        {
+          "id": 133201434650,
+          "name": "P1R candidate evidence replay",
+          "status": "completed",
+          "conclusion": "skipped",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": null
+        },
+        {
+          "id": 133201434850,
+          "name": "Projects generated-artifact gates",
+          "status": "completed",
+          "conclusion": "skipped",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": null
+        },
+        {
+          "id": 133201435948,
+          "name": "Scheduled managed AppHost E2E",
+          "status": "completed",
+          "conclusion": "skipped",
+          "run_id": 43838261389,
+          "logs_url": null,
+          "steps": null
+        }
+      ]
+    }
+  ]
+}

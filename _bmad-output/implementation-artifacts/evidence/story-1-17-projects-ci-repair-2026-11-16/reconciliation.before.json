@@ -1,0 +1,34 @@
+{
+  "observed_at_utc": "2026-11-16T11:54:06.652077+00:00",
+  "projects_head": "bf9f98969efa036fd60700c627e712b4375e654a",
+  "projects_initial_status": "",
+  "folders_initial_status": " M _bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md\n M _bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md\n M _bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md\n?? _bmad-output/implementation-artifacts/.gitattributes\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/\n?? _bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/\n?? _bmad-output/implementation-artifacts/spec-1-17-reconcile-audit-handoff-and-prepare-operational-closure.md\n?? _bmad-output/implementation-artifacts/story-1-17-closure-owner-intake-2026-11-16.md\n?? _bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json\n",
+  "handoff_before_sha256": "2f0928c55b16188d88f1a1c7371176974add40e7b631697c474fd66b66854032",
+  "inputs": {
+    "tests/tools/test_release_package_tools.py": "532b3de863f8342319f04d79e784d0a5eeba71ba809dec9d1ee2d4e693dc471b",
+    "tools/release-packages.json": "79e99470722e71958eebf7ae601f69f75baf9056ad2b5a62cb3b9219176b158f",
+    "scripts/_nuget.py": "9f57707608f9df0efb887cb3beb4067a22726625bbf76feef363e4cfc481fd90",
+    "src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj": "38bf0a5ebebd73e1c503cd2f9954f458f331db1fb7be008e007797f4c191e20c",
+    "src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj": "532d75b6a36540122759bab0d4c1eb792b180622f8a50a2f3a0ac40b3de51705",
+    "Directory.Build.props": "22fea9a8cfdd5ced9e340ce71eb0f7e645d444ca36e636efe518d9e51b2b6e96",
+    "Directory.Packages.props": "f68f3c87420cf2cc274e08d6506b705aabf4ec83e9c33c3a76963c6100b6cc1c",
+    "global.json": "fb59c392d0333885c3f59609b345350729803ecfad76f7255453799d5df36b68",
+    "module/hexalith.module-manifest.v2.json": "7028d15cca15ac35fb8172a43537e45000307127f42499196817ca5a3772a754"
+  },
+  "protected_controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog",
+    "staging_checks_total": 14
+  },
+  "tracking": {
+    "transition_authorized": false,
+    "applied_delta": {},
+    "parent_status": "in-progress",
+    "story_1_17": "backlog",
+    "story_11_6_scope": "No tracker edit; user-confirmed implementation/verification completion is not reopened."
+  }
+}

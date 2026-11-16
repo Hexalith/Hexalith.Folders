@@ -1,0 +1,40 @@
+  Discovering: Hexalith.Projects.Integration.Tests
+  Discovered:  Hexalith.Projects.Integration.Tests
+  Starting:    Hexalith.Projects.Integration.Tests
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'projects-conversation-start-setup'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+  Finished:    Hexalith.Projects.Integration.Tests (ID = 'fa1d9af98a801c6980b1ac1f46cbf03169d14d98357337eaeb8b3e208d73a5be')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Projects.Integration.Tests  Total: 125, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.957s

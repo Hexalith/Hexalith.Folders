@@ -1,0 +1,51 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Contracts/Consumer.csproj (in 1.03 sec).
+  Consumer -> /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Contracts/bin/Release/net11.0/Consumer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.74
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects/Consumer.csproj (in 1.03 sec).
+  Consumer -> /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects/bin/Release/net11.0/Consumer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.53
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Client/Consumer.csproj (in 655 ms).
+  Consumer -> /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Client/bin/Release/net11.0/Consumer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.54
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Testing/Consumer.csproj (in 552 ms).
+  Consumer -> /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.Testing/bin/Release/net11.0/Consumer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.68
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.ServiceDefaults/Consumer.csproj (in 878 ms).
+  Consumer -> /tmp/hexalith-job.ZhDjeYIr/hexalith-projects-consumers-mfqp8gmk/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Consumer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.55
+Consumer compiled real API from Hexalith.Projects.Contracts 91.92.93-ci.1.
+Consumer compiled real API from Hexalith.Projects 91.92.93-ci.1.
+Consumer compiled real API from Hexalith.Projects.Client 91.92.93-ci.1.
+Consumer compiled real API from Hexalith.Projects.Testing 91.92.93-ci.1.
+Consumer compiled real API from Hexalith.Projects.ServiceDefaults 91.92.93-ci.1.
+Validated 5 isolated package consumers.

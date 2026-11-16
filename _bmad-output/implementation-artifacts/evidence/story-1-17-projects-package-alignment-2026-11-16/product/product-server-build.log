@@ -1,0 +1,17 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Infrastructure -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/bin/Release/net11.0/Hexalith.Projects.Infrastructure.dll
+  Hexalith.Projects.ServiceDefaults -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Hexalith.Projects.ServiceDefaults.dll
+  Hexalith.Projects.Server -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Projects.Server.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.Workers -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Workers/bin/Release/net11.0/Hexalith.Projects.Workers.dll
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+  Hexalith.Projects.Server.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Projects.Server.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.87

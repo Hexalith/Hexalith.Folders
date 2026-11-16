@@ -1,0 +1,80 @@
+frontcomposer-inspect-gate: inputs detected (12 annotated contract file(s)) — running real gate.
+frontcomposer-inspect-gate: building and inspecting deterministic Release output with the repo-local CLI.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects.UI.Contracts -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/bin/Release/net11.0/Hexalith.Projects.UI.Contracts.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.92
+Project: Hexalith.Projects.UI.Contracts
+Configuration: Release
+Framework: net11.0
+Generated files: 62
+Forms: 0; Grids: 12; Registrations: 12; MCP manifests: 1; Warnings: 0; Errors: 0
+- McpManifest: obj/Release/net11.0/generated/HexalithFrontComposer/FrontComposerMcpManifest.g.cs
+- TemplateManifest: obj/Release/net11.0/generated/HexalithFrontComposer/__FrontComposerProjectionTemplatesRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectAuditTimelineRowProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectAuditTimelineRowProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectAuditTimelineRowProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectAuditTimelineRowProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectAuditTimelineRowProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectDetailInspectorProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectDetailInspectorProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectDetailInspectorProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectDetailInspectorProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectDetailInspectorProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectInventoryRowProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectInventoryRowProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectInventoryRowProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectInventoryRowProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectInventoryRowProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectMaintenanceActionProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectMaintenanceActionProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectMaintenanceActionProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectMaintenanceActionProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectMaintenanceActionProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperationalDashboardProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperationalDashboardProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperationalDashboardProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperationalDashboardProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperationalDashboardProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperatorDiagnosticShellProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperatorDiagnosticShellProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperatorDiagnosticShellProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperatorDiagnosticShellProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectOperatorDiagnosticShellProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectReferenceHealthRowProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectReferenceHealthRowProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectReferenceHealthRowProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectReferenceHealthRowProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectReferenceHealthRowProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceCandidateProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceCandidateProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceCandidateProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceCandidateProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceCandidateProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceExclusionProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceExclusionProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceExclusionProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceExclusionProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceExclusionProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectResolutionTraceProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectSafeDiagnosticExportProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectSafeDiagnosticExportProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectSafeDiagnosticExportProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectSafeDiagnosticExportProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectSafeDiagnosticExportProjectionRegistration.g.cs
+- FluxorActions: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectWarningQueueItemProjectionActions.g.cs
+- FluxorFeature: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectWarningQueueItemProjectionFeature.g.cs
+- FluxorReducers: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectWarningQueueItemProjectionReducers.g.cs
+- ProjectionRazor: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectWarningQueueItemProjection.g.razor.cs
+- Registration: obj/Release/net11.0/generated/HexalithFrontComposer/Hexalith.Projects.Contracts.Ui.ProjectWarningQueueItemProjectionRegistration.g.cs
+frontcomposer-inspect-gate: PASSED — frontcomposer inspect reported no warnings.

@@ -1,0 +1,19 @@
+{
+  "observed_at_utc": "2026-11-16T10:48:25.426280+00:00",
+  "initial_replay_exit_code": 1,
+  "initial_replay_message": "FAIL: Declaration comparison changed: Memories",
+  "initial_mapping_snapshot": "current-mapping-inputs.initial.json",
+  "initial_snapshot_sha256": "09a7ee7912d68c9797df280ba192368a5ccbe43075f1e51120777802c186e55a",
+  "changes": [
+    {
+      "path": "references/Hexalith.Memories/module/hexalith.module-manifest.v2.json",
+      "previous_sha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840",
+      "current_sha256": "288d990c92ac8cce5bc7a35ae737188795f9ddbc2e44923bf789fdabdf983162",
+      "owner": "Memories",
+      "classification": "Byte-only line-ending normalization observed during replay; LF-normalized and parsed declaration content unchanged, Git working tree clean. Origin is not established and no file was rewritten by this preparation."
+    }
+  ],
+  "disposition": "Preserved current raw bytes, retained initial byte snapshot and classified normalization explicitly. Git HEAD/index and semantic declaration content are unchanged; no new owner gate or source-change claim.",
+  "lf_normalized_and_parsed_content_equal": true,
+  "memories_git_status": "clean"
+}

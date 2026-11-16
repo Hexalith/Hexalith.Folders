@@ -1,0 +1,9 @@
+{
+  "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/actions/runs/43187046491",
+  "name": "Release",
+  "path": ".github/workflows/release.yml",
+  "head_sha": "1ea04f7959e9ca393bc19d3b96b03cb350088e72",
+  "conclusion": "success",
+  "event": "workflow_dispatch",
+  "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/43187046491"
+}

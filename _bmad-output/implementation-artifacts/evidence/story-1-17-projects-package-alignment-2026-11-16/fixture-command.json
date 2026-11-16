@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "tests/tools/test_release_package_tools.py",
+    "-v"
+  ],
+  "wrapper": "run-with-temp",
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+  "started_at_utc": "2026-11-16T12:25:40.683613+00:00",
+  "completed_at_utc": "2026-11-16T12:25:45.305203+00:00",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/tmp/hexalith-job.6jvTKPB7"
+  },
+  "exit_code": 0,
+  "log": "fixtures-qualified.log",
+  "log_sha256": "c55be0f99f54a33acbee4473277a679e4c06b0d31d4a90d5a53543fda52c9fe9",
+  "fixture_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+  "manifest_sha256": "71d6bb332e4152e201c42ca45d8e743a0f2f01b72df057c25669d65646886edb"
+}

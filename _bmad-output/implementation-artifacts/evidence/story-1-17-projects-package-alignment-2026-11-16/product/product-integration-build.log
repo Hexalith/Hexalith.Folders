@@ -1,0 +1,31 @@
+  Determining projects to restore...
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Infrastructure -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/bin/Release/net11.0/Hexalith.Projects.Infrastructure.dll
+  Hexalith.Projects.ServiceDefaults -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Hexalith.Projects.ServiceDefaults.dll
+  Hexalith.Projects.Server -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Projects.Server.dll
+  Hexalith.Projects.UI.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/bin/Release/net11.0/Hexalith.Projects.UI.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.UI -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI/bin/Release/net11.0/Hexalith.Projects.UI.dll
+  Hexalith.Projects.Workers -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Workers/bin/Release/net11.0/Hexalith.Projects.Workers.dll
+  Hexalith.Projects.Aspire -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Aspire/bin/Release/net11.0/Hexalith.Projects.Aspire.dll
+  Hexalith.Projects.E2E.Fixtures -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/bin/Release/net11.0/Hexalith.Projects.E2E.Fixtures.dll
+/home/administrator/.dotnet/sdk/11.0.100/Microsoft.Common.CurrentVersion.targets(2220,5): error MSB9008: The referenced project /src/Hexalith.EventStore/Hexalith.EventStore.csproj does not exist. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+
+Build FAILED.
+
+/home/administrator/.dotnet/sdk/11.0.100/Microsoft.Common.CurrentVersion.targets(2220,5): error MSB9008: The referenced project /src/Hexalith.EventStore/Hexalith.EventStore.csproj does not exist. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:02.72

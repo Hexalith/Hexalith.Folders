@@ -1,0 +1,55 @@
+[
+  {
+    "name": "retained-released-v2",
+    "argv": [
+      "python3",
+      "-O",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/verify.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-16T10:32:29.495143+00:00",
+    "elapsed_seconds": 0.572,
+    "exit_code": 0,
+    "log": "retained-released-v2.log"
+  },
+  {
+    "name": "retained-landed-tuple",
+    "argv": [
+      "python3",
+      "-O",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-landed-v2-tuple-2026-11-15/verify.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-16T10:32:29.495599+00:00",
+    "elapsed_seconds": 0.277,
+    "exit_code": 0,
+    "log": "retained-landed-tuple.log"
+  },
+  {
+    "name": "current-audit-validator",
+    "argv": [
+      "pwsh",
+      "-NoProfile",
+      "-File",
+      "references/Hexalith.Builds/Tools/validate-package-version-audit.ps1"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-16T10:32:29.495981+00:00",
+    "elapsed_seconds": 25.175,
+    "exit_code": 0,
+    "log": "current-audit-validator.log"
+  },
+  {
+    "name": "current-source-proposal",
+    "argv": [
+      "python3",
+      "-B",
+      "eng/story117-platform-qualification-current/verify.py"
+    ],
+    "cwd": ".",
+    "started_utc": "2026-11-16T10:32:29.496729+00:00",
+    "elapsed_seconds": 0.026,
+    "exit_code": 1,
+    "log": "current-source-proposal.log"
+  }
+]

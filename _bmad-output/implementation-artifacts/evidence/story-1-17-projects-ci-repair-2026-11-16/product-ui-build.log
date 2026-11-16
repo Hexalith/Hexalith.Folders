@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects.UI.Contracts -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/bin/Release/net11.0/Hexalith.Projects.UI.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.UI -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.UI/bin/Release/net11.0/Hexalith.Projects.UI.dll
+  Hexalith.Projects -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+  Hexalith.Projects.UI.Tests -> /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.UI.Tests/bin/Release/net11.0/Hexalith.Projects.UI.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.66

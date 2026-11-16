@@ -1,0 +1,11 @@
+{
+  "authorization": "User follow-up fix authorizes resolving the two just-reported Projects package blockers; earlier prohibitions remain.",
+  "source": "bf9f98969efa036fd60700c627e712b4375e654a",
+  "before_inputs": {
+    "Directory.Packages.props": "f68f3c87420cf2cc274e08d6506b705aabf4ec83e9c33c3a76963c6100b6cc1c",
+    "tools/release-packages.json": "79e99470722e71958eebf7ae601f69f75baf9056ad2b5a62cb3b9219176b158f",
+    "tests/tools/test_release_package_tools.py": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1"
+  },
+  "before_status": " M tests/tools/test_release_package_tools.py\n?? docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md\n",
+  "handoff_sha256": "82904ea7d12797fd1ea438c582a16795fc659c4cfbaf281a26a03192cfd4c87d"
+}

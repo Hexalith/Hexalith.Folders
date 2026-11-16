@@ -1,0 +1,217 @@
+[
+  {
+    "archive": "Hexalith.Projects.91.92.93-ci.1.nupkg",
+    "archive_sha256": "3080435dc40a0dc42658e6e54304bf1cc08dd1aa1f671a34d9089cac275b6b7a",
+    "nuspec": "nuspecs/Hexalith.Projects.nuspec",
+    "nuspec_sha256": "074ba283f0f631c616c8bd9c202d9dbd830dbb97abedb5c515db43b335fc88b8",
+    "dependencies": [
+      {
+        "id": "Hexalith.Projects.Contracts",
+        "version": "[91.92.93-ci.1]",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "ByteAether.Ulid",
+        "version": "1.4.2",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.Commons.UniqueIds",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.EventStore.Contracts",
+        "version": "5.1.1",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.McpCli.Abstractions",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Configuration",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Configuration.Binder",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      }
+    ]
+  },
+  {
+    "archive": "Hexalith.Projects.Client.91.92.93-ci.1.nupkg",
+    "archive_sha256": "bec6ea4e63db83c753354a05bc27944c82b1543934d400c4642e584da3974c56",
+    "nuspec": "nuspecs/Hexalith.Projects.Client.nuspec",
+    "nuspec_sha256": "c19c81360d749468d3ccc9bf5a1b7af83a121a83f980680ea67163e341be0e4c",
+    "dependencies": [
+      {
+        "id": "Hexalith.Projects.Contracts",
+        "version": "[91.92.93-ci.1]",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Newtonsoft.Json",
+        "version": "13.0.4",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "ByteAether.Ulid",
+        "version": "1.4.2",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.Commons.UniqueIds",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.EventStore.Contracts",
+        "version": "5.1.1",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.McpCli.Abstractions",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      }
+    ]
+  },
+  {
+    "archive": "Hexalith.Projects.Contracts.91.92.93-ci.1.nupkg",
+    "archive_sha256": "633c1abc339fd4dd1e44dc03c0e20aaa509db3f0b94979054e87c3f437df917b",
+    "nuspec": "nuspecs/Hexalith.Projects.Contracts.nuspec",
+    "nuspec_sha256": "23384f4692d0d7749799e86bcf58470129ea29cb7c2dcdd68b940c540c0fb7e6",
+    "dependencies": [
+      {
+        "id": "Hexalith.EventStore.Contracts",
+        "version": "5.1.1",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.McpCli.Abstractions",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "ByteAether.Ulid",
+        "version": "1.4.2",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.Commons.UniqueIds",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      }
+    ]
+  },
+  {
+    "archive": "Hexalith.Projects.ServiceDefaults.91.92.93-ci.1.nupkg",
+    "archive_sha256": "bfe921e602b5aeb2a973e740476796615e43347d1dd401ce0371a930f1d5e54b",
+    "nuspec": "nuspecs/Hexalith.Projects.ServiceDefaults.nuspec",
+    "nuspec_sha256": "36c4bbb67c5706323fad9e162e4def17d3a2af015bf3a7c605edb982710017d0",
+    "dependencies": [
+      {
+        "id": "Microsoft.Extensions.Http.Resilience",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.ServiceDiscovery",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry.Exporter.OpenTelemetryProtocol",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry.Extensions.Hosting",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry.Instrumentation.AspNetCore",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry.Instrumentation.Http",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry.Instrumentation.Runtime",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "OpenTelemetry",
+        "version": "1.21.0",
+        "exclude": "Build,Analyzers"
+      }
+    ]
+  },
+  {
+    "archive": "Hexalith.Projects.Testing.91.92.93-ci.1.nupkg",
+    "archive_sha256": "6f4f3be9132447a2d1b31f19bb13697904f101662cc2b12bf32f44aa52d41944",
+    "nuspec": "nuspecs/Hexalith.Projects.Testing.nuspec",
+    "nuspec_sha256": "3b80e2b5e55d7ee1310e4841f202e7e91537abc6d2a01432307db0464073f048",
+    "dependencies": [
+      {
+        "id": "Hexalith.Projects.Contracts",
+        "version": "[91.92.93-ci.1]",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.Projects",
+        "version": "[91.92.93-ci.1]",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "ByteAether.Ulid",
+        "version": "1.4.2",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.Commons.UniqueIds",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.EventStore.Contracts",
+        "version": "5.1.1",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Hexalith.McpCli.Abstractions",
+        "version": "3.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Configuration",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Configuration.Binder",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      },
+      {
+        "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+        "version": "11.0.0",
+        "exclude": "Build,Analyzers"
+      }
+    ]
+  }
+]

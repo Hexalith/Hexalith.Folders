@@ -1,0 +1,114 @@
+  Discovering: Hexalith.Projects.Integration.Tests
+  Discovered:  Hexalith.Projects.Integration.Tests
+  Starting:    Hexalith.Projects.Integration.Tests
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.SqliteOrderingObservesCanonicalNativeCommandRewriteAsync [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(351,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.SqliteOrderingObservesCanonicalNativeCommandRewriteAsync()
+        --- End of stack trace from previous location ---
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.EnabledProfileComposesRealOwnersAndDistinctTrustAsync [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(149,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.EnabledProfileComposesRealOwnersAndDistinctTrustAsync()
+        --- End of stack trace from previous location ---
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.CanonicalMtlsReplacesAllSixSidecarControlPlaneBindingsAsync [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(311,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.CanonicalMtlsReplacesAllSixSidecarControlPlaneBindingsAsync()
+        --- End of stack trace from previous location ---
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Starting Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration state.redis for component 'statestore'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Unvalidated configuration pubsub.redis for component 'pubsub'.
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+info: CommunityToolkit.Aspire.Hosting.Dapr.DaprDistributedApplicationLifecycleHook[0]
+      Stopping Dapr-related resources...
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(scenario: "main", recovery: False) [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(127,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(String scenario, Boolean recovery)
+        --- End of stack trace from previous location ---
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(scenario: "full-replay", recovery: False) [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(127,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(String scenario, Boolean recovery)
+        --- End of stack trace from previous location ---
+    Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(scenario: "tenant-access-recovery", recovery: True) [FAIL]
+      Aspire.Hosting.DistributedApplicationException : Project file '/tmp/hexalith-job.h0yfql7X/Hexalith.Projects/references/Hexalith.Folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj' was not found.
+      Stack Trace:
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(79,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IProjectMetadata projectMetadata, String resourceName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(30,0): at Aspire.Hosting.LaunchProfileExtensions.GetLaunchSettings(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(123,0): at Aspire.Hosting.LaunchProfileExtensions.TrySelectLaunchProfileByOrder(IResource projectResource, String& launchProfileName)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(195,0): at Aspire.Hosting.LaunchProfileExtensions.SelectLaunchProfileName(IResource projectResource)
+        /_/src/Shared/LaunchProfiles/LaunchProfileExtensions.cs(35,0): at Aspire.Hosting.LaunchProfileExtensions.GetEffectiveLaunchProfile(IResource projectResource, Boolean throwIfNotFound)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(664,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.WithProjectDefaults[TProjectResource](IResourceBuilder`1 builder, ProjectResourceOptions options)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(321,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath, Action`1 configure)
+        /_/src/Aspire.Hosting/ProjectResourceBuilderExtensions.cs(108,0): at Aspire.Hosting.ProjectResourceBuilderExtensions.AddProject(IDistributedApplicationBuilder builder, String name, String projectPath)
+        src/Hexalith.Projects.AppHost/SupportedProjectReadFixtureProfile.cs(153,0): at Hexalith.Projects.AppHost.SupportedProjectReadFixtureProfile.AddResources(IDistributedApplicationBuilder builder, IResourceBuilder`1 eventStore, IResourceBuilder`1 tenants, IResourceBuilder`1 projects, IResourceBuilder`1 projectsWorkers, String resourcesPath)
+        tests/Hexalith.Projects.Integration.Tests/SupportedProjectReadTopologyTests.cs(127,0): at Hexalith.Projects.Integration.Tests.SupportedProjectReadTopologyTests.RecoveryFreshnessIsScopedToItsExistingPrivateProfile(String scenario, Boolean recovery)
+        --- End of stack trace from previous location ---
+  Finished:    Hexalith.Projects.Integration.Tests (ID = 'c937b970414dd6eb660cd1b6a7ad9129ee054a925e8224d36138353eb8766657')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Projects.Integration.Tests  Total: 125, Errors: 0, Failed: 6, Skipped: 0, Not Run: 0, Time: 1.816s

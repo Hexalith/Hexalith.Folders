@@ -1,0 +1,53 @@
+{
+  "scope": "Read retained signed archives only; no publication, download, audit refresh or signature re-verification",
+  "packages": [
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "version": "2.0.0",
+      "archive": "packages/Hexalith.Folders.Contracts.2.0.0.nupkg",
+      "sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "payload_member": "lib/net11.0/Hexalith.Folders.Contracts.dll",
+      "payload_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098",
+      "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/final/packages/Hexalith.Folders.Contracts.2.0.0.nupkg",
+      "archive_hash_matches_handoff": true,
+      "payload_hash_matches_handoff": true,
+      "dependencies": [
+        {
+          "id": "Hexalith.McpCli.Abstractions",
+          "version": "3.0.0",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    },
+    {
+      "id": "Hexalith.Folders.Client",
+      "version": "2.0.0",
+      "archive": "packages/Hexalith.Folders.Client.2.0.0.nupkg",
+      "sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+      "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+      "payload_member": "lib/net11.0/Hexalith.Folders.Client.dll",
+      "payload_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65",
+      "retained_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/final/packages/Hexalith.Folders.Client.2.0.0.nupkg",
+      "archive_hash_matches_handoff": true,
+      "payload_hash_matches_handoff": true,
+      "dependencies": [
+        {
+          "id": "Hexalith.Folders.Contracts",
+          "version": "2.0.0",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Newtonsoft.Json",
+          "version": "13.0.4",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Hexalith.McpCli.Abstractions",
+          "version": "3.0.0",
+          "exclude": "Build,Analyzers"
+        }
+      ]
+    }
+  ]
+}

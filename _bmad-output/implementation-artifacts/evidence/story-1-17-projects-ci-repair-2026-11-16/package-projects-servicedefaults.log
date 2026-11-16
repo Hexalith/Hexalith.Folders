@@ -1,0 +1,4 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.ODJwGaHr/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj (in 152 ms).
+  Hexalith.Projects.ServiceDefaults -> /tmp/hexalith-job.ODJwGaHr/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Hexalith.Projects.ServiceDefaults.dll
+  Successfully created package '/tmp/hexalith-job.ODJwGaHr/Hexalith.Projects/candidates/Hexalith.Projects.ServiceDefaults.91.92.93-ci.1.nupkg'.

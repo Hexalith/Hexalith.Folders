@@ -1,0 +1,8 @@
+2026-11-16T09:18:38.1507657Z ##[group]Run python3 -m unittest tests/tools/test_release_package_tools.py -v
+2026-11-16T09:18:38.1508127Z [36;1mpython3 -m unittest tests/tools/test_release_package_tools.py -v[0m
+2026-11-16T09:18:56.2362736Z ERROR: test_external_dependency_may_equal_candidate_version (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_external_dependency_may_equal_candidate_version)
+2026-11-16T09:18:56.2365279Z   File "/home/runner/work/Hexalith.Projects/Hexalith.Projects/tests/tools/test_release_package_tools.py", line 215, in test_external_dependency_may_equal_candidate_version
+2026-11-16T09:18:56.2366743Z KeyError: 'Hexalith.Conversations.Contracts'
+2026-11-16T09:18:56.2367804Z Ran 20 tests in 18.005s
+2026-11-16T09:18:56.2368010Z FAILED (errors=1)
+2026-11-16T09:18:56.2523981Z ##[error]Process completed with exit code 1.

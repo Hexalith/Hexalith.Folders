@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "status": "local-fixture-repair-verified-product-and-host-owner-hold",
+  "recorded_at_utc": "2026-11-16T12:00:25.566256+00:00",
+  "handoff": "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json",
+  "handoff_sha256": "82904ea7d12797fd1ea438c582a16795fc659c4cfbaf281a26a03192cfd4c87d",
+  "previous_handoff_snapshot": "closure-handoff.before.json",
+  "previous_handoff_sha256": "2f0928c55b16188d88f1a1c7371176974add40e7b631697c474fd66b66854032",
+  "source_revisions": {
+    ".": "917295efa8b96c8100c1950bf0970be657325a3a",
+    "references/Hexalith.Tenants": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d",
+    "references/Hexalith.FrontComposer": "33e71036c04f2b99955376e9c90cbb1fc3a81e64",
+    "references/Hexalith.Memories": "9d87500eaf4c39ce0cec0cb3a03e5dd62c167106",
+    "references/Hexalith.Commons": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "references/Hexalith.Builds": "65fd22f37b9fad64b595841923cdbe050563ab99",
+    "references/Hexalith.PolymorphicSerializations": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "references/Hexalith.Projects": "bf9f98969efa036fd60700c627e712b4375e654a",
+    "references/Hexalith.Platform": "5691d313ab20bf7ad40243e40a80b6a58ed04650",
+    "references/Hexalith.McpCli": "ab92da41988c4d423c05ea3f5ab401ed0db1fc32",
+    "references/Hexalith.Parties": "d4a71068bc1366ba67699aa9ec68cf24c0645c71"
+  },
+  "projects_fixture_patch": "projects-fixture.patch",
+  "fixture_sha256": "f4de387180c6f273546831161aafe6c46e4ce7eac53be427041c060745b1a0c1",
+  "fixture_patch_sha256": "d136101367e0e881e18e227a10ec56ba0d7609a390ace6a656a3589cb27b72bb",
+  "owner_next_action": "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md",
+  "owner_next_action_sha256": "6b834fc73073f3f2d6eb79cafbff2d1688f1306c49d9b03e23179d289357ac33",
+  "focused_fixture_result": "20 passed; before repair exact KeyError reproduced",
+  "product_test_result": "1357 passed across six individual projects; zero skipped",
+  "product_blockers": [
+    {
+      "id": "mcpcli-package-tuple",
+      "result": "NU1109: required >=3.0.0 via signed Folders 2.0.0 versus central 2.0.1",
+      "owner": "Projects maintainer with McpCli/package owner",
+      "next_action": "Select and compatibility-qualify coherent package tuple; review central pin/manifest adoption together without suppression or changing published Folders payloads."
+    },
+    {
+      "id": "eventstore-package-manifest-drift",
+      "result": "Five diagnostic candidates packed; strict package graph failed EventStore.Contracts (manifest 5.1.0, selected 5.1.1)",
+      "owner": "Projects package owner with EventStore/Builds",
+      "next_action": "Reconcile intended release graph and manifest against real pack output, then require strict validation and all five real API consumers."
+    }
+  ],
+  "product_results": "product-results.json",
+  "package_results": "package-results.json",
+  "retained_folders_binding": "folders-payload-binding.json",
+  "committed_input_checker": "Sibling current Builds check.py refused absent Projects nested Builds checkout at pin; no nested submodule initialized, no override",
+  "hosted_projects_artifact": null,
+  "story_closed": false,
+  "preparation_complete": true,
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog",
+    "staging_checks_total": 14
+  },
+  "tracking": {
+    "transition_authorized": false,
+    "applied_delta": {},
+    "parent_status": "in-progress",
+    "story_1_17": "backlog",
+    "story_11_6_scope": "No tracker edit; user-confirmed implementation/verification completion is not reopened."
+  },
+  "completed_do_not_repeat": {
+    "folders_v2_publication": "Retained signed v2.0.0 source/package/payload identities pass historical replay.",
+    "audit_landing_commit": "82ec1f26d946f3191c2f7b5b7c104b52802a5f27",
+    "audit_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+    "audit_validation": "passed: 317 packages, 157 families, 1 source",
+    "DEC-A8-HOLD": "satisfied; no renewed approval",
+    "story_11_6": "implementation and verification complete per user; no repeat work"
+  },
+  "git_or_external_mutations_performed": false,
+  "local_changes": "Projects fixture and owner runbook; additive Folders specification/evidence and supplied closure handoff only. Existing user changes preserved.",
+  "historical_evidence_limit": "Prior sealed preparation receipt/replay retained unchanged. Its old exact-workspace comparison is intentionally historical after authorized fixture/handoff change; no old source hashes or decisions resealed as current.",
+  "package_boundary_replay": "package-replay/results.json",
+  "actual_candidate_metadata": "package-replay/dependency-report.json",
+  "independent_review": {
+    "layer": "blind-hunter",
+    "findings": 10,
+    "confirmed_and_patched": 9,
+    "false": 1,
+    "deferred": 0,
+    "triage": "_bmad-output/implementation-artifacts/spec-1-17-repair-projects-release-fixture-and-prepare-host-artifact.md",
+    "scope": "Fixture, owner action, closure handoff and new evidence; no pre-existing root changes attributed to this repair."
+  },
+  "bounded_spec": "_bmad-output/implementation-artifacts/spec-1-17-repair-projects-release-fixture-and-prepare-host-artifact.md",
+  "bounded_spec_sha256": "e73196926046545307718d72b368b3afdbd0b66a69e4c3796a3c618f9e11f35d",
+  "current_story_status": "Parent Story 1.17 remains HOLD with tracking unchanged; only this local fixture repair/preparation specification is done."
+}

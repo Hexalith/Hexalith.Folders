@@ -1,0 +1,6 @@
+  Discovering: Hexalith.Projects.Client.Tests
+  Discovered:  Hexalith.Projects.Client.Tests
+  Starting:    Hexalith.Projects.Client.Tests
+  Finished:    Hexalith.Projects.Client.Tests (ID = '927667536ecf4806cd71dea14aa665decf6fb864f5f72672d1aea92724977c23')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Projects.Client.Tests  Total: 125, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.262s

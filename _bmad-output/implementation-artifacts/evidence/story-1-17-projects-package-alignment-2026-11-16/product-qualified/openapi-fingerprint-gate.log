@@ -1,0 +1,22 @@
+openapi-fingerprint-gate: spine detected (1 spec file(s)) — running real fingerprint/compatibility check.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.Client.Generation.Shared -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Shared/bin/Release/net11.0/Hexalith.Projects.Client.Generation.Shared.dll
+  Hexalith.Projects -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Client.Tests -> /tmp/hexalith-job.h0yfql7X/Hexalith.Projects/tests/Hexalith.Projects.Client.Tests/bin/Release/net11.0/Hexalith.Projects.Client.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.73
+xUnit.net v3 In-Process Runner v4.0.3+384aa7f0b4 (64-bit .NET 11.0.0)
+  Discovering: Hexalith.Projects.Client.Tests
+  Discovered:  Hexalith.Projects.Client.Tests
+  Starting:    Hexalith.Projects.Client.Tests
+  Finished:    Hexalith.Projects.Client.Tests (ID = '8079f2a42f2865a953047d09e8dc59aabdf30c4f0689dde81f97d17803e6f2c3')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Projects.Client.Tests  Total: 101, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.246s
+openapi-fingerprint-gate: PASSED — generated artifacts match the Contract Spine fingerprint.

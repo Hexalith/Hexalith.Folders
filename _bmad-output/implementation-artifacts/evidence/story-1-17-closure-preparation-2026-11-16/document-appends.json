@@ -1,0 +1,20 @@
+{
+  "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": {
+    "prefix_bytes": 136675,
+    "prefix_sha256": "71c467084dc3be3925a81e0933b0de49f6b9073b7ff2cbfc9b18780a93164a04",
+    "append_sha256": "e63de9534b51332e2899c870eb4836aa057ea7e0d6122c0481097df96c7dc75d",
+    "final_sha256": "6b39918b5ba54948dc674523f18c10e55cd88f6a7f5eb328f72d8a7787a961c0"
+  },
+  "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": {
+    "prefix_bytes": 260201,
+    "prefix_sha256": "5564539ff333ec02016f662df963ad397456aa59298f4e66a719111e9ca86b9d",
+    "append_sha256": "e63de9534b51332e2899c870eb4836aa057ea7e0d6122c0481097df96c7dc75d",
+    "final_sha256": "561d2c4b15cb30aa15f536b7a4eeb9afa182e97588d22dcb7a2ea6f174c69265"
+  },
+  "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": {
+    "prefix_bytes": 66138,
+    "prefix_sha256": "f175fe734d304b45abb62d0a9e69fce700a2628245d83d2726c9558ff0a8493b",
+    "append_sha256": "e63de9534b51332e2899c870eb4836aa057ea7e0d6122c0481097df96c7dc75d",
+    "final_sha256": "59591d36bd731f7b763eed463e0a4098df27d747b808753502040f2205a74cb2"
+  }
+}

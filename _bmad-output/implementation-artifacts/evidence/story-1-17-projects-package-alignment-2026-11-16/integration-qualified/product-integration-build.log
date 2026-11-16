@@ -1,0 +1,57 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/Hexalith.Projects.UI.Contracts.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Client/Hexalith.Projects.Client.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects/Hexalith.Projects.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj (in 382 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.UI/Hexalith.Projects.UI.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Workers/Hexalith.Projects.Workers.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore/Hexalith.EventStore.csproj (in 381 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj (in 23 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/Hexalith.Projects.E2E.Fixtures.csproj (in 24 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj (in 25 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Testing/Hexalith.Projects.Testing.csproj (in 36 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/Hexalith.Projects.Infrastructure.csproj (in 145 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj (in 146 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/Hexalith.EventStore.Gateway.csproj (in 149 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj (in 160 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Aspire/Hexalith.Projects.Aspire.csproj (in 196 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj (in 203 ms).
+  Restored /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj (in 202 ms).
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Infrastructure -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/bin/Release/net11.0/Hexalith.Projects.Infrastructure.dll
+  Hexalith.Projects.ServiceDefaults -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Hexalith.Projects.ServiceDefaults.dll
+  Hexalith.Projects.Server -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Projects.Server.dll
+  Hexalith.Projects.UI.Contracts -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/bin/Release/net11.0/Hexalith.Projects.UI.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.UI -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.UI/bin/Release/net11.0/Hexalith.Projects.UI.dll
+  Hexalith.Projects.Workers -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Workers/bin/Release/net11.0/Hexalith.Projects.Workers.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/bin/Release/net11.0/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Admin.Abstractions -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/bin/Release/net11.0/Hexalith.EventStore.Admin.Abstractions.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/bin/Release/net11.0/Hexalith.EventStore.Client.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/bin/Release/net11.0/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/bin/Release/net11.0/Hexalith.EventStore.DomainService.dll
+  Hexalith.EventStore.Server -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Server/bin/Release/net11.0/Hexalith.EventStore.Server.dll
+  Hexalith.EventStore.Gateway -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore.Gateway/bin/Release/net11.0/Hexalith.EventStore.Gateway.dll
+  Hexalith.EventStore -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.EventStore/src/Hexalith.EventStore/bin/Release/net11.0/Hexalith.EventStore.dll
+  Hexalith.Tenants.Contracts -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/bin/Release/net11.0/Hexalith.Tenants.Contracts.dll
+  Hexalith.Tenants.Server -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants.Server/bin/Release/net11.0/Hexalith.Tenants.Server.dll
+  Hexalith.Tenants -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/references/Hexalith.Tenants/src/Hexalith.Tenants/bin/Release/net11.0/Hexalith.Tenants.dll
+  Hexalith.Projects.Aspire -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Aspire/bin/Release/net11.0/Hexalith.Projects.Aspire.dll
+  Hexalith.Projects.E2E.Fixtures -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/bin/Release/net11.0/Hexalith.Projects.E2E.Fixtures.dll
+  Hexalith.Projects.AppHost -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.AppHost/bin/Release/net11.0/Hexalith.Projects.AppHost.dll
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+  Hexalith.Projects.Integration.Tests -> /tmp/hexalith-job.oi6VBLNE/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/bin/Release/net11.0/Hexalith.Projects.Integration.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:23.71

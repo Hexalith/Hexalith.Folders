@@ -1,0 +1,29 @@
+[
+  {
+    "owner": ".",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "owner": "references/Hexalith.Projects",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "check": "new packet deliverability",
+    "ignored_members": [],
+    "ignored_count": 0
+  }
+]

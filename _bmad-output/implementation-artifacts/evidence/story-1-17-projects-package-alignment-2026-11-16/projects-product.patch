@@ -1,0 +1,94 @@
+diff --git a/Directory.Packages.props b/Directory.Packages.props
+index 10269495..a2afdaa5 100644
+--- a/Directory.Packages.props
++++ b/Directory.Packages.props
+@@ -3,8 +3,8 @@
+     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+     <!-- Story 1.17: consume the released PD10 v2 Client/Contracts pair together. -->
+     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+-    <!-- Pin the Contracts decoration package used by Story 6.6. -->
+-    <HexalithMcpCliVersion Condition="'$(HexalithMcpCliVersion)' == ''">2.0.1</HexalithMcpCliVersion>
++    <!-- Align Contracts decorations with the 3.0.0 dependency required by Folders 2.0.0. -->
++    <HexalithMcpCliVersion Condition="'$(HexalithMcpCliVersion)' == ''">3.0.0</HexalithMcpCliVersion>
+     <!-- Story 1.17: consume the published 5.1.1 native source scanner package family. -->
+     <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">5.1.1</HexalithEventStoreVersion>
+     <HexalithTenantsVersion Condition="'$(HexalithTenantsVersion)' == ''">8.0.0</HexalithTenantsVersion>
+diff --git a/tests/tools/test_release_package_tools.py b/tests/tools/test_release_package_tools.py
+index a1a9a00a..e70ef0e0 100644
+--- a/tests/tools/test_release_package_tools.py
++++ b/tests/tools/test_release_package_tools.py
+@@ -212,14 +212,17 @@ class ReleasePackageToolTests(unittest.TestCase):
+         contracts_manifest = next(
+             item for item in manifest.packages if item.package_id.endswith("Contracts")
+         )
+-        external_version = contracts_manifest.dependencies["Hexalith.Conversations.Contracts"]
++        external_id = "Hexalith.EventStore.Contracts"
++        self.assertNotIn(external_id, {item.package_id for item in manifest.packages})
++        external_version = contracts_manifest.dependencies[external_id]
+         self.assertNotIn("{", external_version)
+         write_candidates(self.directory, version=external_version)
++        normalize_internal_dependency_ranges(self.directory, external_version)
+         packages, version, _ = validate_packages(self.directory, external_version, SOURCE_SHA)
+         contracts = next(item for item in packages if item.package_id.endswith("Contracts"))
+         self.assertEqual(
+             external_version,
+-            contracts.dependencies["Hexalith.Conversations.Contracts"],
++            contracts.dependencies[external_id],
+         )
+         self.assertEqual(external_version, version)
+ 
+diff --git a/tools/release-packages.json b/tools/release-packages.json
+index 19f36231..b3ff7ad2 100644
+--- a/tools/release-packages.json
++++ b/tools/release-packages.json
+@@ -24,10 +24,10 @@
+       "assembly": "Hexalith.Projects.Contracts",
+       "frameworkReferences": [],
+       "dependencies": {
+-        "Hexalith.EventStore.Contracts": "5.1.0",
++        "Hexalith.EventStore.Contracts": "5.1.1",
+         "ByteAether.Ulid": "1.4.2",
+         "Hexalith.Commons.UniqueIds": "3.0.0",
+-        "Hexalith.McpCli.Abstractions": "2.0.1"
++        "Hexalith.McpCli.Abstractions": "3.0.0"
+       },
+       "probe": "using Hexalith.Projects.Contracts.Identifiers;\nConsole.WriteLine(new ProjectId(\"01HZ9K8YQ3W6V2N4R7T5P0X1AB\").Value);\n"
+     },
+@@ -41,10 +41,10 @@
+         "Microsoft.Extensions.Options.ConfigurationExtensions": "11.0.0",
+         "ByteAether.Ulid": "1.4.2",
+         "Hexalith.Commons.UniqueIds": "3.0.0",
+-        "Hexalith.EventStore.Contracts": "5.1.0",
++        "Hexalith.EventStore.Contracts": "5.1.1",
+         "Microsoft.Extensions.Configuration": "11.0.0",
+         "Microsoft.Extensions.Configuration.Binder": "11.0.0",
+-        "Hexalith.McpCli.Abstractions": "2.0.1"
++        "Hexalith.McpCli.Abstractions": "3.0.0"
+       },
+       "probe": "using Hexalith.Projects;\nConsole.WriteLine(ProjectsModule.Name);\n"
+     },
+@@ -60,8 +60,8 @@
+         "Newtonsoft.Json": "13.0.4",
+         "ByteAether.Ulid": "1.4.2",
+         "Hexalith.Commons.UniqueIds": "3.0.0",
+-        "Hexalith.EventStore.Contracts": "5.1.0",
+-        "Hexalith.McpCli.Abstractions": "2.0.1"
++        "Hexalith.EventStore.Contracts": "5.1.1",
++        "Hexalith.McpCli.Abstractions": "3.0.0"
+       },
+       "probe": "using Hexalith.Projects.Client;\nConsole.WriteLine(ProjectsClientOptions.DefaultConfigurationSectionName);\n"
+     },
+@@ -75,11 +75,11 @@
+         "Hexalith.Projects": "{version}",
+         "ByteAether.Ulid": "1.4.2",
+         "Hexalith.Commons.UniqueIds": "3.0.0",
+-        "Hexalith.EventStore.Contracts": "5.1.0",
++        "Hexalith.EventStore.Contracts": "5.1.1",
+         "Microsoft.Extensions.Configuration": "11.0.0",
+         "Microsoft.Extensions.Configuration.Binder": "11.0.0",
+         "Microsoft.Extensions.Options.ConfigurationExtensions": "11.0.0",
+-        "Hexalith.McpCli.Abstractions": "2.0.1"
++        "Hexalith.McpCli.Abstractions": "3.0.0"
+       },
+       "probe": "using Hexalith.Projects.Testing;\nConsole.WriteLine(ProjectsTestingMarker.Name);\n"
+     },

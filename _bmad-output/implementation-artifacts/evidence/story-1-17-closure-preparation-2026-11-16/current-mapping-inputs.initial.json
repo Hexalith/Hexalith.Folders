@@ -1,0 +1,254 @@
+{
+  "status": "proposal-only-no-mapping-decision",
+  "platform_revision": "5691d313ab20bf7ad40243e40a80b6a58ed04650",
+  "rows": [
+    {
+      "owner": "EventStore",
+      "platform_direct_revision": "cab8363c2b6e2c0588efc8ca9c2e09fab0006841",
+      "root_checkout_revision": "97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d",
+      "platform_direct_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_via": "root-declared owner object database",
+        "read_exit_code": 0,
+        "sha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495"
+      },
+      "root_checkout_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_exit_code": 0,
+        "sha256": "21eda6da824d5ae6135ff342dd8a5aae950b02420319b953a836dddeb00ce495"
+      },
+      "declaration_bytes_equal": true
+    },
+    {
+      "owner": "Tenants",
+      "platform_direct_revision": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+      "root_checkout_revision": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+      "platform_direct_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_via": "root-declared owner object database",
+        "read_exit_code": 0,
+        "sha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522"
+      },
+      "root_checkout_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_exit_code": 0,
+        "sha256": "1588f3428ec29296c452fdd35bf95146142315aad3ad8ceb934e7a791f1fb522"
+      },
+      "declaration_bytes_equal": true
+    },
+    {
+      "owner": "Memories",
+      "platform_direct_revision": "f20e8b8145a6c00310a2aed3d0c8758844b65fdc",
+      "root_checkout_revision": "9d87500eaf4c39ce0cec0cb3a03e5dd62c167106",
+      "platform_direct_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_via": "root-declared owner object database",
+        "read_exit_code": 0,
+        "sha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840"
+      },
+      "root_checkout_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_exit_code": 0,
+        "sha256": "56f6dc8134d3f7cea06910e923a4736a450e00241e8e4a565ac9226897881840"
+      },
+      "declaration_bytes_equal": true
+    },
+    {
+      "owner": "Parties",
+      "platform_direct_revision": "ebe1739d70a4e76447938b0bb8c53db508bf6019",
+      "root_checkout_revision": "d4a71068bc1366ba67699aa9ec68cf24c0645c71",
+      "platform_direct_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_via": "root-declared owner object database",
+        "read_exit_code": 0,
+        "sha256": "d9c193b0e7b61601b8fcceb906b5dafe4769a1b9d7538a6ce164b4aa0840b348"
+      },
+      "root_checkout_declaration": {
+        "path": "module/hexalith.module-manifest.v2.json",
+        "read_exit_code": 0,
+        "sha256": "dfb03b6e397944c4f24737f4ac9278fba033399a0efa30a80447c9112709efee"
+      },
+      "declaration_bytes_equal": false
+    }
+  ],
+  "limit": "Declaration equality never proves executable-source equivalence. No nested initialization or owner mapping acceptance.",
+  "tuple": {
+    "schemaVersion": 1,
+    "candidateAcceptance": false,
+    "producer": {
+      "repository": "https://github.com/Hexalith/Hexalith.Builds.git",
+      "sourceRevision": "27145e52ffab5623198ba5efdab5cdb71aa42d28",
+      "catalog": {
+        "path": "Props/Directory.Packages.props",
+        "blob": "b45555806e78ea6ce66ad6a8f0fcc5f7c70b691d",
+        "sha256": "c66fb47d42633dd51bdfa6f31216ee22412e0137a664bf472edf72ac103ad5d1"
+      }
+    },
+    "publication": {
+      "version": "4.45.0",
+      "sourceRevision": "27145e52ffab5623198ba5efdab5cdb71aa42d28",
+      "releaseTag": "v4.45.0",
+      "catalogSha256": "c66fb47d42633dd51bdfa6f31216ee22412e0137a664bf472edf72ac103ad5d1",
+      "archiveSha256": "dd99ad612367d6b0ffba69e24f93f16dcae649fb8edeb213f226f6c8864bc498",
+      "toolingSha256": "0c8c00e5563730f953f24b19b777dedd1887f4d186e92347145e55783d4d4981",
+      "inventorySha256": "a428251a7546bb483ef5cdf8295adbd76df9b9e12bc487b0d391ac853f8ec08e",
+      "inventoryUrl": "https://github.com/Hexalith/Hexalith.Builds/releases/download/v4.45.0/g4-tool-package-inventory.json"
+    }
+  },
+  "direct_owner_inventory": [
+    {
+      "owner": "Hexalith.AI.Tools",
+      "platform_gitlink_path": "references/Hexalith.AI.Tools",
+      "platform_direct_revision": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+      "root_checkout_revision": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+      "root_checkout_path": "references/Hexalith.AI.Tools",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Agents",
+      "platform_gitlink_path": "references/Hexalith.Agents",
+      "platform_direct_revision": "4a65f67d040bec4d646a830ed72b65c0e8951048",
+      "root_checkout_revision": null,
+      "root_checkout_path": null,
+      "availability": "not declared in top-level workspace; no nested initialization performed",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Builds",
+      "platform_gitlink_path": "references/Hexalith.Builds",
+      "platform_direct_revision": "27145e52ffab5623198ba5efdab5cdb71aa42d28",
+      "root_checkout_revision": "65fd22f37b9fad64b595841923cdbe050563ab99",
+      "root_checkout_path": "references/Hexalith.Builds",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.ChatBot",
+      "platform_gitlink_path": "references/Hexalith.ChatBot",
+      "platform_direct_revision": "6a4ca07b18e9b58500dc79dfede1f308da36c828",
+      "root_checkout_revision": null,
+      "root_checkout_path": null,
+      "availability": "not declared in top-level workspace; no nested initialization performed",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Commons",
+      "platform_gitlink_path": "references/Hexalith.Commons",
+      "platform_direct_revision": "fbf4e94233821f6ca336af91a06feaaeb7a16855",
+      "root_checkout_revision": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+      "root_checkout_path": "references/Hexalith.Commons",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Conversations",
+      "platform_gitlink_path": "references/Hexalith.Conversations",
+      "platform_direct_revision": "c34dc3c1e0469765c75ea608f2960381f649579c",
+      "root_checkout_revision": null,
+      "root_checkout_path": null,
+      "availability": "not declared in top-level workspace; no nested initialization performed",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.EventStore",
+      "platform_gitlink_path": "references/Hexalith.EventStore",
+      "platform_direct_revision": "cab8363c2b6e2c0588efc8ca9c2e09fab0006841",
+      "root_checkout_revision": "97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d",
+      "root_checkout_path": "references/Hexalith.EventStore",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Folders",
+      "platform_gitlink_path": "references/Hexalith.Folders",
+      "platform_direct_revision": "89e2fbb6bd965eae2008db4501e7b79cc6e1c8e1",
+      "root_checkout_revision": "917295efa8b96c8100c1950bf0970be657325a3a",
+      "root_checkout_path": ".",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.FrontComposer",
+      "platform_gitlink_path": "references/Hexalith.FrontComposer",
+      "platform_direct_revision": "7063810a3eb940a8d803fcb977bde5a0a8a2ab59",
+      "root_checkout_revision": "33e71036c04f2b99955376e9c90cbb1fc3a81e64",
+      "root_checkout_path": "references/Hexalith.FrontComposer",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.McpCli",
+      "platform_gitlink_path": "references/Hexalith.McpCli",
+      "platform_direct_revision": "23072f04f423eea3f30456fe5af13d2d382624fe",
+      "root_checkout_revision": "ab92da41988c4d423c05ea3f5ab401ed0db1fc32",
+      "root_checkout_path": "references/Hexalith.McpCli",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Memories",
+      "platform_gitlink_path": "references/Hexalith.Memories",
+      "platform_direct_revision": "f20e8b8145a6c00310a2aed3d0c8758844b65fdc",
+      "root_checkout_revision": "9d87500eaf4c39ce0cec0cb3a03e5dd62c167106",
+      "root_checkout_path": "references/Hexalith.Memories",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Parties",
+      "platform_gitlink_path": "references/Hexalith.Parties",
+      "platform_direct_revision": "ebe1739d70a4e76447938b0bb8c53db508bf6019",
+      "root_checkout_revision": "d4a71068bc1366ba67699aa9ec68cf24c0645c71",
+      "root_checkout_path": "references/Hexalith.Parties",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.PolymorphicSerializations",
+      "platform_gitlink_path": "references/Hexalith.PolymorphicSerializations",
+      "platform_direct_revision": "e97b56930e213f674b64c157551f499b0473ec43",
+      "root_checkout_revision": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+      "root_checkout_path": "references/Hexalith.PolymorphicSerializations",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Projects",
+      "platform_gitlink_path": "references/Hexalith.Projects",
+      "platform_direct_revision": "fc58cefde69d72d7d3daa574b5022f73f830a85e",
+      "root_checkout_revision": "bf9f98969efa036fd60700c627e712b4375e654a",
+      "root_checkout_path": "references/Hexalith.Projects",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Tenants",
+      "platform_gitlink_path": "references/Hexalith.Tenants",
+      "platform_direct_revision": "2ec938397c5b330cf1e694e8cc442cb4ad022f2b",
+      "root_checkout_revision": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+      "root_checkout_path": "references/Hexalith.Tenants",
+      "availability": "permitted root or root-declared owner",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Timesheets",
+      "platform_gitlink_path": "references/Hexalith.Timesheets",
+      "platform_direct_revision": "aafdae771e81f152671d18c506a0470ce0deee7f",
+      "root_checkout_revision": null,
+      "root_checkout_path": null,
+      "availability": "not declared in top-level workspace; no nested initialization performed",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    },
+    {
+      "owner": "Hexalith.Works",
+      "platform_gitlink_path": "references/Hexalith.Works",
+      "platform_direct_revision": "b2985d22b3bfbc6d86bcde28a5da722ae7f930c3",
+      "root_checkout_revision": null,
+      "root_checkout_path": null,
+      "availability": "not declared in top-level workspace; no nested initialization performed",
+      "source_mapping_status": "owner membership/mapping qualification pending"
+    }
+  ],
+  "declaration_comparison_scope": "Four previously compared domain declarations only; direct_owner_inventory records all 17 Platform gitlinks, including Folders/Projects/FrontComposer/McpCli/Builds. No other owner is silently declared outside the executable closure. Owners must establish the selected closure and its mappings."
+}

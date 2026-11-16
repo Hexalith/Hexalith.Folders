@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "owner": ".",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "owner": "references/Hexalith.Projects",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "check": "ordinary deliverability",
+      "ignored_files": [],
+      "correction": "Packet-local exceptions preserve the initial packages/ metadata omitted by the global packages ignore pattern."
+    }
+  ],
+  "cleanup": [
+    {
+      "lane": "product",
+      "workspace": "/tmp/hexalith-job.w8pIiZdb",
+      "exists_after_exit": false
+    },
+    {
+      "lane": "product-qualified",
+      "workspace": "/tmp/hexalith-job.h0yfql7X",
+      "exists_after_exit": false
+    },
+    {
+      "lane": "integration-qualified",
+      "workspace": "/tmp/hexalith-job.oi6VBLNE",
+      "exists_after_exit": false
+    },
+    {
+      "lane": "packages",
+      "workspace": "/tmp/hexalith-job.L0Mw0sBf",
+      "exists_after_exit": false
+    },
+    {
+      "lane": "packages-qualified",
+      "workspace": "/tmp/hexalith-job.ZhDjeYIr",
+      "exists_after_exit": false
+    },
+    {
+      "lane": "fixture-provenance",
+      "workspace": "/tmp/hexalith-job.6jvTKPB7",
+      "exists_after_exit": false
+    }
+  ],
+  "all_children_finished": true,
+  "qualification_note": "Commands with orchestration exit zero can contain earlier recorded failed snapshot stages; only explicitly named final stages qualify local results."
+}

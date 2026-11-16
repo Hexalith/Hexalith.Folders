@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.Mcp -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Mcp/bin/Release/net11.0/Hexalith.Projects.Mcp.dll
+  Hexalith.Projects.Mcp.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Mcp.Tests/bin/Release/net11.0/Hexalith.Projects.Mcp.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.66

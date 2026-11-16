@@ -1,0 +1,182 @@
+{
+  "source": "bf9f98969efa036fd60700c627e712b4375e654a",
+  "builds_declared_pin": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+  "cwd": "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects",
+  "input_manifest": "input-manifest.json",
+  "input_manifest_sha256": "406f4e209f75d83fb90d7eaa88db5197f404c9b656d9dd80a8cfc60ce36124f7",
+  "scope": "Diagnostic candidates with explicit base source identity and separately hashed uncommitted inputs; no publication or retained host artifact",
+  "consumer_provenance_lookup": "Existing Projects Git metadata read-only (GIT_OPTIONAL_LOCKS=0); not a new committed candidate",
+  "restore_configuration": {
+    "CI": "true",
+    "configuration": "Release",
+    "UseHexalithProjectReferences": false,
+    "nuget_config_sha256": "d5ab62ead596c6efc8d55025d8820b2046329211ab75f8f92e6686c9640a67f1",
+    "audit_suppression_flags": [],
+    "dependency_version_overrides": []
+  },
+  "results": [
+    {
+      "label": "sdk-info",
+      "command": [
+        "dotnet",
+        "--info"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:13:53.096080+00:00",
+      "completed_at_utc": "2026-11-16T12:13:57.623301+00:00",
+      "log": "sdk-info.log",
+      "sha256": "6283a4765177249ecf7ba200b1651a3a4c23b1655f1904b554e4956bb9d7ca0f"
+    },
+    {
+      "label": "package-projects-contracts",
+      "command": [
+        "dotnet",
+        "pack",
+        "src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj",
+        "--configuration",
+        "Release",
+        "--output",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "-warnaserror",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:MinVerVersionOverride=91.92.93-ci.1",
+        "-p:HexalithProjectsPackageVersion=91.92.93-ci.1",
+        "-p:RepositoryCommit=bf9f98969efa036fd60700c627e712b4375e654a",
+        "-m:1",
+        "/nr:false"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:13:57.624055+00:00",
+      "completed_at_utc": "2026-11-16T12:14:07.495258+00:00",
+      "log": "package-projects-contracts.log",
+      "sha256": "79bfbe26b90b2c4e8e3ab74c9e54e6cb71114a273827db91c190174c8c2ab6d5"
+    },
+    {
+      "label": "package-projects",
+      "command": [
+        "dotnet",
+        "pack",
+        "src/Hexalith.Projects/Hexalith.Projects.csproj",
+        "--configuration",
+        "Release",
+        "--output",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "-warnaserror",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:MinVerVersionOverride=91.92.93-ci.1",
+        "-p:HexalithProjectsPackageVersion=91.92.93-ci.1",
+        "-p:RepositoryCommit=bf9f98969efa036fd60700c627e712b4375e654a",
+        "-m:1",
+        "/nr:false"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:07.495759+00:00",
+      "completed_at_utc": "2026-11-16T12:14:15.544617+00:00",
+      "log": "package-projects.log",
+      "sha256": "4c38f38e859e78f75fa87ae72bcd7620607aaef149e64a6b264f7f91502a0b0b"
+    },
+    {
+      "label": "package-projects-client",
+      "command": [
+        "dotnet",
+        "pack",
+        "src/Hexalith.Projects.Client/Hexalith.Projects.Client.csproj",
+        "--configuration",
+        "Release",
+        "--output",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "-warnaserror",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:MinVerVersionOverride=91.92.93-ci.1",
+        "-p:HexalithProjectsPackageVersion=91.92.93-ci.1",
+        "-p:RepositoryCommit=bf9f98969efa036fd60700c627e712b4375e654a",
+        "-m:1",
+        "/nr:false"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:15.545029+00:00",
+      "completed_at_utc": "2026-11-16T12:14:25.239345+00:00",
+      "log": "package-projects-client.log",
+      "sha256": "3ab8b9685634e9694322e61bb6eed971b76661b61f6d29fd7dd14c8fecaeecdf"
+    },
+    {
+      "label": "package-projects-testing",
+      "command": [
+        "dotnet",
+        "pack",
+        "src/Hexalith.Projects.Testing/Hexalith.Projects.Testing.csproj",
+        "--configuration",
+        "Release",
+        "--output",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "-warnaserror",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:MinVerVersionOverride=91.92.93-ci.1",
+        "-p:HexalithProjectsPackageVersion=91.92.93-ci.1",
+        "-p:RepositoryCommit=bf9f98969efa036fd60700c627e712b4375e654a",
+        "-m:1",
+        "/nr:false"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:25.240038+00:00",
+      "completed_at_utc": "2026-11-16T12:14:35.759670+00:00",
+      "log": "package-projects-testing.log",
+      "sha256": "3044cdf0af776c4f15bde28864ac47ea96466b4ea5392bc68c19be3444e0d13a"
+    },
+    {
+      "label": "package-projects-servicedefaults",
+      "command": [
+        "dotnet",
+        "pack",
+        "src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj",
+        "--configuration",
+        "Release",
+        "--output",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "-warnaserror",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:MinVerVersionOverride=91.92.93-ci.1",
+        "-p:HexalithProjectsPackageVersion=91.92.93-ci.1",
+        "-p:RepositoryCommit=bf9f98969efa036fd60700c627e712b4375e654a",
+        "-m:1",
+        "/nr:false"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:35.760308+00:00",
+      "completed_at_utc": "2026-11-16T12:14:43.370712+00:00",
+      "log": "package-projects-servicedefaults.log",
+      "sha256": "e966b8b98648c3603a8155587afa9e743a2da4211ebe676aff5cc5663959b016"
+    },
+    {
+      "label": "package-manifest-validation",
+      "command": [
+        "python3",
+        "scripts/validate-nuget-packages.py",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates",
+        "--expected-version",
+        "91.92.93-ci.1",
+        "--expected-source-sha",
+        "bf9f98969efa036fd60700c627e712b4375e654a",
+        "--normalize-internal-ranges"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:43.371177+00:00",
+      "completed_at_utc": "2026-11-16T12:14:43.457266+00:00",
+      "log": "package-manifest-validation.log",
+      "sha256": "8a7c3999b1f20b3688b4f9e19621418d5f06aae9ca29d2a988b8886ec0d726c5"
+    },
+    {
+      "label": "package-api-consumers",
+      "command": [
+        "python3",
+        "scripts/validate-consumer-package-references.py",
+        "/tmp/hexalith-job.ZhDjeYIr/Hexalith.Projects/candidates"
+      ],
+      "exit_code": 0,
+      "started_at_utc": "2026-11-16T12:14:43.469854+00:00",
+      "completed_at_utc": "2026-11-16T12:16:11.925204+00:00",
+      "log": "package-api-consumers.log",
+      "sha256": "c9f5aa3e0d6333ddbdb1f06c4cdc075446669d35b4d19494d872ea24aa86fe85"
+    }
+  ]
+}

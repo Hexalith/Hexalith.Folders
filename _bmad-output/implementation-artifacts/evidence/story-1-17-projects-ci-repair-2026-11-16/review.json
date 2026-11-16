@@ -1,0 +1,9 @@
+{
+  "layer": "blind-hunter",
+  "findings": 10,
+  "confirmed_and_patched": 9,
+  "false": 1,
+  "deferred": 0,
+  "triage": "_bmad-output/implementation-artifacts/spec-1-17-repair-projects-release-fixture-and-prepare-host-artifact.md",
+  "scope": "Fixture, owner action, closure handoff and new evidence; no pre-existing root changes attributed to this repair."
+}

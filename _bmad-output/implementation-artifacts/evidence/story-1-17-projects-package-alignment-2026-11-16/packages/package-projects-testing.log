@@ -1,0 +1,7 @@
+  Determining projects to restore...
+  Restored /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects.Testing/Hexalith.Projects.Testing.csproj (in 199 ms).
+  2 of 3 projects are up-to-date for restore.
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects -> /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+  Successfully created package '/tmp/hexalith-job.L0Mw0sBf/Hexalith.Projects/candidates/Hexalith.Projects.Testing.91.92.93-ci.1.nupkg'.

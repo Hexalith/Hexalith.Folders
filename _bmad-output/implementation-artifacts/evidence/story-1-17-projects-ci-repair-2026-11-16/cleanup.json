@@ -1,0 +1,22 @@
+{
+  "wrapper_owned_workspaces": [
+    {
+      "path": "/tmp/hexalith-job.ODJwGaHr",
+      "exists_after_exit": false
+    },
+    {
+      "path": "/tmp/hexalith-job.hzaK4zB3",
+      "exists_after_exit": false
+    },
+    {
+      "path": "/tmp/hexalith-job.eREwRBYE",
+      "exists_after_exit": false
+    }
+  ],
+  "all_children_finished": true,
+  "product_and_package_process_exit_codes": {
+    "product_runner": 0,
+    "package_runner": 0
+  },
+  "gate_limit": "Orchestration exit zero does not change recorded product restore/build or strict package gate failures."
+}

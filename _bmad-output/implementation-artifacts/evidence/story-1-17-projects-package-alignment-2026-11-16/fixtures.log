@@ -1,0 +1,26 @@
+test_case_insensitive_duplicate_dependency_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_case_insensitive_duplicate_dependency_fails) ... ok
+test_consumer_assets_reject_project_fallback_and_mixed_candidate_versions (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_assets_reject_project_fallback_and_mixed_candidate_versions) ... ok
+test_consumer_build_failure_propagates (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_build_failure_propagates) ... ok
+test_consumer_restore_failure_propagates (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_restore_failure_propagates) ... ok
+test_consumer_success_invokes_restore_and_build (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_consumer_success_invokes_restore_and_build) ... ok
+test_empty_archive_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_empty_archive_fails) ... ok
+test_exact_candidates_pass (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_exact_candidates_pass) ... ok
+test_external_dependency_may_equal_candidate_version (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_external_dependency_may_equal_candidate_version) ... ok
+test_malformed_and_unsafe_xml_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_malformed_and_unsafe_xml_fail) ... ok
+test_manifest_probes_are_package_specific_real_api_compilations (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_manifest_probes_are_package_specific_real_api_compilations) ... ok
+test_metadata_and_provenance_drift_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_metadata_and_provenance_drift_fail) ... ok
+test_missing_and_stale_packages_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_missing_and_stale_packages_fail) ... ok
+test_missing_compile_asset_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_missing_compile_asset_fails) ... ok
+test_normalizer_makes_internal_ranges_exact (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_normalizer_makes_internal_ranges_exact) ... ok
+test_release_wrapper_sequences_and_propagates_delegated_failures (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_release_wrapper_sequences_and_propagates_delegated_failures) ... ok
+test_service_defaults_rejects_stale_opentelemetry_dependency_versions (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_service_defaults_rejects_stale_opentelemetry_dependency_versions) ... ok
+test_unexpected_dependency_and_wrong_internal_range_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unexpected_dependency_and_wrong_internal_range_fail) ... ok
+test_unexpected_dependency_attributes_fail (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unexpected_dependency_attributes_fail) ... ok
+test_unsafe_archive_entry_fails (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_unsafe_archive_entry_fails) ... ok
+test_wrapper_rejects_frontcomposer_reference_in_contracts (tests.tools.test_release_package_tools.ReleasePackageToolTests.test_wrapper_rejects_frontcomposer_reference_in_contracts) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 4.955s
+
+OK
+Consumer compiled real API from Hexalith.Projects.Contracts 9.8.7-ci.1.

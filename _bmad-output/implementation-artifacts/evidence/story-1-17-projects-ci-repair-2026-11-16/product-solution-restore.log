@@ -1,0 +1,39 @@
+  Determining projects to restore...
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  Skipping project "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" because it was not found.
+  Skipping project "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" because it was not found.
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/Hexalith.Projects.E2E.Fixtures.csproj (in 91 ms).
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj : error NU1109: Detected package downgrade: Hexalith.McpCli.Abstractions from 3.0.0 to centrally defined 2.0.1. Update the centrally managed package version to a higher version.  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj : error NU1109:  Hexalith.Projects.Server -> Hexalith.Folders.Client 2.0.0 -> Hexalith.McpCli.Abstractions (>= 3.0.0)  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj : error NU1109:  Hexalith.Projects.Server -> Hexalith.McpCli.Abstractions (>= 2.0.1) [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Testing/Hexalith.Projects.Testing.csproj (in 428 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/Hexalith.Projects.Infrastructure.csproj (in 429 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/Hexalith.Projects.ServiceDefaults.csproj (in 435 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/Hexalith.Projects.UI.Contracts.csproj (in 436 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Shared/Hexalith.Projects.Client.Generation.Shared.csproj (in 426 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Mcp/Hexalith.Projects.Mcp.csproj (in 428 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Hexalith.Projects.Client.Generation.csproj (in 2 ms).
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj : error NU1109: Detected package downgrade: Hexalith.McpCli.Abstractions from 3.0.0 to centrally defined 2.0.1. Update the centrally managed package version to a higher version.  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj : error NU1109:  Hexalith.Projects.Server.Tests -> Hexalith.Folders.Client 2.0.0 -> Hexalith.McpCli.Abstractions (>= 3.0.0)  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj : error NU1109:  Hexalith.Projects.Server.Tests -> Hexalith.McpCli.Abstractions (>= 2.0.1) [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Contracts/Hexalith.Projects.Contracts.csproj (in 1 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects/Hexalith.Projects.csproj (in 6 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Cli/Hexalith.Projects.Cli.csproj (in 8 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Contracts.Tests/Hexalith.Projects.Contracts.Tests.csproj (in 345 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Client.Tests/Hexalith.Projects.Client.Tests.csproj (in 10 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Cli.Tests/Hexalith.Projects.Cli.Tests.csproj (in 8 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Mcp.Tests/Hexalith.Projects.Mcp.Tests.csproj (in 460 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Client/Hexalith.Projects.Client.csproj (in 28 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Workers/Hexalith.Projects.Workers.csproj (in 16 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Tests/Hexalith.Projects.Tests.csproj (in 20 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.UI.Tests/Hexalith.Projects.UI.Tests.csproj (in 457 ms).
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj : error NU1109: Detected package downgrade: Hexalith.McpCli.Abstractions from 3.0.0 to centrally defined 2.0.1. Update the centrally managed package version to a higher version.  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj : error NU1109:  Hexalith.Projects.Integration.Tests -> Hexalith.Folders.Client 2.0.0 -> Hexalith.McpCli.Abstractions (>= 3.0.0)  [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj : error NU1109:  Hexalith.Projects.Integration.Tests -> Hexalith.McpCli.Abstractions (>= 2.0.1) [/tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/Hexalith.Projects.CI.slnx]
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.UI/Hexalith.Projects.UI.csproj (in 23 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Aspire/Hexalith.Projects.Aspire.csproj (in 492 ms).
+  Restored /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj (in 495 ms).
+  Failed to restore /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/src/Hexalith.Projects.Server/Hexalith.Projects.Server.csproj (in 448 ms).
+  Failed to restore /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj (in 466 ms).
+  Failed to restore /tmp/hexalith-job.hzaK4zB3/Hexalith.Projects/tests/Hexalith.Projects.Integration.Tests/Hexalith.Projects.Integration.Tests.csproj (in 502 ms).

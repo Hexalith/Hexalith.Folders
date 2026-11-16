@@ -1,0 +1,53 @@
+[
+  {
+    "name": "fixture-before",
+    "cwd": "references/Hexalith.Projects",
+    "command": "run-with-temp python3 -m unittest tests.tools.test_release_package_tools.ReleasePackageToolTests.test_external_dependency_may_equal_candidate_version -v",
+    "exit_code": 1,
+    "log": "fixture-before.log"
+  },
+  {
+    "name": "fixtures-after",
+    "cwd": "references/Hexalith.Projects",
+    "command": "run-with-temp python3 -m unittest tests/tools/test_release_package_tools.py -v",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "exit_code": 0,
+    "log": "fixtures-after.log"
+  },
+  {
+    "name": "product-snapshot",
+    "cwd": "references/Hexalith.Projects",
+    "command": "run-with-temp python3 ../../_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/verify-product.py",
+    "wrapper_exit_code": 0,
+    "gate_status": "blocked; inspect individual nonzero results",
+    "results": "product-results.json",
+    "reproduction_command": "run-with-temp python3 _bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/verify-product.py --output <NEW-absolute-evidence-directory>",
+    "reproduction_note": "Runner now refuses existing output; original logs/results remain untouched."
+  },
+  {
+    "name": "package-boundaries",
+    "cwd": ".",
+    "command": "run-with-temp python3 (ad hoc tracked product snapshot runner; commands in package-results.json)",
+    "wrapper_exit_code": 0,
+    "gate_status": "strict package validation failed; consumers not run",
+    "results": "package-results.json",
+    "limit": "Original ad hoc runner source not retained. Reproduced with retained verify-packages.py, independent snapshot hashes, SDK observation and actual nuspecs in package-replay/."
+  },
+  {
+    "name": "committed-input-check",
+    "cwd": "references/Hexalith.Projects",
+    "command": "run-with-temp python3 ../Hexalith.Builds/check.py",
+    "exit_code": 1,
+    "log": "committed-input-check.log",
+    "limitation": "Current umbrella Builds code; no separate nested Builds checkout, no mutation to provide one."
+  },
+  {
+    "name": "package-boundaries-replay",
+    "cwd": ".",
+    "command": "run-with-temp python3 _bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/verify-packages.py --output _bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/package-replay",
+    "results": "package-replay/results.json",
+    "expected": "Five disposable candidates pack; strict manifest rejects selected EventStore.Contracts version drift; no publication."
+  }
+]

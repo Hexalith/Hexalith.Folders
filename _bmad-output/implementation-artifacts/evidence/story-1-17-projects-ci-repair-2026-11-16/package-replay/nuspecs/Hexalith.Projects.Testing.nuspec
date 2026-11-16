@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Hexalith.Projects.Testing</id>
+    <version>91.92.93-ci.1</version>
+    <authors>Hexalith Contributors</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/Hexalith/Hexalith.Projects</projectUrl>
+    <description>Tenant-scoped project workspace and context-resolution module for .NET built on Hexalith.EventStore.</description>
+    <tags>projects dapr eventsourcing dotnet hexalith</tags>
+    <repository type="git" url="https://github.com/Hexalith/Hexalith.Projects" commit="bf9f98969efa036fd60700c627e712b4375e654a" />
+    <dependencies>
+      <group targetFramework="net11.0">
+        <dependency id="Hexalith.Projects.Contracts" version="[91.92.93-ci.1]" exclude="Build,Analyzers" />
+        <dependency id="Hexalith.Projects" version="[91.92.93-ci.1]" exclude="Build,Analyzers" />
+        <dependency id="ByteAether.Ulid" version="1.4.2" exclude="Build,Analyzers" />
+        <dependency id="Hexalith.Commons.UniqueIds" version="3.0.0" exclude="Build,Analyzers" />
+        <dependency id="Hexalith.EventStore.Contracts" version="5.1.1" exclude="Build,Analyzers" />
+        <dependency id="Hexalith.McpCli.Abstractions" version="2.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration" version="11.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="11.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="11.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

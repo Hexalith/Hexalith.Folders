@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "scope": "Final preparation verification; no product or operational gate is inferred.",
+  "workspace_replays": [
+    {
+      "name": "normal",
+      "argv": [
+        "run-with-temp",
+        "python3",
+        "-B",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/replay.py",
+        "--workspace",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 13 owner revisions/indices, 200 protected paths, 3 historical prefixes, source comparisons, 1635 pending rows, 17 Platform pins, inspected inputs and inert controls independently recomputed.\nPASS: 25 sealed packet members verified; no operational acceptance inferred.",
+      "wall_time_seconds": 0.739483091
+    },
+    {
+      "name": "optimized",
+      "argv": [
+        "run-with-temp",
+        "python3",
+        "-B",
+        "-O",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/replay.py",
+        "--workspace",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "PASS: 13 owner revisions/indices, 200 protected paths, 3 historical prefixes, source comparisons, 1635 pending rows, 17 Platform pins, inspected inputs and inert controls independently recomputed.\nPASS: 25 sealed packet members verified; no operational acceptance inferred.",
+      "wall_time_seconds": 0.928189741
+    }
+  ],
+  "additional_checks": {
+    "optimized_corruption_probe": {
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "diagnostic": "FAIL: Packet member changed: README.md"
+    },
+    "unignored_log_files": 5,
+    "byte_bound_attributes": {
+      "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json": {
+        "raw_blob": "3c47f7a66f04275bcd69de52af7c46a8b72244c0",
+        "filtered_blob": "3c47f7a66f04275bcd69de52af7c46a8b72244c0"
+      },
+      "_bmad-output/implementation-artifacts/story-1-17-closure-owner-intake-2026-11-16.md": {
+        "raw_blob": "78c4d726fc8219f37826f99fd07267946a8bcb92",
+        "filtered_blob": "78c4d726fc8219f37826f99fd07267946a8bcb92"
+      },
+      "_bmad-output/implementation-artifacts/spec-1-17-reconcile-audit-handoff-and-prepare-operational-closure.md": {
+        "raw_blob": "28fdf8add5b37755f5c68de3237f111f3689453e",
+        "filtered_blob": "28fdf8add5b37755f5c68de3237f111f3689453e"
+      }
+    },
+    "git_diff_check_exit_code": 0
+  },
+  "independent_review": {
+    "findings": 10,
+    "confirmed_and_patched": 10,
+    "deferred": 0
+  },
+  "initial_refusal": "See external-drift.json: Memories LF/CRLF normalization was classified; no semantic change or extra owner gate.",
+  "seal_note": "These replays checked the sealed packet before adding this result member. The final checksum seal and packet replay include this member."
+}

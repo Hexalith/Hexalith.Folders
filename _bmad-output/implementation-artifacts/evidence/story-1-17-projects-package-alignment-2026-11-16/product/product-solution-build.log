@@ -1,0 +1,36 @@
+  Hexalith.Projects.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Contracts/bin/Release/net11.0/Hexalith.Projects.Contracts.dll
+  Hexalith.Projects -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects/bin/Release/net11.0/Hexalith.Projects.dll
+  Hexalith.Projects.Infrastructure -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Infrastructure/bin/Release/net11.0/Hexalith.Projects.Infrastructure.dll
+  Hexalith.Projects.ServiceDefaults -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.ServiceDefaults/bin/Release/net11.0/Hexalith.Projects.ServiceDefaults.dll
+  Hexalith.Projects.Server -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Server/bin/Release/net11.0/Hexalith.Projects.Server.dll
+  Hexalith.Projects.UI.Contracts -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI.Contracts/bin/Release/net11.0/Hexalith.Projects.UI.Contracts.dll
+  Hexalith.Projects.Client -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/bin/Release/net11.0/Hexalith.Projects.Client.dll
+  Hexalith.Projects.UI -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.UI/bin/Release/net11.0/Hexalith.Projects.UI.dll
+  Hexalith.Projects.Workers -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Workers/bin/Release/net11.0/Hexalith.Projects.Workers.dll
+  Hexalith.Projects.Aspire -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Aspire/bin/Release/net11.0/Hexalith.Projects.Aspire.dll
+  Hexalith.Projects.E2E.Fixtures -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.E2E.Fixtures/bin/Debug/net11.0/Hexalith.Projects.E2E.Fixtures.dll
+/home/administrator/.dotnet/sdk/11.0.100/Microsoft.Common.CurrentVersion.targets(2220,5): error MSB9008: The referenced project /src/Hexalith.EventStore/Hexalith.EventStore.csproj does not exist. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+  Hexalith.Projects.Cli -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Cli/bin/Release/net11.0/Hexalith.Projects.Cli.dll
+  Hexalith.Projects.Client.Generation.Shared -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/Shared/bin/Release/net11.0/Hexalith.Projects.Client.Generation.Shared.dll
+  Hexalith.Projects.Client.Generation -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Client/Generation/bin/Release/net11.0/Hexalith.Projects.Client.Generation.dll
+  Hexalith.Projects.Mcp -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Mcp/bin/Release/net11.0/Hexalith.Projects.Mcp.dll
+  Hexalith.Projects.Testing -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.Testing/bin/Release/net11.0/Hexalith.Projects.Testing.dll
+  Hexalith.Projects.Cli.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Cli.Tests/bin/Release/net11.0/Hexalith.Projects.Cli.Tests.dll
+  Hexalith.Projects.Client.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Client.Tests/bin/Release/net11.0/Hexalith.Projects.Client.Tests.dll
+  Hexalith.Projects.Contracts.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Contracts.Tests/bin/Release/net11.0/Hexalith.Projects.Contracts.Tests.dll
+  Hexalith.Projects.Mcp.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Mcp.Tests/bin/Release/net11.0/Hexalith.Projects.Mcp.Tests.dll
+  Hexalith.Projects.Server.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net11.0/Hexalith.Projects.Server.Tests.dll
+  Hexalith.Projects.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.Tests/bin/Release/net11.0/Hexalith.Projects.Tests.dll
+  Hexalith.Projects.UI.Tests -> /tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/tests/Hexalith.Projects.UI.Tests/bin/Release/net11.0/Hexalith.Projects.UI.Tests.dll
+
+Build FAILED.
+
+/home/administrator/.dotnet/sdk/11.0.100/Microsoft.Common.CurrentVersion.targets(2220,5): error MSB9008: The referenced project /src/Hexalith.EventStore/Hexalith.EventStore.csproj does not exist. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.EventStore/Hexalith.EventStore.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+/home/administrator/.nuget/packages/aspire.hosting.apphost/13.6.5/build/Aspire.Hosting.AppHost.targets(170,5): error MSB3202: The project file "/src/Hexalith.Tenants/Hexalith.Tenants.csproj" was not found. [/tmp/hexalith-job.w8pIiZdb/Hexalith.Projects/src/Hexalith.Projects.AppHost/Hexalith.Projects.AppHost.csproj]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:15.42

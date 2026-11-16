@@ -1,0 +1,16 @@
+[
+  {
+    "id": "Hexalith.Folders.Contracts",
+    "version": "2.0.0",
+    "expected_payload_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098",
+    "build_output_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098",
+    "matches_retained_payload": true
+  },
+  {
+    "id": "Hexalith.Folders.Client",
+    "version": "2.0.0",
+    "expected_payload_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65",
+    "build_output_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65",
+    "matches_retained_payload": true
+  }
+]
