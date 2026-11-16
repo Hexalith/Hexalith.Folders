@@ -1,0 +1,17 @@
+{
+  "python_optimized": true,
+  "scratch_cleanup": "completed",
+  "cases": [
+    {
+      "case": "retained packet in scratch without original repository",
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "case": "inconsistent retained result with recalculated hash manifest",
+      "exit_code": 1,
+      "result": "correctly rejected",
+      "diagnostic": "Retained probe subjects or outcomes differ"
+    }
+  ]
+}

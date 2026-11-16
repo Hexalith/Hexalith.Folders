@@ -1,0 +1,415 @@
+{
+  "cicd-main": {
+    "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/branches/main",
+    "observed_content": {
+      "name": "main",
+      "commit": {
+        "sha": "7d32df03405c876df6f098aec4036207bf35af1d",
+        "node_id": "C_kwDOUjhxY9oAKDdkMzJkZjAzNDA1Yzg3NmRmNmYwOThhZWM0MDM2MjA3YmYzNWFmMWQ",
+        "commit": {
+          "author": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T15:01:25Z"
+          },
+          "committer": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T15:03:19Z"
+          },
+          "message": "build: merge published nightly diagnostics",
+          "tree": {
+            "sha": "b8a05138e2715d03ddb55e621a3d95dc15d5fec3",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/git/trees/b8a05138e2715d03ddb55e621a3d95dc15d5fec3"
+          },
+          "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/git/commits/7d32df03405c876df6f098aec4036207bf35af1d",
+          "comment_count": 0,
+          "verification": {
+            "verified": false,
+            "reason": "unsigned",
+            "signature": null,
+            "payload": null,
+            "verified_at": null
+          }
+        },
+        "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/commits/7d32df03405c876df6f098aec4036207bf35af1d",
+        "html_url": "https://github.com/Hexalith/Hexalith.CiCd/commit/7d32df03405c876df6f098aec4036207bf35af1d",
+        "comments_url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/commits/7d32df03405c876df6f098aec4036207bf35af1d/comments",
+        "author": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "committer": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "parents": [
+          {
+            "sha": "6150334cb8d711eb098995445ce4e3399bd15411",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/commits/6150334cb8d711eb098995445ce4e3399bd15411",
+            "html_url": "https://github.com/Hexalith/Hexalith.CiCd/commit/6150334cb8d711eb098995445ce4e3399bd15411"
+          },
+          {
+            "sha": "d04c9ab7a8fa43dc6dac1f15d34135aba8e79551",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/commits/d04c9ab7a8fa43dc6dac1f15d34135aba8e79551",
+            "html_url": "https://github.com/Hexalith/Hexalith.CiCd/commit/d04c9ab7a8fa43dc6dac1f15d34135aba8e79551"
+          }
+        ]
+      },
+      "_links": {
+        "self": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/branches/main",
+        "html": "https://github.com/Hexalith/Hexalith.CiCd/tree/main"
+      },
+      "protected": true,
+      "protection": {
+        "enabled": false,
+        "required_status_checks": {
+          "enforcement_level": "off",
+          "contexts": [],
+          "checks": []
+        }
+      },
+      "protection_url": "https://api.github.com/repos/Hexalith/Hexalith.CiCd/branches/main/protection"
+    }
+  },
+  "projects-main": {
+    "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/branches/main",
+    "observed_content": {
+      "name": "main",
+      "commit": {
+        "sha": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+        "node_id": "C_kwDOM-u9KtoAKDk4MWNlZWYxM2ExYWJjODgyMTk5MjVlNzNjNTFhMjNlYjlhYzUwYzI",
+        "commit": {
+          "author": {
+            "name": "Jerome",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T14:00:58Z"
+          },
+          "committer": {
+            "name": "Jerome",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T14:00:58Z"
+          },
+          "message": "docs: mark story 6.7 in progress\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+          "tree": {
+            "sha": "b8a7a8b3b5532cb954f36835685d5b8dcd9577ab",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/git/trees/b8a7a8b3b5532cb954f36835685d5b8dcd9577ab"
+          },
+          "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/git/commits/981ceef13a1abc88219925e73c51a23eb9ac50c2",
+          "comment_count": 0,
+          "verification": {
+            "verified": false,
+            "reason": "unsigned",
+            "signature": null,
+            "payload": null,
+            "verified_at": null
+          }
+        },
+        "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/commits/981ceef13a1abc88219925e73c51a23eb9ac50c2",
+        "html_url": "https://github.com/Hexalith/Hexalith.Projects/commit/981ceef13a1abc88219925e73c51a23eb9ac50c2",
+        "comments_url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/commits/981ceef13a1abc88219925e73c51a23eb9ac50c2/comments",
+        "author": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "committer": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "parents": [
+          {
+            "sha": "b08b201b24ffe980daa2b785183c1deda8ec9f33",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/commits/b08b201b24ffe980daa2b785183c1deda8ec9f33",
+            "html_url": "https://github.com/Hexalith/Hexalith.Projects/commit/b08b201b24ffe980daa2b785183c1deda8ec9f33"
+          }
+        ]
+      },
+      "_links": {
+        "self": "https://api.github.com/repos/Hexalith/Hexalith.Projects/branches/main",
+        "html": "https://github.com/Hexalith/Hexalith.Projects/tree/main"
+      },
+      "protected": false,
+      "protection": {
+        "enabled": false,
+        "required_status_checks": {
+          "enforcement_level": "off",
+          "contexts": [],
+          "checks": []
+        }
+      },
+      "protection_url": "https://api.github.com/repos/Hexalith/Hexalith.Projects/branches/main/protection"
+    }
+  },
+  "platform-main": {
+    "url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/branches/main",
+    "observed_content": {
+      "name": "main",
+      "commit": {
+        "sha": "c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2",
+        "node_id": "C_kwDOTzCqitoAKGMyMjM2YTlmOTVjMzdkNGQyZWY4ZGVlM2ZlMmNiZmU1ZTlhYjQxZDI",
+        "commit": {
+          "author": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T14:03:55Z"
+          },
+          "committer": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T14:03:55Z"
+          },
+          "message": "build(references): record EventStore production-profile contract types\n\nPoint Platform at EventStore f85419d50 so the story 3.19 construction spec and typed profile contract are reachable from the superproject.\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+          "tree": {
+            "sha": "a0f876c8a4a12801822a4ac43d6ce48b63f52acf",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/git/trees/a0f876c8a4a12801822a4ac43d6ce48b63f52acf"
+          },
+          "url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/git/commits/c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2",
+          "comment_count": 0,
+          "verification": {
+            "verified": false,
+            "reason": "unsigned",
+            "signature": null,
+            "payload": null,
+            "verified_at": null
+          }
+        },
+        "url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/commits/c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2",
+        "html_url": "https://github.com/Hexalith/Hexalith.Platform/commit/c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2",
+        "comments_url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/commits/c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2/comments",
+        "author": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "committer": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "parents": [
+          {
+            "sha": "53aeee896495385ffaa792ab6a8dcf255a3ab598",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/commits/53aeee896495385ffaa792ab6a8dcf255a3ab598",
+            "html_url": "https://github.com/Hexalith/Hexalith.Platform/commit/53aeee896495385ffaa792ab6a8dcf255a3ab598"
+          }
+        ]
+      },
+      "_links": {
+        "self": "https://api.github.com/repos/Hexalith/Hexalith.Platform/branches/main",
+        "html": "https://github.com/Hexalith/Hexalith.Platform/tree/main"
+      },
+      "protected": true,
+      "protection": {
+        "enabled": false,
+        "required_status_checks": {
+          "enforcement_level": "off",
+          "contexts": [],
+          "checks": []
+        }
+      },
+      "protection_url": "https://api.github.com/repos/Hexalith/Hexalith.Platform/branches/main/protection"
+    }
+  },
+  "builds-main": {
+    "url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/branches/main",
+    "observed_content": {
+      "name": "main",
+      "commit": {
+        "sha": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+        "node_id": "C_kwDOOMzNRdoAKGZkZGExN2MwYTQ1MzhiMGY3Yzk5ZjgxM2MyMGNhMjRiNDkwMDY1MzA",
+        "commit": {
+          "author": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T08:49:44Z"
+          },
+          "committer": {
+            "name": "Jérôme Piquot",
+            "email": "jpiquot@itaneo.com",
+            "date": "2026-11-16T08:49:44Z"
+          },
+          "message": "test(release): keep recovery verification on the local feed\n\nExercise publication readback with the original recovered package bytes.\nKeep retry outcomes and credential boundaries intact.",
+          "tree": {
+            "sha": "81882bd1852cf3c10c7a2b6647b238c8eec22fa8",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/git/trees/81882bd1852cf3c10c7a2b6647b238c8eec22fa8"
+          },
+          "url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/git/commits/fdda17c0a4538b0f7c99f813c20ca24b49006530",
+          "comment_count": 0,
+          "verification": {
+            "verified": false,
+            "reason": "unsigned",
+            "signature": null,
+            "payload": null,
+            "verified_at": null
+          }
+        },
+        "url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/commits/fdda17c0a4538b0f7c99f813c20ca24b49006530",
+        "html_url": "https://github.com/Hexalith/Hexalith.Builds/commit/fdda17c0a4538b0f7c99f813c20ca24b49006530",
+        "comments_url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/commits/fdda17c0a4538b0f7c99f813c20ca24b49006530/comments",
+        "author": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "committer": {
+          "login": "jpiquot",
+          "id": 6775094,
+          "node_id": "MDQ6VXNlcjY3NzUwOTQ=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/6775094?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jpiquot",
+          "html_url": "https://github.com/jpiquot",
+          "followers_url": "https://api.github.com/users/jpiquot/followers",
+          "following_url": "https://api.github.com/users/jpiquot/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jpiquot/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jpiquot/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jpiquot/subscriptions",
+          "organizations_url": "https://api.github.com/users/jpiquot/orgs",
+          "repos_url": "https://api.github.com/users/jpiquot/repos",
+          "events_url": "https://api.github.com/users/jpiquot/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jpiquot/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "parents": [
+          {
+            "sha": "65fd22f37b9fad64b595841923cdbe050563ab99",
+            "url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/commits/65fd22f37b9fad64b595841923cdbe050563ab99",
+            "html_url": "https://github.com/Hexalith/Hexalith.Builds/commit/65fd22f37b9fad64b595841923cdbe050563ab99"
+          }
+        ]
+      },
+      "_links": {
+        "self": "https://api.github.com/repos/Hexalith/Hexalith.Builds/branches/main",
+        "html": "https://github.com/Hexalith/Hexalith.Builds/tree/main"
+      },
+      "protected": true,
+      "protection": {
+        "enabled": false,
+        "required_status_checks": {
+          "enforcement_level": "off",
+          "contexts": [],
+          "checks": []
+        }
+      },
+      "protection_url": "https://api.github.com/repos/Hexalith/Hexalith.Builds/branches/main/protection"
+    }
+  }
+}

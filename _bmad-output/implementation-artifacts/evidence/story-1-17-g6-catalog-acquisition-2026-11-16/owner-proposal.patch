@@ -1,0 +1,262 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -208,6 +208,21 @@
+ 
+       - name: Pull pinned G-6 PostgreSQL fixture image
+         run: docker pull postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636
++
++      - name: Resolve reviewed direct Platform revision
++        id: g6-platform
++        shell: bash
++        run: |
++          set -euo pipefail
++          platform_revision="$(git rev-parse HEAD:references/Hexalith.Platform)"
++          [[ "$platform_revision" =~ ^[0-9a-f]{40}$ ]]
++          printf 'revision=%s\n' "$platform_revision" >> "$GITHUB_OUTPUT"
++
++      - name: Acquire reviewed G-6 catalog
++        uses: ./.github/actions/prepare-g6-catalog
++        with:
++          platform-revision: ${{ steps.g6-platform.outputs.revision }}
++          diagnostics: ${{ env.G6_OUTPUT }}/source-mapping
+ 
+       - name: Restore effective G-6 package graphs
+         shell: bash
+diff --git a/.github/actions/prepare-g6-catalog/action.yml b/.github/actions/prepare-g6-catalog/action.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/actions/prepare-g6-catalog/action.yml
+@@ -0,0 +1,25 @@
++name: Prepare reviewed G-6 catalog
++description: Acquire only the catalog commit selected by the reviewed direct Platform revision
++inputs:
++  platform-revision:
++    description: Full reviewed Platform commit, matching the outer workspace direct gitlink
++    required: true
++  diagnostics:
++    description: Output directory for catalog acquisition evidence
++    required: true
++runs:
++  using: composite
++  steps:
++    - name: Acquire and verify selected catalog without moving Builds HEAD
++      shell: bash
++      env:
++        REVIEWED_PLATFORM_REVISION: ${{ inputs.platform-revision }}
++        CATALOG_DIAGNOSTICS: ${{ inputs.diagnostics }}
++        PYTHONDONTWRITEBYTECODE: '1'
++      run: |
++        set -euo pipefail
++        mkdir -p "$CATALOG_DIAGNOSTICS"
++        python3 "$GITHUB_ACTION_PATH/prepare.py" \
++          --workspace "$GITHUB_WORKSPACE" \
++          --platform-revision "$REVIEWED_PLATFORM_REVISION" \
++          > "$CATALOG_DIAGNOSTICS/catalog-acquisition.json"
+diff --git a/.github/actions/prepare-g6-catalog/prepare.py b/.github/actions/prepare-g6-catalog/prepare.py
+new file mode 100644
+--- /dev/null
++++ b/.github/actions/prepare-g6-catalog/prepare.py
+@@ -0,0 +1,202 @@
++#!/usr/bin/env python3
++"""Explicit CI acquisition of the catalog selected by a reviewed Platform gitlink."""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import signal
++import subprocess
++import sys
++
++BUILDS = "references/Hexalith.Builds"
++PLATFORM = "references/Hexalith.Platform"
++ORIGIN = "https://github.com/Hexalith/Hexalith.Builds.git"
++CATALOG = "Props/Directory.Packages.props"
++SHA = re.compile(r"[0-9a-f]{40}")
++GIT_TIMEOUT_SECONDS = 180
++
++
++class PreparationError(Exception):
++    """A bounded diagnostic safe for CI logs."""
++
++    def __init__(self, rule, message):
++        super().__init__(message)
++        self.rule = rule
++
++
++def require(condition, rule, message):
++    if not condition:
++        raise PreparationError(rule, message)
++
++
++def git(root, *arguments, check=True, input=None):
++    environment = os.environ.copy()
++    # Do not let an inherited worktree/index or partial clone acquire objects
++    # behind the explicit preparation step. No nested repository is opened.
++    for key in tuple(environment):
++        if key.startswith("GIT_"):
++            environment.pop(key)
++    environment.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
++                       GIT_NO_LAZY_FETCH="1", GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0")
++    try:
++        process = subprocess.Popen(
++            ["git", "-c", "submodule.recurse=false", "-C", str(root), *arguments],
++            env=environment, stdin=subprocess.PIPE if input is not None else subprocess.DEVNULL,
++            stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True,
++        )
++    except OSError as error:
++        raise PreparationError("G6CAT001", "Git preparation command unavailable or timed out") from error
++    try:
++        stdout, stderr = process.communicate(input=input, timeout=GIT_TIMEOUT_SECONDS)
++    except subprocess.TimeoutExpired as error:
++        try:
++            os.killpg(process.pid, signal.SIGKILL)
++        except ProcessLookupError:
++            pass
++        process.communicate()
++        raise PreparationError("G6CAT001", "Git preparation command unavailable or timed out") from error
++    result = subprocess.CompletedProcess(process.args, process.returncode, stdout, stderr)
++    require(not check or result.returncode == 0, "G6CAT001", "Git preparation command failed")
++    return result
++
++
++def output(root, *arguments):
++    return git(root, *arguments).stdout
++
++
++def head(root):
++    value = output(root, "rev-parse", "--verify", "HEAD").decode().strip()
++    require(SHA.fullmatch(value), "G6CAT002", "Expected a full Git commit identity")
++    return value
++
++
++def entries(data):
++    result = {}
++    for item in data.split(b"\0"):
++        if not item:
++            continue
++        metadata, path = item.split(b"\t", 1)
++        result[path.decode()] = metadata.decode().split()
++    return result
++
++
++def gitlink(root, revision, path):
++    entry = entries(output(root, "ls-tree", "-z", revision, "--", path)).get(path, [])
++    require(len(entry) == 3 and entry[:2] == ["160000", "commit"] and SHA.fullmatch(entry[2]),
++            "G6CAT002", "Required direct gitlink is missing or invalid")
++    return entry[2]
++
++
++def snapshot(root):
++    index = Path(output(root, "rev-parse", "--path-format=absolute", "--git-path", "index").decode().strip())
++    return {
++        "head": head(root),
++        "index_file_sha256": hashlib.sha256(index.read_bytes()).hexdigest(),
++        "index_sha256": hashlib.sha256(output(root, "ls-files", "--stage", "-z")).hexdigest(),
++        "refs": output(root, "for-each-ref", "--format=%(objectname) %(refname)").decode().splitlines(),
++        "gitlinks": {path: value[2] for path, value in
++                     entries(output(root, "ls-tree", "-r", "-z", "HEAD")).items()
++                     if value[:2] == ["160000", "commit"]},
++    }
++
++
++def declaration(root, path):
++    config = output(root, "config", "--blob", "HEAD:.gitmodules", "--get-regexp", r"^submodule\..*\.path$")
++    names = [line.split(" ", 1)[0][:-5] for line in config.decode().splitlines()
++             if line.split(" ", 1)[1] == path]
++    require(len(names) == 1, "G6CAT003", "Required root submodule declaration is missing or ambiguous")
++    return output(root, "config", "--blob", "HEAD:.gitmodules", "--get", names[0] + ".url").decode().strip()
++
++
++def prepare(workspace, reviewed_platform):
++    require(SHA.fullmatch(reviewed_platform), "G6CAT002", "Reviewed Platform revision must be a full commit")
++    root = Path(workspace).resolve()
++    builds = root / BUILDS
++    platform = root / PLATFORM
++    for repository in (root, builds, platform):
++        require(repository == repository.resolve(), "G6CAT003", "Direct checkout path must not traverse a symlink")
++        require(output(repository, "rev-parse", "--show-toplevel").decode().strip() == str(repository.resolve()),
++                "G6CAT003", "Required direct checkout is unavailable")
++    require(output(root, "show", "HEAD:.gitmodules") == (root / ".gitmodules").read_bytes(),
++            "G6CAT003", "Root submodule declarations differ from the committed source")
++    require(declaration(root, BUILDS) == ORIGIN, "G6CAT004", "Root Builds origin is not approved")
++    require(declaration(root, PLATFORM) == "https://github.com/Hexalith/Hexalith.Platform.git",
++            "G6CAT004", "Root Platform origin is not approved")
++    # Check both stored and effective URLs: insteadOf must not redirect the fetch.
++    for arguments in (("config", "--get-all", "remote.origin.url"),
++                      ("remote", "get-url", "--all", "origin")):
++        require(output(builds, *arguments).decode().splitlines() == [ORIGIN],
++                "G6CAT004", "Checked-out Builds origin is not approved")
++    transport = git(builds, "config", "--get-all", "remote.origin.vcs", check=False)
++    require(transport.returncode == 1 and not transport.stdout,
++            "G6CAT004", "Builds origin must use the standard Git HTTPS transport")
++    require(gitlink(root, "HEAD", PLATFORM) == reviewed_platform == head(platform),
++            "G6CAT005", "Direct Platform revision differs from the reviewed source")
++    require(gitlink(root, "HEAD", BUILDS) == head(builds),
++            "G6CAT005", "Direct Builds checkout differs from the committed source")
++    staged = entries(output(root, "ls-files", "--stage", "-z"))
++    for path, value in snapshot(root)["gitlinks"].items():
++        require(staged.get(path) == ["160000", value, "0"],
++                "G6CAT005", "Staged direct gitlinks differ from the committed source")
++    catalog_commit = gitlink(platform, reviewed_platform, BUILDS)
++    before = {name: snapshot(repository) for name, repository in
++              (("workspace", root), ("builds", builds), ("platform", platform))}
++    acquired = False
++    try:
++        available = git(builds, "cat-file", "--batch-check=%(objectname) %(objecttype)",
++                        input=(catalog_commit + "\n").encode(), check=False)
++        require(available.returncode == 0 and not available.stderr,
++                "G6CAT006", "Selected catalog object cannot be inspected")
++        if available.stdout == (catalog_commit + " missing\n").encode():
++            git(builds, "fetch", "--no-recurse-submodules", "--no-tags", "--depth=1",
++                "--no-write-fetch-head", "--refmap=", "--no-auto-maintenance", "origin", catalog_commit)
++            acquired = True
++        else:
++            require(available.stdout == (catalog_commit + " commit\n").encode(),
++                    "G6CAT006", "Selected catalog object is not a commit")
++        require(output(builds, "cat-file", "-t", catalog_commit) == b"commit\n",
++                "G6CAT006", "Selected catalog object is not a commit")
++        entry = entries(output(builds, "ls-tree", "-z", catalog_commit, "--", CATALOG)).get(CATALOG, [])
++        require(len(entry) == 3 and entry[0] in ("100644", "100755") and entry[1] == "blob",
++                "G6CAT006", "Selected catalog is not a regular Git blob")
++        catalog = output(builds, "show", catalog_commit + ":" + CATALOG)
++        require(bool(catalog), "G6CAT006", "Selected catalog is empty")
++    finally:
++        after = {name: snapshot(repository) for name, repository in
++                 (("workspace", root), ("builds", builds), ("platform", platform))}
++        require(before == after, "G6CAT007", "Source HEAD, index, refs or gitlinks changed during acquisition")
++    return {
++        "schema": "hexalith.g6-catalog-acquisition.v1", "status": "prepared",
++        "source_revision": before["workspace"]["head"], "platform_revision": reviewed_platform,
++        "builds_revision": before["builds"]["head"], "catalog_commit": catalog_commit,
++        "catalog_path": CATALOG, "catalog_blob": entry[2],
++        "catalog_sha256": hashlib.sha256(catalog).hexdigest(), "catalog_bytes": len(catalog),
++        "origin": ORIGIN, "acquired": acquired, "preserved": before,
++    }
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--workspace", required=True)
++    parser.add_argument("--platform-revision", required=True)
++    args = parser.parse_args()
++    try:
++        result = prepare(args.workspace, args.platform_revision)
++    except (OSError, UnicodeError, ValueError, PreparationError) as error:
++        rule = error.rule if isinstance(error, PreparationError) else "G6CAT001"
++        message = str(error) if isinstance(error, PreparationError) else "Catalog preparation input is unavailable or invalid"
++        print(json.dumps({"status": "failed", "rule": rule, "phase": "Prerequisite",
++                          "category": "PrerequisiteUnavailable", "message": message}))
++        print(f"{rule}: {message}", file=sys.stderr)
++        return 1
++    print(json.dumps(result, sort_keys=True))
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())

@@ -1,0 +1,27 @@
+{
+  "initializer": {
+    "repository": "references/Hexalith.Builds",
+    "revision": "6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b",
+    "path": "Github/initialize-build/action.yml",
+    "git_blob": "417525ebd3c6fe805747d61ec03e95f034dcf9b1",
+    "sha256": "8b73ee347e0a2e5c934e87b9fded11cb480970da29abf64db5bda36ecf5e139a"
+  },
+  "mapper": {
+    "repository": "references/Hexalith.Builds",
+    "revision": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+    "path": "src/libraries/Hexalith.Builds.Tooling/Workspace/CatalogVersionMaterializer.cs",
+    "git_blob": "bef2a24ec99d1d1e6b97463119224e316f711773",
+    "sha256": "7f9dedcb95ff54c2ecfdb793c8088833d5b874945bc483fd18064835d314336b"
+  },
+  "caller": {
+    "repository": "references/Hexalith.Projects",
+    "revision": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+    "path": ".github/workflows/ci.yml",
+    "git_blob": "66ab41495043051c5ffe9b51bf8fdb1eb5c5f2ff",
+    "sha256": "48a2d59ee025a4361d3fa834ab9c7abd725fa8608dbb70303107a4ee7b1beed1"
+  },
+  "selected_catalog": {
+    "platform_source": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+    "builds_revision": "e2bbbd0893f586e4d447ef8358ff747ea3d34435"
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "/home/administrator/projects/hexalith/folders": {
+    "head": "a448d20873dc9e809623f85da206e8d8a13bb9ab",
+    "index_sha256": "5d6b100e4d6305b6d3f5db9d587faa3cce843dc7bd6e4ee3bdf7db7160226cc8",
+    "gitlinks": [
+      "160000 commit 7ef8166ef87e1365f86d1a1b3aaf0235545177d4\treferences/Hexalith.AI.Tools",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds",
+      "160000 commit 49187d47da882d5470deac982bb383486c90202c\treferences/Hexalith.Commons",
+      "160000 commit 8b6d5bee5217b3f4bbd8fd689ad887aca863961b\treferences/Hexalith.EventStore",
+      "160000 commit f26304dabf7153c7075fa8c4a82dc8fc537c5ed0\treferences/Hexalith.FrontComposer",
+      "160000 commit 979e1e126c6d7010997f4f20b2bb3defae81333e\treferences/Hexalith.McpCli",
+      "160000 commit dd422905e563d0c23b7232df910a0c41d82d7b03\treferences/Hexalith.Memories",
+      "160000 commit a575021fc97a8eda664711089270b60f5e570ded\treferences/Hexalith.Parties",
+      "160000 commit 829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf\treferences/Hexalith.Platform",
+      "160000 commit 2cbec6a66e2174adc7c5d431c1b1f0d28abd5647\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 981ceef13a1abc88219925e73c51a23eb9ac50c2\treferences/Hexalith.Projects",
+      "160000 commit ab67fd6bc308b5a641b0ca398d776e347193c168\treferences/Hexalith.Tenants"
+    ],
+    "status": "?? _bmad-output/implementation-artifacts/evidence/story-1-17-g6-catalog-diagnosis-2026-11-16/\n?? _bmad-output/implementation-artifacts/spec-1-17-diagnose-current-g6-catalog-prerequisite.md\n?? _bmad-output/implementation-artifacts/spec-1-17-projects-g6-catalog-acquisition.md"
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Commons": {
+    "head": "49187d47da882d5470deac982bb383486c90202c",
+    "index_sha256": "7495414b68dfb9d6084a9c63b3c70b24464fac9d5ce2476dda2e35d8c4b87892",
+    "gitlinks": [
+      "160000 commit 1745b6663ad32bb1288167135ed0f979366c53a0\treferences/Hexalith.AI.Tools",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds",
+      "160000 commit 52282d023156725c811fa21299f349a6fd62d989\treferences/Hexalith.PolymorphicSerializations"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Memories": {
+    "head": "dd422905e563d0c23b7232df910a0c41d82d7b03",
+    "index_sha256": "d1079c4bc525e5d52fb4091732366554e73966019c2386d2794ec40b56377121",
+    "gitlinks": [
+      "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+      "160000 commit e2bbbd0893f586e4d447ef8358ff747ea3d34435\treferences/Hexalith.Builds",
+      "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+      "160000 commit cbb3a867c773a0857001468062c1779ad9755b8d\treferences/Hexalith.EventStore",
+      "160000 commit b22be84bdbb23d9263a8835496ad0c95adf1843f\treferences/Hexalith.FrontComposer",
+      "160000 commit 55f8a02435c7faa7c4073bf22c78a5d04c466929\treferences/Hexalith.McpCli",
+      "160000 commit 0c3f55d1c4345f4952cbecbff92014251f484ef2\treferences/Hexalith.Platform",
+      "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 7c1747f93fbe988ca8aaa87d636bb6a39563e6b8\treferences/Hexalith.Tenants"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform": {
+    "head": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+    "index_sha256": "2317a9d951534feebdb5074df1c09ffbabd1a7f8be48e7be966139b369b8bbda",
+    "gitlinks": [
+      "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+      "160000 commit 4a65f67d040bec4d646a830ed72b65c0e8951048\treferences/Hexalith.Agents",
+      "160000 commit e2bbbd0893f586e4d447ef8358ff747ea3d34435\treferences/Hexalith.Builds",
+      "160000 commit 6a4ca07b18e9b58500dc79dfede1f308da36c828\treferences/Hexalith.ChatBot",
+      "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+      "160000 commit c34dc3c1e0469765c75ea608f2960381f649579c\treferences/Hexalith.Conversations",
+      "160000 commit df976e0051b9e2eaa9d3592b3054a0317d83d0cb\treferences/Hexalith.EventStore",
+      "160000 commit 89e2fbb6bd965eae2008db4501e7b79cc6e1c8e1\treferences/Hexalith.Folders",
+      "160000 commit 7063810a3eb940a8d803fcb977bde5a0a8a2ab59\treferences/Hexalith.FrontComposer",
+      "160000 commit 23072f04f423eea3f30456fe5af13d2d382624fe\treferences/Hexalith.McpCli",
+      "160000 commit f20e8b8145a6c00310a2aed3d0c8758844b65fdc\treferences/Hexalith.Memories",
+      "160000 commit a494093da3e2656c49e539392284cd1b10f799b3\treferences/Hexalith.Parties",
+      "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit fc58cefde69d72d7d3daa574b5022f73f830a85e\treferences/Hexalith.Projects",
+      "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants",
+      "160000 commit aafdae771e81f152671d18c506a0470ce0deee7f\treferences/Hexalith.Timesheets",
+      "160000 commit b2985d22b3bfbc6d86bcde28a5da722ae7f930c3\treferences/Hexalith.Works"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore": {
+    "head": "8b6d5bee5217b3f4bbd8fd689ad887aca863961b",
+    "index_sha256": "86b2bd5f8689b0210c8b0fcddd2a1e32bed63a8132a57c3869a4f1301e993d7f",
+    "gitlinks": [
+      "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+      "160000 commit e2bbbd0893f586e4d447ef8358ff747ea3d34435\treferences/Hexalith.Builds",
+      "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+      "160000 commit 0d065fceb2bfca9999307cb864a3f93392fb3400\treferences/Hexalith.FrontComposer",
+      "160000 commit 32a3e65989136f28b34500a4d9db8f04cf601885\treferences/Hexalith.McpCli",
+      "160000 commit 7a5c892508700b2e5c71c921cdaeedf68de5f03d\treferences/Hexalith.Memories",
+      "160000 commit 00ed06074f5b67522eff81dc8dae6ebd28161c36\treferences/Hexalith.Platform",
+      "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 7c1747f93fbe988ca8aaa87d636bb6a39563e6b8\treferences/Hexalith.Tenants"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants": {
+    "head": "ab67fd6bc308b5a641b0ca398d776e347193c168",
+    "index_sha256": "ae71cf72334ccac4c85d1e6f1e2a632e9865f9159129b38fb108dcd076963601",
+    "gitlinks": [
+      "160000 commit 7ef8166ef87e1365f86d1a1b3aaf0235545177d4\treferences/Hexalith.AI.Tools",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds",
+      "160000 commit ab5e92faa3bab1fa43b8ecadd423432dfe652bb2\treferences/Hexalith.Commons",
+      "160000 commit 8b6d5bee5217b3f4bbd8fd689ad887aca863961b\treferences/Hexalith.EventStore",
+      "160000 commit 9ea805dc7bbdf048b282e66e94115add295099a3\treferences/Hexalith.FrontComposer",
+      "160000 commit 4cf120c410a668d08c6ba70d59962c3a2c031952\treferences/Hexalith.McpCli",
+      "160000 commit 65bfb98dca7f65c005213507b15fbe4ab45f2e19\treferences/Hexalith.Memories",
+      "160000 commit ead9ff0d4268efaa7054b3a14b45956b647f6171\treferences/Hexalith.Platform",
+      "160000 commit 476cfccac3c5ba694a8e0ef11b1157728b9ec093\treferences/Hexalith.PolymorphicSerializations"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Parties": {
+    "head": "a575021fc97a8eda664711089270b60f5e570ded",
+    "index_sha256": "fc68dd1a62ae082740c27663d123bb2be587d50d8ab525a8743e22a29ab5fd55",
+    "gitlinks": [
+      "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools",
+      "160000 commit 73e60af8a1fcdf3f06726d5d1b6e1199cce778ee\treferences/Hexalith.Builds",
+      "160000 commit fbf4e94233821f6ca336af91a06feaaeb7a16855\treferences/Hexalith.Commons",
+      "160000 commit fdb59895975e86a1e234325a01237f259cdbd53b\treferences/Hexalith.EventStore",
+      "160000 commit bca9dff291ce42c57516598732340a80703dfb6d\treferences/Hexalith.FrontComposer",
+      "160000 commit 23072f04f423eea3f30456fe5af13d2d382624fe\treferences/Hexalith.McpCli",
+      "160000 commit 65bfb98dca7f65c005213507b15fbe4ab45f2e19\treferences/Hexalith.Memories",
+      "160000 commit f6f85032598865b9123f16364448bfd02c0ff5b0\treferences/Hexalith.Platform",
+      "160000 commit e97b56930e213f674b64c157551f499b0473ec43\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 2ec938397c5b330cf1e694e8cc442cb4ad022f2b\treferences/Hexalith.Tenants"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.AI.Tools": {
+    "head": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "index_sha256": "354801f23d9a6bbedb2cb2cd6add4da416ba233eb536425d2495434e13f32e71",
+    "gitlinks": [],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds": {
+    "head": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+    "index_sha256": "cdfe05650153d7a851f1e1c66eabfd04a04af6f0626e2005365e59546a3d8d36",
+    "gitlinks": [
+      "160000 commit 17a37d83db193f0b7494c1b931fd1e82a67c1424\treferences/Hexalith.AI.Tools"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.PolymorphicSerializations": {
+    "head": "2cbec6a66e2174adc7c5d431c1b1f0d28abd5647",
+    "index_sha256": "b74d38db632e7f4e26d1287c3f4ef998d7e5f8667c31cc44382e491a96907bf6",
+    "gitlinks": [
+      "160000 commit 9b78aa008cfc62cd88ad0ea4b39b1f07311956ce\treferences/Hexalith.AI.Tools",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.McpCli": {
+    "head": "979e1e126c6d7010997f4f20b2bb3defae81333e",
+    "index_sha256": "b4493ea821c1363170940d8c8a41992ef67353e5e52d0f88782a7bfab070907a",
+    "gitlinks": [
+      "160000 commit 7ef8166ef87e1365f86d1a1b3aaf0235545177d4\treferences/Hexalith.AI.Tools",
+      "160000 commit 9edf5240457ebd430c23592c47ddffb313c67481\treferences/Hexalith.Agents",
+      "160000 commit 65fd22f37b9fad64b595841923cdbe050563ab99\treferences/Hexalith.Builds",
+      "160000 commit 6a4ca07b18e9b58500dc79dfede1f308da36c828\treferences/Hexalith.ChatBot",
+      "160000 commit ab5e92faa3bab1fa43b8ecadd423432dfe652bb2\treferences/Hexalith.Commons",
+      "160000 commit 9dc5b2fb25d50784bb4a3f8bfa56a520d819869f\treferences/Hexalith.Conversations",
+      "160000 commit 97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d\treferences/Hexalith.EventStore",
+      "160000 commit fc302b2c81aa4e107c3ed58458f0b39d2ebe6d85\treferences/Hexalith.Folders",
+      "160000 commit 33e71036c04f2b99955376e9c90cbb1fc3a81e64\treferences/Hexalith.FrontComposer",
+      "160000 commit 9d87500eaf4c39ce0cec0cb3a03e5dd62c167106\treferences/Hexalith.Memories",
+      "160000 commit d4a71068bc1366ba67699aa9ec68cf24c0645c71\treferences/Hexalith.Parties",
+      "160000 commit 2dfd01d394733aeb871be56a0aab35ddb7b721c3\treferences/Hexalith.Platform",
+      "160000 commit 476cfccac3c5ba694a8e0ef11b1157728b9ec093\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit bf9f98969efa036fd60700c627e712b4375e654a\treferences/Hexalith.Projects",
+      "160000 commit 8aa6f169b3e27f0a831ad6425c4bc1278ca2c445\treferences/Hexalith.Tenants",
+      "160000 commit bbb91319ee209333d29f07e53bd9b5e4adc40267\treferences/Hexalith.Timesheets",
+      "160000 commit b2985d22b3bfbc6d86bcde28a5da722ae7f930c3\treferences/Hexalith.Works"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects": {
+    "head": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+    "index_sha256": "298a262f081980869dd8fb0f8967eb26aa8d88c19ed8a1f82cea6a5305eff9ba",
+    "gitlinks": [
+      "160000 commit 7ef8166ef87e1365f86d1a1b3aaf0235545177d4\treferences/Hexalith.AI.Tools",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds",
+      "160000 commit 49187d47da882d5470deac982bb383486c90202c\treferences/Hexalith.Commons",
+      "160000 commit 65782e7fe986cb10825de5777b5824b021dd7d95\treferences/Hexalith.Conversations",
+      "160000 commit 8b6d5bee5217b3f4bbd8fd689ad887aca863961b\treferences/Hexalith.EventStore",
+      "160000 commit aee8d791803e7a439d1ffdc9b2174ac6487394a6\treferences/Hexalith.Folders",
+      "160000 commit f26304dabf7153c7075fa8c4a82dc8fc537c5ed0\treferences/Hexalith.FrontComposer",
+      "160000 commit 979e1e126c6d7010997f4f20b2bb3defae81333e\treferences/Hexalith.McpCli",
+      "160000 commit dd422905e563d0c23b7232df910a0c41d82d7b03\treferences/Hexalith.Memories",
+      "160000 commit a575021fc97a8eda664711089270b60f5e570ded\treferences/Hexalith.Parties",
+      "160000 commit 829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf\treferences/Hexalith.Platform",
+      "160000 commit ab67fd6bc308b5a641b0ca398d776e347193c168\treferences/Hexalith.Tenants"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer": {
+    "head": "f26304dabf7153c7075fa8c4a82dc8fc537c5ed0",
+    "index_sha256": "e31e73a5fbec10ce0d9a00cb3064732bd77d6954723579572a05ed61cd398a8b",
+    "gitlinks": [
+      "160000 commit 7ef8166ef87e1365f86d1a1b3aaf0235545177d4\treferences/Hexalith.AI.Tools",
+      "160000 commit 65fd22f37b9fad64b595841923cdbe050563ab99\treferences/Hexalith.Builds",
+      "160000 commit ab5e92faa3bab1fa43b8ecadd423432dfe652bb2\treferences/Hexalith.Commons",
+      "160000 commit 97c02f7bf99a694528a2b15f0b3b0a6e5fb10e9d\treferences/Hexalith.EventStore",
+      "160000 commit 9d87500eaf4c39ce0cec0cb3a03e5dd62c167106\treferences/Hexalith.Memories",
+      "160000 commit d4a71068bc1366ba67699aa9ec68cf24c0645c71\treferences/Hexalith.Parties",
+      "160000 commit ead9ff0d4268efaa7054b3a14b45956b647f6171\treferences/Hexalith.Platform",
+      "160000 commit 476cfccac3c5ba694a8e0ef11b1157728b9ec093\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 8aa6f169b3e27f0a831ad6425c4bc1278ca2c445\treferences/Hexalith.Tenants"
+    ],
+    "status": ""
+  },
+  "/home/administrator/projects/hexalith/cicd": {
+    "head": "d3f3ef864c08cd89e390246d1a5d1dedffc4a92b",
+    "index_sha256": "681f0a549fc572a86a1e6b5ff62de60388c1c2ff6d6c39cc22655687a5400c63",
+    "gitlinks": [
+      "160000 commit 736687b79c1e4fa8beabdab75c4675bb76c466b9\treferences/Hexalith.AI.Tools",
+      "160000 commit 895039d8513363424882b3b7d64bca574fddc43b\treferences/Hexalith.Agents",
+      "160000 commit fdda17c0a4538b0f7c99f813c20ca24b49006530\treferences/Hexalith.Builds",
+      "160000 commit 6a4ca07b18e9b58500dc79dfede1f308da36c828\treferences/Hexalith.ChatBot",
+      "160000 commit 49187d47da882d5470deac982bb383486c90202c\treferences/Hexalith.Commons",
+      "160000 commit 9e24c280efd5e9c13826eab9bc8b8b687a7bee09\treferences/Hexalith.Conversations",
+      "160000 commit f85419d501f279e9a813435aa73538185ad26ada\treferences/Hexalith.EventStore",
+      "160000 commit a448d20873dc9e809623f85da206e8d8a13bb9ab\treferences/Hexalith.Folders",
+      "160000 commit bc9dbedc6141b750ca92f01b40ac840dc2066704\treferences/Hexalith.FrontComposer",
+      "160000 commit e2e3db7ba2d45d61feacc39c41b3051310fbc57f\treferences/Hexalith.McpCli",
+      "160000 commit 898f451111740ccf489d56f7c20cd47edc2fcdf6\treferences/Hexalith.Memories",
+      "160000 commit a575021fc97a8eda664711089270b60f5e570ded\treferences/Hexalith.Parties",
+      "160000 commit c2236a9f95c37d4d2ef8dee3fe2cbfe5e9ab41d2\treferences/Hexalith.Platform",
+      "160000 commit 2cbec6a66e2174adc7c5d431c1b1f0d28abd5647\treferences/Hexalith.PolymorphicSerializations",
+      "160000 commit 981ceef13a1abc88219925e73c51a23eb9ac50c2\treferences/Hexalith.Projects",
+      "160000 commit 292dbf164f26bcf376ef86d749b149b075f8b502\treferences/Hexalith.Tenants",
+      "160000 commit bbb91319ee209333d29f07e53bd9b5e4adc40267\treferences/Hexalith.Timesheets",
+      "160000 commit b2985d22b3bfbc6d86bcde28a5da722ae7f930c3\treferences/Hexalith.Works"
+    ],
+    "status": ""
+  },
+  "protected": {
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "e8d945cc5bbb91265c8bf56d2c978e338fb4573ae4e5e7de8621b5787169dbe0",
+    "_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md": "e00a3503425e8a96ab235255f70175b1e34bed2d6a5a3975723bef17a7653206"
+  }
+}

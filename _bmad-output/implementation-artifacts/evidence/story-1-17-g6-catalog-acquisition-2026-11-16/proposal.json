@@ -1,0 +1,13 @@
+{
+  "projects_base": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+  "workflow_before_sha256": "48a2d59ee025a4361d3fa834ab9c7abd725fa8608dbb70303107a4ee7b1beed1",
+  "workflow_after_sha256": "a489d9c5dd2037a5c623575c40e24fc6ad66b4cc3ff14b0b0a60a11ce5fd92e3",
+  "owner_files": {
+    ".github/actions/prepare-g6-catalog/action.yml": "785876470342c7909abf891a8e981244a1478f0851e8c1d391a564cd46694d1c",
+    ".github/actions/prepare-g6-catalog/prepare.py": "ba96060612404bd628ee314f2d733f8918adbe6f79a63a85e873608f32aeb297"
+  },
+  "patch_sha256": "3b4e5540391f585c778f21953f4b2a37be1a87aa9df9ae7e2b56b6e05cefb588",
+  "patch": "/home/administrator/projects/hexalith/cicd/docs/proposals/projects-g6-catalog.patch",
+  "applied": false,
+  "delivery": "blocked-no-supported-pre-adoption-lane"
+}

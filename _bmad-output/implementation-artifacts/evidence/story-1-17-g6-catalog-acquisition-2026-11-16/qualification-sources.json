@@ -1,0 +1,16 @@
+{
+  "owner_base": "66e3a5a3a0e9bb01dd161c19349953594e01a22f",
+  "owner_files": {
+    ".github/actions/prepare-g6-catalog/prepare.py": "ba96060612404bd628ee314f2d733f8918adbe6f79a63a85e873608f32aeb297",
+    ".github/actions/prepare-g6-catalog/action.yml": "785876470342c7909abf891a8e981244a1478f0851e8c1d391a564cd46694d1c",
+    "tools/tests/test_prepare_g6_catalog.py": "db4c0577746708275d8c7b0508ec4f5688181f02137997d23fe333a02254497c",
+    "tools/tests/test_prepare_g6_catalog.py.lock": "c59e3d361f8f175c3d661018029aeb9df00761b74d70f79d6d1e3971fcc59082",
+    "docs/projects-g6-catalog-acquisition.md": "e7661d816521615022ac01f1e710399b7ac8de082a2726e1062447a6405a5398",
+    "docs/proposals/projects-g6-catalog.patch": "3b4e5540391f585c778f21953f4b2a37be1a87aa9df9ae7e2b56b6e05cefb588"
+  },
+  "behavioral_tests": {
+    "python314": 17,
+    "python312_locked_without_tmpdir": 17
+  },
+  "helper_matches_final_proof": true
+}

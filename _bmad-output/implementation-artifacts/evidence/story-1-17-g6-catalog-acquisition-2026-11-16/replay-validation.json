@@ -1,0 +1,6 @@
+{
+  "standalone_optimized_packet_only_exit": 0,
+  "standalone_output": "PASS: retained acquisition proof (packet only); owner delivery and fresh hosted CI/G-6 remain blocked",
+  "inconsistent_catalog_with_recalculated_seal_exit": 1,
+  "inconsistent_catalog_rejection": "Retained catalog bytes differ"
+}

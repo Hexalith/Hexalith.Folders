@@ -1,0 +1,19 @@
+{
+  "recorded_at_utc": "2026-11-16T14:39:50.842714+00:00",
+  "capture_phase": "After additive diagnosis creation; initial clean state was observed before writes. This is a final tracked-status observation, not a retroactive full initial-worktree hash.",
+  "repositories": {
+    ".": "",
+    "references/Hexalith.Tenants": "",
+    "references/Hexalith.AI.Tools": "",
+    "references/Hexalith.EventStore": "",
+    "references/Hexalith.FrontComposer": "",
+    "references/Hexalith.Memories": "",
+    "references/Hexalith.Commons": "",
+    "references/Hexalith.Builds": "",
+    "references/Hexalith.PolymorphicSerializations": "",
+    "references/Hexalith.Projects": "",
+    "references/Hexalith.Platform": "",
+    "references/Hexalith.McpCli": "",
+    "references/Hexalith.Parties": ""
+  }
+}

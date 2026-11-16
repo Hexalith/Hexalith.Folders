@@ -1,0 +1,22 @@
+{
+  "scope": "Git-object prerequisite reproduction only; no mapper, build or runtime qualification",
+  "source_builds": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+  "catalog_revision": "e2bbbd0893f586e4d447ef8358ff747ea3d34435",
+  "shallow_read_exit": 128,
+  "catalog_object_before_fetch": "e2bbbd0893f586e4d447ef8358ff747ea3d34435 missing",
+  "shallow_read_stderr": "fatal: path 'Props/Directory.Packages.props' does not exist in 'e2bbbd0893f586e4d447ef8358ff747ea3d34435'",
+  "exact_fetch_read_exit": 0,
+  "catalog_sha256": "d098dab50977041a536508f6df7e934f95678a4a0abedd80b28e9bae19ee0637",
+  "head_after_acquisition": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+  "fetch_arguments": [
+    "fetch",
+    "--no-recurse-submodules",
+    "--no-tags",
+    "--depth=1",
+    "<local-root-declared-Builds-file-URI>",
+    "e2bbbd0893f586e4d447ef8358ff747ea3d34435"
+  ],
+  "repository_location": "$TMPDIR/story117-g6-*/builds.git",
+  "scratch_cleanup": "completed on context exit",
+  "workspace_checkout_or_object_database_modified": false
+}

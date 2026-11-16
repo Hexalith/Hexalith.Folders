@@ -1,0 +1,54 @@
+{
+  "observed_utc": "2026-11-16T15:15:26.056062+00:00",
+  "owner_repository": "/home/administrator/projects/hexalith/cicd",
+  "owner_head": "d3f3ef864c08cd89e390246d1a5d1dedffc4a92b",
+  "observations": [
+    {
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "exit": 0,
+      "stdout": "## main...origin/main\n?? .github/actions/\n?? docs/projects-g6-catalog-acquisition.md\n?? docs/proposals/\n?? tools/tests/test_prepare_g6_catalog.py\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "ls-files",
+        "setup"
+      ],
+      "exit": 0,
+      "stdout": "setup/Hexalith.Commons.yml\nsetup/Hexalith.PolymorphicSerializations.yml\nsetup/README.md\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "ls-remote",
+        "--refs",
+        "origin",
+        "refs/heads/delivered/Hexalith.Projects"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "owner_source_sha256": {
+    "AGENTS.md": "70ce8986ca44f9f31272d300f6c890ca4ce82083828a6b045c3388b2611de5db",
+    "setup/README.md": "4830820dad753fd05783f85ceddd35925f8a346505563ef640d0a0ee5ac0c956",
+    "templates/perimeter.json.j2": "393f6c6144c0b51bf16942341b6f91b102530a6e67fb30e1eb37b19843430127",
+    "templates/.github/workflows/ci.yml.j2": "f973b7500586a150878727f91a536a887c6f27981a0b89909a0b73a9fb1cbd8f",
+    "tools/deliver.py": "b7f0cad7f3513a29ce513d4e11755b68fae63c412570e21b55dbf3dade3ea967",
+    "builds-version": "e991acec88bc4c274029bab003b56f7da95c059f4fa25cd7ebd12c170be3f9bf",
+    "_bmad-output/specs/spec-cicd/stories.yaml": "8e289faf7c476468b23636eb40774e8d59c2317f5abd998f90e146098170e982"
+  },
+  "delivery_status": "blocked",
+  "blocker": "Projects lacks a setup registration and accepted delivered ref. The supported writer applies a complete rendered perimeter and Builds pin; no narrow legacy source-preparation mechanism exists. Adoption or new owner delivery support is required.",
+  "delivery_attempted": false,
+  "workflow_dispatch_attempted": false,
+  "live_module_patch_applied": false
+}

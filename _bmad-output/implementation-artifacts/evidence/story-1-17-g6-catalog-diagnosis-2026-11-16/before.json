@@ -1,0 +1,73 @@
+{
+  "repositories": {
+    ".": {
+      "head": "a448d20873dc9e809623f85da206e8d8a13bb9ab",
+      "index_sha256": "470ed0a562315434940b0ac94745133313b1a3c766b02b5edf9142dd411a9275"
+    },
+    "references/Hexalith.Tenants": {
+      "head": "ab67fd6bc308b5a641b0ca398d776e347193c168",
+      "index_sha256": "49a36b9a34835912437a6e5f46655025d2431019bac9a1158d05f71db290930b"
+    },
+    "references/Hexalith.AI.Tools": {
+      "head": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+      "index_sha256": "839e18168ec2119a0706b1f1178428d90bbe422140aa461abcff27a7fd66ee4f"
+    },
+    "references/Hexalith.EventStore": {
+      "head": "8b6d5bee5217b3f4bbd8fd689ad887aca863961b",
+      "index_sha256": "84e09db7d4b3087703d5ce88f9a8d946ec106470f727a0bc29f5fb6591254926"
+    },
+    "references/Hexalith.FrontComposer": {
+      "head": "f26304dabf7153c7075fa8c4a82dc8fc537c5ed0",
+      "index_sha256": "a5ce1e2ca45c4ce7860f569f0f23b75ad816cd4bb837363799aa0272a659cdca"
+    },
+    "references/Hexalith.Memories": {
+      "head": "dd422905e563d0c23b7232df910a0c41d82d7b03",
+      "index_sha256": "9cb1f65b6a8729ffb22a1403835ae1abdfa7dac9fe001c39ccb54ea896911ad4"
+    },
+    "references/Hexalith.Commons": {
+      "head": "49187d47da882d5470deac982bb383486c90202c",
+      "index_sha256": "b4d109bb718a7a5906c3723c876ad371435ba0631f39d5b38307c091bb8bd61d"
+    },
+    "references/Hexalith.Builds": {
+      "head": "fdda17c0a4538b0f7c99f813c20ca24b49006530",
+      "index_sha256": "767f0259f8be88c52d8f6fa0c0474dc7008f8f6ca9df992536fd6dc226cdf252"
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "head": "2cbec6a66e2174adc7c5d431c1b1f0d28abd5647",
+      "index_sha256": "ff36b6c65d95f7002d230d76814ff52e1b9dfa1edd008a0fdd3962d5d7e086bf"
+    },
+    "references/Hexalith.Projects": {
+      "head": "981ceef13a1abc88219925e73c51a23eb9ac50c2",
+      "index_sha256": "5bbd16391f92bce785ef250a110259cf38e78850efc1cd8893cccc67e54ea2c4"
+    },
+    "references/Hexalith.Platform": {
+      "head": "829d68b4cb6bf4e27c9baba318555e2e7b3ebbaf",
+      "index_sha256": "7394b8ba616dde7d7addf94b36b5a60d82959a0a96efd3ca040cbab6d2ae6433"
+    },
+    "references/Hexalith.McpCli": {
+      "head": "979e1e126c6d7010997f4f20b2bb3defae81333e",
+      "index_sha256": "e6b17041a5041d9a174e62b6e096ebda52173607d4f073ce4162654cb49d78d6"
+    },
+    "references/Hexalith.Parties": {
+      "head": "a575021fc97a8eda664711089270b60f5e570ded",
+      "index_sha256": "2548cd2d6c6ab70d3c7dde6a5b237169ce67ab643a750f5a7e528b36ac6554b8"
+    }
+  },
+  "protected": {
+    "_bmad-output/implementation-artifacts/story-1-17-closure-prepared-handoff-2026-11-16.json": "a7c0104ca676c3a5255f362bf2fbd94a057e5bd43cc6d1ce7eab455dc488326d",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": "e8d945cc5bbb91265c8bf56d2c978e338fb4573ae4e5e7de8621b5787169dbe0",
+    "_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md": "e00a3503425e8a96ab235255f70175b1e34bed2d6a5a3975723bef17a7653206",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "4fd23cd1252b356ab24048f52150aec6b991d5a129a13c2890e159f7c5c2636d",
+    "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+    "eng/story117-platform-qualification-current/staging-checks.json": "8456c450a8bd835d8aee6c151dc58b2284842f7526afd54476f0abdb43374e51",
+    "references/Hexalith.Projects/docs/runbooks/story-1-17-projects-host-artifact-next-action-2026-11-16.md": "9413d7368d34a49c3ecd2bd0eeeddd957803afe34ce589af11a664c6cf595d86",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-closure-preparation-2026-11-16/SHA256SUMS": "3d94d6152e9f508411060223dde0aba42337aefb2243a339680bb10b455973b1",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-ci-repair-2026-11-16/SHA256SUMS": "0a6fa2ff6f8b7aa7e1bd686da4e603433ea54393881c751e2a04be2569d817d5",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/SHA256SUMS": "2d29cb4244dfdf959a48b7f58bbd3c01489517d86e0da66015b31fd07d1cfee5",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-projects-package-alignment-2026-11-16/test-summary.json": "f8d757f64fb09b11921684732a06eb944399786511a458b6d573b22eb33fc464",
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "6b39918b5ba54948dc674523f18c10e55cd88f6a7f5eb328f72d8a7787a961c0",
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-post-landing-2026-11-16/handoff.json": "574c17a697f8f8fcc27d27378eccfb4ce7e352b4a9bc5593ac29486f8070af46",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-post-landing-2026-11-16/SHA256SUMS": "106dbcbb2c9c7a8be71a79a7bac03e5da0e66234f067af2192ddfad95af32ba0"
+  }
+}
