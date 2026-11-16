@@ -1,0 +1,79 @@
+{
+  "format": "hexalith.historical-artifacts.v1",
+  "sourceCommit": "d27487f405cb52dabdc6ce8dc16af543b2ddd625",
+  "purpose": "Lossless archival of inactive historical configuration evidence; active audit enforcement is unchanged.",
+  "files": [
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-candidate-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-release-2026-11-15/source-candidate-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "4c1a0a69f9ce7412f862ebab53e0980dd27da548",
+      "originalBytes": 241,
+      "originalSha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef",
+      "archiveSha256": "e468c1bc41279cc4610d0ac4d728dc91a710e28844c20b9e19f40be35a7626d8"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-published-release-2026-11-15/NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "4c1a0a69f9ce7412f862ebab53e0980dd27da548",
+      "originalBytes": 241,
+      "originalSha256": "06b979a155f42546b3417c6fbc6f323aaae91e4cfa1ae14d5e8e2979f3c5b5ef",
+      "archiveSha256": "e468c1bc41279cc4610d0ac4d728dc91a710e28844c20b9e19f40be35a7626d8"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/composition-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-composition/composition-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "ff6f07e20dc16a805847653a690a63869aca20b2",
+      "originalBytes": 357,
+      "originalSha256": "c7ca922ef9704fdc393e1905783622c7f9eab417d6c4ec7f54d16cc0185603cf",
+      "archiveSha256": "5b7d54e8a61112ff720e2a0b61e7e63d2472f52a37a3250163ef001b5ebab0d6"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/patch-api-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-patch-api/patch-api-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "f2515663e4b40be52dc4917aed5f63a1e56909d9",
+      "originalBytes": 357,
+      "originalSha256": "9b181c42822217b35d537aab440122fb659182508d828b93d111e7365138e8f2",
+      "archiveSha256": "b8bffce98e5d5cc75c9cdec395a4484f076d89348d0b642fdb2d89e3e6a0a1e9"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/producer-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final-producer/producer-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "4a104a404498d9ef774dc709726798dfc0d7cbb2",
+      "originalBytes": 284,
+      "originalSha256": "0f7ca71050dbe4ec33d9da6c2c388e037f7a64d44dd0bb71391ff4c7a27170c2",
+      "archiveSha256": "24e46f5f2d8a39afeeb8e384f331de6ac298ff66b7afeb394a4472c2466f76ca"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/consumers-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-final/consumers-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "9548831e9a78b07c762f295953a6a9f34a18c085",
+      "originalBytes": 355,
+      "originalSha256": "6569251c86c3f4da30c6361edf5b9de8f393f3d51f657df5d89e9d6e42f99cd1",
+      "archiveSha256": "35dc422c373408a96e7ea862b73ec5bcdab10bcd75fc4a769e664b04b56a9b92"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/consumers-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15-qualification2/consumers-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "34a5bff134112d4788d6e53ed82e434e3d937666",
+      "originalBytes": 427,
+      "originalSha256": "89edd15b8cdd0b1346ee914dcb293d91d23fffad1d20aedd9e1b42c6874bd6e8",
+      "archiveSha256": "20054d0f122d11615746a8dbad297946164ee5e0ca2fbb3dc60a9480881e9dad"
+    },
+    {
+      "originalPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/producer-NuGet.Config",
+      "archivePath": "_bmad-output/implementation-artifacts/evidence/story-1-17-release-prerequisites-2026-11-15/producer-NuGet.Config.gz",
+      "originalMode": "100644",
+      "originalGitBlob": "ef058be23c99dd5a0884fce005cc4b21420c44d3",
+      "originalBytes": 356,
+      "originalSha256": "35e4fb0ea79b93a5009098bea274378425b508207195ae6110de3702362e7617",
+      "archiveSha256": "ac1fc23a9909c28e9db876418da56588a7fe76d442d0007912a3794bc3dd465c"
+    }
+  ]
+}

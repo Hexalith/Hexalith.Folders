@@ -8,6 +8,9 @@
     <ProjectReference Include="$(HexalithCommonsRoot)/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="../Hexalith.Folders.EventStore.Tests/Fixtures/legacy-canonical-intents.json" Link="CatalogPolicies/legacy-canonical-intents.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="../shared/NativeContent/*.cs" Link="NativeContent/%(Filename)%(Extension)" />
     <ProjectReference Include="../../src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
     <Compile Include="../shared/EventStore/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
