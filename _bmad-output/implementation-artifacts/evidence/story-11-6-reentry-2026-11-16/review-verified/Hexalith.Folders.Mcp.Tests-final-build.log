@@ -1,0 +1,22 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj (in 13 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj (in 26 ms).
+  10 of 12 projects are up-to-date for restore.
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Contracts/debug/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Client/debug/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Mcp -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Mcp/debug/Hexalith.Folders.Mcp.dll
+  Hexalith.Commons.UniqueIds -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.ServiceDefaults/debug/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.Folders -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders/debug/Hexalith.Folders.dll
+  Hexalith.Folders.Testing -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Testing/debug/Hexalith.Folders.Testing.dll
+  Hexalith.Folders.Mcp.Tests -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Mcp.Tests/debug/Hexalith.Folders.Mcp.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.23

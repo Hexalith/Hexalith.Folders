@@ -1,0 +1,51 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tools/Hexalith.EventStore.RuntimeIdentityProbe/Hexalith.EventStore.RuntimeIdentityProbe.csproj (in 0.6 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj (in 0.2 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj (in 19 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj (in 19 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Client.Rest/Hexalith.Memories.Client.Rest.csproj (in 57 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 36 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj (in 64 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 67 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 114 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj (in 117 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Memories/src/Hexalith.Memories.Aspire/Hexalith.Memories.Aspire.csproj (in 115 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj (in 153 ms).
+  12 of 24 projects are up-to-date for restore.
+  Hexalith.Folders.Aspire -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Aspire/debug/Hexalith.Folders.Aspire.dll
+  Hexalith.Commons.UniqueIds -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.ServiceDefaults/debug/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.RuntimeIdentityProbe -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.RuntimeIdentityProbe/debug/Hexalith.EventStore.RuntimeIdentityProbe.dll
+  Hexalith.EventStore.Aspire -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Aspire/debug/Hexalith.EventStore.Aspire.dll
+  Hexalith.Memories.Aspire -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Memories.Aspire/debug/Hexalith.Memories.Aspire.dll
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Contracts/debug/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Client/debug/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Cli -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Cli/debug/Hexalith.Folders.Cli.dll
+  Hexalith.Folders.Mcp -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Mcp/debug/Hexalith.Folders.Mcp.dll
+  Hexalith.Folders -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders/debug/Hexalith.Folders.dll
+  Hexalith.Folders.ServiceDefaults -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.ServiceDefaults/debug/Hexalith.Folders.ServiceDefaults.dll
+  Hexalith.EventStore.DomainService -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.DomainService/debug/Hexalith.EventStore.DomainService.dll
+  Hexalith.Commons.UniqueIds -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Tenants.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Tenants.Contracts/debug/Hexalith.Tenants.Contracts.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.Tenants.Client -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Tenants.Client/debug/Hexalith.Tenants.Client.dll
+  Hexalith.Memories.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Memories.Contracts/debug/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Memories.Client.Rest/debug/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.Server -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Server/debug/Hexalith.Folders.Server.dll
+  Hexalith.Folders.Testing -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.Testing/debug/Hexalith.Folders.Testing.dll
+  Hexalith.Memories.Contracts -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Memories.Contracts/debug/Hexalith.Memories.Contracts.dll
+  Hexalith.Memories.Client.Rest -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Memories.Client.Rest/debug/Hexalith.Memories.Client.Rest.dll
+  Hexalith.Folders.IntegrationTests -> /tmp/hexalith-job.EKgfJ800/artifacts/bin/Hexalith.Folders.IntegrationTests/debug/Hexalith.Folders.IntegrationTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.19

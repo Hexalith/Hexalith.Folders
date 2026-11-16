@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-11-16T08:26:58.874725+00:00",
+  "status": "bounded-verification-passed-delivery-held",
+  "source_revisions": {
+    ".": "fc302b2c81aa4e107c3ed58458f0b39d2ebe6d85",
+    "references/Hexalith.Tenants": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "981fabaa3cf44fc2a71eed73549f4fb0d847e2a6",
+    "references/Hexalith.FrontComposer": "695d23149c56a6104e81d23a54116b4fb914df95",
+    "references/Hexalith.Memories": "61a2caef3f3b7d556a856100b04b05feddddfb34",
+    "references/Hexalith.Commons": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "references/Hexalith.Builds": "82ec1f26d946f3191c2f7b5b7c104b52802a5f27",
+    "references/Hexalith.PolymorphicSerializations": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "references/Hexalith.Projects": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+    "references/Hexalith.Platform": "f55a641fa8d0ad6a75c59710a42bb65964de67d0",
+    "references/Hexalith.McpCli": "9ca592b1d1259bc5aedf724c5c7ccb20329b8c34",
+    "references/Hexalith.Parties": "762ea76d33af315a87b112abc6730c7ae21b2cb9"
+  },
+  "sdk": "11.0.100",
+  "configuration": "Debug",
+  "dependency_mode": "project references; UseNuGetDeps=false",
+  "command": "run-with-temp bash _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/verify.sh _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/review-verified",
+  "disposable_outputs": "$TMPDIR/artifacts; wrapper completed and cleaned up after all children exited",
+  "fixtures": "Temporary ancestor links to the unchanged source solution and canonical tests directory; no fixture edits or copied oracle",
+  "initial_attempt": {
+    "exit": 1,
+    "cause": "Artifacts outside the repository prevented ParityOracle.FindRepositoryRoot from locating Hexalith.Folders.slnx. All three builds passed; initial test discovery/execution failed where canonical fixtures were required.",
+    "resolution": "Rebuilt and reran all three lanes with source links in the disposable ancestor; final lanes passed without skips.",
+    "results": [
+      {
+        "project": "Hexalith.Folders.Cli.Tests",
+        "build_exit": 0,
+        "test_exit": 1,
+        "test_summary": {
+          "total": 203,
+          "errors": 0,
+          "failed": 15,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "build_arguments": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+          "--configuration",
+          "Debug",
+          "-p:UseNuGetDeps=false",
+          "--artifacts-path",
+          "/tmp/hexalith-job.SWESmjar/artifacts",
+          "-m:1"
+        ],
+        "test_arguments": [
+          "dotnet",
+          "/tmp/hexalith-job.SWESmjar/artifacts/bin/Hexalith.Folders.Cli.Tests/debug/Hexalith.Folders.Cli.Tests.dll"
+        ]
+      },
+      {
+        "project": "Hexalith.Folders.Mcp.Tests",
+        "build_exit": 0,
+        "test_exit": 1,
+        "test_summary": {
+          "total": 199,
+          "errors": 0,
+          "failed": 14,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "build_arguments": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+          "--configuration",
+          "Debug",
+          "-p:UseNuGetDeps=false",
+          "--artifacts-path",
+          "/tmp/hexalith-job.SWESmjar/artifacts",
+          "-m:1"
+        ],
+        "test_arguments": [
+          "dotnet",
+          "/tmp/hexalith-job.SWESmjar/artifacts/bin/Hexalith.Folders.Mcp.Tests/debug/Hexalith.Folders.Mcp.Tests.dll"
+        ]
+      },
+      {
+        "project": "Hexalith.Folders.IntegrationTests",
+        "build_exit": 0,
+        "test_exit": 1,
+        "test_summary": {
+          "total": 30,
+          "errors": 0,
+          "failed": 23,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "build_arguments": [
+          "dotnet",
+          "build",
+          "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+          "--configuration",
+          "Debug",
+          "-p:UseNuGetDeps=false",
+          "--artifacts-path",
+          "/tmp/hexalith-job.SWESmjar/artifacts",
+          "-m:1"
+        ],
+        "test_arguments": [
+          "dotnet",
+          "/tmp/hexalith-job.SWESmjar/artifacts/bin/Hexalith.Folders.IntegrationTests/debug/Hexalith.Folders.IntegrationTests.dll",
+          "-class",
+          "*CrossAdapterBehavioralParityTests"
+        ]
+      }
+    ],
+    "workspace": "run-with-temp supplied a private TMPDIR; no solution or tests links were present in its ancestor."
+  },
+  "results": [
+    {
+      "project": "Hexalith.Folders.Cli.Tests",
+      "build_exit": 0,
+      "test_exit": 0,
+      "total": 808,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0,
+      "selection": "full assembly"
+    },
+    {
+      "project": "Hexalith.Folders.Mcp.Tests",
+      "build_exit": 0,
+      "test_exit": 0,
+      "total": 756,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0,
+      "selection": "full assembly"
+    },
+    {
+      "project": "Hexalith.Folders.IntegrationTests",
+      "build_exit": 0,
+      "test_exit": 0,
+      "total": 587,
+      "errors": 0,
+      "failed": 0,
+      "skipped": 0,
+      "not_run": 0,
+      "selection": "*CrossAdapterBehavioralParityTests"
+    }
+  ],
+  "passed_total": 2151,
+  "protected_tracked_paths_unchanged_from_head": [
+    "src",
+    "tests",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "Directory.Packages.props",
+    "global.json",
+    ".gitmodules",
+    "_bmad-output/implementation-artifacts/sprint-status.yaml",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+    "_bmad-output/implementation-artifacts/spec-11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport.md"
+  ],
+  "delivery": {
+    "story_11_6": "backlog; execution authorization held; evidence open",
+    "prerequisites": [
+      "DEC-A8-HOLD",
+      "1.17"
+    ],
+    "story_1_17_handoff": "_bmad-output/implementation-artifacts/story-1-17-audit-refreshed-handoff-2026-11-16.json",
+    "scope": "Legacy component and parity evidence only; no current-release McpCli, hosted/deployed-path, migration, activation or closure acceptance."
+  },
+  "artifacts": [
+    {
+      "path": ".gitattributes",
+      "sha256": "ca84f0d5bfab3dfceac6fd4d4e765639333f1c574c38b1a374cf58e1f915050a",
+      "bytes": 75
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "e027cf8ebf80d6dcdacced8a4dbd1c440e2436fb1868ec851db4061cb67bb787",
+      "bytes": 7
+    },
+    {
+      "path": "Hexalith.Folders.Cli.Tests-build.log",
+      "sha256": "15f1624636e4ce45b628303c4941285a5803ba56daa6f4db5ed8a6f21591249a",
+      "bytes": 3770
+    },
+    {
+      "path": "Hexalith.Folders.Cli.Tests-final-build.log",
+      "sha256": "e4d9d9e924785d9108a62afb23999ad1413a086709a737ecb20d4be805cc8488",
+      "bytes": 3760
+    },
+    {
+      "path": "Hexalith.Folders.Cli.Tests-final-tests.log",
+      "sha256": "456c90f08ec474cff7f954d354729ba33dffab58ad64e34045241651db2b42ff",
+      "bytes": 445
+    },
+    {
+      "path": "Hexalith.Folders.Cli.Tests-tests.log",
+      "sha256": "fa593e6bdf4cd9785a022547e76ee93d976b10791d9a523dd7f61e08f3226eae",
+      "bytes": 20506
+    },
+    {
+      "path": "Hexalith.Folders.IntegrationTests-build.log",
+      "sha256": "653383604bc9d5a5a4b34ee2e6cf3a45212606894f7b4b30ed87af77a3ba0b78",
+      "bytes": 6375
+    },
+    {
+      "path": "Hexalith.Folders.IntegrationTests-final-build.log",
+      "sha256": "65ad7d7f3799746a3ad83c1787250f06e6d14665e0f52a4ade79e8280288a8a7",
+      "bytes": 6373
+    },
+    {
+      "path": "Hexalith.Folders.IntegrationTests-final-tests.log",
+      "sha256": "7bc47ba7a2707a123b0c5efd8ca5b753811d7bb65f13cfd3f3854ef6f05d0bdc",
+      "bytes": 480
+    },
+    {
+      "path": "Hexalith.Folders.IntegrationTests-tests.log",
+      "sha256": "f237be6c411ce09678c9a172360a2da4059f2b9674c8735c0440e7f922b2b185",
+      "bytes": 35697
+    },
+    {
+      "path": "Hexalith.Folders.Mcp.Tests-build.log",
+      "sha256": "1c6f5e5774d2e14a2db2e05c7c1c62a85ca3e302d156f4decfb8cdf14fd1361c",
+      "bytes": 2039
+    },
+    {
+      "path": "Hexalith.Folders.Mcp.Tests-final-build.log",
+      "sha256": "f8afaed75abad1831ed2fdfbe003e0cff13193c1d2042da377916a17235d9aa1",
+      "bytes": 2039
+    },
+    {
+      "path": "Hexalith.Folders.Mcp.Tests-final-tests.log",
+      "sha256": "537118b70f48e6d8d13ad0ff64fe95e7210c9625f6631f1767a2d44305bdd041",
+      "bytes": 445
+    },
+    {
+      "path": "Hexalith.Folders.Mcp.Tests-tests.log",
+      "sha256": "f54135e02380be70a738823672c39b3dff62e4aa75f6ad85e99c4de9b563cf1d",
+      "bytes": 19418
+    },
+    {
+      "path": "platform.txt",
+      "sha256": "994028a89cff38968443366fe4a10c334b031e1f4496ae1620831e381b5abb36",
+      "bytes": 2704
+    },
+    {
+      "path": "refuse-broken-fixture-link.log",
+      "sha256": "a6f166d3506219aa91257f6c9cc8f7b236e5887c5e2f9b75dd27fba5fd160bd2",
+      "bytes": 102
+    },
+    {
+      "path": "refuse-existing-output.log",
+      "sha256": "554ba514f637104b33d6486b07862d64748c718dd0aa67d25d474a884ae8ce79",
+      "bytes": 207
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.Cli.Tests-final-build.log",
+      "sha256": "ec3985df35cbd868dbf99adfb37cf3c4983c04f10c56ecb5136b005b8ccb4a34",
+      "bytes": 3762
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.Cli.Tests-final-tests.log",
+      "sha256": "41345de2ca44efd5ffd57a4b580220b4867b4461432cd5e2a975dc581bc89093",
+      "bytes": 445
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.IntegrationTests-final-build.log",
+      "sha256": "9f0c354970078307b6617c17932490942d86b01f7a73f176df9395249197fde7",
+      "bytes": 6379
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.IntegrationTests-final-tests.log",
+      "sha256": "01692fbf5663d34d9e68ce930cdcd2f0f34a81ab39ff0d7fe8ed3ba3795037ac",
+      "bytes": 480
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.Mcp.Tests-final-build.log",
+      "sha256": "565ffe234138119d099ac0587793b79b257113471dfaf41d8ca1da9921c03ce5",
+      "bytes": 2039
+    },
+    {
+      "path": "review-verified/Hexalith.Folders.Mcp.Tests-final-tests.log",
+      "sha256": "7b1fe55dfc8a81b7a6804b1663282f2af9bbdb8b3549245ff00a0031d93eab10",
+      "bytes": 445
+    },
+    {
+      "path": "verify-original.sh",
+      "sha256": "a025aa865cd132bffe0a39b0027eb81d0174637d24de9b3a968d24e642585219",
+      "bytes": 1763
+    },
+    {
+      "path": "verify.sh",
+      "sha256": "294d511762a6979a8fd301646492fb1378c082efd9b81514a8e955dd5cbf1910",
+      "bytes": 2578
+    }
+  ],
+  "source_worktrees": {
+    ".": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "M _bmad-output/implementation-artifacts/epic-11-context.md\n?? _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/\n?? _bmad-output/implementation-artifacts/spec-11-6-verify-current-adapter-safety-and-delivery-hold.md",
+      "clean": false
+    },
+    "references/Hexalith.Tenants": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.AI.Tools": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.EventStore": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.FrontComposer": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Memories": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Commons": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Builds": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.PolymorphicSerializations": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Projects": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Platform": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.McpCli": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    },
+    "references/Hexalith.Parties": {
+      "captured_after_final_rerun": true,
+      "porcelain_status": "",
+      "clean": true
+    }
+  },
+  "root_worktree_limit": "Root changes are only the context, continuation spec and retained evidence. Protected product/config/tracking paths match HEAD. Dependency checkouts were clean at the post-run observation; root status also showed no submodule dirtiness before and after the run.",
+  "platform": {
+    "system": "Linux",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "rid": "linux-x64",
+    "dotnet_info": "platform.txt",
+    "limit": "Linux-only component verification; no Windows/macOS, real-provider or hosted transport result is claimed."
+  },
+  "previous_successful_attempt": {
+    "command": "run-with-temp bash _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/verify.sh",
+    "executed_script_retained_as": "verify-original.sh",
+    "result": "All three builds and 2,151 tests passed. Top-level *-final-*.log files preserve this run. The original script was copied byte-for-byte before review corrections."
+  },
+  "final_run_logs": "review-verified/*-final-{build,tests}.log",
+  "rerun_instruction": "Choose a fresh persistent output directory as the optional first script argument. Existing final logs are rejected before any build or link operation.",
+  "harness_checks": [
+    {
+      "case": "Existing final logs",
+      "command": "run-with-temp bash _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/verify.sh",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "log": "refuse-existing-output.log"
+    },
+    {
+      "case": "Canonical solution link cannot be established",
+      "command": "run-with-temp bash -c 'touch \"$TMPDIR/Hexalith.Folders.slnx\"; bash _bmad-output/implementation-artifacts/evidence/story-11-6-reentry-2026-11-16/verify.sh \"$TMPDIR/negative-results\"'",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "log": "refuse-broken-fixture-link.log"
+    }
+  ]
+}

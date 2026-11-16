@@ -1,0 +1,33 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 0.5 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj (in 45 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 55 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj (in 54 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.McpCli/src/Hexalith.McpCli.Analyzers/Hexalith.McpCli.Analyzers.csproj (in 9 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj (in 53 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj (in 56 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 58 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj (in 6 ms).
+  Restored /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj (in 61 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj (in 60 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj (in 67 ms).
+  Hexalith.McpCli.Analyzers -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.McpCli.Analyzers/debug/Hexalith.McpCli.Analyzers.dll
+  Hexalith.McpCli.Abstractions -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.McpCli.Abstractions/debug/Hexalith.McpCli.Abstractions.dll
+  Hexalith.Folders.Contracts -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders.Contracts/debug/Hexalith.Folders.Contracts.dll
+  Hexalith.Folders.Client -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders.Client/debug/Hexalith.Folders.Client.dll
+  Hexalith.Folders.Cli -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders.Cli/debug/Hexalith.Folders.Cli.dll
+  Hexalith.Commons.UniqueIds -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Commons.UniqueIds/debug/Hexalith.Commons.UniqueIds.dll
+  Successfully created package '/tmp/hexalith-job.nLCuC0Bl/artifacts/package/debug/Hexalith.Commons.UniqueIds.1.0.0.nupkg'.
+  Successfully created package '/tmp/hexalith-job.nLCuC0Bl/artifacts/package/debug/Hexalith.Commons.UniqueIds.1.0.0.snupkg'.
+  Hexalith.EventStore.Contracts -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.EventStore.Contracts/debug/Hexalith.EventStore.Contracts.dll
+  Hexalith.EventStore.ServiceDefaults -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.EventStore.ServiceDefaults/debug/Hexalith.EventStore.ServiceDefaults.dll
+  Hexalith.EventStore.Client -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.EventStore.Client/debug/Hexalith.EventStore.Client.dll
+  Hexalith.Folders -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders/debug/Hexalith.Folders.dll
+  Hexalith.Folders.Testing -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders.Testing/debug/Hexalith.Folders.Testing.dll
+  Hexalith.Folders.Cli.Tests -> /tmp/hexalith-job.nLCuC0Bl/artifacts/bin/Hexalith.Folders.Cli.Tests/debug/Hexalith.Folders.Cli.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:06.88

@@ -1,0 +1,206 @@
+xUnit.net v3 In-Process Runner v4.0.3+384aa7f0b4 (64-bit .NET 11.0.0)
+  Discovering: Hexalith.Folders.Cli.Tests
+  Discovered:  Hexalith.Folders.Cli.Tests
+  Starting:    Hexalith.Folders.Cli.Tests
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.MissingCredentialIsCredentialExitAndMakesNoCall [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+           at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(184,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.MissingCredentialIsCredentialExitAndMakesNoCall()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.ExplicitCorrelationIdIsEchoedUnchangedToWireAndStderr [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(217,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.ExplicitCorrelationIdIsEchoedUnchangedToWireAndStderr()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryEnumMemberAbsentFromTheOracleIsExplicitlyAccountedFor [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityOracle.cs(102,0): at Hexalith.Folders.Parity.Testing.ParityOracle.DistinctCategories()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(118,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryEnumMemberAbsentFromTheOracleIsExplicitlyAccountedFor()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.SuccessMarkerProjectsToZero [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(50,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.SuccessMarkerProjectsToZero()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryOracleExitCodeIsInTheCanonicalVocabulary [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(92,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryOracleExitCodeIsInTheCanonicalVocabulary()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.MutatingCommandMissingIdempotencyKeyIsUsageErrorAndMakesNoCall [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(156,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.MutatingCommandMissingIdempotencyKeyIsUsageErrorAndMakesNoCall()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryOracleCategoryProjectsToItsDedupedExitCodeWithinTheCanonicalSet [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityOracle.cs(56,0): at Hexalith.Folders.Parity.Testing.ParityOracle.CategoryCliExitCodes()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(81,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryOracleCategoryProjectsToItsDedupedExitCodeWithinTheCanonicalSet()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.EveryOperationRowDeclaresCliAndMcpAdapters [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(118,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.OperationIds()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.DedupedCategoryExitCodeMapCoversEveryDistinctCategory [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityOracle.cs(56,0): at Hexalith.Folders.Parity.Testing.ParityOracle.CategoryCliExitCodes()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(143,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.DedupedCategoryExitCodeMapCoversEveryDistinctCategory()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.QueryCommandRejectsIdempotencyKeyAndMakesNoCall [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(199,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.QueryCommandRejectsIdempotencyKeyAndMakesNoCall()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.ProjectsEveryOracleOutcomeCategoryToItsCliExitCode [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(83,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.CliOutcomeTuples()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.OmittedCorrelationIdIsAFreshUlidOnWireAndStderr [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(234,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.OmittedCorrelationIdIsAFreshUlidOnWireAndStderr()
+        --- End of stack trace from previous location ---
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.OracleContainsExactlyTheExpectedDistinctOperationRows [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(62,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.OracleContainsExactlyTheExpectedDistinctOperationRows()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.Oq2CategoriesArePresentAndProjectExactly [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityOracle.cs(102,0): at Hexalith.Folders.Parity.Testing.ParityOracle.DistinctCategories()
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(105,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.Oq2CategoriesArePresentAndProjectExactly()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.TaskScopedMutatingCommandMissingTaskIdIsUsageErrorAndMakesNoCall [FAIL]
+      System.InvalidOperationException : Could not locate repository root (Hexalith.Folders.slnx not found walking up from the test base directory).
+      Stack Trace:
+        tests/shared/Parity/ParityOracle.cs(211,0): at Hexalith.Folders.Parity.Testing.ParityOracle.FindRepositoryRoot()
+        tests/shared/Parity/ParityOracle.cs(38,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_OraclePath()
+        tests/shared/Parity/ParityOracle.cs(106,0): at Hexalith.Folders.Parity.Testing.ParityOracle.LoadRowsFromDisk()
+           at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+        --- End of stack trace from previous location ---
+           at System.Lazy`1.CreateValue()
+        tests/shared/Parity/ParityOracle.cs(41,0): at Hexalith.Folders.Parity.Testing.ParityOracle.get_Rows()
+        tests/shared/Parity/ParityScenarios.cs(205,0): at Hexalith.Folders.Parity.Testing.ParityScenarios.Row(String operationId)
+        tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs(170,0): at Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests.TaskScopedMutatingCommandMissingTaskIdIsUsageErrorAndMakesNoCall()
+        --- End of stack trace from previous location ---
+  Finished:    Hexalith.Folders.Cli.Tests (ID = '93164e410091560b899f9c412dc17e8b9060e1fdcc155686dfbe5b8238253560')
+=== TEST EXECUTION SUMMARY ===
+   Hexalith.Folders.Cli.Tests  Total: 203, Errors: 0, Failed: 15, Skipped: 0, Not Run: 0, Time: 0.359s
