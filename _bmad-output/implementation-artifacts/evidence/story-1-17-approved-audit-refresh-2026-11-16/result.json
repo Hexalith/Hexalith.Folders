@@ -1,0 +1,61 @@
+{
+  "generated_from_revision": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+  "audit_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+  "audited_at_utc": "2026-11-15T23:01:45.2806718+00:00",
+  "source_results": [
+    {
+      "uri": "https://api.nuget.org/v3/index.json",
+      "resolution": "resolved",
+      "diagnostic": "NuGet V3 registration and flat-container resources resolved."
+    }
+  ],
+  "refreshed_packages": [
+    "Hexalith.Folders",
+    "Hexalith.Folders.Aspire",
+    "Hexalith.Folders.Client",
+    "Hexalith.Folders.Contracts",
+    "Hexalith.Folders.Testing"
+  ],
+  "preserved_package_rows": 312,
+  "preserved_family_decisions": 156,
+  "historical_observations_before": 9451,
+  "historical_observations_after": 9457,
+  "folders_rows": [
+    {
+      "id": "Hexalith.Folders",
+      "auditedVersion": "2.0.0",
+      "selectedVersion": "2.0.0",
+      "latestStable": "2.0.0",
+      "listingState": "listed"
+    },
+    {
+      "id": "Hexalith.Folders.Aspire",
+      "auditedVersion": "2.0.0",
+      "selectedVersion": "2.0.0",
+      "latestStable": "2.0.0",
+      "listingState": "listed"
+    },
+    {
+      "id": "Hexalith.Folders.Client",
+      "auditedVersion": "2.0.0",
+      "selectedVersion": "2.0.0",
+      "latestStable": "2.0.0",
+      "listingState": "listed"
+    },
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "auditedVersion": "2.0.0",
+      "selectedVersion": "2.0.0",
+      "latestStable": "2.0.0",
+      "listingState": "listed"
+    },
+    {
+      "id": "Hexalith.Folders.Testing",
+      "auditedVersion": "2.0.0",
+      "selectedVersion": "2.0.0",
+      "latestStable": "2.0.0",
+      "listingState": "listed"
+    }
+  ],
+  "family_disposition": "retained"
+}

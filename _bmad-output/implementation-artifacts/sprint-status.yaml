@@ -98,7 +98,7 @@ development_status:
   1-15-wire-safety-invariant-ci-gates: done
   1-16-wire-exit-criteria-and-parity-completeness-gates: done
   1-17-publish-the-pd10-v2-authorization-contract-spine: backlog
-  # needs story 12.1
+  # needs Platform epic 2-6 and stories 10-1/3
   epic-1-retrospective: done
 
   epic-2: done

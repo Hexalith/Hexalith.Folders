@@ -1,0 +1,26 @@
+[
+  {
+    "name": "candidate-generation-1",
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--output",
+      "{private-temp}/candidate-1.yaml"
+    ],
+    "cwd": "{workspace}",
+    "exit_code": 0,
+    "log": "candidate-generation-1.log"
+  },
+  {
+    "name": "candidate-generation-2",
+    "argv": [
+      "python3",
+      "scripts/generate-pd10-v2-conformance-set.py",
+      "--output",
+      "{private-temp}/candidate-2.yaml"
+    ],
+    "cwd": "{workspace}",
+    "exit_code": 0,
+    "log": "candidate-generation-2.log"
+  }
+]

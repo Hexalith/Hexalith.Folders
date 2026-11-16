@@ -1,0 +1,16 @@
+{
+  "audit.before.json": "1a6babe322cbd3c9bb6209579638101ff9188ee40e34ce10da46fae32b0bc918",
+  "before.json": "12550238ef3ed57f56435ab4a5c54868c88e41d062e6c57eb8503009ee6966fa",
+  "commands.json": "f30acf0184917eed62acf5e1fd3530ffcb36fdb4cd390ff4e03656cd1b0f10d0",
+  "generate.log": "ea4df890e0d6e1ba59ca076b8a232bcd61da1ac9d611f14e5390f761604dec13",
+  "migration.before.md": "7c448d36e3415f56b15e80b43778629f255963dacf785b03fba1c3a3e6d6d56d",
+  "owner-audit.diff": "e102446e319c7f87c2b05e8cb1bf88ad466a0dbbee1647a55c4ecdccf439d409",
+  "readiness.before.md": "cc0d6ea8a5ed933e462143a77cee4fb229ddeed2368bec4da43c45d7f1be9edb",
+  "receipt.json": "c9f5221e4a002de20d57fba1e5517279b6354a91f31b5eccf599a25d3a50a5ef",
+  "refresh.py": "8f576d322174817847badd00a3c9ca7fd39c12753d95c1dcb67d71160241c4c4",
+  "result.json": "18aa8feeb19bccc3ba560b027e685037e99fc0943c768b26418339d9321210d1",
+  "spec.before.md": "aacf7653f30f07b0373a464a014e53262b900e952fc4814c4f1bbe4145d25207",
+  "validate-candidate.log": "c1cda67f05ccc84863726eea3e63b809e32e26090f8c64562f5e951e628fda6e",
+  "validate-owner.log": "c1cda67f05ccc84863726eea3e63b809e32e26090f8c64562f5e951e628fda6e",
+  "verify.py": "3aab7bf16b941da5a299bf0e6033901081f66553dde002033e077681e4b16c67"
+}

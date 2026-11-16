@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "status": "audit-refreshed-operational-hold",
+  "authorization": "User yes to the scoped NuGet-backed audit refresh; remote reads limited to the Folders family.",
+  "previous_handoff": "_bmad-output/implementation-artifacts/story-1-17-landed-v2-handoff-2026-11-15.json",
+  "previous_handoff_sha256": "dce2d816ad63d4862dd584e6b11a7e96e22dac6499d54da328d5aafdf758edd0",
+  "source_revisions": {
+    ".": "efa9be7f4e3d8c432b057f52a8d6285b01d82899",
+    "references/Hexalith.Tenants": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "references/Hexalith.AI.Tools": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "references/Hexalith.EventStore": "981fabaa3cf44fc2a71eed73549f4fb0d847e2a6",
+    "references/Hexalith.FrontComposer": "695d23149c56a6104e81d23a54116b4fb914df95",
+    "references/Hexalith.Memories": "61a2caef3f3b7d556a856100b04b05feddddfb34",
+    "references/Hexalith.Commons": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "references/Hexalith.Builds": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+    "references/Hexalith.PolymorphicSerializations": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "references/Hexalith.Projects": "e228f185bb6a870456a2a91dcd12cb8f27964f61",
+    "references/Hexalith.Platform": "f55a641fa8d0ad6a75c59710a42bb65964de67d0",
+    "references/Hexalith.McpCli": "9ca592b1d1259bc5aedf724c5c7ccb20329b8c34",
+    "references/Hexalith.Parties": "762ea76d33af315a87b112abc6730c7ae21b2cb9"
+  },
+  "released_pair": {
+    "version": "2.0.0",
+    "source": "209dacbdb42fcde728d9e190781b69945bccc93b",
+    "retained_packages": [
+      {
+        "id": "Hexalith.Folders.Contracts",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Contracts.2.0.0.nupkg",
+        "sha256": "6a55c386a561dee8785bea2c657a45a6464e067532615461635a0200e447ae1f",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Contracts.dll",
+        "payload_sha256": "15967866af43db82ed4d6a237d5454c90bae6192df83be5cbadd25b2864a9098"
+      },
+      {
+        "id": "Hexalith.Folders",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.2.0.0.nupkg",
+        "sha256": "138eea720b7540d6f0d618484166573093e4d74b277a7c312318d2aca6d335db",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.dll",
+        "payload_sha256": "b5adbf20780738bb5c0583c5b711ca412d4dd79f3f517bac6d0bc7b7b682e3be"
+      },
+      {
+        "id": "Hexalith.Folders.Client",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Client.2.0.0.nupkg",
+        "sha256": "1af188709de4978bbc3484fdf0eccce5d3a0bf93db23521f567684fb500f6af8",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Client.dll",
+        "payload_sha256": "b9b4a8eff8881d89741d8072c53ae76cf6999fef417ffaced7664dfaa11e4b65"
+      },
+      {
+        "id": "Hexalith.Folders.Aspire",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Aspire.2.0.0.nupkg",
+        "sha256": "98418bcd0251866754da700cb795dfaf8b0664fd23df023c8d76db189b914984",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Aspire.dll",
+        "payload_sha256": "bd4de8c097109170da027939d54231c06b0ab1d39caeaad6390977e755fb37fa"
+      },
+      {
+        "id": "Hexalith.Folders.Testing",
+        "version": "2.0.0",
+        "archive": "packages/Hexalith.Folders.Testing.2.0.0.nupkg",
+        "sha256": "39ad926877aacd28bf7148782817e691e98423836e9a2da691eacd714a015d7b",
+        "repository_commit": "209dacbdb42fcde728d9e190781b69945bccc93b",
+        "payload_member": "lib/net11.0/Hexalith.Folders.Testing.dll",
+        "payload_sha256": "5c9f9c9a6e3c6fa80564b4bd0be8b6acf25ec0498033f50ebf7bc86c12c87362"
+      }
+    ],
+    "observation_limit": "Rehashed retained signed archives only; no new download, feed or CI observation."
+  },
+  "audit": {
+    "owner": "references/Hexalith.Builds",
+    "path": "Tools/package-version-audit.json",
+    "source_revision": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+    "sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+    "audited_at_utc": "2026-11-15T23:01:45.2806718+00:00",
+    "validator": "passed: 317 packages, 157 families, 1 source",
+    "refreshed_packages": [
+      "Hexalith.Folders",
+      "Hexalith.Folders.Aspire",
+      "Hexalith.Folders.Client",
+      "Hexalith.Folders.Contracts",
+      "Hexalith.Folders.Testing"
+    ],
+    "preserved_package_rows": 312,
+    "preserved_family_decisions": 156,
+    "historical_observations_preserved": 9451,
+    "historical_observations_added": 6,
+    "working_tree_state": "Generated audit is an uncommitted owning-repository change; catalog, versions, source revisions and Git indices are unchanged.",
+    "family_disposition": "retained; feed listing does not establish hosted or operational acceptance"
+  },
+  "evidence": "_bmad-output/implementation-artifacts/evidence/story-1-17-approved-audit-refresh-2026-11-16/receipt.json",
+  "reused_results": "Dated Release/package solution builds, Folders Debug/source build, Projects 124/124, parity 12/12 and governance 217/217 + 7/7 + 3/3; no new build or service test execution.",
+  "reuse_limit": "Only audit metadata and appended evidence changed in this continuation; no new build, service test, package signature, hosted artifact or deployment observation is claimed.",
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog"
+  },
+  "hosted_projects_artifact": null,
+  "remaining": [
+    {
+      "owner": "Builds maintainer",
+      "gate": "Land the reviewable audit change when explicitly instructed; no commit or push was requested."
+    },
+    {
+      "owner": "Projects release/deployment owner",
+      "gate": "immutable hosted consumer artifact",
+      "finding": "Projects source and committed imported catalog are qualified locally; the retained runtime zip is unpublished.",
+      "required_inputs": [
+        "Immutable hosted Projects image/deployment identity for the exact qualified source and package pair",
+        "Deployed direct/delegated call inventory, every periodic schedule and verified hosted delegation"
+      ]
+    },
+    {
+      "owner": "Platform, tool/catalog and module-intake owners",
+      "gate": "current composed hosted qualification",
+      "finding": "The older offline proposal refuses the current Folders host; prior mappings and historical tool acceptance do not qualify the current executable tuple.",
+      "required_inputs": [
+        "Current revision-bound executable source mapping and tool/catalog/composition/intake acceptance",
+        "Attempt lock and verified target/consumer/retained-data disposition",
+        "Exact hosted Folders and Projects artifact/configuration/identity/delegation tuple",
+        "Staging and applicable workload-removal or retained-data recovery proof",
+        "Named operators, UTC slots, measured thresholds, verification/observation and recovery results"
+      ]
+    },
+    {
+      "owner": "Story 1.17 decision owner",
+      "gate": "applicable-branch closure and tracker authorization",
+      "required_inputs": [
+        "All applicable first-install evidence or existing-v1 migration/retirement evidence",
+        "Explicit closure decision and authorized tracker delta after the operational gates pass"
+      ]
+    }
+  ]
+}

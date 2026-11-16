@@ -1,0 +1,103 @@
+{
+  "references/Hexalith.Tenants": {
+    "prior_head": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "head": "8aa6f169b3e27f0a831ad6425c4bc1278ca2c445",
+    "changed_paths": []
+  },
+  "references/Hexalith.AI.Tools": {
+    "prior_head": "17a37d83db193f0b7494c1b931fd1e82a67c1424",
+    "head": "7ef8166ef87e1365f86d1a1b3aaf0235545177d4",
+    "changed_paths": [
+      "hexalith-llm-instructions.md"
+    ]
+  },
+  "references/Hexalith.EventStore": {
+    "prior_head": "981fabaa3cf44fc2a71eed73549f4fb0d847e2a6",
+    "head": "981fabaa3cf44fc2a71eed73549f4fb0d847e2a6",
+    "changed_paths": []
+  },
+  "references/Hexalith.FrontComposer": {
+    "prior_head": "695d23149c56a6104e81d23a54116b4fb914df95",
+    "head": "695d23149c56a6104e81d23a54116b4fb914df95",
+    "changed_paths": []
+  },
+  "references/Hexalith.Memories": {
+    "prior_head": "61a2caef3f3b7d556a856100b04b05feddddfb34",
+    "head": "61a2caef3f3b7d556a856100b04b05feddddfb34",
+    "changed_paths": []
+  },
+  "references/Hexalith.Commons": {
+    "prior_head": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "head": "ab5e92faa3bab1fa43b8ecadd423432dfe652bb2",
+    "changed_paths": []
+  },
+  "references/Hexalith.PolymorphicSerializations": {
+    "prior_head": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "head": "476cfccac3c5ba694a8e0ef11b1157728b9ec093",
+    "changed_paths": []
+  },
+  "references/Hexalith.Platform": {
+    "prior_head": "f55a641fa8d0ad6a75c59710a42bb65964de67d0",
+    "head": "f55a641fa8d0ad6a75c59710a42bb65964de67d0",
+    "changed_paths": []
+  },
+  "references/Hexalith.McpCli": {
+    "prior_head": "4cf120c410a668d08c6ba70d59962c3a2c031952",
+    "head": "9ca592b1d1259bc5aedf724c5c7ccb20329b8c34",
+    "changed_paths": [
+      "_bmad-output/implementation-artifacts/deferred-work.md",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/ad23.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/ad23.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/audit.json",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/commands.json",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/inventory-ascii-locale.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/inventory-ascii-locale.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/inventory.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/inventory.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/labels-ascii-locale.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/labels-ascii-locale.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/labels.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/labels.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/lifecycle-integrated.json",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/lifecycle-integrated.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/lifecycle-integrated.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/lifecycle.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/lifecycle.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-ad23.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-ad23.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-audit-only.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-audit-only.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-inventory-ascii-locale.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-inventory-ascii-locale.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-inventory.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-inventory.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-labels-ascii-locale.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-labels-ascii-locale.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-labels.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-labels.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-untracked-whitespace.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-untracked-whitespace.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-whitespace.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition-whitespace.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/post-transition.json",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/symlink-temp-tests.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/symlink-temp-tests.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/tests.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/tests.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/untracked-whitespace.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/untracked-whitespace.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/whitespace.stderr.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/review-pass7-20261115/whitespace.stdout.txt",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/secret-scan-review-pass7-completion-20261115.json",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/test_verify_amendment.py",
+      "_bmad-output/implementation-artifacts/evidence/story-5-8/verification.md",
+      "_bmad-output/implementation-artifacts/spec-5-8-refresh-and-re-disposition-the-folders-inventory.md",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml"
+    ]
+  },
+  "references/Hexalith.Parties": {
+    "prior_head": "762ea76d33af315a87b112abc6730c7ae21b2cb9",
+    "head": "762ea76d33af315a87b112abc6730c7ae21b2cb9",
+    "changed_paths": []
+  }
+}

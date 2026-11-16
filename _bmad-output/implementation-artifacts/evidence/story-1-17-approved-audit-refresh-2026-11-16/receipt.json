@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "approved-audit-refresh-complete-operational-hold",
+  "authorization": "User replied yes to the scoped NuGet-backed audit refresh request; no Git write, publication, deployment or activation authorization.",
+  "audit_path": "references/Hexalith.Builds/Tools/package-version-audit.json",
+  "audit_sha256": "6eae19173bd0fd308b30b991e7c49ff5aed95a4422bc6d948b48e8b13bc11f0b",
+  "generated_from_revision": "801f268cd1b37ecae41d4fb20d115c055b4c5793",
+  "audited_at_utc": "2026-11-15T23:01:45.2806718+00:00",
+  "counts": {
+    "packages_validated": 317,
+    "families_validated": 157,
+    "sources": 1,
+    "folders_rows_refreshed": 5,
+    "package_rows_preserved": 312,
+    "family_decisions_preserved": 156,
+    "historical_observations_preserved": 9451,
+    "historical_observations_added": 6
+  },
+  "command_ledger": "commands.json",
+  "controls": {
+    "route_mode": "V1Only",
+    "migration_t0": null,
+    "activation_authority": null,
+    "staging_checks_executed": 0,
+    "parent_status": "in-progress",
+    "tracker": "backlog"
+  },
+  "story_closed": false,
+  "handoff_path": "_bmad-output/implementation-artifacts/story-1-17-audit-refreshed-handoff-2026-11-16.json",
+  "handoff_sha256": "af498b8e1a96badeb21e51f3ddb117bf60dc3074312a4de0be6703b9eeb1602c",
+  "append_sha256": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "6419d8b0e36ca751371444251f1f04bc5e0607aa517a659ac8598391470eb2e5",
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "56bd5723be1430ee872a4d5f3088923b165fab871a220b98fa90827b830a2102",
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "06f162bc508498c4c187d520ad98f58acd3de191587a15dd6a4024c57ef0861b"
+  },
+  "remaining": "See new handoff: uncommitted audit landing and current Platform/hosted/operational qualification remain open."
+}

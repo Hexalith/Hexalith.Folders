@@ -1,0 +1,129 @@
+[
+  {
+    "name": "retained-evidence-replay",
+    "argv": [
+      "python3",
+      "-O",
+      "{workspace}/_bmad-output/implementation-artifacts/evidence/story-1-17-released-v2-consumer-2026-11-15/verify.py"
+    ],
+    "cwd": "{workspace}",
+    "started_utc": "2026-11-15T21:56:38.779037+00:00",
+    "elapsed_seconds": 0.518,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "retained-evidence-replay.log"
+  },
+  {
+    "name": "catalog-validation",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-central-package-versions.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:56:39.296686+00:00",
+    "elapsed_seconds": 1.746,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "catalog-validation.log"
+  },
+  {
+    "name": "catalog-authority",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/test-authoritative-package-catalog.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:56:41.044523+00:00",
+    "elapsed_seconds": 94.456,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "catalog-authority.log"
+  },
+  {
+    "name": "catalog-platform",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-platform-version-catalog.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:58:15.495711+00:00",
+    "elapsed_seconds": 1.447,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "catalog-platform.log"
+  },
+  {
+    "name": "catalog-exceptions",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-package-version-exceptions.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:58:16.942852+00:00",
+    "elapsed_seconds": 0.645,
+    "exit_code": 1,
+    "expected_exit_code": 0,
+    "log": "catalog-exceptions.log"
+  },
+  {
+    "name": "catalog-exceptions-corrected",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-package-version-exceptions.ps1",
+      "-InventoryPath",
+      "Tools/package-version-exceptions.json",
+      "-CatalogPath",
+      "Props/Directory.Packages.props"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:59:09.530960+00:00",
+    "elapsed_seconds": 1.616,
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "catalog-exceptions-corrected.log"
+  },
+  {
+    "name": "current-audit-refusal",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "Tools/validate-package-version-audit.ps1"
+    ],
+    "cwd": "{workspace}/references/Hexalith.Builds",
+    "started_utc": "2026-11-15T21:59:11.147401+00:00",
+    "elapsed_seconds": 29.748,
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "log": "current-audit-refusal.log"
+  },
+  {
+    "name": "current-source-proposal-refusal",
+    "argv": [
+      "python3",
+      "eng/story117-platform-qualification-current/verify.py"
+    ],
+    "cwd": "{workspace}",
+    "started_utc": "2026-11-15T21:59:40.893776+00:00",
+    "elapsed_seconds": 0.028,
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "log": "current-source-proposal-refusal.log"
+  }
+]
