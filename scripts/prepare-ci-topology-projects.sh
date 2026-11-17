@@ -129,3 +129,26 @@ selected_status="$(git -C "$module_path" status --porcelain --untracked-files=al
 [[ -f "$module_path/DaprSelfHostedMtls.cs" && -f "$module_path/DaprSelfHostedMtlsSubscriber.cs" ]] ||
     fail "Platform mTLS source files are unavailable."
 echo "[ci-topology] Prepared $module_path at $recorded_sha."
+
+# Provisioning consumes only this prebuilt provider; complete-project hooks never build.
+provider_root="$module_path/infrastructure/keycloak-workload-binding"
+[[ -f "$provider_root/pom.xml" && -f "$provider_root/component_fixture.py" ]] || fail "Platform component fixture source is unavailable."
+provider_java_home="${JAVA_HOME_21_X64:-${JAVA_HOME:-}}"
+provider_java_environment=()
+if [[ -n "$provider_java_home" ]]; then
+    [[ -x "$provider_java_home/bin/java" && -x "$provider_java_home/bin/javac" ]] ||
+        fail "The selected provider JDK must contain java and javac (Java 21 or newer)."
+    provider_java_environment=("JAVA_HOME=$provider_java_home" "PATH=$provider_java_home/bin:$PATH")
+fi
+provider_compiler_version="$(env "${provider_java_environment[@]}" javac -version 2>&1)" ||
+    fail "A Java 21 or newer compiler is required to build the component provider."
+[[ "$provider_compiler_version" =~ ^javac[[:space:]]+([0-9]+) && "${BASH_REMATCH[1]}" -ge 21 ]] ||
+    fail "A Java 21 or newer compiler is required to build the component provider."
+provider_runtime_version="$(env "${provider_java_environment[@]}" java -version 2>&1)" ||
+    fail "A Java 21 or newer runtime is required to build the component provider."
+provider_runtime_pattern='^(openjdk|java)[[:space:]]+(version[[:space:]]+)?"?([0-9]+)'
+[[ "$provider_runtime_version" =~ $provider_runtime_pattern && "${BASH_REMATCH[3]}" -ge 21 ]] ||
+    fail "A Java 21 or newer runtime is required to build the component provider."
+env "${provider_java_environment[@]}" mvn --batch-mode --no-transfer-progress -f "$provider_root/pom.xml" package
+[[ -f "$provider_root/target/keycloak-workload-binding-1.0.0-SNAPSHOT.jar" ]] || fail "The component provider build produced no archive."
+sha256sum "$provider_root/target/keycloak-workload-binding-1.0.0-SNAPSHOT.jar"

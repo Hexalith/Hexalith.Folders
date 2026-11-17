@@ -1,7 +1,5 @@
 using System.Net;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -44,7 +42,7 @@ public sealed class EnrolledWorkloadSourceBoundaryTests
     public async Task ActualIssuerAndIndependentSdkGuardEverySourceRequest(string fault)
     {
         string componentFile = Environment.GetEnvironmentVariable("HEXALITH_WORKLOAD_COMPONENT_FILE")
-            ?? throw new InvalidOperationException("Run this explicit component suite through Platform infrastructure/keycloak-workload-binding/verify_component.py --sdk-assembly <Debug assembly>.");
+            ?? throw new InvalidOperationException("Run this explicit component suite through Platform infrastructure/keycloak-workload-binding/verify_component.py --complete-assembly <prebuilt assembly>.");
         using JsonDocument component = JsonDocument.Parse(await File.ReadAllBytesAsync(componentFile, TestContext.Current.CancellationToken));
         JsonElement settings = component.RootElement;
         string authority = settings.GetProperty("issuer").GetString()!;
@@ -94,18 +92,7 @@ public sealed class EnrolledWorkloadSourceBoundaryTests
             foreach (Assembly assembly in new[] { typeof(JwtWorkloadAssertionIssuer).Assembly, typeof(EventStoreGatewayClient).Assembly,
                 typeof(INativeSourceMetadataReader).Assembly, typeof(AggregateIdentity).Assembly }.Distinct())
             {
-                string name = assembly.GetName().Name!;
-                string sourcePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../references/Hexalith.EventStore/src",
-                    name, "bin/Debug/net11.0", name + ".dll"));
-                byte[] loaded = await File.ReadAllBytesAsync(assembly.Location, TestContext.Current.CancellationToken);
-                string hash = Convert.ToHexString(SHA256.HashData(loaded));
-                hash.ShouldBe(Convert.ToHexString(SHA256.HashData(await File.ReadAllBytesAsync(sourcePath, TestContext.Current.CancellationToken))));
-                using var pe = new PEReader(new MemoryStream(loaded));
-                MetadataReader metadata = pe.GetMetadataReader();
-                Guid mvid = metadata.GetGuid(metadata.GetModuleDefinition().Mvid);
-                mvid.ShouldBe(assembly.ManifestModule.ModuleVersionId);
-                Console.WriteLine("COMPONENT_RUNTIME_BINDING " + JsonSerializer.Serialize(new
-                { name, version = assembly.GetName().Version!.ToString(), sha256 = hash, mvid }));
+                PackageSdkRuntimeBinding.Verify(assembly);
             }
         }
         INativeSourceMetadataReader source = provider.GetRequiredService<INativeSourceMetadataReader>();

@@ -3,6 +3,30 @@
     <IsPackable>false</IsPackable>
     <DefineConstants Condition="'$(HexalithEventStoreFromSource)' == 'true'">$(DefineConstants);FOLDERS_OWNER_METADATA_SOURCE</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="FoldersSdkIdentityAuthority" Value="source" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <AssemblyMetadata Include="FoldersSdkIdentityAuthority" Value="package" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
+    <AssemblyMetadata Include="FoldersSdkConfiguration" Value="$(Configuration)" />
+    <AssemblyMetadata Include="FoldersSdkSourceRoot" Value="$(HexalithEventStoreRoot)" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+  </ItemGroup>
+  <Target Name="BindSdkRestoreIdentity" BeforeTargets="GetAssemblyAttributes">
+    <GetFileHash Files="$(ProjectAssetsFile)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_FoldersSdkAssetsIdentity" />
+    </GetFileHash>
+    <ItemGroup>
+      <AssemblyMetadata Include="FoldersSdkAssetsSha256" Value="%(_FoldersSdkAssetsIdentity.FileHash)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="RecordSdkRestoreIdentity" AfterTargets="Build">
+    <Copy SourceFiles="$(ProjectAssetsFile)" DestinationFiles="$(TargetDir)sdk-binding.project.assets.json" />
+  </Target>
+  <!-- Restore provenance uses the same NuGet implementation as the pinned build SDK. -->
+  <ItemGroup>
+    <Reference Include="NuGet.Packaging" HintPath="$(MSBuildBinPath)/NuGet.Packaging.dll" Private="true" />
+    <Reference Include="NuGet.Common" HintPath="$(MSBuildBinPath)/NuGet.Common.dll" Private="true" />
+    <Reference Include="NuGet.Versioning" HintPath="$(MSBuildBinPath)/NuGet.Versioning.dll" Private="true" />
+    <Reference Include="NuGet.Frameworks" HintPath="$(MSBuildBinPath)/NuGet.Frameworks.dll" Private="true" />
+  </ItemGroup>
   <ItemGroup Condition="'$(UseHexalithProjectReferences)' == 'true'">
     <PackageReference Include="Hexalith.Commons.UniqueIds" ExcludeAssets="all" Condition="'$(HexalithCommonsFromSource)' != 'true'" />
     <ProjectReference Include="$(HexalithCommonsRoot)/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />

@@ -3,7 +3,8 @@
 param(
     [Parameter(Mandatory)]
     [ValidateSet('Hexalith.Folders.Contracts.Tests', 'Hexalith.Folders.Client.Tests', 'Hexalith.Folders.Tests', 'Hexalith.Folders.Server.Tests', 'Hexalith.Folders.AppHost.Tests', 'Hexalith.Folders.UI.E2E.Tests')]
-    [string]$ProjectName
+    [string]$ProjectName,
+    [string]$ComponentEvidenceFile
 )
 
 Set-StrictMode -Version Latest
@@ -16,7 +17,14 @@ if (-not (Test-Path -LiteralPath $assembly -PathType Leaf)) {
 }
 
 # No class or method selector: ownership delegates the complete project once.
-$output = & dotnet $assembly -noLogo -noColor -explicit on 2>&1
+if ($ProjectName -eq 'Hexalith.Folders.Server.Tests') {
+    $verifier = Join-Path $repositoryRoot 'references/Hexalith.Platform/infrastructure/keycloak-workload-binding/verify_component.py'
+    $fixtureArguments = @('-B', $verifier, '--complete-assembly', $assembly)
+    if ($ComponentEvidenceFile) { $fixtureArguments += @('--evidence-file', $ComponentEvidenceFile) }
+    $output = & python3 @fixtureArguments 2>&1
+} else {
+    $output = & dotnet $assembly -noLogo -noColor -explicit on 2>&1
+}
 $exitCode = $LASTEXITCODE
 $output | ForEach-Object { Write-Host $_ }
 if ($exitCode -ne 0) {
