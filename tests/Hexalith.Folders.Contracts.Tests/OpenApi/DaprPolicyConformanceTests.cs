@@ -464,6 +464,26 @@ public sealed class DaprPolicyConformanceTests
     }
 
     [Fact]
+    public void WorkflowAndScriptShouldWireOfflineDaprPolicyConformanceGate()
+    {
+        string workflow = File.ReadAllText(RepositoryPath(".github/workflows/contract-spine.yml"), Encoding.UTF8);
+        string script = File.ReadAllText(RepositoryPath("tests/tools/run-dapr-policy-conformance-gates.ps1"), Encoding.UTF8);
+
+        workflow.ShouldContain("./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild");
+        workflow.ShouldContain("submodules: false");
+        workflow.ShouldContain("global-json-file: global.json");
+        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
+
+        script.ShouldContain("#Requires -Version 7");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
+        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance");
+        script.ShouldContain("deploy/dapr/production/pubsub.yaml");
+        script.ShouldContain("deploy/dapr/production/sidecar-config-bindings.yaml");
+        script.ShouldContain("$LASTEXITCODE");
+        script.ShouldNotContain("--recursive", Case.Insensitive);
+    }
+
+    [Fact]
     public void PermissionRecoveryUsesAuthorizedApplicationConnectionAndKeepsDaprCallersDenied()
     {
         TargetPolicy workers = LoadProductionPolicy().Targets.Single(target => target.TargetAppId == "folders-workers");

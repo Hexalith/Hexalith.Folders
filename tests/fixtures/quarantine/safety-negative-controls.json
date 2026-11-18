@@ -31,7 +31,7 @@
     {
       "id": "negative-control-diagnostic-local-path",
       "sample_id": "local-path-marker",
-      "output_channel": "exception-metadata",
+      "output_channel": "developer-diagnostics",
       "synthetic_data_only": true,
       "normative_example": false,
       "contaminated_payload": "diagnostic echoed LOCAL_PATH_SYNTHETIC_DRIVE_SENTINEL"
@@ -39,7 +39,7 @@
     {
       "id": "negative-control-ci-diff-marker",
       "sample_id": "diff-marker",
-      "output_channel": "provider-diagnostics",
+      "output_channel": "ci-logs",
       "synthetic_data_only": true,
       "normative_example": false,
       "contaminated_payload": "ci summary echoed DIFF_SYNTHETIC_REMOVED_LINE_MARKER"
@@ -95,7 +95,7 @@
     {
       "id": "negative-control-assertion-diagnostic-echo",
       "sample_id": "diagnostic-echo-marker",
-      "output_channel": "exception-metadata",
+      "output_channel": "assertion-messages",
       "synthetic_data_only": true,
       "normative_example": false,
       "contaminated_payload": "assertion emitted DIAGNOSTIC_ECHO_SYNTHETIC_FORBIDDEN"

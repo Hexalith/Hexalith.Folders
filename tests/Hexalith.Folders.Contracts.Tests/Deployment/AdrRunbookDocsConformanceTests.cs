@@ -25,6 +25,14 @@ public sealed partial class AdrRunbookDocsConformanceTests
     private const string RunbookIndexPath = "docs/runbooks/index.md";
     private const string ArchitecturePath = "_bmad-output/planning-artifacts/architecture.md";
     private const string GateScriptPath = "tests/tools/run-adr-runbook-docs-gates.ps1";
+    private const string WorkflowPath = ".github/workflows/contract-spine.yml";
+    private const string CiWorkflowPath = ".github/workflows/ci.yml";
+    private const string NightlyDriftWorkflowPath = ".github/workflows/nightly-drift.yml";
+    private const string PolicyConformanceWorkflowPath = ".github/workflows/policy-conformance.yml";
+    private const string ReleaseWorkflowPath = ".github/workflows/release.yml";
+    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
+    private const string ReleaseGatePath = "tests/tools/run-release-package-gates.ps1";
+    private const string ReportPath = "_bmad-output/gates/adr-runbook-docs/latest.json";
     private const string TestSourcePath = "tests/Hexalith.Folders.Contracts.Tests/Deployment/AdrRunbookDocsConformanceTests.cs";
 
     private const string ConformanceFqn = "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests";
@@ -234,6 +242,98 @@ public sealed partial class AdrRunbookDocsConformanceTests
             AssertNoRecursiveSubmoduleCommand(doc);
             doc.ShouldContain("metadata-only", Case.Sensitive, $"{path} must state its metadata-only evidence posture.");
         }
+    }
+
+    [Fact]
+    public void AdrRunbookGateScriptFailsClosedAndEmitsBoundedEvidence()
+    {
+        string script = ReadText(GateScriptPath);
+        foreach (string required in new[]
+        {
+            "#Requires -Version 7",
+            "Set-StrictMode -Version Latest",
+            "$ErrorActionPreference = 'Stop'",
+            "[Alias('NoRestore')]",
+            "Split-Path -Parent $MyInvocation.MyCommand.Path",
+            "Resolve-Path",
+            "Push-Location",
+            "Pop-Location",
+            "$LASTEXITCODE",
+            "utf8NoBOM",
+            "GATE-VACUOUS",
+            "xunit",
+            ReportPath,
+            "diagnostic_policy",
+            "metadata-only",
+            ManifestMarker,
+            $"FullyQualifiedName~{ConformanceFqn}",
+        })
+        {
+            script.ShouldContain(required, Case.Sensitive);
+        }
+
+        AssertNoRecursiveSubmoduleCommand(script);
+        ParseManifest().Adrs.Count.ShouldBe(6, "the gate script source-of-truth manifest must be present and non-vacuous.");
+        ParseManifest().Runbooks.Count.ShouldBe(7, "the gate script source-of-truth manifest must include all runbooks.");
+
+        HashSet<string> factMethods = ParseTestFactFqns();
+        HashSet<string> runnerMethods = RunnerMethodEntry().Matches(script)
+            .Select(static match => match.Groups[1].Value)
+            .ToHashSet(StringComparer.Ordinal);
+        runnerMethods.OrderBy(static m => m, StringComparer.Ordinal)
+            .ShouldBe(factMethods.OrderBy(static m => m, StringComparer.Ordinal),
+                "the gate script $runnerMethods must equal the AdrRunbookDocsConformanceTests [Fact] set exactly.");
+    }
+
+    [Fact]
+    public void ContractSpineWorkflowAndBaselineCiWireAdrRunbookGateOnlyInAllowedLanes()
+    {
+        string workflow = ReadText(WorkflowPath);
+        workflow.ShouldContain("./tests/tools/run-adr-runbook-docs-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
+        workflow.ShouldContain("submodules: false", Case.Sensitive);
+        workflow.ShouldContain("contents: read", Case.Sensitive);
+        AssertNoRecursiveSubmoduleCommand(workflow);
+
+        int nfrStep = workflow.IndexOf("run-nfr-traceability-gates.ps1", StringComparison.Ordinal);
+        int adrRunbookStep = workflow.IndexOf("run-adr-runbook-docs-gates.ps1", StringComparison.Ordinal);
+        nfrStep.ShouldBeGreaterThanOrEqualTo(0, "the NFR traceability step must remain wired.");
+        adrRunbookStep.ShouldBeGreaterThan(nfrStep, "the ADR/runbook docs step must come immediately after the NFR traceability step.");
+
+        foreach (string isolatedLane in new[] { CiWorkflowPath, NightlyDriftWorkflowPath, PolicyConformanceWorkflowPath, ReleaseWorkflowPath, ReleaseGatePath })
+        {
+            ReadText(isolatedLane).ShouldNotContain("run-adr-runbook-docs-gates.ps1", Case.Sensitive,
+                $"{isolatedLane} must not run the focused ADR/runbook docs gate.");
+        }
+
+        ReadText(BaselineGatePath).ShouldContain(ConformanceFqn, Case.Sensitive);
+    }
+
+    [Fact]
+    public void AdrRunbookLatestReportStaysMetadataOnlyAndMatchesInventory()
+    {
+        if (!File.Exists(RepositoryPath(ReportPath)))
+        {
+            return;
+        }
+
+        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
+        JsonElement root = document.RootElement;
+        RequiredString(root, "gate").ShouldBe("adr-runbook-docs");
+        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
+        RequiredString(root, "report_path").ShouldBe(ReportPath);
+        root.GetProperty("adr_total").GetInt32().ShouldBe(6);
+        root.GetProperty("runbook_total").GetInt32().ShouldBe(7);
+        AssertMetadataOnlyJson(root);
+
+        root.GetProperty("surfaces").EnumerateArray()
+            .Select(static e => e.GetString().ShouldNotBeNull())
+            .OrderBy(static s => s, StringComparer.Ordinal)
+            .ShouldBe(ExpectedReportSurfaces.OrderBy(static s => s, StringComparer.Ordinal),
+                "report surfaces[] must be bounded to the intended diagnostic surfaces.");
+
+        string sourceCommit = RequiredString(root, "source_commit");
+        (sourceCommit == "NO_VCS" || FortyHex().IsMatch(sourceCommit))
+            .ShouldBeTrue("source_commit must be a full SHA or NO_VCS.");
     }
 
     [Fact]

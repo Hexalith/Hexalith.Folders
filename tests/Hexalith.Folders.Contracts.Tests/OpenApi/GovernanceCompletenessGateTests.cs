@@ -32,6 +32,10 @@ public sealed partial class GovernanceCompletenessGateTests
     private static readonly string ParityContractPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string V2ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "generated-v2-conformance-set-2026-09-17.yaml");
+    private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
+    private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
+    private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
+    private static readonly string GateReportPath = Path.Combine(RepositoryRoot, "_bmad-output", "gates", "governance-completeness", "latest.json");
     private static readonly string SolutionPath = Path.Combine(RepositoryRoot, "Hexalith.Folders.slnx");
 
     private static readonly Regex MarkerPattern = new(
@@ -181,7 +185,430 @@ public sealed partial class GovernanceCompletenessGateTests
     ];
 
     [Fact]
-    public void Oq8DesignDocumentsIdempotencyContract()
+    public void WorkflowAndScriptExposeOneOfflineGovernanceCompletenessCommand()
+    {
+        string workflow = File.ReadAllText(WorkflowPath);
+        string script = File.ReadAllText(GateScriptPath);
+        string documentation = File.ReadAllText(GateDocumentationPath);
+        const string c7DecisionPath = "docs/exit-criteria/c7-lock-authorization-timing.md";
+
+        workflow.ShouldContain("./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild");
+        workflow.ShouldContain("actions/checkout@v7");
+        workflow.ShouldContain("submodules: false");
+        workflow.ShouldContain("actions/setup-dotnet@v6");
+        workflow.ShouldContain("global-json-file: global.json");
+        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
+
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll");
+        script.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true");
+        script.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror");
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests'", Case.Sensitive);
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests'", Case.Sensitive);
+        script.ShouldContain("docs/contract/authorization-matrix.md", Case.Sensitive);
+        script.ShouldContain("docs/contract/oq3-authorization-evidence.yaml", Case.Sensitive);
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests'", Case.Sensitive);
+        script.ShouldContain("foreach ($testClass in $governanceClasses)", Case.Sensitive);
+        script.ShouldContain("-class $testClass", Case.Sensitive);
+        script.ShouldContain("class selection executed zero tests", Case.Sensitive);
+        script.ShouldContain("docs/contract/provider-compatibility-catalog.md", Case.Sensitive);
+        script.ShouldContain("docs/contract/oq4-provider-compatibility-evidence.yaml", Case.Sensitive);
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release");
+        script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
+        script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
+        script.ShouldContain("$LASTEXITCODE");
+        script.ShouldContain("#Requires -Version 7");
+        script.ShouldContain("utf8NoBOM");
+        script.ShouldContain(c7DecisionPath, Case.Sensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
+        script.ShouldNotContain("--recursive", Case.Insensitive);
+
+        documentation.ShouldContain(".\\tests\\tools\\run-governance-completeness-gates.ps1");
+        documentation.ShouldContain("prerequisite_drift");
+        documentation.ShouldContain("idempotency_sample_unmapped");
+        documentation.ShouldContain("cache_key_unscoped");
+        documentation.ShouldContain("parity_completeness_mismatch");
+        documentation.ShouldContain("approval_record_missing");
+        documentation.ShouldContain("approval_authority_unsatisfied");
+        documentation.ShouldContain("approval_approver_generic");
+        documentation.ShouldContain("approval_date_invalid");
+        documentation.ShouldContain("approval_date_future");
+        documentation.ShouldContain("approval_stale");
+        documentation.ShouldContain("approval_evidence_version_mismatch");
+        documentation.ShouldContain("approval_evidence_digest_missing");
+        documentation.ShouldContain("approval_evidence_digest_mismatch");
+        documentation.ShouldContain("c7_timing_profile_invalid");
+        documentation.ShouldContain("c7_approval_identity_mismatch");
+        documentation.ShouldContain("c7_approval_date_mismatch");
+        documentation.ShouldContain("oq2_evidence_missing");
+        documentation.ShouldContain("oq2_evidence_mismatch");
+        documentation.ShouldContain("oq2_approval_incomplete");
+        documentation.ShouldContain("oq2_approval_extra");
+        documentation.ShouldContain("oq2_approval_identity_mismatch");
+        documentation.ShouldContain("oq2_approval_date_mismatch");
+        documentation.ShouldContain("oq3_evidence_missing");
+        documentation.ShouldContain("oq3_evidence_mismatch");
+        documentation.ShouldContain("oq3_approval_incomplete");
+        documentation.ShouldContain("oq3_approval_extra");
+        documentation.ShouldContain("oq3_approval_identity_mismatch");
+        documentation.ShouldContain("oq3_approval_date_mismatch");
+        documentation.ShouldContain("oq3_matrix_mismatch");
+        documentation.ShouldContain("oq3_operation_unmapped");
+        documentation.ShouldContain("oq3_operation_unknown");
+        documentation.ShouldContain("oq3_operation_duplicate");
+        documentation.ShouldContain("oq3_family_uncovered");
+        documentation.ShouldContain("oq3_actor_uncovered");
+        documentation.ShouldContain("oq3_scope_incomplete");
+        documentation.ShouldContain("oq3_denial_shape_mismatch");
+        documentation.ShouldContain("oq3_gap_unrecorded");
+        documentation.ShouldContain("oq4_evidence_missing");
+        documentation.ShouldContain("oq4_evidence_mismatch");
+        documentation.ShouldContain("oq4_approval_incomplete");
+        documentation.ShouldContain("oq4_approval_extra");
+        documentation.ShouldContain("oq4_approval_identity_mismatch");
+        documentation.ShouldContain("oq4_approval_date_mismatch");
+        documentation.ShouldContain("oq4_catalog_section_missing");
+        documentation.ShouldContain("oq4_catalog_section_duplicate");
+        documentation.ShouldContain("oq4_ceiling_missing");
+        documentation.ShouldContain("oq4_ceiling_duplicate");
+        documentation.ShouldContain("oq4_ceiling_unpinned");
+        documentation.ShouldContain("oq4_ceiling_provider_unknown");
+        documentation.ShouldContain("oq4_gap_missing");
+        documentation.ShouldContain("oq4_gap_duplicate");
+        documentation.ShouldContain("oq4_readiness_row_missing");
+        documentation.ShouldContain("oq4_readiness_row_duplicate");
+        documentation.ShouldContain("docs/contract/file-context-contract-groups.md", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/authorization-matrix.md", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/oq3-authorization-evidence.yaml", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/provider-compatibility-catalog.md", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/oq4-provider-compatibility-evidence.yaml", Case.Sensitive);
+        documentation.ShouldContain(c7DecisionPath, Case.Sensitive);
+        AssertMetadataOnly(documentation);
+
+        using JsonDocument report = JsonDocument.Parse(File.ReadAllText(GateReportPath));
+        report.RootElement.GetProperty("canonical_inputs").EnumerateArray()
+            .Select(item => item.GetString().ShouldNotBeNull()).ShouldContain(c7DecisionPath);
+        string[] reportInputs = report.RootElement.GetProperty("canonical_inputs").EnumerateArray()
+            .Select(item => item.GetString().ShouldNotBeNull()).ToArray();
+        reportInputs.ShouldContain("docs/contract/file-context-contract-groups.md");
+        reportInputs.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml");
+        reportInputs.ShouldContain("docs/contract/authorization-matrix.md");
+        reportInputs.ShouldContain("docs/contract/oq3-authorization-evidence.yaml");
+        reportInputs.ShouldContain("docs/contract/provider-compatibility-catalog.md");
+        reportInputs.ShouldContain("docs/contract/oq4-provider-compatibility-evidence.yaml");
+        reportInputs.ShouldContain("docs/governance/approval-policy.md");
+        reportInputs.ShouldContain("src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml");
+    }
+
+    [Fact]
+    public void ExitCriteriaEvidenceMapsEveryC0ThroughC13WithBoundedReferencePendingRows()
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        YamlMappingNode[] rows = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>().ToArray();
+        GateDiagnostic[] diagnostics = EvaluateExitCriteriaRows(rows);
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+        rows.Select(row => RequiredScalar(row, "criterion_id")).ToArray().ShouldBe(Criteria, ignoreOrder: true);
+
+        foreach (YamlMappingNode row in rows)
+        {
+            string criterion = RequiredScalar(row, "criterion_id");
+            string status = RequiredScalar(row, "status");
+            string artifact = RequiredScalar(row, "artifact_path");
+            string command = RequiredScalar(row, "verification_command");
+            string summary = RequiredScalar(row, "result_summary");
+
+            status.ShouldBeOneOf("approved", "reference_pending");
+            PathExists(artifact).ShouldBeTrue(artifact);
+            command.ShouldNotBeNullOrWhiteSpace();
+            summary.ShouldNotBeNullOrWhiteSpace();
+            AssertMetadataOnly(command);
+            AssertMetadataOnly(summary);
+
+            if (status == "reference_pending")
+            {
+                YamlMappingNode[] placeholders = RequiredSequence(row, "open_policy_placeholders")
+                    .Children.Cast<YamlMappingNode>()
+                    .ToArray();
+                placeholders.Length.ShouldBeGreaterThan(0, criterion);
+
+                foreach (YamlMappingNode placeholder in placeholders)
+                {
+                    RequiredScalar(placeholder, "id").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "owner").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "reason").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "verification_gap").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "consuming_story").ShouldNotBeNullOrWhiteSpace();
+                    AssertMetadataOnly(RequiredScalar(placeholder, "verification_gap"));
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void ExitCriteriaNegativeControlsFailClosedWithBoundedDiagnostics()
+    {
+        YamlMappingNode[] rows = LoadCriteriaRows(EvidencePath);
+        YamlMappingNode[] missing = rows.Where(row => RequiredScalar(row, "criterion_id") != "C13").ToArray();
+        string clonedCriterionId = RequiredScalar(rows[0], "criterion_id");
+        YamlMappingNode[] duplicate = rows.Concat([CloneRow(rows[0])]).ToArray();
+        YamlMappingNode invalidPlaceholder = CloneRow(rows[0]);
+        SetScalar(invalidPlaceholder, "owner", "PLACEHOLDER");
+        YamlMappingNode invalidPath = CloneRow(rows[1]);
+        SetScalar(invalidPath, "artifact_path", "D:/not/repository/local.md");
+
+        EvaluateExitCriteriaRows(missing).ShouldContain(d => d.Category == "exit_criteria_missing" && d.Identifier == "C13");
+        EvaluateExitCriteriaRows(duplicate).ShouldContain(d => d.Category == "exit_criteria_duplicate" && d.Identifier == clonedCriterionId);
+        EvaluateExitCriteriaRows([invalidPlaceholder]).ShouldContain(d => d.Category == "exit_criteria_malformed");
+        EvaluateExitCriteriaRows([invalidPath]).ShouldContain(d => d.Category == "artifact_path_invalid");
+
+        foreach (GateDiagnostic diagnostic in EvaluateExitCriteriaRows([invalidPlaceholder, invalidPath]))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+    }
+
+    [Fact]
+    public void ApprovalBackedCriteriaCarryExactHistoricalApprovalRecords()
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        YamlMappingNode[] rows = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>().ToArray();
+
+        // Current project decisions do not expire solely because of record age.
+        policy.MaxAgeDays.ShouldBe(0);
+        policy.GenericApproverTokens.ShouldNotBeEmpty();
+
+        // Every pinned approval-backed criterion must be `approved` and must carry an `approval` block —
+        // the block cannot be dropped to escape the checks.
+        foreach (string criterion in ApprovalBackedCriteria)
+        {
+            YamlMappingNode row = rows.Single(r => RequiredScalar(r, "criterion_id") == criterion);
+            RequiredScalar(row, "status").ShouldBe("approved", criterion);
+            HasApprovalBlock(row).ShouldBeTrue($"{criterion} must carry a structured approval block");
+        }
+
+        // Validate every row that declares an approval block (pinned or future); C7 uses the stricter bounded
+        // exact-value evaluator below so unexpected authority, signer, date, and count values cannot be echoed.
+        GateDiagnostic[] diagnostics = rows
+            .Where(row => HasApprovalBlock(row) && RequiredScalar(row, "criterion_id") != "C7")
+            .SelectMany(row => EvaluateApprovalRecords(row, policy, today))
+            .ToArray();
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+    }
+
+    [Fact]
+    public void ApprovalRecordNegativeControlsFailClosedWithBoundedDiagnostics()
+    {
+        ApprovalPolicy policy = SyntheticApprovalPolicy();
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        string fresh = today.AddDays(-10).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        string future = today.AddDays(30).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        string stale = today.AddDays(-(policy.MaxAgeDays + 30)).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+        // A criterion with no approval block at all.
+        GateDiagnostic[] missingBlock = EvaluateApprovalRecords(RowWithoutApproval("C-MISSING"), policy, today);
+        missingBlock.ShouldContain(d => d.Category == "approval_record_missing" && d.Identifier == "C-MISSING");
+
+        // A generic approver ("Legal") standing in for a named signer.
+        GateDiagnostic[] generic = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-GENERIC", ["Legal"], [("Legal", "Legal", fresh)]), policy, today);
+        generic.ShouldContain(d => d.Category == "approval_approver_generic" && d.Identifier == "C-GENERIC:Legal");
+
+        // A future-dated approval.
+        GateDiagnostic[] futureDated = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-FUTURE", ["PM"], [("PM", "Jerome", future)]), policy, today);
+        futureDated.ShouldContain(d => d.Category == "approval_date_future" && d.Identifier == "C-FUTURE:PM");
+
+        // A malformed approval date.
+        GateDiagnostic[] malformed = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-MALFORMED", ["PM"], [("PM", "Jerome", "2026-13-40")]), policy, today);
+        malformed.ShouldContain(d => d.Category == "approval_date_invalid" && d.Identifier == "C-MALFORMED:PM");
+
+        // A required authority (Legal) with no record.
+        GateDiagnostic[] unsatisfied = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-UNSAT", ["PM", "Legal"], [("PM", "Jerome", fresh)]), policy, today);
+        unsatisfied.ShouldContain(d => d.Category == "approval_authority_unsatisfied" && d.Identifier == "C-UNSAT:Legal");
+
+        // A stale approval older than the mandatory global max-age window.
+        GateDiagnostic[] staleDiagnostics = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-STALE", ["PM"], [("PM", "Jerome", stale)]), policy, today);
+        staleDiagnostics.ShouldContain(d => d.Category == "approval_stale" && d.Identifier == "C-STALE:PM");
+
+        // A per-criterion review_by date that has already passed.
+        GateDiagnostic[] reviewExpired = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-REVIEW", ["PM"], [("PM", "Jerome", fresh)], reviewBy: stale), policy, today);
+        reviewExpired.ShouldContain(d => d.Category == "approval_stale" && d.Identifier == "C-REVIEW");
+
+        // A fully valid, fresh, exactly-recorded approval produces no diagnostics.
+        EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-OK", ["PM", "Legal"], [("PM", "Jerome", fresh), ("Legal", "Jérôme Piquot", fresh)]),
+            policy, today).ShouldBeEmpty();
+
+        foreach (GateDiagnostic diagnostic in missingBlock
+            .Concat(generic).Concat(futureDated).Concat(malformed)
+            .Concat(unsatisfied).Concat(staleDiagnostics).Concat(reviewExpired))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+    }
+
+    [Fact]
+    public void C7DecisionPackageBindsProfileVersionDigestAndExactApprovals()
+    {
+        File.Exists(C7DecisionPath).ShouldBeTrue("C7 requires a canonical timing decision artifact.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(C7DecisionPath)));
+        actualDigest.ShouldBe(ApprovedC7Sha256, "C7 artifact changes require a new version, digest, and fresh approvals.");
+
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        YamlMappingNode c7 = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C7");
+
+        GateDiagnostic[] diagnostics = EvaluateC7DecisionEvidence(
+            c7,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+        RequiredScalar(c7, "status").ShouldBe("approved");
+        RequiredScalar(c7, "artifact_path").ShouldBe("docs/exit-criteria/c7-lock-authorization-timing.md");
+        RequiredScalar(c7, "evidence_version").ShouldBe(ApprovedC7Version);
+        RequiredScalar(c7, "evidence_sha256").ShouldBe(ApprovedC7Sha256);
+
+    }
+
+    [Fact]
+    public void C7DecisionNegativeControlsFailClosedWithBoundedDiagnostics()
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        YamlMappingNode c7 = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C7");
+
+        YamlMappingNode missingDigest = CloneRow(c7);
+        missingDigest.Children.Remove(new YamlScalarNode("evidence_sha256"));
+        GateDiagnostic[] missingDigestDiagnostics = EvaluateC7DecisionEvidence(
+            missingDigest, ApprovedC7Sha256, policy, today);
+        missingDigestDiagnostics.ShouldContain(d =>
+            d.Category == "approval_evidence_digest_missing" && d.Identifier == "C7");
+
+        YamlMappingNode mismatchedDigest = CloneRow(c7);
+        SetScalar(mismatchedDigest, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDigestDiagnostics = EvaluateC7DecisionEvidence(
+            mismatchedDigest, ApprovedC7Sha256, policy, today);
+        mismatchedDigestDiagnostics.ShouldContain(d =>
+            d.Category == "approval_evidence_digest_mismatch" && d.Identifier == "C7");
+
+        YamlMappingNode incompleteAuthority = CloneRow(c7);
+        YamlSequenceNode approvalRecords = RequiredSequence(RequiredMapping(incompleteAuthority, "approval"), "records");
+        YamlNode securityRecord = approvalRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        approvalRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteAuthorityDiagnostics = EvaluateC7DecisionEvidence(
+            incompleteAuthority, ApprovedC7Sha256, policy, today);
+        incompleteAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:Security");
+
+        YamlMappingNode invalidTiming = CloneRow(c7);
+        SetScalar(RequiredMapping(invalidTiming, "timing_profile"), "authorization_revalidation_interval_seconds", "61");
+        GateDiagnostic[] invalidTimingDiagnostics = EvaluateC7DecisionEvidence(
+            invalidTiming, ApprovedC7Sha256, policy, today);
+        invalidTimingDiagnostics.ShouldContain(d =>
+            d.Category == "c7_timing_profile_invalid" && d.Identifier == "C7");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode unexpectedTimingKey = CloneRow(c7);
+        RequiredMapping(unexpectedTimingKey, "timing_profile").Add(
+            new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("7"));
+        GateDiagnostic[] unexpectedTimingDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedTimingKey, ApprovedC7Sha256, policy, today);
+        unexpectedTimingDiagnostics.ShouldContain(d =>
+            d.Category == "c7_timing_profile_invalid" && d.Identifier == "C7");
+
+        YamlMappingNode unexpectedAuthority = CloneRow(c7);
+        YamlMappingNode unexpectedApproval = RequiredMapping(unexpectedAuthority, "approval");
+        RequiredSequence(unexpectedApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(unexpectedApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode("2026-09-12"),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedC7Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedC7Sha256)));
+        GateDiagnostic[] unexpectedAuthorityDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedAuthority, ApprovedC7Sha256, policy, today);
+        unexpectedAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:required-authorities");
+        unexpectedAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:record-count");
+
+        YamlMappingNode unexpectedSigner = CloneRow(c7);
+        YamlMappingNode signerRecord = RequiredSequence(RequiredMapping(unexpectedSigner, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Architecture");
+        SetScalar(signerRecord, "approver", unexpectedValue);
+        GateDiagnostic[] unexpectedSignerDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedSigner, ApprovedC7Sha256, policy, today);
+        unexpectedSignerDiagnostics.ShouldContain(d =>
+            d.Category == "c7_approval_identity_mismatch" && d.Identifier == "C7:Architecture");
+
+        YamlMappingNode unexpectedDate = CloneRow(c7);
+        YamlMappingNode dateRecord = RequiredSequence(RequiredMapping(unexpectedDate, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Security");
+        SetScalar(dateRecord, "approved_on", "2099-12-31");
+        GateDiagnostic[] unexpectedDateDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedDate, ApprovedC7Sha256, policy, today);
+        unexpectedDateDiagnostics.ShouldContain(d =>
+            d.Category == "c7_approval_date_mismatch" && d.Identifier == "C7:Security");
+
+        YamlMappingNode unexpectedRecordCount = CloneRow(c7);
+        YamlSequenceNode records = RequiredSequence(RequiredMapping(unexpectedRecordCount, "approval"), "records");
+        records.Add(CloneRow(records.Children.Cast<YamlMappingNode>().First()));
+        GateDiagnostic[] unexpectedRecordCountDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedRecordCount, ApprovedC7Sha256, policy, today);
+        unexpectedRecordCountDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:record-count");
+
+        GateDiagnostic[] staleApprovalDiagnostics = EvaluateC7DecisionEvidence(
+            c7, ApprovedC7Sha256, policy with { MaxAgeDays = 365 }, today.AddDays(366));
+        staleApprovalDiagnostics.ShouldContain(d =>
+            d.Category == "approval_stale" && d.Identifier == "C7:Architecture");
+        staleApprovalDiagnostics.ShouldContain(d =>
+            d.Category == "approval_stale" && d.Identifier == "C7:Security");
+
+        foreach (GateDiagnostic diagnostic in missingDigestDiagnostics
+            .Concat(mismatchedDigestDiagnostics)
+            .Concat(incompleteAuthorityDiagnostics)
+            .Concat(invalidTimingDiagnostics)
+            .Concat(unexpectedTimingDiagnostics)
+            .Concat(unexpectedAuthorityDiagnostics)
+            .Concat(unexpectedSignerDiagnostics)
+            .Concat(unexpectedDateDiagnostics)
+            .Concat(unexpectedRecordCountDiagnostics)
+            .Concat(staleApprovalDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq8DesignPackageBindsApprovedDecisionsAndExactDigest()
     {
         File.Exists(Oq8DesignPath).ShouldBeTrue("OQ8 requires a canonical design decision document.");
         File.Exists(Oq8EvidencePath).ShouldBeTrue("OQ8 requires a versioned governance evidence manifest.");
@@ -211,6 +638,754 @@ public sealed partial class GovernanceCompletenessGateTests
             design.ShouldContain(statement, Case.Sensitive);
         }
 
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq8DesignPath)));
+        YamlMappingNode evidence = LoadYamlMapping(Oq8EvidencePath);
+        RequiredScalar(evidence, "schema_version").ShouldBe("1.0.0");
+        RequiredScalar(evidence, "evidence_id").ShouldBe("OQ8");
+        RequiredScalar(evidence, "status").ShouldBe("design-approved");
+        RequiredScalar(evidence, "design_version").ShouldBe("1.0.0");
+        RequiredScalar(evidence, "design_path").ShouldBe("docs/exit-criteria/oq8-idempotency-design.md");
+        RequiredScalar(evidence, "design_sha256").ShouldBe(actualDigest);
+
+        YamlMappingNode approval = RequiredMapping(evidence, "approval");
+        RequiredSequence(approval, "required_authorities")
+            .Children.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["Architecture", "Security", "Test"], ignoreOrder: true);
+
+        YamlMappingNode[] records = RequiredSequence(approval, "records")
+            .Children.Cast<YamlMappingNode>().ToArray();
+        records.Length.ShouldBe(3);
+
+        foreach (string authority in new[] { "Architecture", "Security", "Test" })
+        {
+            YamlMappingNode record = records.Single(row => RequiredScalar(row, "authority") == authority);
+            RequiredScalar(record, "approver").ShouldBe("Administrator");
+            RequiredScalar(record, "approved_on").ShouldBe("2026-07-19");
+            RequiredScalar(record, "evidence_version").ShouldBe("1.0.0");
+            RequiredScalar(record, "evidence_sha256").ShouldBe(actualDigest);
+        }
+    }
+
+    [Fact]
+    public void Oq2FilePolicyPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    {
+        File.Exists(Oq2PolicyPath).ShouldBeTrue("OQ2 requires the canonical file-policy artifact.");
+        File.Exists(Oq2EvidencePath).ShouldBeTrue("OQ2 requires a versioned governance evidence manifest.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq2PolicyPath)));
+        actualDigest.ShouldBe(ApprovedOq2Sha256, "OQ2 policy changes require a new version, digest, and fresh PM, Architecture, and Security approvals.");
+
+        YamlMappingNode evidence = LoadYamlMapping(Oq2EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        GateDiagnostic[] diagnostics = EvaluateOq2Evidence(
+            evidence,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        string[] canonicalSurfaces = RequiredSequence(evidence, "canonical_surfaces").Children
+            .Select(node => RequiredScalar(node, "canonical_surface"))
+            .ToArray();
+        canonicalSurfaces.ShouldBe(
+        [
+            "docs/contract/file-context-contract-groups.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ]);
+
+        YamlMappingNode runtime = RequiredMapping(evidence, "runtime_posture");
+        RequiredScalar(runtime, "status").ShouldBe("incomplete");
+        RequiredSequence(runtime, "incomplete_stories").Children
+            .Select(node => RequiredScalar(node, "incomplete_story"))
+            .ToArray().ShouldBe(["12.1", "12.3", "4.20"]);
+
+        YamlMappingNode requirements = RequiredMapping(runtime, "functional_requirements");
+        requirements.Children.Keys.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["FR32", "FR33", "FR34", "FR35"]);
+        requirements.Children.Values.Select(node => RequiredScalar(node, "runtime_status")).ToArray()
+            .ShouldAllBe(status => status == "incomplete");
+        RequiredScalar(runtime, "evidence_claim").ShouldContain("no runtime implementation or production evidence is claimed", Case.Sensitive);
+    }
+
+    [Fact]
+    public void Oq2EvidenceNegativeControlsFailClosedForMissingMismatchedStaleExtraAndIncompleteEvidence()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq2EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        (string key, string expected)[] packageIdentity =
+        [
+            ("schema_version", "1.0.0"),
+            ("evidence_id", "OQ2"),
+            ("status", "design-approved"),
+            ("release_gate_status", "in-progress"),
+            ("policy_version", ApprovedOq2Version),
+            ("policy_path", "docs/contract/file-context-contract-groups.md"),
+            ("approved_on", ApprovedOq2Date),
+        ];
+        foreach ((string key, string expected) in packageIdentity)
+        {
+            YamlMappingNode missingIdentity = CloneRow(evidence);
+            missingIdentity.Children.Remove(new YamlScalarNode(key));
+            EvaluateOq2Evidence(missingIdentity, ApprovedOq2Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == $"OQ2:{key}");
+
+            YamlMappingNode mismatchedIdentity = CloneRow(evidence);
+            SetScalar(mismatchedIdentity, key, expected + "-unexpected");
+            EvaluateOq2Evidence(mismatchedIdentity, ApprovedOq2Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_mismatch" && diagnostic.Identifier == $"OQ2:{key}");
+        }
+
+        YamlMappingNode missingDigest = CloneRow(evidence);
+        missingDigest.Children.Remove(new YamlScalarNode("policy_sha256"));
+        GateDiagnostic[] missingDiagnostics = EvaluateOq2Evidence(missingDigest, ApprovedOq2Sha256, policy, today);
+        missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == "OQ2:policy_sha256");
+
+        YamlMappingNode mismatchedDigest = CloneRow(evidence);
+        SetScalar(mismatchedDigest, "policy_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDiagnostics = EvaluateOq2Evidence(mismatchedDigest, ApprovedOq2Sha256, policy, today);
+        mismatchedDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ2");
+
+        YamlMappingNode incomplete = CloneRow(evidence);
+        YamlSequenceNode incompleteRecords = RequiredSequence(RequiredMapping(incomplete, "approval"), "records");
+        YamlNode securityRecord = incompleteRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        incompleteRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteDiagnostics = EvaluateOq2Evidence(incomplete, ApprovedOq2Sha256, policy, today);
+        incompleteDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_incomplete" && diagnostic.Identifier == "OQ2:Security");
+
+        YamlMappingNode missingAuthorities = CloneRow(evidence);
+        RequiredMapping(missingAuthorities, "approval").Children.Remove(new YamlScalarNode("required_authorities"));
+        GateDiagnostic[] missingAuthorityDiagnostics = EvaluateOq2Evidence(missingAuthorities, ApprovedOq2Sha256, policy, today);
+        missingAuthorityDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == "OQ2:required-authorities");
+
+        YamlMappingNode emptyAuthorities = CloneRow(evidence);
+        RequiredMapping(emptyAuthorities, "approval").Children[new YamlScalarNode("required_authorities")] = new YamlSequenceNode();
+        GateDiagnostic[] emptyAuthorityDiagnostics = EvaluateOq2Evidence(emptyAuthorities, ApprovedOq2Sha256, policy, today);
+        emptyAuthorityDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == "OQ2:required-authorities");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode extra = CloneRow(evidence);
+        YamlMappingNode extraApproval = RequiredMapping(extra, "approval");
+        RequiredSequence(extraApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(extraApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode(ApprovedOq2Date),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedOq2Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedOq2Sha256)));
+        GateDiagnostic[] extraDiagnostics = EvaluateOq2Evidence(extra, ApprovedOq2Sha256, policy, today);
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_extra" && diagnostic.Identifier == "OQ2:required-authorities");
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_extra" && diagnostic.Identifier == "OQ2:record-count");
+
+        YamlMappingNode malformedExtraRecord = CloneRow(evidence);
+        RequiredSequence(RequiredMapping(malformedExtraRecord, "approval"), "records")
+            .Add(new YamlScalarNode("malformed-extra-record"));
+        GateDiagnostic[] malformedExtraRecordDiagnostics = EvaluateOq2Evidence(
+            malformedExtraRecord,
+            ApprovedOq2Sha256,
+            policy,
+            today);
+        malformedExtraRecordDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq2_approval_extra" && diagnostic.Identifier == "OQ2:record-count");
+
+        YamlMappingNode missingReopenPolicy = CloneRow(evidence);
+        missingReopenPolicy.Children.Remove(new YamlScalarNode("reopen_policy"));
+        GateDiagnostic[] missingReopenDiagnostics = EvaluateOq2Evidence(missingReopenPolicy, ApprovedOq2Sha256, policy, today);
+        missingReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == "OQ2:reopen_policy");
+
+        YamlMappingNode mismatchedReopenPolicy = CloneRow(evidence);
+        SetScalar(mismatchedReopenPolicy, "reopen_policy", "policy content and digest only");
+        GateDiagnostic[] mismatchedReopenDiagnostics = EvaluateOq2Evidence(mismatchedReopenPolicy, ApprovedOq2Sha256, policy, today);
+        mismatchedReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq2_evidence_mismatch" && diagnostic.Identifier == "OQ2:reopen_policy");
+
+        YamlMappingNode mismatchedRecord = CloneRow(evidence);
+        YamlMappingNode architectureRecord = RequiredSequence(RequiredMapping(mismatchedRecord, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Architecture");
+        SetScalar(architectureRecord, "approver", unexpectedValue);
+        SetScalar(architectureRecord, "approved_on", "2099-12-31");
+        SetScalar(architectureRecord, "evidence_version", "9.9.9");
+        SetScalar(architectureRecord, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedRecordDiagnostics = EvaluateOq2Evidence(mismatchedRecord, ApprovedOq2Sha256, policy, today);
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_identity_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_date_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_version_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateOq2Evidence(
+            evidence,
+            ApprovedOq2Sha256,
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:PM");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Architecture");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Security");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics
+            .Concat(mismatchedDiagnostics)
+            .Concat(incompleteDiagnostics)
+            .Concat(missingAuthorityDiagnostics)
+            .Concat(emptyAuthorityDiagnostics)
+            .Concat(extraDiagnostics)
+            .Concat(malformedExtraRecordDiagnostics)
+            .Concat(missingReopenDiagnostics)
+            .Concat(mismatchedReopenDiagnostics)
+            .Concat(mismatchedRecordDiagnostics)
+            .Concat(staleDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq3AuthorizationMatrixPackageBindsVersionDigestAndRuntimePosture()
+    {
+        File.Exists(Oq3MatrixPath).ShouldBeTrue("OQ3 requires the canonical authorization-matrix artifact.");
+        File.Exists(Oq3EvidencePath).ShouldBeTrue("OQ3 requires a versioned governance evidence manifest.");
+        File.Exists(V2ConformanceSetPath).ShouldBeTrue("A6b review requires the generated v2 conformance set.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
+        actualDigest.ShouldNotBe(ApprovedOq3Sha256, "The 2.0.0 candidate must not reuse the historical v1 approval digest.");
+        File.ReadAllText(Oq3MatrixPath).ShouldContain("Matrix version: `2.0.0`", Case.Sensitive);
+        YamlMappingNode currentConformance = LoadYamlMapping(V2ConformanceSetPath);
+        RequiredScalar(currentConformance, "authorization_matrix_sha256").ShouldBe(actualDigest);
+
+        YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        GateDiagnostic[] diagnostics = EvaluateOq3Evidence(
+            evidence,
+            ApprovedOq3Sha256,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        string[] canonicalSurfaces = RequiredSequence(evidence, "canonical_surfaces").Children
+            .Select(node => RequiredScalar(node, "canonical_surface"))
+            .ToArray();
+        canonicalSurfaces.ShouldBe(
+        [
+            "docs/contract/authorization-matrix.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ]);
+
+        YamlMappingNode denominator = RequiredMapping(evidence, "denominator");
+        RequiredScalar(denominator, "access_states").ShouldBe("12");
+        RequiredScalar(denominator, "canonical_actors").ShouldBe("6");
+        RequiredScalar(denominator, "negative_access_states").ShouldBe("6");
+        RequiredScalar(denominator, "denial_routing_states").ShouldBe("8");
+        RequiredScalar(denominator, "operation_families").ShouldBe("11");
+        RequiredScalar(denominator, "spine_operations").ShouldBe("49");
+        RequiredScalar(denominator, "scope_dimensions").ShouldBe("8");
+
+        YamlMappingNode runtime = RequiredMapping(evidence, "runtime_posture");
+        RequiredScalar(runtime, "status").ShouldBe("incomplete");
+        RequiredSequence(runtime, "incomplete_stories").Children
+            .Select(node => RequiredScalar(node, "incomplete_story"))
+            .ToArray().ShouldBe(ApprovedOq3IncompleteStories);
+
+        YamlMappingNode requirements = RequiredMapping(runtime, "functional_requirements");
+        requirements.Children.Keys.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["FR8", "FR9", "FR10"]);
+        requirements.Children.Values.Select(node => RequiredScalar(node, "runtime_status")).ToArray()
+            .ShouldAllBe(status => status == "incomplete");
+        RequiredScalar(runtime, "evidence_claim").ShouldContain("no runtime authorization", Case.Sensitive);
+
+        foreach (string planningPath in Oq3DigestBoundPlanningArtifacts)
+        {
+            File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningPath)))
+                .Contains(ApprovedOq3Sha256, StringComparison.Ordinal)
+                .ShouldBeTrue(planningPath);
+        }
+    }
+
+    [Fact]
+    public void Oq3EvidenceNegativeControlsFailClosedForMissingMismatchedStaleExtraAndIncompleteEvidence()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        (string key, string expected)[] packageIdentity =
+        [
+            ("schema_version", "1.0.0"),
+            ("evidence_id", "OQ3"),
+            ("status", "design-approved"),
+            ("release_gate_status", "in-progress"),
+            ("matrix_version", ApprovedOq3Version),
+            ("matrix_path", "docs/contract/authorization-matrix.md"),
+            ("approved_on", ApprovedOq3Date),
+        ];
+        foreach ((string key, string expected) in packageIdentity)
+        {
+            YamlMappingNode missingIdentity = CloneRow(evidence);
+            missingIdentity.Children.Remove(new YamlScalarNode(key));
+            EvaluateOq3Evidence(missingIdentity, ApprovedOq3Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == $"OQ3:{key}");
+
+            YamlMappingNode mismatchedIdentity = CloneRow(evidence);
+            SetScalar(mismatchedIdentity, key, expected + "-unexpected");
+            EvaluateOq3Evidence(mismatchedIdentity, ApprovedOq3Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == $"OQ3:{key}");
+        }
+
+        YamlMappingNode missingDigest = CloneRow(evidence);
+        missingDigest.Children.Remove(new YamlScalarNode("matrix_sha256"));
+        GateDiagnostic[] missingDiagnostics = EvaluateOq3Evidence(missingDigest, ApprovedOq3Sha256, policy, today);
+        missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:matrix_sha256");
+
+        YamlMappingNode mismatchedDigest = CloneRow(evidence);
+        SetScalar(mismatchedDigest, "matrix_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDiagnostics = EvaluateOq3Evidence(mismatchedDigest, ApprovedOq3Sha256, policy, today);
+        mismatchedDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ3");
+
+        YamlMappingNode driftedDenominator = CloneRow(evidence);
+        SetScalar(RequiredMapping(driftedDenominator, "denominator"), "spine_operations", "48");
+        GateDiagnostic[] denominatorDiagnostics = EvaluateOq3Evidence(driftedDenominator, ApprovedOq3Sha256, policy, today);
+        denominatorDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:denominator");
+
+        YamlMappingNode droppedGap = CloneRow(evidence);
+        YamlSequenceNode gapIds = RequiredSequence(droppedGap, "recorded_gap_ids");
+        gapIds.Children.Remove(gapIds.Children.Last());
+        GateDiagnostic[] gapDiagnostics = EvaluateOq3Evidence(droppedGap, ApprovedOq3Sha256, policy, today);
+        gapDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:recorded-gap-ids");
+
+        YamlMappingNode incomplete = CloneRow(evidence);
+        YamlSequenceNode incompleteRecords = RequiredSequence(RequiredMapping(incomplete, "approval"), "records");
+        YamlNode securityRecord = incompleteRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        incompleteRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteDiagnostics = EvaluateOq3Evidence(incomplete, ApprovedOq3Sha256, policy, today);
+        incompleteDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_incomplete" && diagnostic.Identifier == "OQ3:Security");
+
+        YamlMappingNode missingAuthorities = CloneRow(evidence);
+        RequiredMapping(missingAuthorities, "approval").Children.Remove(new YamlScalarNode("required_authorities"));
+        GateDiagnostic[] missingAuthorityDiagnostics = EvaluateOq3Evidence(missingAuthorities, ApprovedOq3Sha256, policy, today);
+        missingAuthorityDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:required-authorities");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode extra = CloneRow(evidence);
+        YamlMappingNode extraApproval = RequiredMapping(extra, "approval");
+        RequiredSequence(extraApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(extraApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode(ApprovedOq3Date),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedOq3Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedOq3Sha256)));
+        GateDiagnostic[] extraDiagnostics = EvaluateOq3Evidence(extra, ApprovedOq3Sha256, policy, today);
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_extra" && diagnostic.Identifier == "OQ3:required-authorities");
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_extra" && diagnostic.Identifier == "OQ3:record-count");
+
+        YamlMappingNode missingReopenPolicy = CloneRow(evidence);
+        missingReopenPolicy.Children.Remove(new YamlScalarNode("reopen_policy"));
+        GateDiagnostic[] missingReopenDiagnostics = EvaluateOq3Evidence(missingReopenPolicy, ApprovedOq3Sha256, policy, today);
+        missingReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:reopen_policy");
+
+        YamlMappingNode mismatchedReopenPolicy = CloneRow(evidence);
+        SetScalar(mismatchedReopenPolicy, "reopen_policy", "matrix content and digest only");
+        GateDiagnostic[] mismatchedReopenDiagnostics = EvaluateOq3Evidence(mismatchedReopenPolicy, ApprovedOq3Sha256, policy, today);
+        mismatchedReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:reopen_policy");
+
+        YamlMappingNode mismatchedRecord = CloneRow(evidence);
+        YamlMappingNode pmRecord = RequiredSequence(RequiredMapping(mismatchedRecord, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "PM");
+        SetScalar(pmRecord, "approver", unexpectedValue);
+        SetScalar(pmRecord, "approved_on", "2099-12-31");
+        SetScalar(pmRecord, "evidence_version", "9.9.9");
+        SetScalar(pmRecord, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedRecordDiagnostics = EvaluateOq3Evidence(mismatchedRecord, ApprovedOq3Sha256, policy, today);
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_identity_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_date_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_version_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ3:PM");
+
+        YamlMappingNode completedRuntime = CloneRow(evidence);
+        SetScalar(RequiredMapping(completedRuntime, "runtime_posture"), "status", "complete");
+        GateDiagnostic[] runtimeDiagnostics = EvaluateOq3Evidence(completedRuntime, ApprovedOq3Sha256, policy, today);
+        runtimeDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:runtime-posture");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateOq3Evidence(
+            evidence,
+            ApprovedOq3Sha256,
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:Security");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:PM");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics
+            .Concat(mismatchedDiagnostics)
+            .Concat(denominatorDiagnostics)
+            .Concat(gapDiagnostics)
+            .Concat(incompleteDiagnostics)
+            .Concat(missingAuthorityDiagnostics)
+            .Concat(extraDiagnostics)
+            .Concat(missingReopenDiagnostics)
+            .Concat(mismatchedReopenDiagnostics)
+            .Concat(mismatchedRecordDiagnostics)
+            .Concat(runtimeDiagnostics)
+            .Concat(staleDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq4ProviderCompatibilityPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    {
+        File.Exists(Oq4CatalogPath).ShouldBeTrue("OQ4 requires the canonical provider compatibility catalog.");
+        File.Exists(Oq4EvidencePath).ShouldBeTrue("OQ4 requires a versioned governance evidence manifest.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq4CatalogPath)));
+        actualDigest.ShouldBe(CurrentOq4Sha256, "OQ4 current bytes require reviewed technical evidence under the project decision policy.");
+        string decisionPolicyPath = Path.Combine(RepositoryRoot, "docs", "governance", "approval-policy.md");
+        Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(decisionPolicyPath))).ShouldBe(CurrentOq4PolicySha256);
+
+        YamlMappingNode evidence = LoadYamlMapping(Oq4EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        GateDiagnostic[] diagnostics = EvaluateOq4Evidence(
+            evidence,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        RequiredSequence(evidence, "canonical_surfaces").Children
+            .Select(node => RequiredScalar(node, "canonical_surface"))
+            .ToArray()
+            .ShouldBe(
+            [
+                "docs/contract/provider-compatibility-catalog.md",
+                "tests/contracts/github/pinned-profile.json",
+                "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs",
+                "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+            ]);
+
+        RequiredSequence(evidence, "governed_providers").Children
+            .Select(node => RequiredScalar(node, "governed_provider"))
+            .ToArray().ShouldBe(ApprovedOq4GovernedProviders);
+        RequiredSequence(evidence, "published_ceiling_ids").Children
+            .Select(node => RequiredScalar(node, "published_ceiling_id"))
+            .ToArray().ShouldBe(ApprovedOq4CeilingIds);
+        RequiredSequence(evidence, "recorded_gap_ids").Children
+            .Select(node => RequiredScalar(node, "recorded_gap_id"))
+            .ToArray().ShouldBe(ApprovedOq4GapIds);
+
+        YamlMappingNode runtime = RequiredMapping(evidence, "runtime_posture");
+        RequiredScalar(runtime, "status").ShouldBe("incomplete");
+        RequiredScalar(runtime, "credentialed_live_provider_evidence").ShouldBe("not-run");
+        RequiredScalar(runtime, "c12_evidence_standard").ShouldBe(ApprovedOq4C12EvidenceStandard);
+        RequiredSequence(runtime, "incomplete_stories").Children
+            .Select(node => RequiredScalar(node, "incomplete_story"))
+            .ToArray().ShouldBe(ApprovedOq4IncompleteStories);
+
+        YamlMappingNode requirements = RequiredMapping(runtime, "functional_requirements");
+        requirements.Children.Keys.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["FR16", "FR17", "FR22", "FR23"]);
+        requirements.Children.Values.Select(node => RequiredScalar(node, "runtime_status")).ToArray()
+            .ShouldAllBe(status => status == "incomplete");
+        RequiredScalar(runtime, "evidence_claim").ShouldContain("no credentialed live provider run", Case.Sensitive);
+
+        // The narrowed C12 evidence standard must also be stated on the criterion row itself, and the
+        // criterion must stay separate from the still-open NFR49 runtime gap.
+        YamlMappingNode c12 = RequiredSequence(LoadYamlMapping(EvidencePath), "criteria").Children
+            .Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C12");
+        RequiredScalar(c12, "status").ShouldBe("approved");
+        RequiredScalar(c12, "evidence_sha256").ShouldBe(ApprovedOq4Sha256);
+        string summary = RequiredScalar(c12, "result_summary");
+        summary.ShouldContain("hermetic-PR-gate", Case.Sensitive);
+        summary.ShouldContain("explicitly not run", Case.Sensitive);
+        summary.ShouldContain("residual provider-ready debt", Case.Sensitive);
+        summary.ShouldContain("NFR49", Case.Sensitive);
+        RequiredSequence(c12, "open_policy_placeholders").Children.Count.ShouldBe(0);
+
+        foreach (string planningPath in Oq4DigestBoundPlanningArtifacts)
+        {
+            File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningPath)))
+                .Contains(ApprovedOq4Sha256, StringComparison.Ordinal)
+                .ShouldBeTrue(planningPath);
+        }
+
+        // Current planning binds the refreshed evidence manifest. Historical approvals and finalization
+        // digests keep their original bytes; they do not prove this candidate passed technical checks.
+        const string planningManifestPath = "_bmad-output/planning-artifacts/planning-story-manifest.yaml";
+        YamlMappingNode planningManifest = LoadYamlMapping(
+            Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningManifestPath)));
+        YamlMappingNode oq4Decision = RequiredMapping(
+            RequiredMapping(planningManifest, "accepted_terminal_references"),
+            "OQ4");
+        RequiredScalar(oq4Decision, "evidence_path").ShouldBe("docs/contract/oq4-provider-compatibility-evidence.yaml");
+        RequiredScalar(oq4Decision, "evidence_sha256").ShouldBe(
+            Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq4EvidencePath))));
+
+        // The LF pins are what make the approval-bound digest reproducible across checkouts. Without them a
+        // Windows checkout produces CRLF bytes and the approval fails as an unexplained digest mismatch.
+        string attributes = File.ReadAllText(Path.Combine(RepositoryRoot, ".gitattributes"));
+        foreach (string lfPinnedPath in Oq4LineEndingPinnedPaths)
+        {
+            attributes.ShouldContain($"{lfPinnedPath} text eol=lf", Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq4EvidenceNegativeControlsFailClosedForMissingMismatchedStaleExtraAndIncompleteEvidence()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq4EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        (string key, string expected)[] packageIdentity =
+        [
+            ("schema_version", "1.0.0"),
+            ("evidence_id", "OQ4"),
+            ("status", "design-approved"),
+            ("release_gate_status", "in-progress"),
+            ("catalog_version", ApprovedOq4Version),
+            ("catalog_path", "docs/contract/provider-compatibility-catalog.md"),
+            ("approved_on", ApprovedOq4Date),
+        ];
+        foreach ((string key, string expected) in packageIdentity)
+        {
+            YamlMappingNode missingIdentity = CloneRow(evidence);
+            missingIdentity.Children.Remove(new YamlScalarNode(key));
+            EvaluateOq4Evidence(missingIdentity, CurrentOq4Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_missing" && diagnostic.Identifier == $"OQ4:{key}");
+
+            YamlMappingNode mismatchedIdentity = CloneRow(evidence);
+            SetScalar(mismatchedIdentity, key, expected + "-unexpected");
+            EvaluateOq4Evidence(mismatchedIdentity, CurrentOq4Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == $"OQ4:{key}");
+        }
+
+        YamlMappingNode missingDigest = CloneRow(evidence);
+        missingDigest.Children.Remove(new YamlScalarNode("catalog_sha256"));
+        GateDiagnostic[] missingDiagnostics = EvaluateOq4Evidence(missingDigest, CurrentOq4Sha256, policy, today);
+        missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_missing" && diagnostic.Identifier == "OQ4:catalog_sha256");
+
+        YamlMappingNode mismatchedDigest = CloneRow(evidence);
+        SetScalar(mismatchedDigest, "catalog_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDiagnostics = EvaluateOq4Evidence(mismatchedDigest, CurrentOq4Sha256, policy, today);
+        mismatchedDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ4");
+
+        YamlMappingNode droppedCeiling = CloneRow(evidence);
+        YamlSequenceNode ceilingIds = RequiredSequence(droppedCeiling, "published_ceiling_ids");
+        ceilingIds.Children.Remove(ceilingIds.Children.Last());
+        GateDiagnostic[] ceilingDiagnostics = EvaluateOq4Evidence(droppedCeiling, CurrentOq4Sha256, policy, today);
+        ceilingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:published-ceiling-ids");
+
+        YamlMappingNode droppedGap = CloneRow(evidence);
+        YamlSequenceNode gapIds = RequiredSequence(droppedGap, "recorded_gap_ids");
+        gapIds.Children.Remove(gapIds.Children.Last());
+        GateDiagnostic[] gapDiagnostics = EvaluateOq4Evidence(droppedGap, CurrentOq4Sha256, policy, today);
+        gapDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:recorded-gap-ids");
+
+        YamlMappingNode droppedProvider = CloneRow(evidence);
+        YamlSequenceNode providers = RequiredSequence(droppedProvider, "governed_providers");
+        providers.Children.Remove(providers.Children.Last());
+        GateDiagnostic[] providerDiagnostics = EvaluateOq4Evidence(droppedProvider, CurrentOq4Sha256, policy, today);
+        providerDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:governed-providers");
+
+        YamlMappingNode incomplete = CloneRow(evidence);
+        YamlSequenceNode incompleteRecords = RequiredSequence(RequiredMapping(incomplete, "approval"), "records");
+        YamlNode providerRecord = incompleteRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Provider");
+        incompleteRecords.Children.Remove(providerRecord);
+        GateDiagnostic[] incompleteDiagnostics = EvaluateOq4Evidence(incomplete, CurrentOq4Sha256, policy, today);
+        incompleteDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_approval_incomplete" && diagnostic.Identifier == "OQ4:Provider");
+
+        YamlMappingNode missingAuthorities = CloneRow(evidence);
+        RequiredMapping(missingAuthorities, "approval").Children.Remove(new YamlScalarNode("required_authorities"));
+        GateDiagnostic[] missingAuthorityDiagnostics = EvaluateOq4Evidence(missingAuthorities, CurrentOq4Sha256, policy, today);
+        missingAuthorityDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_missing" && diagnostic.Identifier == "OQ4:required-authorities");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode extra = CloneRow(evidence);
+        YamlMappingNode extraApproval = RequiredMapping(extra, "approval");
+        RequiredSequence(extraApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(extraApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode(ApprovedOq4Date),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedOq4Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedOq4Sha256)));
+        GateDiagnostic[] extraDiagnostics = EvaluateOq4Evidence(extra, CurrentOq4Sha256, policy, today);
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_approval_extra" && diagnostic.Identifier == "OQ4:required-authorities");
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_approval_extra" && diagnostic.Identifier == "OQ4:record-count");
+
+        YamlMappingNode missingReopenPolicy = CloneRow(evidence);
+        missingReopenPolicy.Children.Remove(new YamlScalarNode("reopen_policy"));
+        GateDiagnostic[] missingReopenDiagnostics = EvaluateOq4Evidence(missingReopenPolicy, CurrentOq4Sha256, policy, today);
+        missingReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq4_evidence_missing" && diagnostic.Identifier == "OQ4:reopen_policy");
+
+        YamlMappingNode mismatchedReopenPolicy = CloneRow(evidence);
+        SetScalar(mismatchedReopenPolicy, "reopen_policy", "catalog content and digest only");
+        GateDiagnostic[] mismatchedReopenDiagnostics = EvaluateOq4Evidence(mismatchedReopenPolicy, CurrentOq4Sha256, policy, today);
+        mismatchedReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:reopen_policy");
+
+        YamlMappingNode mismatchedRecord = CloneRow(evidence);
+        YamlMappingNode pmRecord = RequiredSequence(RequiredMapping(mismatchedRecord, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "PM");
+        SetScalar(pmRecord, "approver", unexpectedValue);
+        SetScalar(pmRecord, "approved_on", "2099-12-31");
+        SetScalar(pmRecord, "evidence_version", "9.9.9");
+        SetScalar(pmRecord, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedRecordDiagnostics = EvaluateOq4Evidence(mismatchedRecord, CurrentOq4Sha256, policy, today);
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_approval_identity_mismatch" && diagnostic.Identifier == "OQ4:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_approval_date_mismatch" && diagnostic.Identifier == "OQ4:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_version_mismatch" && diagnostic.Identifier == "OQ4:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ4:PM");
+
+        // A completed runtime posture, a dropped incomplete story, or a claimed credentialed live run all
+        // fail closed: OQ4 approval never converts into runtime or live-provider completion.
+        YamlMappingNode completedRuntime = CloneRow(evidence);
+        SetScalar(RequiredMapping(completedRuntime, "runtime_posture"), "status", "complete");
+        GateDiagnostic[] runtimeDiagnostics = EvaluateOq4Evidence(completedRuntime, CurrentOq4Sha256, policy, today);
+        runtimeDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:runtime-posture");
+
+        YamlMappingNode claimedLiveRun = CloneRow(evidence);
+        SetScalar(RequiredMapping(claimedLiveRun, "runtime_posture"), "credentialed_live_provider_evidence", "completed");
+        GateDiagnostic[] liveRunDiagnostics = EvaluateOq4Evidence(claimedLiveRun, CurrentOq4Sha256, policy, today);
+        liveRunDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:runtime-posture");
+
+        YamlMappingNode droppedStory = CloneRow(evidence);
+        YamlSequenceNode stories = RequiredSequence(RequiredMapping(droppedStory, "runtime_posture"), "incomplete_stories");
+        stories.Children.Remove(stories.Children.Last());
+        GateDiagnostic[] storyDiagnostics = EvaluateOq4Evidence(droppedStory, CurrentOq4Sha256, policy, today);
+        storyDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:runtime-posture");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateOq4Evidence(
+            evidence,
+            CurrentOq4Sha256,
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:Provider");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:Architecture");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:PM");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics
+            .Concat(mismatchedDiagnostics)
+            .Concat(ceilingDiagnostics)
+            .Concat(gapDiagnostics)
+            .Concat(providerDiagnostics)
+            .Concat(incompleteDiagnostics)
+            .Concat(missingAuthorityDiagnostics)
+            .Concat(extraDiagnostics)
+            .Concat(missingReopenDiagnostics)
+            .Concat(mismatchedReopenDiagnostics)
+            .Concat(mismatchedRecordDiagnostics)
+            .Concat(runtimeDiagnostics)
+            .Concat(liveRunDiagnostics)
+            .Concat(storyDiagnostics)
+            .Concat(staleDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq4CurrentEvidenceRefreshRejectsMissingTamperedAndUnreviewedBindings()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq4EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        EvaluateOq4Evidence(evidence, CurrentOq4Sha256, policy, today).ShouldBeEmpty();
+
+        YamlMappingNode missingCurrent = CloneRow(evidence);
+        missingCurrent.Children.Remove(new YamlScalarNode("current_evidence"));
+        EvaluateOq4Evidence(missingCurrent, CurrentOq4Sha256, policy, today)
+            .ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_missing" && diagnostic.Identifier == "OQ4:current-evidence");
+
+        foreach (YamlNode key in RequiredMapping(evidence, "current_evidence").Children.Keys)
+        {
+            string field = RequiredScalar(key, "current_evidence_field");
+            YamlMappingNode missingField = CloneRow(evidence);
+            RequiredMapping(missingField, "current_evidence").Children.Remove(key);
+            GateDiagnostic[] missingDiagnostics = EvaluateOq4Evidence(missingField, CurrentOq4Sha256, policy, today);
+            missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_missing"
+                && diagnostic.Identifier == $"OQ4:current-evidence:{field}");
+
+            YamlMappingNode mismatchedField = CloneRow(evidence);
+            const string unexpectedValue = "UNTRUSTED-CURRENT-EVIDENCE";
+            SetScalar(RequiredMapping(mismatchedField, "current_evidence"), field, field == "rationale" ? " " : unexpectedValue);
+            GateDiagnostic[] mismatchDiagnostics = EvaluateOq4Evidence(mismatchedField, CurrentOq4Sha256, policy, today);
+            mismatchDiagnostics.ShouldContain(diagnostic => diagnostic.Identifier == $"OQ4:current-evidence:{field}");
+
+            foreach (GateDiagnostic diagnostic in missingDiagnostics.Concat(mismatchDiagnostics))
+            {
+                AssertMetadataOnly(diagnostic.ToString());
+                diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+            }
+        }
+
+        YamlMappingNode rewrittenHistory = CloneRow(evidence);
+        SetScalar(rewrittenHistory, "catalog_sha256", CurrentOq4Sha256);
+        YamlMappingNode providerRecord = RequiredSequence(RequiredMapping(rewrittenHistory, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Provider");
+        SetScalar(providerRecord, "evidence_sha256", CurrentOq4Sha256);
+        GateDiagnostic[] rewrittenDiagnostics = EvaluateOq4Evidence(rewrittenHistory, CurrentOq4Sha256, policy, today);
+        rewrittenDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ4");
+        rewrittenDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ4:Provider");
+
+        YamlMappingNode unreviewedChange = CloneRow(evidence);
+        string unreviewedDigest = new('0', 64);
+        SetScalar(RequiredMapping(unreviewedChange, "current_evidence"), "catalog_sha256", unreviewedDigest);
+        EvaluateOq4Evidence(unreviewedChange, unreviewedDigest, policy, today)
+            .ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ4:current-evidence");
+
+        YamlMappingNode extraClaim = CloneRow(evidence);
+        SetScalar(RequiredMapping(extraClaim, "current_evidence"), "approved_on", "2026-10-08");
+        EvaluateOq4Evidence(extraClaim, CurrentOq4Sha256, policy, today)
+            .ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:current-evidence:fields");
+
+        YamlNode[] nonScalarKeys =
+        [
+            new YamlSequenceNode(new YamlScalarNode("unexpected-key")),
+            new YamlMappingNode(new YamlScalarNode("unexpected-key"), new YamlScalarNode("unexpected-value")),
+        ];
+        foreach (YamlNode key in nonScalarKeys)
+        {
+            YamlMappingNode extraKey = CloneRow(evidence);
+            RequiredMapping(extraKey, "current_evidence").Add(key, new YamlScalarNode("unexpected-value"));
+            EvaluateOq4Evidence(extraKey, CurrentOq4Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq4_evidence_mismatch" && diagnostic.Identifier == "OQ4:current-evidence:fields");
+        }
     }
 
     [Fact]
@@ -1679,6 +2854,27 @@ public sealed partial class GovernanceCompletenessGateTests
 
                 string repositoryPath = ToRepositoryPath(file);
                 diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "candidate", repositoryPath));
+            }
+        }
+
+        string workflowsRoot = Path.Combine(RepositoryRoot, ".github", "workflows");
+        if (Directory.Exists(workflowsRoot))
+        {
+            foreach (string file in Directory.EnumerateFiles(workflowsRoot, "*.yml", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(workflowsRoot, "*.yaml", SearchOption.AllDirectories)))
+            {
+                string text = File.ReadAllText(file);
+                if (!text.Contains("actions/cache", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (text.Contains("CACHE-NON-TENANT", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "workflow-cache", ToRepositoryPath(file)));
             }
         }
 

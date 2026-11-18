@@ -36,7 +36,13 @@ public sealed partial class ProviderErrorDocsConformanceTests
     private const string ProviderDocPath = "docs/operations/provider-integration-and-testing.md";
     private const string ErrorDocPath = "docs/operations/canonical-error-catalog.md";
 
+    private const string GateScriptPath = "tests/tools/run-provider-error-docs-gates.ps1";
+    private const string WorkflowPath = ".github/workflows/contract-spine.yml";
+    private const string CiWorkflowPath = ".github/workflows/ci.yml";
+    private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
     private const string ReportPath = "_bmad-output/gates/provider-error-docs/latest.json";
+
+    private const string ConformanceFqn = "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests";
 
     private static readonly string[] RequiredDocs = [ProviderDocPath, ErrorDocPath];
 
@@ -330,6 +336,74 @@ public sealed partial class ProviderErrorDocsConformanceTests
 
             AssertNoRecursiveSubmoduleCommand(text);
         }
+    }
+
+    [Fact]
+    public void ProviderErrorDocsGateScriptFailsClosedAndEmitsBoundedEvidence()
+    {
+        string script = ReadText(GateScriptPath);
+        foreach (string required in new[]
+        {
+            "#Requires -Version 7",
+            "Set-StrictMode -Version Latest",
+            "$ErrorActionPreference = 'Stop'",
+            ReportPath,
+            "$LASTEXITCODE",
+            "utf8NoBOM",
+            "diagnostic_policy",
+            "metadata-only",
+            "Push-Location",
+            "Pop-Location",
+            "GATE-VACUOUS",
+            "xunit",
+            $"FullyQualifiedName~{ConformanceFqn}",
+        })
+        {
+            script.ShouldContain(required, Case.Sensitive);
+        }
+
+        AssertNoRecursiveSubmoduleCommand(script);
+    }
+
+    [Fact]
+    public void ContractSpineWorkflowAndBaselineCiWireProviderErrorDocsGate()
+    {
+        string workflow = ReadText(WorkflowPath);
+        workflow.ShouldContain("./tests/tools/run-provider-error-docs-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
+        workflow.ShouldContain("submodules: false", Case.Sensitive);
+        workflow.ShouldContain("contents: read", Case.Sensitive);
+        AssertNoRecursiveSubmoduleCommand(workflow);
+
+        // The new step must follow the operations-audit-docs step, not broaden a new lane.
+        int auditStep = workflow.IndexOf("run-operations-audit-docs-gates.ps1", StringComparison.Ordinal);
+        int providerStep = workflow.IndexOf("run-provider-error-docs-gates.ps1", StringComparison.Ordinal);
+        auditStep.ShouldBeGreaterThanOrEqualTo(0, "the operations-audit-docs step must remain wired.");
+        providerStep.ShouldBeGreaterThan(auditStep, "the provider-error-docs step must come after operations-audit-docs.");
+
+        // Lane separation: the static gate belongs to contract-spine, never to a new ci.yml top-level lane.
+        string ci = ReadText(CiWorkflowPath);
+        ci.ShouldNotContain("run-provider-error-docs-gates.ps1", Case.Sensitive);
+
+        string baseline = ReadText(BaselineGatePath);
+        baseline.ShouldContain(ConformanceFqn, Case.Sensitive);
+    }
+
+    [Fact]
+    public void ProviderErrorDocsLatestReportStaysMetadataOnlyWhenPresent()
+    {
+        string fullReportPath = RepositoryPath(ReportPath);
+        if (!File.Exists(fullReportPath))
+        {
+            return;
+        }
+
+        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
+        JsonElement root = document.RootElement;
+
+        RequiredString(root, "gate").ShouldBe("provider-error-docs");
+        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
+        RequiredString(root, "report_path").ShouldBe(ReportPath);
+        AssertMetadataOnlyJson(root);
     }
 
     [Fact]

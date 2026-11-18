@@ -13,6 +13,7 @@ public sealed class Pd10V2ContractTests
     private static readonly string V1Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml");
     private static readonly string V2Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
+    private static readonly string ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "implementation-artifacts", "evidence", "story-12-2-v2-source-requalification-pending-2026-11-12.yaml");
 
     [Fact]
     public void V2PublishesExactly49ProtectedOperationsWithClosedPreObservationOutcomes()
@@ -257,6 +258,69 @@ public sealed class Pd10V2ContractTests
             Scalar(operation, "status_code_fingerprint_sha256").Length.ShouldBe(64);
             Scalar(operation, "error_vocabulary_fingerprint_sha256").Length.ShouldBe(64);
         }
+    }
+
+    [Fact]
+    public void ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority()
+    {
+        YamlMappingNode manifest = LoadMapping(ConformanceSetPath);
+        Scalar(manifest, "schema_version").ShouldBe("1.0.0");
+        Scalar(manifest, "evidence_id").ShouldBe("PD10-V2-CONFORMANCE-SET");
+        Scalar(manifest, "candidate_version").ShouldBe("2.0.0");
+        Scalar(manifest, "baseline_commit").ShouldBe("3f1056d998ac4688f36eb869c516812c1a4ddb71");
+        Scalar(manifest, "approval_status").ShouldBe("pending-a6b");
+        Scalar(manifest, "production_exposure").ShouldBe("disabled");
+        Scalar(manifest, "story_closure_claimed").ShouldBe("false");
+
+        string historicalV1Path = Scalar(manifest, "historical_v1_path");
+        historicalV1Path.ShouldBe("src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml");
+        string historicalV1Hash = Scalar(manifest, "historical_v1_sha256");
+        historicalV1Hash.ShouldBe("3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2");
+        historicalV1Hash.ShouldBe(Hash(Path.Combine(RepositoryRoot, historicalV1Path)));
+
+        YamlSequenceNode artifacts = Sequence(manifest, "artifacts");
+        artifacts.Children.Count.ShouldBe(int.Parse(Scalar(manifest, "artifact_count"), System.Globalization.CultureInfo.InvariantCulture));
+        artifacts.Children.Count.ShouldBeGreaterThan(0);
+
+        HashSet<string> paths = new(StringComparer.Ordinal);
+        foreach (YamlMappingNode artifact in artifacts.Children.Cast<YamlMappingNode>())
+        {
+            string relativePath = Scalar(artifact, "path");
+            relativePath.ShouldNotContain("\\");
+            Path.IsPathFullyQualified(relativePath).ShouldBeFalse(relativePath);
+            relativePath.Split('/').ShouldNotContain("..", relativePath);
+            paths.Add(relativePath).ShouldBeTrue($"duplicate conformance path: {relativePath}");
+
+            string fullPath = Path.Combine(RepositoryRoot, relativePath);
+            string kind = Scalar(artifact, "kind");
+            if (kind == "gitlink")
+            {
+                Directory.Exists(fullPath).ShouldBeTrue(relativePath);
+                string objectId = Scalar(artifact, "git_object");
+                objectId.Length.ShouldBe(40, relativePath);
+                objectId.Length.ShouldBe(int.Parse(Scalar(artifact, "bytes"), System.Globalization.CultureInfo.InvariantCulture), relativePath);
+                Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(objectId)))
+                    .ShouldBe(Scalar(artifact, "sha256"), relativePath);
+            }
+            else
+            {
+                kind.ShouldBe("file", relativePath);
+                File.Exists(fullPath).ShouldBeTrue(relativePath);
+                new FileInfo(fullPath).Length.ShouldBe(long.Parse(Scalar(artifact, "bytes"), System.Globalization.CultureInfo.InvariantCulture), relativePath);
+                Hash(fullPath).ShouldBe(Scalar(artifact, "sha256"), relativePath);
+            }
+        }
+
+        paths.ShouldContain("src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml");
+        paths.ShouldContain("docs/contract/authorization-matrix.md");
+        paths.ShouldContain("tests/fixtures/parity-contract.yaml");
+        paths.ShouldNotContain("_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml");
+        paths.ShouldNotContain("_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml");
+        paths.ShouldAllBe(path => !path.StartsWith("_bmad-output/implementation-artifacts/spec-", StringComparison.Ordinal));
+
+        string matrixPath = Scalar(manifest, "authorization_matrix_path");
+        matrixPath.ShouldBe("docs/contract/authorization-matrix.md");
+        Scalar(manifest, "authorization_matrix_sha256").ShouldBe(Hash(Path.Combine(RepositoryRoot, matrixPath)));
     }
 
     private static void AssertExactProblemResponse(

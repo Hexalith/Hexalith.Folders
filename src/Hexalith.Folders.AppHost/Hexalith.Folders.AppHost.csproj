@@ -6,8 +6,8 @@
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
-    <NoWarn>$(NoWarn);ASPIRE010;ASPIRE012</NoWarn>
-    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS0618</WarningsNotAsErrors>
+    <!-- Keep the existing AddProject resource model during the Aspire 17 SDK upgrade. -->
+    <NoWarn>$(NoWarn);ASPIRE010;ASPIRE012;CS0618</NoWarn>
     <UserSecretsId>hexalith-folders</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>

@@ -108,8 +108,18 @@ internal static class PackageSdkRuntimeBinding
         payload.CopyTo(bytes);
         byte[] packaged = bytes.ToArray();
         Require(SHA256.HashData(loaded).SequenceEqual(SHA256.HashData(packaged)) && ReadMvid(packaged) == loadedMvid, "Loaded SDK bytes or MVID differ from the package payload.");
-        return JsonSerializer.Serialize(new { name, authority = "package", packageId = identity[0], packageVersion = identity[1], runtimeAsset = assetPath,
-            packageSha512 = restoreHash, archiveSha512, sha256 = Convert.ToHexString(SHA256.HashData(loaded)), mvid = loadedMvid });
+        return JsonSerializer.Serialize(new
+        {
+            name,
+            authority = "package",
+            packageId = identity[0],
+            packageVersion = identity[1],
+            runtimeAsset = assetPath,
+            packageSha512 = restoreHash,
+            archiveSha512,
+            sha256 = Convert.ToHexString(SHA256.HashData(loaded)),
+            mvid = loadedMvid,
+        });
     }
 
     /// <summary>Recomputes NuGet's canonical SHA-512 from archive bytes, including signed-package record adjustments.</summary>

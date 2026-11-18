@@ -9,6 +9,12 @@
     "src/Hexalith.Folders.Client/Generated",
     "tests/fixtures/parity-contract.yaml",
     "docs/contract",
+    ".github/workflows/contract-spine.yml",
+    "tests/tools/run-contract-spine-gates.ps1",
+    "tests/tools/run-safety-invariant-gates.ps1",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs",
     "src/Hexalith.Folders/Observability",
     "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
     "src/Hexalith.Folders.Server/AuditEndpoints.cs",
@@ -106,6 +112,48 @@
       "owning_story": "1-12-wire-nswag-sdk-generation-with-idempotency-helpers",
       "artifact_sources": [
         "src/Hexalith.Folders.Client/Generated"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
+    },
+    {
+      "channel": "developer-diagnostics",
+      "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
+      "artifact_sources": [
+        "docs/contract/contract-spine-ci-gates.md",
+        "docs/contract/safety-invariant-ci-gates.md",
+        "tests/tools/run-contract-spine-gates.ps1",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
+    },
+    {
+      "channel": "ci-logs",
+      "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
+      "artifact_sources": [
+        ".github/workflows/contract-spine.yml",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
+    },
+    {
+      "channel": "assertion-messages",
+      "owning_story": "1-15-wire-safety-invariant-ci-gates",
+      "artifact_sources": [
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",

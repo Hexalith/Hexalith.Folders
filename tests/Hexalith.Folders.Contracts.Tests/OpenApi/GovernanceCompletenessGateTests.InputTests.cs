@@ -6,6 +6,23 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed partial class GovernanceCompletenessGateTests
 {
+    [Fact]
+    public void DuplicateCriteriaProduceOneDiagnosticBeforeValidatingTheirMetadata()
+    {
+        YamlMappingNode[] rows = LoadCriteriaRows(EvidencePath);
+        YamlMappingNode duplicate = CloneRow(rows[0]);
+        string criterion = RequiredScalar(duplicate, "criterion_id");
+        duplicate.Children.Remove(new YamlScalarNode("owner"));
+
+        GateDiagnostic[] diagnostics = EvaluateExitCriteriaRows(rows.Concat([duplicate, CloneRow(duplicate)]).ToArray());
+
+        diagnostics.ShouldHaveSingleItem().Category.ShouldBe("exit_criteria_duplicate");
+        diagnostics[0].Identifier.ShouldBe(criterion);
+        AssertMetadataOnly(diagnostics[0].ToString());
+
+        SetScalar(duplicate, "owner", "PLACEHOLDER");
+        EvaluateExitCriteriaRows([duplicate]).ShouldContain(d => d.Category == "exit_criteria_malformed");
+    }
 
     [Theory]
     [InlineData("null")]

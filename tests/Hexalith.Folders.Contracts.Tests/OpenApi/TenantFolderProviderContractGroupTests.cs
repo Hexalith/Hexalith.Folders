@@ -344,7 +344,31 @@ public sealed class TenantFolderProviderContractGroupTests
             Directory.Exists(forbiddenRoot).ShouldBeFalse($"Story 1.7 must not add downstream artifacts at {forbiddenRoot}.");
         }
 
+        string githubRoot = Path.Combine(_repositoryRootPath, ".github");
+        if (Directory.Exists(githubRoot))
+        {
+            string[] workflowFiles = Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(githubRoot, "*.yaml", SearchOption.AllDirectories))
+                .ToArray();
+            string[] allowedWorkflowFiles =
+            [
+                ".github/workflows/ci.yml",
+                ".github/workflows/contract-spine.yml",
+                ".github/workflows/codeql.yml",
+                ".github/workflows/commitlint.yml",
+                ".github/workflows/dependency-review.yml",
+                ".github/workflows/nightly-drift.yml",
+                ".github/workflows/policy-conformance.yml",
+                ".github/workflows/release.yml",
+                ".github/dependabot.yml",
+            ];
 
+            workflowFiles
+                .Select(file => Path.GetRelativePath(_repositoryRootPath, file).Replace("\\", "/", StringComparison.Ordinal))
+                .Where(file => !allowedWorkflowFiles.Contains(file, StringComparer.Ordinal))
+                .ToArray()
+                .ShouldBeEmpty("Only the known downstream CI/policy/release workflow inventory is allowed.");
+        }
     }
 
     private sealed record Operation(string Path, string Method, string OperationId, YamlMappingNode Node, YamlMappingNode PathItem);

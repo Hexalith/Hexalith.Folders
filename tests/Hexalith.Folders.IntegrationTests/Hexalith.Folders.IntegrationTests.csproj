@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <!-- These tests exercise the AppHost's existing AddProject resource model. -->
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <!-- Reuse the SDK's byte/CAS persistence double; the production content protocol remains under test. -->

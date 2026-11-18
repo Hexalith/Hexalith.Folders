@@ -11,6 +11,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class CapacityCalibrationConformanceTests
 {
+    private const string GateScriptPath = "tests/tools/run-capacity-calibration-gates.ps1";
     private const string ReportPath = "_bmad-output/gates/capacity-calibration/latest.json";
     private const string EvidencePath = "_bmad-output/gates/capacity-calibration/reports/lifecycle-capacity-evidence.json";
 
@@ -51,11 +52,64 @@ public sealed partial class CapacityCalibrationConformanceTests
     }
 
     [Fact]
+    public void GovernanceEvidenceShouldPointC1C2C5AtCalibrationArtifacts()
+    {
+        YamlMappingNode governance = LoadSingleYamlDocument("docs/exit-criteria/c0-c13-governance-evidence.yaml");
+        YamlSequenceNode criteria = governance.GetCalibrationSequence("criteria");
+
+        AssertCriterion(criteria, "C1", "approved", "docs/exit-criteria/c1-capacity.md");
+        AssertCriterion(criteria, "C2", "approved", "docs/exit-criteria/c2-freshness.md");
+        AssertCriterion(criteria, "C5", "approved", "docs/exit-criteria/c5-scalability-quantifiers.md");
+    }
+
+    [Fact]
+    public void CalibrationGateScriptShouldFailClosedAndRunReleaseProfile()
+    {
+        string script = ReadText(GateScriptPath);
+
+        foreach (string required in new[]
+        {
+            "#Requires -Version 7",
+            "Set-StrictMode -Version Latest",
+            "$ErrorActionPreference = 'Stop'",
+            ReportPath,
+            EvidencePath,
+            "release-calibration",
+            "capacity-calibration",
+            "$LASTEXITCODE",
+            "missing-load-harness-assembly",
+            "stale-source-commit",
+            "missing-hardware-profile",
+            "zero-or-partial-step-execution",
+            "missing-c2-freshness-observation",
+            "missing-throughput-rate",
+            "non-numeric-target",
+            "threshold-mismatch",
+            "malformed-evidence-json",
+            "metadata-only-report",
+            "utf8NoBOM",
+        })
+        {
+            script.ShouldContain(required, Case.Sensitive);
+        }
+
+        script.ShouldContain("dotnet run --no-build --configuration Release --project $loadProjectPath -- --profile release-calibration", Case.Sensitive);
+
+        foreach (string step in RequiredSteps)
+        {
+            script.ShouldContain($"'{step}'", Case.Sensitive);
+        }
+
+        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+    }
+
+    [Fact]
     public void LoadHarnessShouldPreserveQuickSmokeAndExposeCalibrationProfile()
     {
         string profile = ReadText("tests/load/Scenarios/LifecycleCapacityProfile.cs");
         string scenario = ReadText("tests/load/Scenarios/LifecycleCapacityScenario.cs");
         string evidenceWriter = ReadText("tests/load/Scenarios/LifecycleCapacityEvidenceWriter.cs");
+        string smokeGate = ReadText("tests/tools/run-capacity-smoke-ci-gates.ps1");
 
         profile.ShouldContain("ReleaseCalibration", Case.Sensitive);
         profile.ShouldContain("\"release-calibration\"", Case.Sensitive);
@@ -75,6 +129,25 @@ public sealed partial class CapacityCalibrationConformanceTests
         evidenceWriter.ShouldContain("FreshnessObservations", Case.Sensitive);
         evidenceWriter.ShouldContain("TargetComparison", Case.Sensitive);
 
+        smokeGate.ShouldContain("threshold_posture = 'reference_pending'", Case.Sensitive);
+        smokeGate.ShouldContain("--profile', 'quick'", Case.Sensitive);
+        smokeGate.ShouldNotContain("release-calibration", Case.Sensitive);
+    }
+
+    [Fact]
+    public void CapacityCalibrationShouldRemainARepositoryGateWithoutCouplingPackagePublication()
+    {
+        string workflow = ReadText(".github/workflows/release.yml");
+        string ci = ReadText(".github/workflows/ci.yml");
+        string packageGate = ReadText("tests/tools/run-release-package-gates.ps1");
+        string manifest = ReadText("deploy/nuget/release-packages.yaml");
+
+        ci.ShouldContain("./tests/tools/run-capacity-smoke-ci-gates.ps1", Case.Sensitive);
+        ci.ShouldContain("./tests/tools/run-capacity-calibration-gates.ps1", Case.Sensitive);
+        workflow.ShouldNotContain("run-capacity-calibration-gates.ps1", Case.Sensitive);
+        workflow.ShouldNotContain("pull_request", Case.Insensitive);
+        packageGate.ShouldNotContain("capacity-calibration", Case.Sensitive);
+        manifest.ShouldContain("inventoryPath: tools/release-packages.json", Case.Sensitive);
     }
 
     [Fact]
@@ -92,6 +165,7 @@ public sealed partial class CapacityCalibrationConformanceTests
             "C5",
             "500 milliseconds",
             "metadata-only",
+            "Story 7.12",
             ReportPath,
             EvidencePath,
             "git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
@@ -101,6 +175,47 @@ public sealed partial class CapacityCalibrationConformanceTests
         }
 
         documentation.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+    }
+
+    [Fact]
+    public void CalibrationLatestReportShouldBeMetadataOnlyWhenPresent()
+    {
+        string fullReportPath = RepositoryPath(ReportPath);
+        if (!File.Exists(fullReportPath))
+        {
+            return;
+        }
+
+        using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
+        JsonElement root = document.RootElement;
+
+        RequiredString(root, "gate").ShouldBe("capacity-calibration");
+        RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
+        RequiredString(root, "profile_name").ShouldBe("release-calibration");
+        RequiredString(root, "source_commit").Length.ShouldBe(40);
+        ReadStringArray(root, "required_measured_steps").ShouldBe(RequiredSteps);
+
+        JsonElement targetComparison = root.GetProperty("target_comparison");
+        AssertTargetComparison(targetComparison.GetProperty("c1"), "max_concurrent_tenants", 4);
+        AssertTargetComparison(targetComparison.GetProperty("c1"), "folders_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c1"), "active_workspaces_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c1"), "concurrent_agent_tasks_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c2"), "max_commit_to_status_read_freshness_ms", 500);
+        AssertTargetComparison(targetComparison.GetProperty("c5"), "tenant_scale_units", 4);
+        AssertTargetComparison(targetComparison.GetProperty("c5"), "folder_scale_units_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c5"), "workspace_scale_units_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c5"), "agent_task_scale_units_per_tenant", 2);
+        AssertTargetComparison(targetComparison.GetProperty("c5"), "minimum_lifecycle_iterations_per_second", 1);
+
+        foreach (string step in RequiredSteps)
+        {
+            root.GetProperty("measured_steps").EnumerateArray().Select(static x => x.GetString()).ShouldContain(step);
+            root.GetProperty("observed_step_counts").GetProperty(step).GetInt32().ShouldBeGreaterThan(0);
+            root.GetProperty("latency_stats").GetProperty(step).GetProperty("p95_ms").GetDouble().ShouldBeGreaterThanOrEqualTo(0);
+        }
+
+        root.GetProperty("freshness_observations").GetProperty("commit_to_status_read_ms").GetProperty("p95_ms").GetDouble().ShouldBeLessThanOrEqualTo(500);
+        AssertMetadataOnlyJson(root);
     }
 
     [Fact]
