@@ -342,7 +342,7 @@ public sealed class ScaffoldContractTests
         string appHostSdk = ((string?)appHostProject.Root?.Attribute("Sdk")).ShouldNotBeNull();
         appHostSdk.ShouldBe($"Aspire.AppHost.Sdk/{aspireHostingVersion}");
         XElement aspireUseCliBundle = DescendantsByLocalName(appHostProject, "AspireUseCliBundle").Single();
-        aspireUseCliBundle.Value.ShouldBe("false");
+        aspireUseCliBundle.Value.ShouldBe("true");
         aspireUseCliBundle.Attribute("Condition").ShouldBeNull();
         aspireUseCliBundle.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
 
