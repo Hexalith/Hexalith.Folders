@@ -3,6 +3,7 @@
     <IsPackable>true</IsPackable>
     <Description>Aspire orchestration helpers for Hexalith.Folders local and release validation topologies.</Description>
     <PackageTags>folders;aspire;dapr;dotnet;hexalith</PackageTags>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS0618</WarningsNotAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" />

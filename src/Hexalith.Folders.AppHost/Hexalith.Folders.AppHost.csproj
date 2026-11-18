@@ -1,10 +1,12 @@
 <Project Sdk="Aspire.AppHost.Sdk/17.0.0">
   <PropertyGroup>
     <AspireUseCliBundle>true</AspireUseCliBundle>
+    <SuppressAspireAppHostSdkObsoleteWarning>true</SuppressAspireAppHostSdkObsoleteWarning>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
     <NoWarn>$(NoWarn);ASPIRE010;ASPIRE012</NoWarn>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS0618</WarningsNotAsErrors>
     <UserSecretsId>hexalith-folders</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
