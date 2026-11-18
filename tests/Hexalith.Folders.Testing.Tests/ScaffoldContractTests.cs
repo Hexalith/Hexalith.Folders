@@ -104,6 +104,7 @@ public sealed class ScaffoldContractTests
     [
         "references/Hexalith.AI.Tools",
         "references/Hexalith.Builds",
+        "references/Hexalith.CiCd",
         "references/Hexalith.Commons",
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
@@ -347,9 +348,17 @@ public sealed class ScaffoldContractTests
         aspireUseCliBundle.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
 
         XElement noWarn = DescendantsByLocalName(appHostProject, "NoWarn").Single();
-        noWarn.Value.ShouldBe("$(NoWarn);ASPIRE010");
+        noWarn.Value.ShouldBe("$(NoWarn);ASPIRE010;ASPIRE012");
         noWarn.Attribute("Condition").ShouldBeNull();
         noWarn.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
+        XElement suppressSdkObsolete = DescendantsByLocalName(appHostProject, "SuppressAspireAppHostSdkObsoleteWarning").Single();
+        suppressSdkObsolete.Value.ShouldBe("true");
+        suppressSdkObsolete.Attribute("Condition").ShouldBeNull();
+        suppressSdkObsolete.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
+        XElement warningsNotAsErrors = DescendantsByLocalName(appHostProject, "WarningsNotAsErrors").Single();
+        warningsNotAsErrors.Value.ShouldBe("$(WarningsNotAsErrors);CS0618");
+        warningsNotAsErrors.Attribute("Condition").ShouldBeNull();
+        warningsNotAsErrors.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
 
         JsonElement[] foldersExceptions = exceptionInventory.RootElement
             .GetProperty("exceptions")

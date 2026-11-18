@@ -42,3 +42,7 @@
 	path = references/Hexalith.Parties
 	url = https://github.com/Hexalith/Hexalith.Parties.git
 	update = none
+[submodule "Hexalith.CiCd"]
+	path = references/Hexalith.CiCd
+	url = https://github.com/Hexalith/Hexalith.CiCd.git
+	update = none
