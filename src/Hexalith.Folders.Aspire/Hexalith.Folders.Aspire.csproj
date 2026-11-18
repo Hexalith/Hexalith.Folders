@@ -3,6 +3,9 @@
     <IsPackable>true</IsPackable>
     <Description>Aspire orchestration helpers for Hexalith.Folders local and release validation topologies.</Description>
     <PackageTags>folders;aspire;dapr;dotnet;hexalith</PackageTags>
+    <!-- NU5104: CommunityToolkit.Aspire.Hosting.Dapr currently ships only as a prerelease aligned with
+         Aspire 17. Keep the suppression scoped to this Aspire helper package. -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
     <WarningsNotAsErrors>$(WarningsNotAsErrors);CS0618</WarningsNotAsErrors>
   </PropertyGroup>
   <ItemGroup>

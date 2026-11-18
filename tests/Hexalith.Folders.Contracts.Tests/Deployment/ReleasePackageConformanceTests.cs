@@ -56,35 +56,39 @@ public sealed partial class ReleasePackageConformanceTests
     }
 
     [Fact]
-    public void StableReleaseShouldUseStableDaprIntegration()
+    public void FoldersAspireShouldUseAspire17DaprIntegration()
     {
+        const string aspire17DaprVersion = "17.0.0-beta.1052";
         string packagesPath = RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props");
         if (!File.Exists(packagesPath))
         {
             packagesPath = RepositoryPath("../Hexalith.Builds/Props/Directory.Packages.props");
         }
         XDocument packages = XDocument.Load(packagesPath);
-        XElement stableVersion = packages.Descendants("HexalithAspireHostingDaprVersion")
-            .Single(element => (string?)element.Attribute("Condition") ==
-                "'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'");
+        XElement catalogDefaultDaprVersion = packages.Descendants("HexalithAspireHostingDaprVersion")
+            .First(element => element.Attribute("Condition") is null);
         XElement daprIntegration = packages.Descendants("PackageVersion")
             .Single(element => string.Equals(
                 (string?)element.Attribute("Include"),
                 "CommunityToolkit.Aspire.Hosting.Dapr",
                 StringComparison.Ordinal));
-        string version = stableVersion.Value;
 
-        version.ShouldBe("13.0.0");
-        version.ShouldNotContain("-", Case.Sensitive, "a stable Folders.Aspire release cannot depend on a prerelease integration package");
+        catalogDefaultDaprVersion.Value.ShouldBe(aspire17DaprVersion);
         ((string?)daprIntegration.Attribute("Version")).ShouldBe("$(HexalithAspireHostingDaprVersion)");
 
         XDocument localPackages = XDocument.Load(RepositoryPath("Directory.Packages.props"));
-        localPackages.Descendants("HexalithAspireHostingDaprVersion").ShouldBeEmpty(
-            "the Builds catalog owns the project-conditioned stable version");
-        localPackages.Descendants("PackageVersion").ShouldNotContain(element =>
-            (string?)element.Attribute("Include") == "CommunityToolkit.Aspire.Hosting.Dapr"
-            || (string?)element.Attribute("Update") == "CommunityToolkit.Aspire.Hosting.Dapr",
-            "a second local override must not duplicate or broaden the Builds catalog's stable version");
+        XElement foldersDaprVersion = localPackages.Descendants("HexalithAspireHostingDaprVersion")
+            .Single(element => element.Attribute("Condition") is null);
+        XElement foldersDaprOverride = localPackages.Descendants("PackageVersion")
+            .Single(element => string.Equals(
+                (string?)element.Attribute("Update"),
+                "CommunityToolkit.Aspire.Hosting.Dapr",
+                StringComparison.Ordinal));
+        foldersDaprVersion.Value.ShouldBe(aspire17DaprVersion);
+        ((string?)foldersDaprOverride.Attribute("Version")).ShouldBe("$(HexalithAspireHostingDaprVersion)");
+
+        XDocument foldersAspire = XDocument.Load(RepositoryPath("src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"));
+        GetProperty(foldersAspire, "NoWarn").ShouldContain("NU5104");
     }
 
     [Fact]

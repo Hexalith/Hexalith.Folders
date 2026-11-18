@@ -11,4 +11,19 @@
   <Import Project="$(Hexalith1BuildPackageProps)" Condition="Exists('$(Hexalith1BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith2BuildPackageProps)" Condition="Exists('$(Hexalith2BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith3BuildPackageProps)" Condition="'$(HexalithVersionsLoaded)' != 'true'" />
+
+  <!-- Folders-owned Aspire 17 selection. The Builds catalog already pins Aspire.Hosting to 17.0.0,
+       but still forces CommunityToolkit.Aspire.Hosting.Dapr 13.0.0 on Hexalith.Folders.Aspire.
+       Reset that project-conditioned pin so the Folders graph stays on one Aspire 17 family.
+       CommunityToolkit Dapr has no stable 17.0.0 yet; Hexalith.Folders.Aspire suppresses NU5104. -->
+  <PropertyGroup>
+    <HexalithAspireAppHostSdkVersion>17.0.0</HexalithAspireAppHostSdkVersion>
+    <HexalithAspireHostingDaprVersion>17.0.0-beta.1052</HexalithAspireHostingDaprVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Update="Aspire.Hosting" Version="17.0.0" />
+    <PackageVersion Update="Aspire.Hosting.Redis" Version="17.0.0" />
+    <PackageVersion Update="Aspire.Hosting.Testing" Version="17.0.0" />
+    <PackageVersion Update="CommunityToolkit.Aspire.Hosting.Dapr" Version="$(HexalithAspireHostingDaprVersion)" />
+  </ItemGroup>
 </Project>
