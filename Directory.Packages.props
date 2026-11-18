@@ -6,6 +6,8 @@
     <Hexalith2BuildPackageProps>$(MSBuildThisFileDirectory)../Hexalith.Builds/Props/Directory.Packages.props</Hexalith2BuildPackageProps>
     <Hexalith3BuildPackageProps>$(MSBuildThisFileDirectory)../../Hexalith.Builds/Props/Directory.Packages.props</Hexalith3BuildPackageProps>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <!-- Use the published EventStore patch until the shared Builds catalog includes it. -->
+    <HexalithEventStoreVersion Condition="'$(HexalithEventStoreVersion)' == ''">5.3.1</HexalithEventStoreVersion>
   </PropertyGroup>
   <!-- Import the required Hexalith.Packages.props file. -->
   <Import Project="$(Hexalith1BuildPackageProps)" Condition="Exists('$(Hexalith1BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
