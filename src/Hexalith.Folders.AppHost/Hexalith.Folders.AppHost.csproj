@@ -1,6 +1,7 @@
 <Project Sdk="Aspire.AppHost.Sdk/17.0.0">
   <PropertyGroup>
     <AspireUseCliBundle>true</AspireUseCliBundle>
+    <SkipAddAspireDefaultReferences>true</SkipAddAspireDefaultReferences>
     <SuppressAspireAppHostSdkObsoleteWarning>true</SuppressAspireAppHostSdkObsoleteWarning>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
@@ -41,6 +42,7 @@
     <ProjectReference Include="$(HexalithBuildsRoot)/src/libraries/Hexalith.Builds.Tooling/Hexalith.Builds.Tooling.csproj" IsAspireProjectResource="false" GlobalPropertiesToRemove="HexalithEventStoreVersion" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" />
   </ItemGroup>

@@ -89,6 +89,7 @@ jobs:
         uses: Hexalith/Hexalith.Builds/Github/prepare-domain-release@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b
         with:
           solution: Hexalith.Folders.CI.slnx
+          node-version: '26.13.1'
           package-prepare-script: scripts/prepare-ci-topology-projects.sh
           additional-sdk-version: '10.0.x'
           builds-execution-sha: 6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b
