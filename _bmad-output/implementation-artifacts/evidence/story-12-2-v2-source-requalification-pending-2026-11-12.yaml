@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 09ccf2e08e629a650bc8ed2c201a71070abc702f4e3c8bb072bc61f62c051692
+candidate_set_sha256: c181859c9d3b9a9940385d1e3b8b701623fc3970d7fc0d5509632b6e40d9c89e
 artifact_count: 1659
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4914,8 +4914,8 @@ artifacts:
     sha256: fc21824c76187dc1a01ce5dcd077766aa40a487986ff7fcef5bb03c0ed617199
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs"
     kind: file
-    bytes: 27891
-    sha256: dfe675466ea2b1e5a01c3e9a33cc0b1b22842af8fd01981d5bdfee2e8d27e44d
+    bytes: 28078
+    sha256: dfd1c9bfc2063c36daf5ff05fd15b9da8fa6b11654db302aa6ad9a70495fee50
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs"
     kind: file
     bytes: 25888

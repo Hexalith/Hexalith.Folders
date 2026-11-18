@@ -352,6 +352,9 @@ public sealed class TenantFolderProviderContractGroupTests
                 .ToArray();
             string[] allowedWorkflowFiles =
             [
+                ".github/actions/after-integration-tests/action.yml",
+                ".github/actions/after-unit-tests/action.yml",
+                ".github/actions/nightly/action.yml",
                 ".github/workflows/ci.yml",
                 ".github/workflows/contract-spine.yml",
                 ".github/workflows/codeql.yml",
