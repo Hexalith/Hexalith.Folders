@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
-    <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
+    <NoWarn>$(NoWarn);ASPIRE010;ASPIRE012</NoWarn>
     <UserSecretsId>hexalith-folders</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
