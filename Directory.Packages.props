@@ -20,7 +20,7 @@
        CommunityToolkit Dapr has no stable 17.0.0 yet; Hexalith.Folders.Aspire suppresses NU5104. -->
   <PropertyGroup>
     <HexalithAspireAppHostSdkVersion>17.0.0</HexalithAspireAppHostSdkVersion>
-    <HexalithAspireHostingDaprVersion>17.0.0-beta.1052</HexalithAspireHostingDaprVersion>
+    <HexalithAspireHostingDaprVersion>17.0.0-beta.1078</HexalithAspireHostingDaprVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Update="Aspire.Hosting" Version="17.0.0" />

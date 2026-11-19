@@ -58,7 +58,7 @@ public sealed partial class ReleasePackageConformanceTests
     [Fact]
     public void FoldersAspireShouldUseAspire17DaprIntegration()
     {
-        const string aspire17DaprVersion = "17.0.0-beta.1052";
+        const string aspire17DaprVersion = "17.0.0-beta.1078";
         string packagesPath = RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props");
         if (!File.Exists(packagesPath))
         {
