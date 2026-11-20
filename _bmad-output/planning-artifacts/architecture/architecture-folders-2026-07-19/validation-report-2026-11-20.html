@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Folders architecture validation · 20 November 2026</title>
+<style>
+:root{color-scheme:light;--ink:#172a35;--muted:#45616c;--line:#c4d2d4;--link:#075e64}
+*{box-sizing:border-box}body{margin:0;background:#f2f5f4;color:var(--ink);font:16px/1.58 "Segoe UI",system-ui,sans-serif}
+main{max-width:960px;margin:38px auto 60px;background:#fff;padding:clamp(20px,5vw,68px);border-top:5px solid #235d60;box-shadow:0 2px 14px #173d4010}
+h1,h2,h3{line-height:1.18;text-wrap:balance}h1{font:600 clamp(32px,5vw,52px)/1.08 Georgia,serif;margin:0 0 8px;letter-spacing:-.035em}
+h1+p{color:var(--muted);margin:0 0 24px}h1+p+p{padding:17px 21px;border-left:4px solid #98432e;background:#fbf3ee}
+h2{margin:44px 0 16px;font-size:27px;border-bottom:2px solid var(--line);padding-bottom:9px}h3{font-size:19px;margin:25px 0 7px}
+p{margin:9px 0 14px}p:has(a):not(:has(strong)){overflow-wrap:anywhere}a{color:var(--link);text-underline-offset:3px}
+code{background:#edf2f3;border-radius:3px;padding:1px 4px;font-size:.9em;overflow-wrap:anywhere}
+table{border-collapse:collapse;text-align:left;width:100%}th,td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top}th{background:#e5eeee}td:first-child{width:26%;font-weight:550}li{margin:8px 0}
+@media(max-width:600px){main{margin:0;box-shadow:none}th,td{padding:6px;font-size:.92rem}}
+@media print{body{background:white;font-size:10pt}main{box-shadow:none;max-width:none;margin:0;padding:0}h2,h3{break-after:avoid}tr{break-inside:avoid}}
+</style></head><body><main>
+<h1 id="folders-architecture-validation">Folders architecture validation</h1>
+<p>20 November 2026 · Hexalith.Folders · Whole-record review</p>
+<p><strong>Verdict — changes required.</strong> The record gives implementers conflicting instructions for provider retries, authorization, admission, routing and event delivery. Following the wrong instruction can repeat a provider write or prevent Workers from receiving valid events. Five independent reviews yielded <strong>7 high</strong> and <strong>10 medium</strong> findings after consolidation. The architecture itself was preserved.</p>
+<h2 id="what-passed">What passed</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BMAD mechanical lint</td>
+<td>Zero findings on the reviewed bytes. The classic decision-table format also received an explicit ID comparison.</td>
+</tr>
+<tr class="even">
+<td>Decision IDs and file references</td>
+<td>All 66 decision-row identifiers matched the parent commit, including occurrence counts. All 29 distinct local file targets in Markdown links existed.</td>
+</tr>
+<tr class="odd">
+<td>Focused .NET conformance</td>
+<td>20 of 20 passed. Two cases checked ADR decision references and the 38 lifecycle diagram edges, one checked C6 vocabulary, and 17 checked console wireflow notes.</td>
+</tr>
+<tr class="even">
+<td>Delivery and release posture</td>
+<td>The record correctly distinguishes actor-backed storage and the five operational readers from outstanding provider, indexing, audit and readiness evidence. Signed 2.0.0 packages and the recorded <code>V1Only</code> control have separate qualification gates.</td>
+</tr>
+</tbody>
+</table>
+<p>These checks cover structure and selected conformance properties. The semantic findings below come from comparing the full record with operation schemas, policies, source registrations and deployment declarations. Production deployment, live-provider behavior, failover and full Release CI were outside this validation.</p>
+<h2 id="high-findings">High findings</h2>
+<h3 id="provider-writes-after-a-timeout">Provider writes after a timeout</h3>
+<p>The failure taxonomy includes timeout under known failures, where the caller can retry. The recovery rule also classifies a lost response as an unknown outcome. A provider can accept the first write before the response is lost. Tie classification to dispatch and evidence of effect. After ambiguous dispatch, preserve the operation identity, enter <code>unknown_provider_outcome</code>, and use the bounded read-only reconciliation procedure before any further write.</p>
+<p><a href="../../architecture.md">Architecture L114, 1021–1023</a> · <a href="../../../../docs/contract/provider-compatibility-catalog.md">Provider catalog, mutation failure scope</a></p>
+<h3 id="authority-for-live-file-reads">Authority for live file reads</h3>
+<p>The process recipe says “folder ACL check” before file queries. A reader could reasonably treat a read grant as sufficient to return file content. The v2 matrix requires fresh tenant authority and a <strong>folder write grant</strong> for the five live context operations, with path, sensitivity and C4 checks. Metadata-only index search uses a <strong>folder read grant</strong>, security trimming and authoritative hydration. Name both families and their gates in the recipe.</p>
+<p><a href="../../architecture.md">Architecture L167–169, 1009–1017</a> · <a href="../../../../docs/contract/authorization-matrix.md">Authorization matrix L125–129</a> · <a href="../../prd.md">FR34–FR35 and FR58</a></p>
+<h3 id="whether-search-traffic-traverses-the-sidecar">Whether search traffic traverses the sidecar</h3>
+<p>The search guidance calls the production Dapr policy and mTLS unconditional while also documenting an absolute Memories address override. The Server selects the configured absolute address ahead of the sidecar URL, with no environment restriction in that registration. Scope the guarantee to the supported sidecar configuration. Require deployed-profile evidence of the resolved route. The source establishes a configuration-dependent path, not an observation about a live deployment.</p>
+<p><a href="../../architecture.md">Architecture L167</a> · <a href="../../../../src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs">Server registration L175–186</a> · <a href="../../../../deploy/dapr/production/accesscontrol.yaml">Production Memories access policy</a></p>
+<h3 id="which-side-decides-idempotency">Which side decides idempotency</h3>
+<p>The process section calls the generated helpers authoritative. The SDK can mirror payload fields, but it cannot supply trusted tenant, credential or task scope. Make the boundary explicit for both REST and Gateway. The caller supplies the opaque key, the authorized server adapter derives the canonical descriptor, and EventStore serializes admission and decides replay or conflict.</p>
+<p><a href="../../architecture.md">Architecture L666–667, 966–974, 1065</a> · <a href="../../../../docs/contract/idempotency-and-parity-rules.md">OQ8 field and authority rules L9–24</a></p>
+<h3 id="where-rest-sdk-and-mcpcli-requests-go">Where REST, SDK and McpCli requests go</h3>
+<p>The canonical diagram points direct REST and SDK clients at a single EventStore command route. The search section also sends every CLI/MCP read through the REST SDK. Show the two supported paths. The generated SDK calls operation-specific Folders REST routes according to routing mode. Eligible McpCli operations target the EventStore Gateway and share the Folders domain checks. Identify legacy SDK wrappers separately. Eligibility and package publication each have a separate runtime qualification gate.</p>
+<p><a href="../../architecture.md">Architecture L72–73, 167, 1632, 1648–1654</a> · <a href="../../../../src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs">Generated REST client</a> · <a href="../../../../docs/contract/mcpcli-folders-operation-declarations.md">Q33 and Q34 declarations</a> · <a href="../../../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml">V2 operation routes</a></p>
+<h3 id="which-topics-workers-consume">Which topics Workers consume</h3>
+<p>The convention and diagram use tenant-prefixed topic names. The Folders publisher override and the Workers subscription bind <code>folders.events</code> and <code>tenants.events</code>. A publisher following the diagram can send a valid event to a topic the configured subscriber never reads. Show the Folders override in the diagram and identify tenant isolation in the envelope, authority checks and storage keys.</p>
+<p><a href="../../architecture.md">Architecture L82, 923–924, 1634–1635, 1659</a> · <a href="../../../../src/Hexalith.Folders.AppHost/Program.cs">AppHost publisher L81–87</a> · <a href="../../../../deploy/dapr/production/pubsub.workers.yaml">Workers subscription L17–21</a></p>
+<h3 id="lock-conflict-response-on-the-wire">Lock-conflict response on the wire</h3>
+<p>The A-8 example tells client authors to handle HTTP 409, an uppercase code and <code>wait_and_retry</code>. The v2 workspace-lock example specifies HTTP <strong>423</strong>, category <code>lock_conflict</code>, code <code>workspace_locked</code>, action <code>retry</code>, and <code>details.visibility</code>. The architecture example also supplies different detail fields. Reference the operation’s generated example so status handling, redaction and retry behavior agree.</p>
+<p><a href="../../architecture.md">Architecture L897–914</a> · <a href="../../../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml">V2 lock-conflict response L6743–6754</a></p>
+<h2 id="medium-findings">Medium findings</h2>
+<h3 id="confidential-metadata-classification">Confidential metadata classification</h3>
+<p>Concern 17 offers hash, truncation, redaction and exposure as general options. S-6 and approved C9 require tenant-scoped, non-reversible tokens at the event-write boundary for confidential overrides, with withheld rendering. Limit the display options to the classes that permit them and refer writers to S-6.</p>
+<p><a href="../../architecture.md">Architecture L126, 627, 633</a> · <a href="../../authority-relock/2026-09-17/A5-C9-PD8.md">Approved C9 policy</a></p>
+<h3 id="lock-prerequisite">Lock prerequisite</h3>
+<p>“Every mutating call” includes creation and lock acquisition, which cannot start with an existing held lock. Bind fencing to the workspace operations that require it and retain each operation’s distinct admission and authorization prerequisites.</p>
+<p><a href="../../architecture.md">Architecture L980</a> · <a href="../../../../docs/contract/authorization-matrix.md">Canonical operation inventory</a></p>
+<h3 id="upload-media-type">Upload media type</h3>
+<p>The header table specifies multipart streaming. The published AddFile and ChangeFile operations advertise JSON bodies with discriminated payload shapes, including the stream descriptor. Document the advertised wire shape separately from how bytes are supplied and verified. Treat a new media type as a contract change.</p>
+<p><a href="../../architecture.md">Architecture L895</a> · <a href="../../../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml">V2 AddFile and ChangeFile request bodies</a> · <a href="../../../../docs/contract/file-context-contract-groups.md">OQ2 file policy</a></p>
+<h3 id="correlation-and-task-identifiers">Correlation and task identifiers</h3>
+<p>The header table requires a ULID and a correlation header on every request. V2 accepts an optional opaque correlation ID. Task IDs are also opaque, with requiredness determined by operation. Keep local generation of a ULID as a default and accept valid caller-supplied opaque values.</p>
+<p><a href="../../architecture.md">Architecture L681, 890–891</a> · <a href="../../../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml">V2 header components L16421–16434</a></p>
+<h3 id="production-broker-selection">Production broker selection</h3>
+<p>D-5 permits switching broker families as an escalation. I-10 and the supported deployment profile qualify a durable Redis Streams-compatible broker. Treat another broker as a change to the supported profile with explicit qualification.</p>
+<p><a href="../../architecture.md">Architecture L607, 736, 744</a> · <a href="../../../../docs/deployment/supported-mvp-profile.md">Production environment inventory</a></p>
+<h3 id="snapshot-interval">Snapshot interval</h3>
+<p>D-6 calls 50 events the EventStore default. The checked-out SDK sets its fallback interval to 100 and the reviewed Folders host configuration contains no 50-event override. Cite the inherited default or identify an explicit Folders override and its scope.</p>
+<p><a href="../../architecture.md">Architecture L608</a> · <a href="../../../../references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/SnapshotOptions.cs">SnapshotOptions L27</a></p>
+<h3 id="eventstore-container-image">EventStore container image</h3>
+<p>The deployment inventory names <code>hexalith-folders-eventstore</code>. The project sets <code>ContainerRepository</code> to <code>eventstore</code>, which the component-boundary section also records. Point deployment guidance to the project and separately bind the release digest when available.</p>
+<p><a href="../../architecture.md">Architecture L1563, 1718</a> · <a href="../../../../src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj">Container project L6</a></p>
+<h3 id="who-approves-a-new-exception">Who approves a new exception</h3>
+<p>Some current exception clauses still ask for separate role approvals. The September 24 policy makes Jerome the decision owner. Keep security, legal and other specialist evidence attached to the decision and identify dated historical signatories where applicable.</p>
+<p><a href="../../architecture.md">Architecture L633, 653</a> · <a href="../../../../docs/governance/approval-policy.md">Project decision policy</a></p>
+<h3 id="release-evidence-assignments">Release evidence assignments</h3>
+<p>The band-level summary obscures shared story ownership and attaches OQ13 to the NFR band. Use the traceability rows for individual owners, including 7.16 for NFR83. OQ11 covers the durable slice for NFR79–81, OQ12 covers NFR74–78 and 82–84, and OQ13 measures the approved capacity and latency envelope on the same profile.</p>
+<p><a href="../../architecture.md">Architecture L230–232, 1609, 1751</a> · <a href="../../../../docs/exit-criteria/nfr-traceability.md">NFR74–84 traceability rows</a> · <a href="../../prd.md">PRD open release items</a></p>
+<h3 id="execution-order-and-approved-targets">Execution order and approved targets</h3>
+<p>Phase prose presents earlier C1–C5 decisions as pending and provides an alternative implementation order. Mark the phase sequence as historical. Use the execution manifest for current dependencies and the governance inventory for approved values and remaining measurements.</p>
+<p><a href="../../architecture.md">Architecture L784–806, 1766–1768</a> · <a href="../../planning-story-manifest.yaml">Execution manifest</a> · <a href="../../../../docs/exit-criteria/c0-c13-governance-evidence.yaml">Exit-criteria inventory</a></p>
+<h2 id="order-of-repair">Order of repair</h2>
+<ol type="1">
+<li>Align the provider failure and admission rules with the provider catalog and A-9. A lost response after dispatch must have one recovery path across REST and Gateway.</li>
+<li>Align authorization, search egress and client routing with the operation matrix, host registrations and deployment profile. Walk one live-context read and one indexed search through each eligible transport.</li>
+<li>Reconcile topics, wire examples and operational tables against the checked-in artifacts. Review lock-conflict, upload, identifier and event-delivery examples at the boundaries. Rerun the standalone review and the focused checks on the amended record.</li>
+</ol>
+<h2 id="review-record">Review record</h2>
+<p>Reviewed the working copy of <code>_bmad-output/planning-artifacts/architecture.md</code> at parent commit <code>b4c6b9a4</code>. The five direct submodule checkouts ahead of the parent pins were Builds, FrontComposer, Memories, Projects and Tenants. The scope includes their checked-out source when cited. The evidence is local to this revision and configuration.</p>
+<p>Document SHA-256: <code>9b3ebe4eba08e8c1e1578982b9ed792ca3a213ca33fd613f02749f6fcccf721a</code>. Architecture line numbers refer to that digest. Findings shared by reviewers are counted once. Details and additional locations appear in the five reviews.</p>
+<p><a href="reviews/review-rubric-2026-11-20.md">Good-spine rubric</a> · <a href="reviews/review-technology-2026-11-20.md">Technology and runtime</a> · <a href="reviews/review-adversarial-2026-11-20.md">Adversarial divergence</a> · <a href="reviews/review-authority-2026-11-20.md">Decision authority</a> · <a href="reviews/review-security-2026-11-20.md">Security and tenant isolation</a></p>
+</main></body></html>
