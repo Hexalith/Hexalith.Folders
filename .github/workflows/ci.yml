@@ -18,7 +18,6 @@ jobs:
     uses: Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b
     with:
       solution: Hexalith.Folders.CI.slnx
-      additional-sdk-version: '10.0.x'
       # Explicit Keycloak/Platform proof cases run only through their separate component verifier.
       # Unknown NotRunnable results continue to fail shared CI.
       allowed-not-runnable-tests: |
@@ -89,7 +88,6 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-          dotnet-version: 10.0.x
           cache: true
           cache-dependency-path: |
             Directory.Packages.props
@@ -165,7 +163,6 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-          dotnet-version: 10.0.x
 
       - name: Provision Playwright Chromium browser
         shell: pwsh
@@ -196,7 +193,6 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-          dotnet-version: 10.0.x
 
       - name: Provision Playwright Chromium browser
         shell: pwsh
