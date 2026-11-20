@@ -2604,6 +2604,8 @@ So that operator, audit, and incident journeys prove production truth rather tha
 **And** no completion claim may rely only on seed, in-memory, fake, unavailable, safe-empty, or component-only evidence
 **And** accepted completion publishes the OQ9 runtime evidence rather than treating OQ9 as a reverse prerequisite.
 
+**Audit acceptance (2026-11-20).** Use the production audit-trail and operation-timeline query registrations for an accepted operation. Populate or rebuild the metadata-only readers from retained authorized evidence. Read the operation on a second Server replica and again after an empty-checkpoint rebuild. Compare ordering, freshness, redaction and tenant isolation. Seeding a dictionary skips the behavior under test.
+
 ## Epic 7: MVP Operational and Quality Evidence
 
 Release stakeholders can verify that the MVP satisfies security, tenant isolation, parity, provider compatibility, Dapr policy, retention, observability, capacity, accessibility, documentation, package-traceability, and NFR traceability evidence before production acceptance.
@@ -3441,6 +3443,8 @@ So that packable client dependencies and idempotency behavior are stable.
 **Then** generation targets the approved v2 Contract Spine, idempotency hash regression vectors pass, ProblemDetails parsing remains canonical, Commons helpers replace local ULID/hash logic where available, Newtonsoft leaves the packable surface, and generated files remain build-generated rather than hand-edited
 **And** no supported client target, sample, or package silently selects historical v1.
 
+**Audit acceptance (2026-11-20).** Run the generation regression in a private output directory for both NSwag and its postprocessor. Compare final bytes with the tracked client and observe its hash through a normal and an interrupted generator run. A concurrent compilation must always see the original tracked bytes. The current generator can take this isolation fix as maintenance before v2 approval.
+
 ### Story 11.13: Delete obsolete local code and synchronize planning/maintenance documents
 
 **Requirements:** No direct product FR; AR-CURRENT-09, AR-CURRENT-19, AR-CURRENT-21
@@ -3677,6 +3681,8 @@ So that repository-backed work produces a provider-confirmed durable commit.
 **Then** writer identity uses the immutable canonical Story 12.7 token and the target executes only through a capability-proven `opaque-handle-restartable` provider operation
 **And** any `cleartext-required` operation fails before admission with HTTP `422` and code `confidential_operation_not_durable`.
 
+**Audit acceptance (2026-11-20).** Persist a stable pending operation through EventStore before invoking the remote writer. Exercise the normally registered executor on a disposable repository with a real lock and staged bytes. Stop the executor after remote acceptance and before local confirmation, then resume with the same operation identity. Verify the remote ref, exact bytes, one logical commit and one terminal task result. Record which provider was exercised. Story 3.14 owns the full create/bind journey after this executor is available.
+
 ### Story 12.5: At-least-once Memories egress and reconciler
 
 **Requirements:** FR58; NFR79–NFR80; AR-CURRENT-18
@@ -3697,6 +3703,8 @@ So that indexing outages never roll back file truth and missed delivery can reco
 **When** the Memories egress document, broker message, bridge state, or retry evidence is built
 **Then** the Story 12.7 tokenizer supplies the immutable canonical token and cleartext never enters the outbox, broker, bridge, or retry evidence
 **And** restart and duplicate-delivery proof preserves token identity without creating a reversible copy.
+
+**Audit acceptance (2026-11-20).** Exercise both a changed entry and a removal through the normal Workers subscription. Acknowledge only once retryable work is durably recoverable, or return a retryable delivery result. After a transient publish refusal and worker restart, restore Memories. Verify that the same logical publication identity converges on one live entry or its removal, and that the pending count and oldest pending age drain.
 
 ### Story 12.6: Implement durable all-mutations idempotency and expired-key precedence
 
@@ -3817,6 +3825,8 @@ So that tenant-controlled base URLs cannot turn the service into an SSRF proxy.
 **Then** every normalized address is checked, the approved address is connect-pinned, TLS validates the original host, `UseProxy=false`, and credential-bearing redirects are rejected
 **And** approved private-destination exceptions are explicit, bounded, and covered together with credential sentinels by positive and negative tests.
 
+**Audit acceptance (2026-11-20).** Resolve the actual GitHub and Forgejo HTTP handlers through production registration. In a controlled transport fixture, configure a proxy and a cross-authority redirect. Verify the approved direct connection and that neither the proxy nor the redirect destination receives a credential-bearing request. Run this check for the selected provider before enabling live writes.
+
 ### Story 13.2: Fail-safe fallback authorization policy and sidecar-only app port
 
 **Requirements:** FR9–FR10; NFR74, NFR76, NFR84
@@ -3871,6 +3881,8 @@ So that orchestration never reports healthy from a seed or placeholder source.
 **When** the production snapshot source and UI health endpoints are queried
 **Then** current dependency state, freshness, safe reason, and degraded/unavailable posture are reported without secrets, and startup/readiness gates do not substitute an in-memory or constant-success source
 **And** healthy, degraded, failed, timeout, stale, restart, wrong-tenant protected detail, and probe-boundary evidence are proven against deployed composition; fake-only or safe-success evidence cannot close the story.
+
+**Audit acceptance (2026-11-20).** Run the standard Server and Workers compositions. Make Tenants unavailable and stall a projection past the configured lag bound. Inspect `/ready` for both conditions and after recovery. A missing or old observation must have an explicit freshness or availability state. Liveness must remain independent of those dependency results.
 
 ### Story 13.5: Wire alert instruments and production Dapr state store and resiliency
 
@@ -3958,6 +3970,8 @@ So that hardening, durability, recovery, and capacity claims rest on reproducibl
 **When** Story 13.7 is scheduled
 **Then** it follows Stories 13.1–13.6, Stories 12.1–12.2, and `EXT-ES-RECOVERY`
 **And** its execution rank is strictly later than every unresolved prerequisite.
+
+**Audit acceptance (2026-11-20).** Inspect the rendered EventStore, Server and Workers workloads for paired sidecar and application callback-token secret references. Verify authorized actor callbacks on the deployed profile. Use disposable provider operations and the durable services for latency, throughput and projection-lag measurements, then time the regional recovery exercise against the documented RPO and RTO.
 
 **Execution model:** Story 13.7 is a release acceptance aggregate spanning platform implementation, an operational drill, and approval evidence. No agent receives the whole parent as one development session.
 

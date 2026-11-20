@@ -2369,6 +2369,19 @@ validation_results:
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 planning_amendments:
+- amended_on: '2026-11-20'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  proposal: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-20.md
+  accepted_scope: Apply the reviewed repository audit recommendations to the sprint plan.
+  changes:
+  - Add production acceptance evidence to Stories 6.14, 11.12, 12.4, 12.5, 13.1, 13.4 and 13.7.
+  - Track Release CI recovery, immediate generator isolation, SDK onboarding and shared workflow ownership in sprint-status.yaml.
+  - Preserve the existing execution graph. Provider selection, runtime qualification and release decisions remain outstanding.
+  changed_authority:
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256_before: ca08c03c0dfbd50bfb59eeb270f74d96444ef321f2dce3e004cf0ca1e2b46120
+    sha256_after: 7a9a17a14fbad771192b7eb3530874290cd987b339f4bd3f73cc7056af3452db
 - amended_on: '2026-11-13'
   decision_maker: Jerome
   decision_policy: docs/governance/approval-policy.md
