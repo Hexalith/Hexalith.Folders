@@ -1715,9 +1715,9 @@ public sealed partial class GovernanceCompletenessGateTests
         }
 
         if (reviewByEntries.Length != 1
-            || !IsYamlString(reviewByEntries[0].Key)
+            || !YamlCoreScalar.IsString(reviewByEntries[0].Key)
             || reviewByEntries[0].Value is not YamlScalarNode value
-            || !IsYamlString(value)
+            || !YamlCoreScalar.IsString(value)
             || !DateOnly.TryParseExact(value.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
         {
             diagnostics.Add(new("exit-criteria", "approval_date_invalid", criterion, path));
@@ -3055,7 +3055,7 @@ public sealed partial class GovernanceCompletenessGateTests
                 if (metadataKeys.Contains(methodKey))
                 {
                     bool valid = methodKey is "summary" or "description"
-                        ? IsYamlString(methodEntry.Value, allowEmpty: true)
+                        ? YamlCoreScalar.IsString(methodEntry.Value, allowEmpty: true)
                         : methodEntry.Value is YamlSequenceNode && HasYamlCollectionTag(methodEntry.Value, "seq");
                     if (!valid)
                     {
@@ -3078,7 +3078,7 @@ public sealed partial class GovernanceCompletenessGateTests
                 Dictionary<string, YamlNode> operation = ReadOpenApiFields(methodEntry.Value, "openapi-operation-invalid");
                 if (operation.ContainsKey("$ref")
                     || !operation.TryGetValue("operationId", out YamlNode? idNode)
-                    || !IsYamlString(idNode))
+                    || !YamlCoreScalar.IsString(idNode))
                 {
                     throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: openapi-operation-invalid");
                 }
@@ -3100,7 +3100,7 @@ public sealed partial class GovernanceCompletenessGateTests
         Dictionary<string, YamlNode> fields = new(StringComparer.Ordinal);
         foreach (KeyValuePair<YamlNode, YamlNode> entry in mapping.Children)
         {
-            if (!IsYamlString(entry.Key)
+            if (!YamlCoreScalar.IsString(entry.Key)
                 || !fields.TryAdd(((YamlScalarNode)entry.Key).Value!, entry.Value))
             {
                 throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: " + (keyReason ?? reason));
@@ -3115,34 +3115,6 @@ public sealed partial class GovernanceCompletenessGateTests
 
     private static bool IsOpenApiExtension(string key) =>
         key.Length > 2 && key.StartsWith("x-", StringComparison.Ordinal);
-
-    private static bool IsYamlString(YamlNode node, bool allowEmpty = false)
-    {
-        if (node is not YamlScalarNode scalar || scalar.Value is null
-            || (!allowEmpty && string.IsNullOrWhiteSpace(scalar.Value)))
-        {
-            return false;
-        }
-
-        string tag = scalar.Tag.ToString();
-        if (tag is "tag:yaml.org,2002:str" or "!")
-        {
-            return true;
-        }
-
-        if (!scalar.Tag.IsEmpty && tag != "?")
-        {
-            return false;
-        }
-
-        // The representation model keeps untagged plain scalars as text. Resolve the
-        // YAML 1.2 core non-string forms without culture-dependent numeric parsing.
-        return scalar.Style is not (ScalarStyle.Plain or ScalarStyle.Any)
-            || (scalar.Value.Length > 0 && !NonStringYamlCoreScalarPattern().IsMatch(scalar.Value));
-    }
-
-    [GeneratedRegex(@"\A(?:~|null|Null|NULL|true|True|TRUE|false|False|FALSE|0o[0-7]+|0x[0-9a-fA-F]+|[-+]?(?:\.[0-9]+|[0-9]+(?:\.[0-9]*)?)(?:[eE][-+]?[0-9]+)?|[-+]?\.(?:inf|Inf|INF)|\.(?:nan|NaN|NAN))\z", RegexOptions.CultureInvariant | RegexOptions.NonBacktracking)]
-    private static partial Regex NonStringYamlCoreScalarPattern();
 
     private static YamlMappingNode[] LoadParityRows(string path)
     {
@@ -3354,27 +3326,10 @@ public sealed partial class GovernanceCompletenessGateTests
         return value!;
     }
 
-    private static bool ParseRequiredBoolean(YamlMappingNode mapping, string key)
-    {
-        KeyValuePair<YamlNode, YamlNode>[] entries = mapping.Children
-            .Where(entry => entry.Key is YamlScalarNode scalar && scalar.Value == key)
-            .ToArray();
-        if (entries.Length != 1
-            || !IsYamlString(entries[0].Key)
-            || entries[0].Value is not YamlScalarNode node
-            || !(node.Tag.ToString() == "tag:yaml.org,2002:bool"
-                || ((node.Tag.IsEmpty || node.Tag.ToString() == "?") && node.Style is ScalarStyle.Plain or ScalarStyle.Any)))
-        {
-            throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}");
-        }
-
-        return node.Value switch
-        {
-            "true" or "True" or "TRUE" => true,
-            "false" or "False" or "FALSE" => false,
-            _ => throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}"),
-        };
-    }
+    private static bool ParseRequiredBoolean(YamlMappingNode mapping, string key) =>
+        YamlCoreScalar.TryReadBoolean(mapping, key, out bool value)
+            ? value
+            : throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}");
 
     private static DateOnly ParseRequiredDate(YamlMappingNode mapping, string key) =>
         ParseDate(RequiredScalar(mapping, key), key);

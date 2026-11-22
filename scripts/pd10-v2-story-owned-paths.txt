@@ -1219,10 +1219,12 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs
+tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.RunnerTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.YamlTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs
+tests/Hexalith.Folders.Contracts.Tests/YamlCoreScalar.cs
 tests/Hexalith.Folders.EventStore.Tests/FoldersEventStoreHostFactory.cs
 tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj
 tests/Hexalith.Folders.EventStore.Tests/OriginalSourceHostCompositionCollection.cs

@@ -1639,7 +1639,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: Case-collision normalization across OS in `EnumerateSourceFiles` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `EnumerateSourceFiles`] — cross-OS naming collision is rare in generated SDK and contract directories.
-status: open
+status: done 2026-11-22
+resolution: The safety scan detects case-insensitive collisions in file paths and parent directories across all scanned sources. Exact repeat paths remain valid. See spec-five-deferred-contract-gate-diagnostics.md.
 
 ### DW-238: Workflow doc claim `checkout with submodules: false` not visibly enforced in this diff
 
@@ -1666,21 +1667,24 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `MissingChannelDiagnostics` uses a single canned `Remediation` string for all prerequisite-drift channels [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `BuildMissingChannelDiagnostics`] — add a per-channel `remediation_hint` field in inventory; not gating.
-status: open
+status: done 2026-11-22
+resolution: Pending safety channels accept a bounded channel-specific remediation_hint. Missing hints retain the existing default and invalid hints produce bounded diagnostics. See spec-five-deferred-contract-gate-diagnostics.md.
 
 ### DW-242: `-SkipRestoreBuild` probes only the test assembly, not direct dependencies like `Hexalith.Folders.Contracts.dll`
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/tools/run-safety-invariant-gates.ps1
 reason: `-SkipRestoreBuild` probes only the test assembly, not direct dependencies like `Hexalith.Folders.Contracts.dll` [`tests/tools/run-safety-invariant-gates.ps1`] — `dotnet test --no-build` raises a clear error on missing deps; double-guarding adds complexity.
-status: open
+status: done 2026-11-22
+resolution: The safety runner probes the test assembly, entry-point manifests, and two direct Folders project dependencies before launch. Missing prerequisites produce a prerequisite_drift report. See spec-five-deferred-contract-gate-diagnostics.md.
 
 ### DW-243: `AssertContainsText` emits `SAFETY-PREREQUISITE-DRIFT` for both "required marker absent" and "context-query missing" cases
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `AssertContainsText` emits `SAFETY-PREREQUISITE-DRIFT` for both "required marker absent" and "context-query missing" cases [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertContainsText`] — vocabulary refinement (e.g., dedicated `SAFETY-REQUIRED-MARKER-ABSENT`); current message is non-leaking.
-status: open
+status: done 2026-11-22
+resolution: A missing marker emits SAFETY-REQUIRED-MARKER-ABSENT. Missing context-query operations emit bounded prerequisite drift. See spec-five-deferred-contract-gate-diagnostics.md.
 
 ### DW-244: `LoadYamlMapping` / `JsonDocument.Parse` calls lack bounded options (max depth, size cap) [multiple call sites in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]
 
@@ -3272,3 +3276,5 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-governance-prerequisites.md`
   summary: Align the consumer docs gate's pattern manifest boolean check with YAML 1.2.
   evidence: `ConsumerDocsConformanceTests.AssertManifestEntryValid` compares the raw scalar to lowercase `true`. It already rejected `True` and `TRUE` on the baseline and still accepts quoted `true`. The canonical fixture uses lowercase unquoted `true`. Add consumer docs coverage before changing that gate.
+  status: done 2026-11-22
+  resolution: The consumer docs and governance gates share the YAML 1.2 core boolean reader. Consumer docs tests cover true spellings, tags, false, numeric and quoted values, and duplicate keys. See spec-five-deferred-contract-gate-diagnostics.md.

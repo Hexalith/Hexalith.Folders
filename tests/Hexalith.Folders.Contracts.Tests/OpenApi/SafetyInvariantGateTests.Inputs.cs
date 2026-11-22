@@ -207,11 +207,10 @@ public sealed partial class SafetyInvariantGateTests
 
     private static InvalidOperationException BoundedDiagnosticException(string ruleId, string channel, string remediation)
     {
-        if (ruleId is not ("SAFETY-CHANNEL-MISSING" or "SAFETY-PREREQUISITE-DRIFT" or "SAFETY-FORBIDDEN-VALUE" or "SAFETY-FORBIDDEN-DIAGNOSTIC")
+        if (ruleId is not ("SAFETY-CHANNEL-MISSING" or "SAFETY-PREREQUISITE-DRIFT" or "SAFETY-FORBIDDEN-VALUE" or "SAFETY-FORBIDDEN-DIAGNOSTIC" or "SAFETY-REQUIRED-MARKER-ABSENT")
             || string.IsNullOrWhiteSpace(channel) || channel.Length > 128
             || !Regex.IsMatch(channel, "\\A[A-Za-z0-9][A-Za-z0-9_.:-]*\\z", RegexOptions.CultureInvariant)
-            || string.IsNullOrWhiteSpace(remediation) || remediation.Length > 256
-            || remediation.Any(character => char.IsControl(character) || character is '\u2028' or '\u2029'))
+            || !IsBoundedRemediation(remediation))
         {
             return new InvalidOperationException(InvalidDiagnosticMessage);
         }
@@ -228,4 +227,8 @@ public sealed partial class SafetyInvariantGateTests
 
         return new InvalidOperationException($"{GateName}:{ruleId}: channel={channel}; remediation={remediation}.");
     }
+
+    private static bool IsBoundedRemediation(string remediation) =>
+        !string.IsNullOrWhiteSpace(remediation) && remediation.Length <= 256
+        && !remediation.Any(character => char.IsControl(character) || character is '\u2028' or '\u2029');
 }

@@ -678,6 +678,38 @@ public sealed partial class ConsumerDocsConformanceTests
         Should.Throw<JsonException>(() => JsonDocument.Parse("{ \"gate\": \"consumer-docs\", "));
     }
 
+    [Theory]
+    [InlineData("synthetic_data_only: true", true)]
+    [InlineData("synthetic_data_only: True", true)]
+    [InlineData("!!str synthetic_data_only: TRUE", true)]
+    [InlineData("synthetic_data_only: !!bool 'true'", true)]
+    [InlineData("synthetic_data_only: 'true'", false)]
+    [InlineData("synthetic_data_only: !!str true", false)]
+    [InlineData("synthetic_data_only: 1", false)]
+    [InlineData("synthetic_data_only: yes", false)]
+    [InlineData("synthetic_data_only: False", false)]
+    [InlineData("synthetic_data_only: true\n!!str synthetic_data_only: true", false)]
+    public void PatternExampleManifestRequiresAnUnambiguousYamlCoreTrue(string flag, bool accepted)
+    {
+        using StringReader input = new(flag);
+        YamlStream stream = new();
+        stream.Load(input);
+        YamlMappingNode entry = (YamlMappingNode)stream.Documents[0].RootNode;
+        entry.Add("classification", "compilable-csharp");
+        entry.Add("marker", "<!-- hexalith-example: compile-csharp -->");
+        entry.Add("source_path", "tests/tools/pattern-examples/ConsumerGoldenLifecycleExample.cs");
+
+        if (accepted)
+        {
+            AssertManifestEntryValid(entry);
+        }
+        else
+        {
+            Should.Throw<ShouldAssertException>(() => AssertManifestEntryValid(entry))
+                .Message.ShouldContain("Pattern examples must be synthetic-data-only.");
+        }
+    }
+
     private static void AssertDocExists(string relativePath)
         => File.Exists(RepositoryPath(relativePath)).ShouldBeTrue(relativePath);
 
@@ -984,7 +1016,8 @@ public sealed partial class ConsumerDocsConformanceTests
     private static void AssertManifestEntryValid(YamlMappingNode entry)
     {
         MarkerPattern().IsMatch(Scalar(entry, "marker")).ShouldBeTrue(Scalar(entry, "marker"));
-        Scalar(entry, "synthetic_data_only").ShouldBe("true", "Pattern examples must be synthetic-data-only.");
+        (YamlCoreScalar.TryReadBoolean(entry, "synthetic_data_only", out bool syntheticOnly) && syntheticOnly)
+            .ShouldBeTrue("Pattern examples must be synthetic-data-only.");
         string classification = Scalar(entry, "classification");
         (classification is "compilable-csharp" or "documentation-only").ShouldBeTrue(classification);
         File.Exists(RepositoryPath(Scalar(entry, "source_path"))).ShouldBeTrue(Scalar(entry, "source_path"));

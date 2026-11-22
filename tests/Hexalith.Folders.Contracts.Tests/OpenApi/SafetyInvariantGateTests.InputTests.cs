@@ -185,6 +185,97 @@ public sealed partial class SafetyInvariantGateTests
         }
     }
 
+    [Theory]
+    [InlineData("docs/PrivateArtifact.md", "docs/privateartifact.md")]
+    [InlineData("docs/PrivateDirectory/one.md", "docs/privatedirectory/two.md")]
+    public void ArtifactPathsRejectCaseCollisionsWithoutEchoingPaths(string first, string second)
+    {
+        Dictionary<string, string> paths = new(StringComparer.OrdinalIgnoreCase);
+        RegisterArtifactPath(paths, first, "events");
+        RegisterArtifactPath(paths, first, "logs");
+        RegisterArtifactPath(paths, "docs/other.md", "events");
+
+        InvalidOperationException error = Should.Throw<InvalidOperationException>(() => RegisterArtifactPath(paths, second, "events"));
+        error.Message.ShouldBe("safety-invariant:SAFETY-PREREQUISITE-DRIFT: channel=events; remediation=Use one spelling for each scanned artifact path.");
+    }
+
+    [Theory]
+    [InlineData("docs/./PrivateArtifact.md", "docs//privateartifact.md")]
+    [InlineData("docs/PrivateDirectory/.", "docs//privatedirectory/other.md")]
+    public void DeclaredArtifactPathsDetectCollisionsBeforeCheckingTheFilesystem(string first, string second)
+    {
+        using JsonDocument inventory = ParseSafetyJson(JsonSerializer.Serialize(new
+        {
+            channels = new[]
+            {
+                new { channel = "logs", prerequisite_status = "covered", artifact_sources = new[] { first } },
+                new { channel = "events", prerequisite_status = "covered", artifact_sources = new[] { second } },
+            },
+        }));
+
+        InvalidOperationException error = Should.Throw<InvalidOperationException>(() => RegisterDeclaredArtifactPaths(inventory.RootElement));
+        error.Message.ShouldBe("safety-invariant:SAFETY-PREREQUISITE-DRIFT: channel=events; remediation=Use one spelling for each scanned artifact path.");
+    }
+
+    [Fact]
+    public void MissingChannelDiagnosticsUseChannelHintsAndPreserveTheDefault()
+    {
+        using JsonDocument inventory = ParseSafetyJson(MissingChannelInventory("\"Add the event metadata artifact.\""));
+        BuildMissingChannelDiagnostics(inventory.RootElement).ShouldHaveSingleItem()
+            .Remediation.ShouldBe("Add the event metadata artifact.");
+
+        using JsonDocument noHint = ParseSafetyJson(MissingChannelInventory(null));
+        BuildMissingChannelDiagnostics(noHint.RootElement).ShouldHaveSingleItem()
+            .Remediation.ShouldBe("Add a repository-relative artifact source when the owning story lands.");
+    }
+
+    [Theory]
+    [InlineData("null")]
+    [InlineData("42")]
+    [InlineData("\"\"")]
+    [InlineData("\"private-marker\\nforged\"")]
+    [InlineData("\"/tmp/private-marker\"")]
+    public void MissingChannelDiagnosticsRejectInvalidHintsWithoutEchoingThem(string hint)
+    {
+        using JsonDocument inventory = ParseSafetyJson(MissingChannelInventory(hint));
+        InvalidOperationException error = Should.Throw<InvalidOperationException>(() => BuildMissingChannelDiagnostics(inventory.RootElement));
+        error.Message.ShouldNotContain("private-marker");
+        AssertMetadataOnly(error.Message);
+    }
+
+    [Fact]
+    public void MissingMarkerAndMissingContextOperationHaveDistinctBoundedDiagnostics()
+    {
+        AssertContainsText("MARKER", "marker", "safe-state:stale");
+        AssertContainsText("ALTERNATIVE", "marker", "safe-denial-examples", "alternative");
+        InvalidOperationException missingMarker = Should.Throw<InvalidOperationException>(() =>
+            AssertContainsText("private-content", "private-marker", "safe-state:stale", "private-alternative"));
+        missingMarker.Message.ShouldBe("safety-invariant:SAFETY-REQUIRED-MARKER-ABSENT: channel=safe-state:stale; remediation=Restore the required metadata-only marker.");
+        InvalidOperationException missingSafeState = Should.Throw<InvalidOperationException>(() => AssertRequiredSafeStateMarkers("private-content"));
+        missingSafeState.Message.ShouldBe("safety-invariant:SAFETY-REQUIRED-MARKER-ABSENT: channel=safe-states; remediation=Restore the required metadata-only marker.");
+
+        AssertRequiredContextOperations(["SearchFolderFiles", "GlobFolderFiles"], ["GlobFolderFiles", "SearchFolderFiles"]);
+        InvalidOperationException missingOperation = Should.Throw<InvalidOperationException>(() =>
+            AssertRequiredContextOperations([], ["private-operation"]));
+        missingOperation.Message.ShouldBe("safety-invariant:SAFETY-PREREQUISITE-DRIFT: channel=context-queries; remediation=Restore the required context-query operations.");
+
+        var missingId = ParseSafetyYaml("paths: { /private-route: { get: { summary: private-content } } }");
+        InvalidOperationException missingIdError = Should.Throw<InvalidOperationException>(() => EnumerateOperations(missingId).ToArray());
+        missingIdError.Message.ShouldBe("safety-invariant:SAFETY-PREREQUISITE-DRIFT: channel=context-queries; remediation=Declare an operation ID for each HTTP operation.");
+    }
+
+    private static string MissingChannelInventory(string? hint) =>
+        $$"""
+        { "channels": [ {
+          "channel": "events",
+          "prerequisite_status": "reference-pending",
+          "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+          "owning_story": "1-15-wire-safety-invariant-ci-gates",
+          "absence_reason": "The event source is pending."
+          {{(hint is null ? string.Empty : ", \"remediation_hint\": " + hint)}}
+        } ] }
+        """;
+
     [Fact]
     public void BoundedDiagnosticsRetainApprovedMetadata()
     {

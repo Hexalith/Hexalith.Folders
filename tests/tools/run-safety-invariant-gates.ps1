@@ -16,6 +16,8 @@ $toolsParent = Join-Path $scriptRoot '..'
 $repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
 $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/safety-invariants'
 $reportPath = Join-Path $reportDirectory 'latest.json'
+$testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
+$testDirectory = Split-Path -Parent $testAssembly
 $pushed = $false
 
 function Write-SafetyReport {
@@ -35,12 +37,6 @@ function Write-SafetyReport {
 }
 
 function Invoke-SafetyTests {
-    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
-    if (-not (Test-Path $testAssembly)) {
-        Write-Host 'SAFETY-PREREQUISITE-DRIFT: safety test assembly is missing. Build the Release test project before running this gate.'
-        return 1
-    }
-
     $PSNativeCommandUseErrorActionPreference = $false
     $output = & dotnet $testAssembly -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests 2>&1
     $exitCode = $LASTEXITCODE
@@ -73,12 +69,17 @@ try {
             exit $LASTEXITCODE
         }
     }
-    else {
-        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
-
-        if (-not (Test-Path $testAssembly)) {
-            Write-Error 'SAFETY-PREREQUISITE-DRIFT: safety test assembly is missing. Run the safety gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'
-            Write-SafetyReport -Status 'failed' -ExitCode 1
+    $requiredTestFiles = @(
+        'Hexalith.Folders.Contracts.Tests.dll'
+        'Hexalith.Folders.Contracts.Tests.deps.json'
+        'Hexalith.Folders.Contracts.Tests.runtimeconfig.json'
+        'Hexalith.Folders.Contracts.dll'
+        'Hexalith.Folders.Aspire.dll'
+    )
+    foreach ($file in $requiredTestFiles) {
+        if (-not (Test-Path -LiteralPath (Join-Path $testDirectory $file) -PathType Leaf)) {
+            Write-Host "SAFETY-PREREQUISITE-DRIFT: missing test prerequisite $file. Build the Release test project before running this gate."
+            Write-SafetyReport -Status 'prerequisite_drift' -ExitCode 1
             exit 1
         }
     }

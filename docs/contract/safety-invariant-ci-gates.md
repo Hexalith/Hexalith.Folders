@@ -4,7 +4,7 @@ Story 1.15 wires the metadata-only safety gate for the Contract Spine, generated
 
 ## Local Command
 
-Run from the repository root:
+Run with PowerShell 7 and the SDK version in `global.json` from the repository root.
 
 ```powershell
 .\tests\tools\run-safety-invariant-gates.ps1
@@ -13,6 +13,8 @@ Run from the repository root:
 The command is offline and deterministic. It restores, builds, and runs the same focused safety tests that CI invokes. It does not require Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant seed data, production secrets, network calls, or nested submodule initialization.
 
 CI can pass `-SkipRestoreBuild` after an existing repository-root restore/build lane. `-NoRestore` remains an alias for older local notes, but new documentation should use `-SkipRestoreBuild` so the flag describes what it skips.
+
+Before launching the tests, the runner checks for the Release test assembly, its .NET entry-point manifests, and its Folders project dependencies. Missing files produce a `prerequisite_drift` report and a nonzero exit. Ordinary test failures retain their exit code and `failed` status.
 
 ## CI Job
 
@@ -31,20 +33,24 @@ Inputs must be strict UTF-8, with an optional UTF-8 BOM, and no embedded NUL cha
 
 JSON and YAML fixtures have a maximum collection depth of 64. JSON rejects duplicate decoded property names in every object, including objects inside arrays; names remain case-sensitive and independent objects may reuse them. YAML accepts exactly one mapping document, rejects aliases before constructing representation nodes, and permits at most 100,000 parsing events. Parser messages, input fragments, file paths, and inner exceptions are excluded from input-failure diagnostics.
 
+Scanned files and their parent directories must use a single case spelling across the inventory. Case collisions produce a bounded prerequisite diagnostic, including when the paths come from different channel declarations.
+
 ## Diagnostics
 
 Allowed fields are gate name, hashed repository-relative path, output channel, rule ID, synthetic sample ID, category, classification, owner story, content hash, and remediation hint. The gate must not echo forbidden values, raw payloads, file contents, patch bodies, credential material, generated context payloads, local absolute paths, production URLs, tenant data, provider responses, cursor values, counts, ordering hints, stack traces, raw repository paths, or unauthorized-resource hints.
 
-The bounded exception factory accepts only the four safety rule IDs: `SAFETY-CHANNEL-MISSING`, `SAFETY-PREREQUISITE-DRIFT`, `SAFETY-FORBIDDEN-VALUE`, and `SAFETY-FORBIDDEN-DIAGNOSTIC`. Channel labels are limited to 128 ASCII letters, digits, underscores, dots, colons, or hyphens and start with a letter or digit. Remediation hints are limited to 256 characters without control characters or Unicode line and paragraph separators. Both fields pass the metadata-only check; invalid fields produce a fixed safe diagnostic. Absolute home, user, temporary, variable-data, and checkout paths remain forbidden in diagnostic output, including documentation.
+The bounded exception factory accepts `SAFETY-CHANNEL-MISSING`, `SAFETY-PREREQUISITE-DRIFT`, `SAFETY-FORBIDDEN-VALUE`, `SAFETY-FORBIDDEN-DIAGNOSTIC`, and `SAFETY-REQUIRED-MARKER-ABSENT`. Channel labels are limited to 128 ASCII letters, digits, underscores, dots, colons, or hyphens and start with a letter or digit. Remediation hints are limited to 256 characters without control characters or Unicode line and paragraph separators. Both fields pass the metadata-only check; invalid fields produce a fixed safe diagnostic. Absolute home, user, temporary, variable-data, and checkout paths remain forbidden in diagnostic output, including documentation.
 
 Bounded missing-channel diagnostics:
 
 - `SAFETY-CHANNEL-MISSING`: no implementation exists yet for the channel, and the manifest records the owner story.
 - `SAFETY-PREREQUISITE-DRIFT`: the channel should have an artifact or seam, but the expected source is absent or stale.
 
+Pending channels can supply a bounded `remediation_hint` in the inventory. An omitted hint directs the owner to add a repository-relative artifact source. A required marker missing from a present artifact emits `SAFETY-REQUIRED-MARKER-ABSENT`. A missing context-query operation emits `SAFETY-PREREQUISITE-DRIFT`.
+
 `reference-pending` is acceptable only when the channel has no runtime artifact in the current repository state, the owner story is explicit, and the manifest records a bounded absence reason. Claimed `covered` entries fail closed when their repository-relative source is stale.
 
-The inventory currently treats audit records, projections, provider diagnostics, and console payload contract examples as covered by the checked-in OpenAPI and generated client artifacts. Runtime logs, traces, telemetry names, metric counters, exception metadata, baggage, and event emission examples remain owner-scoped `prerequisite-drift` channels until Story 4.14 lands deterministic observability artifacts.
+The inventory covers audit records, projections, provider diagnostics, and console payload contract examples through the checked-in OpenAPI and generated client artifacts. Story 4.14 supplies runtime sources for logs, traces, telemetry names, metric counters, exception metadata, baggage, and event emission examples.
 
 ## Classification Rules
 
