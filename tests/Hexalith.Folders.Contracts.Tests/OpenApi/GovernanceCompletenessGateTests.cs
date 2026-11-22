@@ -1695,27 +1695,37 @@ public sealed partial class GovernanceCompletenessGateTests
             }
         }
 
-        // Optional per-criterion review-by / expiry date: if present it must be a valid date strictly
-        // in the future, so an approval cannot sit indefinitely past its own declared re-review date.
+        ValidateOptionalReviewDate(approval, criterion, path, today, diagnostics);
+        return diagnostics.ToArray();
+    }
+
+    private static void ValidateOptionalReviewDate(
+        YamlMappingNode approval,
+        string criterion,
+        string path,
+        DateOnly today,
+        List<GateDiagnostic> diagnostics)
+    {
         KeyValuePair<YamlNode, YamlNode>[] reviewByEntries = approval.Children
             .Where(entry => entry.Key is YamlScalarNode { Value: "review_by" })
             .ToArray();
-        if (reviewByEntries.Length > 0)
+        if (reviewByEntries.Length == 0)
         {
-            if (reviewByEntries.Length != 1
-                || !IsYamlString(reviewByEntries[0].Key)
-                || !IsYamlString(reviewByEntries[0].Value)
-                || !DateOnly.TryParseExact(((YamlScalarNode)reviewByEntries[0].Value).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
-            {
-                diagnostics.Add(new("exit-criteria", "approval_date_invalid", criterion, path));
-            }
-            else if (reviewBy <= today)
-            {
-                diagnostics.Add(new("exit-criteria", "approval_stale", criterion, path));
-            }
+            return;
         }
 
-        return diagnostics.ToArray();
+        if (reviewByEntries.Length != 1
+            || !IsYamlString(reviewByEntries[0].Key)
+            || reviewByEntries[0].Value is not YamlScalarNode value
+            || !IsYamlString(value)
+            || !DateOnly.TryParseExact(value.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
+        {
+            diagnostics.Add(new("exit-criteria", "approval_date_invalid", criterion, path));
+        }
+        else if (reviewBy <= today)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_stale", criterion, path));
+        }
     }
 
     private static GateDiagnostic[] EvaluateC7DecisionEvidence(
@@ -1877,6 +1887,7 @@ public sealed partial class GovernanceCompletenessGateTests
             }
         }
 
+        ValidateOptionalReviewDate(approval, "C7", path, today, diagnostics);
         return diagnostics.ToArray();
     }
 
@@ -3279,7 +3290,7 @@ public sealed partial class GovernanceCompletenessGateTests
             yaml.Load(reader);
             return yaml;
         }
-        catch (YamlDotNet.Core.YamlException)
+        catch (Exception error) when (error is YamlException or ArgumentOutOfRangeException)
         {
             throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-malformed: {ToRepositoryPath(path)}");
         }
@@ -3345,12 +3356,23 @@ public sealed partial class GovernanceCompletenessGateTests
 
     private static bool ParseRequiredBoolean(YamlMappingNode mapping, string key)
     {
-        string raw = RequiredScalar(mapping, key);
-        return raw.ToLowerInvariant() switch
+        KeyValuePair<YamlNode, YamlNode>[] entries = mapping.Children
+            .Where(entry => entry.Key is YamlScalarNode scalar && scalar.Value == key)
+            .ToArray();
+        if (entries.Length != 1
+            || !IsYamlString(entries[0].Key)
+            || entries[0].Value is not YamlScalarNode node
+            || !(node.Tag.ToString() == "tag:yaml.org,2002:bool"
+                || ((node.Tag.IsEmpty || node.Tag.ToString() == "?") && node.Style is ScalarStyle.Plain or ScalarStyle.Any)))
         {
-            "true" or "yes" or "on" or "y" => true,
-            "false" or "no" or "off" or "n" => false,
-            _ => throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}={raw}"),
+            throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}");
+        }
+
+        return node.Value switch
+        {
+            "true" or "True" or "TRUE" => true,
+            "false" or "False" or "FALSE" => false,
+            _ => throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}"),
         };
     }
 

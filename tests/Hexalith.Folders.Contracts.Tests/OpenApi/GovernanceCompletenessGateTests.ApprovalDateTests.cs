@@ -90,6 +90,45 @@ public sealed partial class GovernanceCompletenessGateTests
             SyntheticApprovalPolicy(),
             new DateOnly(2026, 10, 28)).ShouldBeEmpty();
 
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("!!str review_by: !!str 2026-10-29", null)]
+    [InlineData("review_by: 2026-10-28", "approval_stale")]
+    [InlineData("review_by: 2026-10-27", "approval_stale")]
+    [InlineData("!!str review_by: [provider_token_private_marker]", "approval_date_invalid")]
+    [InlineData("review_by: 2026-10-29\n!!str review_by: 2026-10-30", "approval_date_invalid")]
+    public void C7AppliesTheSharedOptionalReviewDateRule(string? yaml, string? expectedCategory)
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        YamlMappingNode c7 = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C7");
+        YamlMappingNode approval = RequiredMapping(c7, "approval");
+        foreach (YamlScalarNode key in approval.Children.Keys.OfType<YamlScalarNode>().Where(key => key.Value == "review_by").ToArray())
+        {
+            approval.Children.Remove(key);
+        }
+
+        if (yaml is not null)
+        {
+            foreach (KeyValuePair<YamlNode, YamlNode> entry in ParseGovernanceTestYaml(yaml).Children)
+            {
+                approval.Add(entry.Key, entry.Value);
+            }
+        }
+
+        GateDiagnostic[] diagnostics = EvaluateC7DecisionEvidence(c7, ApprovedC7Sha256, SyntheticApprovalPolicy(), new DateOnly(2026, 10, 28));
+        if (expectedCategory is null)
+        {
+            diagnostics.ShouldBeEmpty();
+            return;
+        }
+
+        GateDiagnostic diagnostic = diagnostics.ShouldHaveSingleItem();
+        diagnostic.Category.ShouldBe(expectedCategory);
+        diagnostic.Identifier.ShouldBe("C7");
+        AssertMetadataOnly(diagnostic.ToString());
+    }
+
     private static GateDiagnostic[] EvaluateSyntheticReviewDate(string yaml, string key = "review_by")
     {
         YamlMappingNode row = SyntheticApprovalRow("C-REVIEW", ["PM"], [("PM", "Jerome", "2026-10-18")]);

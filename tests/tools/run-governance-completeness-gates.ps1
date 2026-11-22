@@ -8,14 +8,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
-    Write-Error 'GOVERNANCE-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the governance completeness gate.'
-    exit 1
-}
-
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$toolsParent = Join-Path $scriptRoot '..'
-$repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
+$repositoryRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, '..', '..'))
 $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/governance-completeness'
 $reportPath = Join-Path $reportDirectory 'latest.json'
 $pushed = $false
@@ -33,7 +26,7 @@ function Write-GovernanceReport {
 
     $temporaryReportPath = Join-Path $reportDirectory ('.latest.' + [Guid]::NewGuid().ToString('N') + '.tmp')
     try {
-        New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
+        [System.IO.Directory]::CreateDirectory($reportDirectory) | Out-Null
         [ordered]@{
             gate = 'governance-completeness'
             status = $Status
@@ -82,24 +75,44 @@ function Write-GovernanceReport {
     }
 }
 
+function Stop-GovernanceForPrerequisite {
+    param([string]$Reason, [int]$ExitCode = 1)
+
+    Write-Host "GOVERNANCE-PREREQUISITE-DRIFT: $Reason"
+    Write-GovernanceReport -Status 'prerequisite_drift' -ExitCode $ExitCode
+    exit $ExitCode
+}
+
 function Invoke-GovernanceTests {
     $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll'
-    if (-not (Test-Path $testAssembly)) {
-        Write-Host 'GOVERNANCE-PREREQUISITE-DRIFT: governance test assembly is missing. Build the Release test project before running this gate.'
-        return 1
+    if (-not [System.IO.File]::Exists($testAssembly)) {
+        Stop-GovernanceForPrerequisite 'governance test assembly is missing. Build the Release test project before running this gate.'
     }
 
+    $prerequisitePattern = '(?m)^[ \t]*(?:---- )?System\.(?:InvalidOperationException|FormatException) : ' +
+        'GOVERNANCE-PREREQUISITE-DRIFT: (repository root was not found\.|[a-z]+(?:-[a-z]+)+)(?::|[ \t]*\r?$)'
+    $summaryPattern = '(?m)^[ \t]*Hexalith\.Folders\.Contracts\.Tests[ \t]+Total: (?<total>[0-9]{1,10}), ' +
+        'Errors: [0-9]+, Failed: [0-9]+, Skipped: (?<skipped>[0-9]{1,10}), Not Run: (?<notRun>[0-9]{1,10}), Time:'
     $PSNativeCommandUseErrorActionPreference = $false
     foreach ($testClass in $governanceClasses) {
         $output = & dotnet $testAssembly -noLogo -noColor -class $testClass 2>&1
         $exitCode = $LASTEXITCODE
+        $outputText = $output -join "`n"
+        if ($exitCode -ne 0) {
+            $prerequisite = [regex]::Match($outputText, $prerequisitePattern)
+            if ($prerequisite.Success) {
+                Stop-GovernanceForPrerequisite "governance test prerequisite failed ($($prerequisite.Groups[1].Value)) class=$testClass" -ExitCode $exitCode
+            }
+        }
+
         $output | ForEach-Object { Write-Host $_ }
         if ($exitCode -ne 0) {
             return $exitCode
         }
-        if (-not (($output -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
-            Write-Host "GOVERNANCE-PREREQUISITE-DRIFT: governance class selection executed zero tests class=$testClass"
-            return 1
+
+        $summary = [regex]::Match($outputText, $summaryPattern)
+        if (-not $summary.Success -or [long]$summary.Groups['total'].Value -le ([long]$summary.Groups['skipped'].Value + [long]$summary.Groups['notRun'].Value)) {
+            Stop-GovernanceForPrerequisite "governance class selection executed zero tests class=$testClass"
         }
     }
 
@@ -107,12 +120,26 @@ function Invoke-GovernanceTests {
 }
 
 try {
-    Push-Location $repositoryRoot
+    if (-not [System.IO.File]::Exists((Join-Path $repositoryRoot 'Hexalith.Folders.slnx'))) {
+        Stop-GovernanceForPrerequisite 'repository root was not found.'
+    }
+
+    if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+        Stop-GovernanceForPrerequisite 'dotnet was not found on PATH.'
+    }
+
+    Push-Location -LiteralPath $repositoryRoot
     $pushed = $true
 
     Write-GovernanceReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
+        $PSNativeCommandUseErrorActionPreference = $false
+        $null = & dotnet --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Stop-GovernanceForPrerequisite 'the .NET SDK required by global.json could not be resolved.' -ExitCode $LASTEXITCODE
+        }
+
         dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true
         if ($LASTEXITCODE -ne 0) {
             Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE

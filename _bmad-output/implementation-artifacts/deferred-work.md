@@ -487,7 +487,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
 location: tests/tools/run-governance-completeness-gates.ps1:16
 reason: `Resolve-Path (Join-Path $toolsParent '..')` resolves symlink targets in `tests/tools/run-governance-completeness-gates.ps1:16` — deferred, sibling scripts use the same pattern; revisit when a sibling tool persists absolute paths.
-status: open
+status: done 2026-11-22
+resolution: The runner derives the checkout root from the invoked script and uses literal filesystem paths. Runner tests cover a bracketed checkout and a directory alias. See spec-five-deferred-governance-prerequisites.md.
 
 ### DW-68: `CloneRow` round-trips YAML through serialize/parse and drops anchors, tags, and comments
 
@@ -510,8 +511,9 @@ resolution: Duplicate criteria emit one duplicate diagnostic before row metadata
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115
 reason: `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")` — exception terminology hints at a categorized exit but the throw is uncaught and surfaces as a Shouldly/xUnit crash [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115`] — deferred, will be resolved by the decision on `prerequisite_drift` script semantics.
-status: open
+status: done 2026-11-22
 decision: 2026-08-25 Preserve drift status — Emit structured prerequisite_drift report and exit semantics with focused runner tests.
+resolution: Root discovery, missing SDK or assembly, and zero executed tests publish `prerequisite_drift` with a nonzero exit. Runner tests distinguish these outcomes from ordinary test failures. See spec-five-deferred-governance-prerequisites.md.
 
 ### DW-71: Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests`
 
@@ -1723,7 +1725,8 @@ resolution: OpenAPI path and operation shapes are validated explicitly, includin
 origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
 reason: `ParseRequiredBoolean` rejects YAML 1.1 numeric booleans (`1` / `0`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ParseRequiredBoolean`] — corpus fixtures only use lowercase literals; tighten when an authored fixture introduces numeric truth values.
-status: open
+status: done 2026-11-22
+resolution: The pattern manifest requires a YAML 1.2 core boolean. Numeric `1` and `0` are integers, so the parser rejects them with `boolean-invalid` and omits the source value. Regressions cover boolean spellings, tags, and rejected types. See spec-five-deferred-governance-prerequisites.md.
 
 ### DW-250: `Write-GovernanceReport` lacks `try/catch` around the JSON write
 
@@ -3189,10 +3192,14 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-yaml-shapes.md`
   summary: Apply optional review-date validation to the dedicated C7 approval evaluator before C7 starts declaring review_by.
   evidence: Independent review confirmed that ApprovalBackedCriteriaCarryExactHistoricalApprovalRecords excludes C7 and EvaluateC7DecisionEvidence never inspects review_by, so adding a malformed/expired C7 date would currently be ignored. This is inherited and C7 currently declares no review_by. The generic-evaluator fix preserves its scope; consolidate or invoke the bounded optional-date check from both routes in a follow-up without changing approved evidence.
+  status: done 2026-11-22
+  resolution: C7 uses the shared optional date check alongside its exact approval checks. Regressions cover absent, future, stale, malformed, and duplicate fields. See spec-five-deferred-governance-prerequisites.md.
 
 - source_spec: `spec-five-deferred-yaml-shapes.md`
   summary: Bound governance YAML parser argument errors for invalid Unicode code points.
   evidence: Independent review reproduced a file containing value: "\UFFFFFFFF" escaping LoadYamlStream as ArgumentOutOfRangeException with parser detail. The inherited loader catches only YamlException; SafetyInvariantGateTests already catches ArgumentException for the same parser path. Add a file-backed regression and bounded conversion in the governance loader; this is separate from structural-key and collection-shape validation.
+  status: done 2026-11-22
+  resolution: Invalid Unicode escapes produce the bounded `yaml-malformed` diagnostic. File-backed regressions cover an out-of-range code point and an isolated surrogate. See spec-five-deferred-governance-prerequisites.md.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-17-qualify-platform-hosted-reference-graph.md`
   summary: Restore package-only CI evaluation for the concurrent Folders AppHost.Tests Tenants project reference.
@@ -3261,3 +3268,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md`
   summary: The "Run contract spine gates" step in `.github/workflows/contract-spine.yml:43` has no `timeout-minutes`, and the job has no job-level timeout, so a hung gate script runs to the 360-minute default.
   evidence: The step dates from `1efdb19c` (2026-05-17) and predates Story 5.12; every later gate step sets `timeout-minutes: 15`. The workflow is PD10 SHA-bound, so add the one-line timeout with the 12.2/1.17 reseal.
+
+- source_spec: `spec-five-deferred-governance-prerequisites.md`
+  summary: Align the consumer docs gate's pattern manifest boolean check with YAML 1.2.
+  evidence: `ConsumerDocsConformanceTests.AssertManifestEntryValid` compares the raw scalar to lowercase `true`. It already rejected `True` and `TRUE` on the baseline and still accepts quoted `true`. The canonical fixture uses lowercase unquoted `true`. Add consumer docs coverage before changing that gate.

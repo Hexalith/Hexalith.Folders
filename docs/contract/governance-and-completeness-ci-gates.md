@@ -13,11 +13,15 @@ OQ4 retains its September 15 catalog identity, reopen wording, and authority rec
 .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
 ```
 
-The command must be run from the repository root or from the script location. It writes a sanitized discovery report to `_bmad-output/gates/governance-completeness/latest.json`. The report includes gate names, repository-relative canonical inputs, report path, and diagnostic policy only.
+The command uses the checkout containing the invoked script, including checkout paths with brackets. It writes a sanitized report to `_bmad-output/gates/governance-completeness/latest.json` with the gate name, status, exit code, repository-relative canonical inputs, report path, and diagnostic policy.
 
 Reports are staged in the report directory and published by replacing `latest.json` only after serialization completes. A publication failure exits with code 1 and the bounded `GOVERNANCE-REPORT-WRITE-FAILED` diagnostic, attempts to remove an earlier report, and cleans up the staged file. Treat `latest.json` as invalid after that diagnostic, even if filesystem permissions prevent its removal. When reporting succeeds, the runner preserves the test command's failure exit code.
 
+Missing repository, `dotnet`, or test assembly prerequisites and a class selection with zero executed tests produce `status: prerequisite_drift` and a nonzero exit. Local builds also check that `dotnet` can resolve the SDK selected by `global.json`. The runner reports recognized test-side prerequisite errors using bounded reason codes and preserves the test command's exit code. Ordinary test failures produce `status: failed`.
+
 OpenAPI enumeration requires string operation IDs, path keys beginning with `/`, and lowercase HTTP method keys. Structural keys and operation-ID values may be quoted or explicitly string-tagged; untagged plain scalars use YAML 1.2 core type resolution. Keys with the same resolved string meaning are rejected as duplicates. Root, paths, path-item and operation mappings must have compatible YAML mapping tags; string-tagged `$ref` keys still trigger the unsupported-reference check. Non-empty `x-` extension values are unrestricted and skipped. Path-item `summary` and `description` must be strings (including empty strings); `parameters` and `servers` must be sequences with compatible tags. These metadata fields are validated for immediate value shape and then skipped, without validating nested Parameter/Server schemas. Invalid shapes fail with bounded prerequisite-drift reasons. Malformed YAML diagnostics omit parser inner exceptions so complete exception output cannot echo input values. Row-clone regressions preserve tags, anchors, aliases, styles, and mutation isolation; comments are unavailable after the initial YAML representation-model parse.
+
+Pattern example manifests must declare `synthetic_data_only` as YAML 1.2 boolean `true`. Integers, quoted strings, and legacy spellings such as `yes` fail with `boolean-invalid`. The diagnostic includes the field name and omits its value. Invalid Unicode escapes in YAML files produce the same bounded `yaml-malformed` diagnostic as other parser errors.
 
 ## CI Job
 
@@ -121,7 +125,7 @@ Approval-backed criteria (those whose `approved` status rests on a human governa
 
 - Every required authority has exactly one record with a specific (non-generic, non-authority-name) approver and a valid, non-future `approved_on`.
 - `approval_policy.max_age_days` is zero for current project decisions: historical approvals do not expire just because time passes. A positive value remains supported for legacy fixture checks.
-- For criteria using the generic evaluator, an optional `review_by` date must be a string containing a valid ISO `yyyy-MM-dd` date strictly in the future. String-tagged keys follow the same rule; semantic duplicates and present null, empty, non-scalar, incompatible-tag or malformed values produce `approval_date_invalid`. Missing values remain optional. C7 uses its separate exact-value evaluator and currently declares no `review_by` date.
+- The generic and exact C7 evaluators both check optional `review_by` dates. A present date must be a string containing a valid ISO `yyyy-MM-dd` date strictly in the future. String-tagged keys follow the same rule. Semantic duplicates and present null, empty, non-scalar, incompatible-tag or malformed values produce `approval_date_invalid`.
 
 C7 additionally binds `evidence_version`, the SHA-256 digest of `docs/exit-criteria/c7-lock-authorization-timing.md`, and the four whole-second timing values to both Architecture and Security records. `GovernanceCompletenessGateTests.C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` rejects value, version, digest, authority, signer, or date drift. A C7 artifact change reopens OQ1 until both authorities approve the new version and digest. This governance approval does not claim runtime coverage: NFR7 and NFR21 remain `reference-pending` until renewal and revocation behavior is executable and evidenced.
 

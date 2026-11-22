@@ -240,6 +240,8 @@ public sealed partial class GovernanceCompletenessGateTests
     [InlineData("field: *provider_token_private_marker")]
     [InlineData("field: [provider_token_private_marker")]
     [InlineData("provider_token_private_marker: one\nprovider_token_private_marker: two")]
+    [InlineData("field: \"provider_token_private_marker\\UFFFFFFFF\"")]
+    [InlineData("field: \"provider_token_private_marker\\uD800\"")]
     public void MalformedYamlFileDiagnosticsOmitParserDetailsFromCompleteException(string yaml)
     {
         string path = Path.Combine(RepositoryRoot, "_bmad-output", "gates", $"synthetic-yaml-{Guid.NewGuid():N}.yaml");
@@ -258,5 +260,40 @@ public sealed partial class GovernanceCompletenessGateTests
         {
             File.Delete(path);
         }
+    }
+
+    [Theory]
+    [InlineData("synthetic_data_only: true", true)]
+    [InlineData("synthetic_data_only: True", true)]
+    [InlineData("synthetic_data_only: TRUE", true)]
+    [InlineData("synthetic_data_only: false", false)]
+    [InlineData("synthetic_data_only: False", false)]
+    [InlineData("synthetic_data_only: FALSE", false)]
+    [InlineData("!!str synthetic_data_only: !!bool 'false'", false)]
+    public void PatternExampleBooleanAcceptsYamlCoreBooleans(string yaml, bool expected) =>
+        ParseRequiredBoolean(ParseGovernanceTestYaml(yaml), "synthetic_data_only").ShouldBe(expected);
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("synthetic_data_only: 0")]
+    [InlineData("synthetic_data_only: 1")]
+    [InlineData("synthetic_data_only: yes")]
+    [InlineData("synthetic_data_only: on")]
+    [InlineData("synthetic_data_only: tRuE")]
+    [InlineData("synthetic_data_only: 'true'")]
+    [InlineData("synthetic_data_only: !!str true")]
+    [InlineData("synthetic_data_only: !!bool 1")]
+    [InlineData("synthetic_data_only: ! true")]
+    [InlineData("synthetic_data_only: null")]
+    [InlineData("synthetic_data_only: [provider_token_private_marker]")]
+    [InlineData("synthetic_data_only: provider_token_private_marker")]
+    [InlineData("synthetic_data_only: true\n!!str synthetic_data_only: true")]
+    public void PatternExampleBooleanRejectsNonBooleanValuesWithBoundedDiagnostics(string yaml)
+    {
+        YamlMappingNode mapping = ParseGovernanceTestYaml(yaml);
+        FormatException error = Should.Throw<FormatException>(() => ParseRequiredBoolean(mapping, "synthetic_data_only"));
+
+        error.Message.ShouldBe("GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: synthetic_data_only");
+        AssertMetadataOnly(error.Message);
     }
 }
