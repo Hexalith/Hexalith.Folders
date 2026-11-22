@@ -57,5 +57,22 @@ Recursive initialization can pull nested dependencies unexpectedly, so default s
 
 These are versioned compatibility binaries. They are not retired and stay outside every Hexalith.Platform composition.
 
-- `Hexalith.Folders.Cli` (.NET tool `folders`): removal gate "Folders inventory gates" ([technical-tools inventory 1.0.3](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/technical-tools-migration-inventory-v1.0.3.md) PS10; [Folders inventory 1.1.0](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.1.0.md)). Technical inventory SHA-256: `7f2810174ae929e569d9affaccabe745565dcfe4f0487b71847806f3eda1ef8c`. Folders inventory SHA-256: `54a6f61d4f0d83876d8113c7c9d8775dc73190ecdbd8a3beb34cda10946d6407`.
-- `Hexalith.Folders.Mcp` (stdio MCP server): removal gate "Folders inventory gates" ([technical-tools inventory 1.0.3](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/technical-tools-migration-inventory-v1.0.3.md) PS11; [Folders inventory 1.1.0](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.1.0.md)). Technical inventory SHA-256: `7f2810174ae929e569d9affaccabe745565dcfe4f0487b71847806f3eda1ef8c`. Folders inventory SHA-256: `54a6f61d4f0d83876d8113c7c9d8775dc73190ecdbd8a3beb34cda10946d6407`.
+- `Hexalith.Folders.Cli` (.NET tool `folders`): removal gate "Folders inventory gates" ([technical-tools inventory 1.0.4](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/technical-tools-migration-inventory-v1.0.4.md) PS10; [Folders inventory 1.1.0](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.1.0.md)). Technical inventory SHA-256: `94985d72232864ab8f40ba212cd0fc73dbd0c5497856073cfd19c2972b89e8b8`. Folders inventory SHA-256: `54a6f61d4f0d83876d8113c7c9d8775dc73190ecdbd8a3beb34cda10946d6407`.
+- `Hexalith.Folders.Mcp` (stdio MCP server): removal gate "Folders inventory gates" ([technical-tools inventory 1.0.4](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/technical-tools-migration-inventory-v1.0.4.md) PS11; [Folders inventory 1.1.0](https://github.com/Hexalith/Hexalith.McpCli/blob/main/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.1.0.md)). Technical inventory SHA-256: `94985d72232864ab8f40ba212cd0fc73dbd0c5497856073cfd19c2972b89e8b8`. Folders inventory SHA-256: `54a6f61d4f0d83876d8113c7c9d8775dc73190ecdbd8a3beb34cda10946d6407`.
+
+## Shared McpCli access (reconciliation candidate)
+
+C13 remains the adopted four-surface accounting denominator, not evidence that every operation is public-agent eligible. The separate owner-approved K12 successor must resolve restricted and mixed operation classifications and C13 cells before any enrollment or retirement claim; existing 1.1.0 approval does not waive it. Current shipped McpCli has no Folders enrollment. Legacy adapters below remain retained compatibility; no resource/stream fallback is admitted.
+
+For the verified 2.0.1 examples, install `dotnet tool install --global Hexalith.McpCli --version 2.0.1`.
+Run `hexalith modules`, `hexalith operations tenants` or
+`hexalith operations parties`, and `hexalith describe tenants.list-tenants`
+for offline discovery of the installed cohort. Start the MCP server with
+`hexalith mcp --transport stdio`; it offers five generic tools, never a tool or
+CLI subcommand per operation. Configure a McpCli profile with the documented
+`hexalith config --help` flow before authorized `query` or `send` submission.
+Do not copy the Admin `profiles.json`. Offline Catalog discovery proves neither
+Gateway authorization, live availability nor retirement. A missing operation
+fails safely; confidential human actions hand off to the owning UI, never to
+an alternative module endpoint. No Gateway call is needed for this setup check.
+

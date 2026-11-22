@@ -128,6 +128,9 @@ editHistory:
 
 # Product Requirements Document — Hexalith.Folders
 
+> **Current McpCli disposition (Story 5.11 candidate):** C13 remains the adopted four-surface accounting denominator, not evidence that every operation is public-agent eligible. The separate owner-approved K12 successor must resolve restricted and mixed operation classifications and C13 cells before any enrollment or retirement claim; existing 1.1.0 approval does not waive it. Current shipped McpCli has no Folders enrollment. Legacy adapters below remain retained compatibility; no resource/stream fallback is admitted.
+
+
 **Approved McpCli course correction (2026-09-27, extended 2026-11-10):** `Hexalith.McpCli` is the only target Hexalith-owned CLI/MCP surface for Folders. Its CLI and MCP heads dispatch decorated `Hexalith.Folders.Contracts` operations through the EventStore Gateway; they do not wrap the Folders SDK or REST API. Wherever this PRD requires CLI or MCP, the release-qualifying surface is the corresponding McpCli head for operations enrolled under an owner-approved Folders inventory. `Hexalith.Folders.Cli` and `Hexalith.Folders.Mcp` are frozen compatibility binaries: they receive only safety and continuity fixes (including the Story 1.17 v2 migration), never new operations or release evidence, and retire after an approved replacement or withdrawal plus parity evidence. Hash-pinned NFR bullets that name CLI and MCP are read the same way and are not edited. The module retains its domain, UI, and security semantics. External development CLIs are unaffected.
 
 
