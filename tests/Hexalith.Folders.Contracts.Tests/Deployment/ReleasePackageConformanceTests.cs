@@ -58,7 +58,6 @@ public sealed partial class ReleasePackageConformanceTests
     [Fact]
     public void FoldersAspireShouldUseAspire17DaprIntegration()
     {
-        const string aspire17DaprVersion = "17.0.0-beta.1078";
         string packagesPath = RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props");
         if (!File.Exists(packagesPath))
         {
@@ -66,14 +65,13 @@ public sealed partial class ReleasePackageConformanceTests
         }
         XDocument packages = XDocument.Load(packagesPath);
         XElement catalogDefaultDaprVersion = packages.Descendants("HexalithAspireHostingDaprVersion")
-            .First(element => element.Attribute("Condition") is null);
+            .Single(element => element.Attribute("Condition") is null);
         XElement daprIntegration = packages.Descendants("PackageVersion")
             .Single(element => string.Equals(
                 (string?)element.Attribute("Include"),
                 "CommunityToolkit.Aspire.Hosting.Dapr",
                 StringComparison.Ordinal));
 
-        catalogDefaultDaprVersion.Value.ShouldBe(aspire17DaprVersion);
         ((string?)daprIntegration.Attribute("Version")).ShouldBe("$(HexalithAspireHostingDaprVersion)");
 
         XDocument localPackages = XDocument.Load(RepositoryPath("Directory.Packages.props"));
@@ -84,10 +82,16 @@ public sealed partial class ReleasePackageConformanceTests
                 (string?)element.Attribute("Update"),
                 "CommunityToolkit.Aspire.Hosting.Dapr",
                 StringComparison.Ordinal));
-        foldersDaprVersion.Value.ShouldBe(aspire17DaprVersion);
+        // The catalog has a project-specific Folders.Aspire fallback. The module's
+        // later PackageVersion update selects the supported Aspire 17 integration.
+        foldersDaprVersion.Value.ShouldBe(catalogDefaultDaprVersion.Value);
+        foldersDaprVersion.Value.ShouldMatch(@"^17\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$");
         ((string?)foldersDaprOverride.Attribute("Version")).ShouldBe("$(HexalithAspireHostingDaprVersion)");
 
         XDocument foldersAspire = XDocument.Load(RepositoryPath("src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"));
+        foldersAspire.Descendants("PackageReference")
+            .Single(element => (string?)element.Attribute("Include") == "CommunityToolkit.Aspire.Hosting.Dapr")
+            .Attribute("VersionOverride").ShouldBeNull();
         GetProperty(foldersAspire, "NoWarn").ShouldContain("NU5104");
     }
 

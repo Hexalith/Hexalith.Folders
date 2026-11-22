@@ -29,6 +29,7 @@ they merge and count by their modern meaning and are reported, never reset.
 """
 
 import argparse
+import copy
 import hashlib
 import io
 import json
@@ -254,11 +255,23 @@ def _merge_status(kind, computed, existing_raw, key, warnings, report):
     return existing if rank[existing] >= rank[computed] else computed
 
 
+def _story_keys_by_id(keys):
+    """Match story numbers across title edits. Ambiguous IDs cannot be merged safely."""
+    indexed = {}
+    for key in keys:
+        if not isinstance(key, str) or not STORY_KEY_RE.match(key):
+            continue
+        identity = _story_sort_key(key)[:3]
+        if identity in indexed and indexed[identity] != key:
+            _fail(f"ambiguous story ID shared by '{indexed[identity]}' and '{key}'")
+        indexed[identity] = key
+    return indexed
+
+
 def build_status(entries, existing_data, stories_dir, warnings):
     """Return (development_status CommentedMap, merge report dict)."""
-    existing_status = {}
-    if existing_data is not None:
-        existing_status = dict(existing_data.get("development_status") or {})
+    previous = existing_data.get("development_status") if existing_data is not None else None
+    existing_status = dict(previous or {})
     report = {
         "new_entries": [],
         "preserved": 0,
@@ -272,13 +285,22 @@ def build_status(entries, existing_data, stories_dir, warnings):
     story_files = set()
     if stories_dir and Path(stories_dir).is_dir():
         story_files = {p.name for p in Path(stories_dir).glob("*.md")}
-    dev = CommentedMap()
+    existing_keys = _story_keys_by_id(existing_status)
+    planned_keys = _story_keys_by_id(key for key, _, _ in entries)
+    # Match files under either the current title or the persisted tracker key.
+    stable_keys = {key: existing_keys.get(identity, key) for identity, key in planned_keys.items()}
+    # Retain per-story YAML comments and style when rebuilding the planned order.
+    dev = copy.deepcopy(previous) if isinstance(previous, CommentedMap) else CommentedMap()
+    planned = set()
     first_epic = True
     for key, kind, _epic_num in entries:
         default = {"epic": "backlog", "story": "backlog", "retro": "optional"}[kind]
         computed = default
-        if kind == "story" and f"{key}.md" in story_files:
-            computed = "ready-for-dev"
+        if kind == "story":
+            title_key = key
+            key = stable_keys[title_key]
+            if f"{key}.md" in story_files or f"{title_key}.md" in story_files:
+                computed = "ready-for-dev"
         merged = _merge_status(kind, computed, existing_status.get(key), key, warnings, report)
         if key not in existing_status:
             report["new_entries"].append(key)
@@ -289,18 +311,21 @@ def build_status(entries, existing_data, stories_dir, warnings):
         if kind == "story" and computed == "ready-for-dev" and existing_status.get(key) in (None, "backlog"):
             report["upgraded_from_disk"].append(key)
         dev[key] = merged
-        if kind == "epic" and not first_epic:
+        dev.move_to_end(key)
+        planned.add(key)
+        if kind == "epic" and not first_epic and key not in existing_status:
             dev.yaml_set_comment_before_after_key(key, before="\n")
         if kind == "epic":
             first_epic = False
-    computed_keys = {key for key, _, _ in entries}
     # Old statuses ride along so the LLM can transplant them after a rename —
     # the values would otherwise be destroyed by the write.
     report["dropped_orphans"] = [
         {"key": k, "status": existing_status[k]}
         for k in existing_status
-        if k not in computed_keys
+        if k not in planned
     ]
+    for orphan in report["dropped_orphans"]:
+        dev.pop(orphan["key"], None)
     report["in_sync"] = (
         not report["new_entries"]
         and not report["dropped_orphans"]

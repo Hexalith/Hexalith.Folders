@@ -1,6 +1,7 @@
 # generated: 2026-05-12T07:11:18+02:00
-# current_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
-# last_updated: 2026-11-20 (repository audit applied to existing stories and open maintenance items; see sprint-change-proposal-2026-11-20.md)
+# historical_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
+# last_updated: 2026-11-21 (release repairs, SDK isolation, preserved story keys and Forgejo selection in ../planning-artifacts/sprint-change-proposal-2026-11-21.md)
+# previous_update_2026_11_20: repository audit applied to existing stories and open maintenance items; see sprint-change-proposal-2026-11-20.md
 # previous_update_2026_11_13: 2026-11-13 (correct-course sprint-change-proposal-2026-11-13: Story 12.2's strict fixture can never match a pre-provisioned owner workload enrollment because it draws a random run identity each run. Its enrollment now comes from a Platform run-owned workload-binding authority (Platform Story 2.12, backlog); owner enrollment proof moves to Platform Story 10.1. New pending external node EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY gates 12.2; 12.2 stays in-progress.)
 # previous_story_5_12_followup_build: 2026-11-11 (Story 5.12 follow-up build completed -> review; all ten approved patches plus four independent-review corrections implemented. McpCli 46/46; full Contracts 677/682 with exactly the five approved PD10 failures; Release solution 0 warnings/errors; all three review layers completed and every finding triaged. No new deferrals; existing AppHost source/package collision and PD10 reseal remain with their owners.)
 # previous_story_5_12_followup_review: 2026-11-11 (Story 5.12 follow-up code review via bmad-code-review [4 layers, none failed; diff a9c77c85..976be351, 49 files; 32 raw findings verified against McpCli ExtensionValidator/SettingsResolver/SchemaDeriver, FolderCommandValidator, FolderDomainProcessor, the Pd10 v2 seam and the workflow] -> in-progress. 1 decision resolved by Jerome [E6: keep extensions[taskId], correct the record: domain already requires the taskId extension on every /process Command, McpCli profile allowlist is a prerequisite for all 13 Commands, `--`-suffix values are a platform-wide Gateway limit] + 9 patches = 10 action items left in the spec; 1 defer in deferred-work.md; 13 rejected. Previous: 2026-11-11 (Story 5.12 approved review fixes completed via bmad-build -> review; 16 patches plus C10 allOf correction; McpCli 44/44, CI wiring 6/6, client generation 75/75, full Contracts 675/680 with the five approved PD10 failures; Release solution build 0 warnings/errors. Independent review completed; runtime catalog enrollment deferral retained; AppHost source/package collision remains blocked.))
@@ -40,8 +41,8 @@
 # - Developer typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-11-20'
+generated: '05-12-2026 07:11'
+last_updated: '11-21-2026 17:25'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -279,6 +280,7 @@ development_status:
   12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: done
   # needs Stories 4.22 and 11.15
   # 2026-11-13: 12.2 also needs Platform Story 2.12 (run-owned workload authority, EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY)
+  # 2026-11-21: Platform 2.12 is done. All three Folders strict cases passed on the reviewed November 15 inputs. Selected-gitlink qualification, SM4, release and governance gates remain open.
   12-2-durable-projections-and-task-completion-pipeline: in-progress
   12-3-durable-workspace-file-content-store-and-content-read-source: in-progress
   12-4-real-git-commit-executor-and-provider-write-path: backlog
@@ -299,11 +301,11 @@ development_status:
 action_items:
   - epic: 7
     action: >-
-      Restore package-mode Release CI for the failures on 5f39a1b8 (run 44606945137).
-      Resolve the Dapr catalog/override with Builds, identify the failing owner assembly or dependency in the
-      packaged AppHost route inventory, then regenerate the pending PD10 inventory after the final source edit.
-      Require the four Contracts regressions, the packaged AppHost case and exact-source push CI to pass.
-      Keep historical evidence and the current exposure decision intact. See the 2026-11-20 sprint change proposal.
+      Record passing push CI and contract-spine gates for the commit containing the synchronized submodule
+      revisions and the Release fixes. Run 44873203413 on 73ca79b4 had 12 failing Contracts cases and one
+      packaged AppHost case. The local repairs align the Dapr package and workflow expectations, refresh
+      the pending PD10 inventory and resolve the EventStore.Contracts mismatch in the packaged owner catalog.
+      See ../planning-artifacts/sprint-change-proposal-2026-11-21.md for reproduction and verification.
     owner: "Release maintainer / Builds / Folders AppHost"
     priority: high
     status: open
@@ -312,9 +314,10 @@ action_items:
       Isolate both client generation outputs in the existing regression test. Verify parity with the committed
       bytes and a stable tracked-client hash during normal, concurrent-read and interrupted runs. Carry that
       requirement into Story 11.12 when modernizing the SDK. Fix isolation before the final candidate regeneration.
+    # Verified byte parity and zero writes to the tracked client during normal and interrupted generation with concurrent readers.
     owner: "SDK maintainer"
     priority: high
-    status: open
+    status: done
   - epic: 5
     action: >-
       Correct the SDK quickstart and lifecycle sample. Document a runnable supported v1 request and the

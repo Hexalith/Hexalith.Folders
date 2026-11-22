@@ -128,6 +128,33 @@ action_items:
 """
 
 
+def test_title_edits_preserve_story_keys_and_progress(tmp_path, capsys):
+    revised = EPICS_FIXTURE.replace("User Authentication", "Sign In").replace("Account Management", "Accounts")
+    existing = EXISTING.replace("1-1-user-authentication: done", "1-1-user-authentication: done  # accepted evidence")
+    status = run_generate(tmp_path, revised, existing, stories=("1-2-accounts",))
+    assert "# accepted evidence" in status.read_text()
+    result = out_json(capsys)
+    dev = load(status)["development_status"]
+    assert dev["1-1-user-authentication"] == "done"
+    assert dev["1-2-account-management"] == "ready-for-dev"
+    assert "1-1-sign-in" not in dev and "1-2-accounts" not in dev
+    assert result["dropped_orphans"] == [{"key": "9-9-ghost-story", "status": "done"}]
+
+
+@pytest.mark.parametrize("ambiguous_source", ["tracker", "epics"])
+def test_ambiguous_story_ids_stop_before_writing(tmp_path, capsys, ambiguous_source):
+    existing = EXISTING
+    epics = EPICS_FIXTURE
+    if ambiguous_source == "tracker":
+        existing = existing.replace("  1-1-user-authentication:", "  1-1-sign-in: review\n  1-1-user-authentication:")
+    else:
+        epics += "\n### Story 1.1: Sign In\n"
+    with pytest.raises(SystemExit):
+        run_generate(tmp_path, epics, existing)
+    assert "ambiguous story ID" in out_json(capsys)["error"]
+    assert (tmp_path / "impl" / "sprint-status.yaml").read_text() == existing
+
+
 def test_merge_preserves_and_never_downgrades(tmp_path, capsys):
     status_file = run_generate(tmp_path, existing=EXISTING)
     result = out_json(capsys)

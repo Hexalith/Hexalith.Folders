@@ -17,7 +17,8 @@ Discovery is your call; everything after it is the script's.
 
 3. Read the JSON report and act on it — this is where judgment re-enters:
    - `warnings` about unparsed Epic/Story-like headings mean the epic file deviates from the standard format. Show the user, fix the headings together (or accept the omission), and rerun.
-   - `dropped_orphans` are entries that existed in the old status file but match nothing in the epics — usually renames. Each carries its old status; reconcile with the user, then transplant by rerunning with `--set <new-key>=<old-status>`.
+   - Ordinary refreshes preserve the existing tracker key for each story number, including lettered splits, when its title changes. A conflicting duplicate number stops generation before a write.
+   - `dropped_orphans` lists entries whose identities are absent from the epics. For intentional renumbering, confirm the destination and carry its old status forward with `--set <new-key>=<old-status>`.
    - If the epics defeat the parser entirely (a format the regexes can't see), fall back to building the file yourself against `sprint-status-template.yaml`, and tell the user the deterministic path didn't apply.
 
 ## Report

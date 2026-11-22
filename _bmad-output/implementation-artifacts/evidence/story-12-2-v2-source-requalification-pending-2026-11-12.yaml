@@ -17,17 +17,17 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: c181859c9d3b9a9940385d1e3b8b701623fc3970d7fc0d5509632b6e40d9c89e
+candidate_set_sha256: d0c88bb4a1ef08ecce70af3c97bc6e7c5a02f98eb2091516d3d09597cd228ccd
 artifact_count: 1659
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
-    bytes: 8489
-    sha256: 69e11b65a0f7c2b36f2c561c2f564da8f5bf397f45cc0a8b579c4106efe45655
+    bytes: 8351
+    sha256: a065869023ef2c27b7ecaa3db4917893cb441890196d2b7a59acb33b537924dd
   - path: ".github/workflows/contract-spine.yml"
     kind: file
-    bytes: 3962
-    sha256: bfb9226b081afee817d546a4ba3c14f39d2b65b66276229efd5816863752996c
+    bytes: 3929
+    sha256: c4f71fe85794431a618b82d6665c171693200bfb44099ea118e822969f74a4f0
   - path: "docs/contract/authorization-matrix.md"
     kind: file
     bytes: 49645
@@ -4694,8 +4694,8 @@ artifacts:
     sha256: de13ebd6facfa29485ba85dff0e4f9d51d79d47a57be1e066b305849ae367e6e
   - path: "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs"
     kind: file
-    bytes: 105685
-    sha256: 440c0d2379ddd4a31bc1b3646c5aa35cbb7da2cbd953bf170509c0bc1133dd9c
+    bytes: 103756
+    sha256: b07ba971fb799078bc060bb6335dcb7f9266597a1af8911597c02f79e0832089
   - path: "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs"
     kind: file
     bytes: 38433
@@ -4718,8 +4718,8 @@ artifacts:
     sha256: 9ab57216173f9f589f670e9c47d65e40066fd9bd59b63770ce1663cc6150b2de
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/BaselineCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 29797
-    sha256: b1a39602a4aec5c35c98fa4d84d78d13b9a000139e09553321385b21db187edb
+    bytes: 29642
+    sha256: 2b2e919a9afa9d20b1032019c63b5a2ee2b7493bb823b271250ed5ecece401e8
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/CapacityCalibrationConformanceTests.cs"
     kind: file
     bytes: 18987
@@ -4738,8 +4738,8 @@ artifacts:
     sha256: 629ab3f08c3e9157ccb0ba7f40f4cfcaa751b43feefce173e5488de0e45313cb
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ContractParityCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 21433
-    sha256: 24face44766b67b3f5790493b2460282e771fab747acb8a99465a3242edfa28a
+    bytes: 21366
+    sha256: 7da45dac05be95b8edf98d5e2e8e2adf340e0d26c8634d78460ef25bd1d6eeac
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/E2eCiWorkflowConformanceTests.cs"
     kind: file
     bytes: 13020
@@ -4759,7 +4759,7 @@ artifacts:
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/PinnedDomainCiWorkflow.cs"
     kind: file
     bytes: 426
-    sha256: 66cb7c5115376a945bb2a050f523395ff7f74aebba11c9f91fbdf3a35cf033f1
+    sha256: 8269469d440d3c45fae6599045e1b3b029f9932346afed0a2f74e9b7655266f6
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProductionObservabilityConformanceTests.cs"
     kind: file
     bytes: 24482
@@ -4770,16 +4770,16 @@ artifacts:
     sha256: 3abcf3bf86a14bc209e362ea5323cf63797c590cb6bbc6e97c45f3ba51772696
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs"
     kind: file
-    bytes: 9714
-    sha256: c118c7e7753b0f134f505969bd0ce796daf0a2e20bbdba0f9152264f82c1d2c3
+    bytes: 10070
+    sha256: d7016e620054d3c34e5464347edc647b9450f385941f107f6f886f24757c1324
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/RetentionAndTenantDeletionConformanceTests.cs"
     kind: file
     bytes: 21768
     sha256: e1d9a30b4f16e5b3affdb6110972e0aa8fe318909d2bdc050a08c2d8bbb908ef
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ScheduledDriftAndPolicyWorkflowConformanceTests.cs"
     kind: file
-    bytes: 28760
-    sha256: 4187cbdcf00d5c7791aa03ecea22a95bd71f80cbde614bef857d13124c6ccdcc
+    bytes: 28693
+    sha256: dbe5190418ff524649d966452ea02a111ca897265fba6cc4678427c65d2b0e92
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/SecurityRedactionCiWorkflowConformanceTests.cs"
     kind: file
     bytes: 17542

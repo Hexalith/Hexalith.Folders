@@ -335,30 +335,7 @@ Workspace_preparation_failed=50
         Directory.CreateDirectory(tempRoot);
         try
         {
-            string[] files =
-            [
-                "Directory.Build.props",
-                "Directory.Packages.props",
-                "global.json",
-                "references/Hexalith.Builds/Props/Directory.Packages.props",
-                "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-                "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
-                "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
-                "src/Hexalith.Folders.Client/nswag.json",
-                "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj",
-                "src/Hexalith.Folders.Client/Generation/Program.cs",
-                "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
-                "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
-                "src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs",
-            ];
-            foreach (string file in files)
-            {
-                CopyRepositoryFile(file, tempRoot);
-            }
-
-            string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-            ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\" -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low", tempRoot, 180_000);
-            restore.ExitCode.ShouldBe(0, RedactDiagnosticOutput(restore.Output, tempRoot));
+            string project = RestoreIsolatedGenerationProject(tempRoot);
 
             ProcessResult generation = RunProcess(
                 "dotnet",
@@ -385,51 +362,22 @@ Workspace_preparation_failed=50
         Directory.CreateDirectory(tempRoot);
         try
         {
-            string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
-            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v2.yaml");
-            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"));
-            File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
+            string project = RestoreIsolatedGenerationProject(tempRoot);
+            string contract = Path.Combine(tempRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
+            File.AppendAllText(contract, "\n# controlled regeneration input change\n", Encoding.UTF8);
 
-            string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-            using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-            }) ?? throw new InvalidOperationException("Failed to start 'dotnet' process - is the .NET SDK on PATH?");
+            ProcessResult generation = RunProcess(
+                "dotnet",
+                $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
+                tempRoot,
+                120_000);
+            generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
 
-            bool exited = process.WaitForExit(120_000);
-            if (!exited)
-            {
-                // Round 4 review (P13): kill the orphan process tree before the assertion fails so
-                // tempdir cleanup is not racing a still-running dotnet that holds file handles.
-                // Round 4 external (P9): fail loud on kill failure and assert the second WaitForExit
-                // actually drained the child, otherwise the subsequent Directory.Delete races a live
-                // handle.
-                bool killSucceeded = true;
-                string? killFailureMessage = null;
-                try
-                {
-                    process.Kill(entireProcessTree: true);
-                }
-                catch (InvalidOperationException invalid)
-                {
-                    killSucceeded = false;
-                    killFailureMessage = invalid.Message;
-                }
-
-                bool drained = process.WaitForExit(10_000);
-                killSucceeded.ShouldBeTrue($"process.Kill threw InvalidOperationException: {killFailureMessage}; the original 120s timeout cannot be diagnosed because the child was already gone or in an unexpected state.");
-                drained.ShouldBeTrue("process.Kill(entireProcessTree: true) did not finish draining the child within 10s; tempdir cleanup would race a live handle.");
-                exited.ShouldBeTrue("dotnet msbuild GenerateHexalithFoldersIdempotencyHelpers did not exit within 120s; orphan process killed.");
-            }
-
-            string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
-            process.ExitCode.ShouldBe(0, RedactDiagnosticOutput(combinedOutput, tempRoot));
-            File.Exists(output).ShouldBeTrue();
-            File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+            string generated = Path.Combine("src", "Hexalith.Folders.Client", "Generated");
+            string client = "HexalithFoldersClient.g.cs";
+            string helpers = "HexalithFoldersIdempotencyHelpers.g.cs";
+            File.ReadAllBytes(Path.Combine(tempRoot, generated, client)).ShouldBe(File.ReadAllBytes(Path.Combine(RepositoryRoot, generated, client)));
+            File.ReadAllText(Path.Combine(tempRoot, generated, helpers)).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, generated, helpers)));
         }
         finally
         {
@@ -1634,6 +1582,35 @@ Workspace_preparation_failed=50
         catch (UnauthorizedAccessException)
         {
         }
+    }
+
+    private static string RestoreIsolatedGenerationProject(string tempRoot)
+    {
+        string[] files =
+        [
+            "Directory.Build.props",
+            "Directory.Packages.props",
+            "global.json",
+            "references/Hexalith.Builds/Props/Directory.Packages.props",
+            "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+            "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
+            "src/Hexalith.Folders.Client/nswag.json",
+            "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj",
+            "src/Hexalith.Folders.Client/Generation/Program.cs",
+            "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
+            "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
+            "src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs",
+        ];
+        foreach (string file in files)
+        {
+            CopyRepositoryFile(file, tempRoot);
+        }
+
+        string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+        ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\" -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low", tempRoot, 180_000);
+        restore.ExitCode.ShouldBe(0, RedactDiagnosticOutput(restore.Output, tempRoot));
+        return project;
     }
 
     private static void CopyRepositoryFile(string relativePath, string destinationRoot)

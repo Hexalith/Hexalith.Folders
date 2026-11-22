@@ -318,7 +318,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-PROVIDER-02: Implement GitHub adapter (`Hexalith.Folders.Providers.GitHub`) using Octokit 14.0.0 with GitHub Apps fine-grained permissions; not surfaced beyond the provider port.
 - AR-PROVIDER-03: Implement Forgejo adapter (`Hexalith.Folders.Providers.Forgejo`) as a typed HttpClient wrapper, fed by per-version `swagger.v1.json` snapshots in `tests/contracts/forgejo/<version>/`, with Forgejo scoped tokens.
 - AR-PROVIDER-04: Maintain `tests/contracts/forgejo/supported-versions.json` test matrix (latest stable + latest LTS + n-1 minor + any pinned customer instance). `tests/tools/run-nightly-drift-gates.ps1` drives `tests/tools/forgejo-drift/` and classifies additive drift as warning and breaking drift as failure.
-- AR-PROVIDER-05: Distinguish known provider failure (timeout / 401 / 403 / 404 / 409 / 429 / 5xx / branch-protection / missing-or-deleted repository / stale clone / credential revocation / drift) from unknown outcome; unknown outcome enters `reconciliation_required` state — never silent retry that could duplicate repositories, file changes, or commits.
+- AR-PROVIDER-05: A pre-dispatch failure has a known outcome. After possible dispatch, require provider evidence of no effect to classify a refusal as known. A lost reply, timeout, cancellation or unreadable response with uncertain effect enters `unknown_provider_outcome`. Preserve the operation identity and fence, suppress further writes, and run up to five read-only checks within 15 minutes. Exhausted or conflicting evidence moves the workspace to `reconciliation_required` for human review.
 - AR-PROVIDER-06: Provider contract suite runs in two execution modes: hermetic-PR-gate (pinned fixtures, fast) AND live-nightly-drift (against real GitHub/Forgejo); fixture-to-failure-mode coverage matrix asserted in CI.
 
 #### Workers / Reconciliation / Rate Limiting
@@ -3681,7 +3681,7 @@ So that repository-backed work produces a provider-confirmed durable commit.
 **Then** writer identity uses the immutable canonical Story 12.7 token and the target executes only through a capability-proven `opaque-handle-restartable` provider operation
 **And** any `cleartext-required` operation fails before admission with HTTP `422` and code `confidential_operation_not_durable`.
 
-**Audit acceptance (2026-11-20).** Persist a stable pending operation through EventStore before invoking the remote writer. Exercise the normally registered executor on a disposable repository with a real lock and staged bytes. Stop the executor after remote acceptance and before local confirmation, then resume with the same operation identity. Verify the remote ref, exact bytes, one logical commit and one terminal task result. Record which provider was exercised. Story 3.14 owns the full create/bind journey after this executor is available.
+**Audit acceptance (2026-11-20).** Persist a stable pending operation through EventStore before invoking the remote writer. Exercise the normally registered executor first on a disposable Forgejo repository with qualified transport, a real lock and staged bytes. Stop the executor after remote acceptance and before local confirmation, then resume with the same operation identity. Verify the remote ref, exact bytes, one logical commit and one terminal task result. Record which provider was exercised. Story 3.14 owns the full create/bind journey after this executor is available.
 
 ### Story 12.5: At-least-once Memories egress and reconciler
 

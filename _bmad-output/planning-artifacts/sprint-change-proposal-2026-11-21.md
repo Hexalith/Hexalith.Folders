@@ -1,0 +1,41 @@
+# Folders sprint change proposal · 21 November 2026
+
+**Decision.** Jerome requested repairs to the sprint findings and selected **Forgejo** for the first disposable live commit test. The immediate Release and planning repairs are applied in the working tree. Release acceptance awaits green hosted checks for a commit containing those repairs and the updated submodule revisions. [Sprint plan](sprint-plan-2026-11-21.md) · [Sprint tracker](../implementation-artifacts/sprint-status.yaml)
+
+## Trigger and scope
+
+The parent checkout at `73ca79b4` matched fetched `main`, and all 13 direct submodules advanced to their fetched `main` revisions. The last push on that parent recorded 12 failing Contracts cases and one failing packaged AppHost case. The 20 November audit had identified four Contracts failures on an earlier revision. Planning also exposed five tracker keys that a title change would replace, conflicting descriptions of an uncertain provider write, and outdated cross-repository dependency evidence. [Hosted CI](https://github.com/Hexalith/Hexalith.Folders/actions/runs/44873203413) · [Contract-spine gates](https://github.com/Hexalith/Hexalith.Folders/actions/runs/44873203186) · [20 November proposal](sprint-change-proposal-2026-11-20.md)
+
+This is a **moderate sprint adjustment** across Release, SDK and fixture ownership. Direct repair retains the agreed MVP and puts hosted verification first. A rollback of the dependency refresh would reproduce the AppHost defect. Deferring the tracker repair would leave four story statuses at risk on the next regeneration. The change adds no delivery story or funding request. Timing for the live provider test depends on acceptance of its existing prerequisites.
+
+## Applied corrections
+
+| Area | Finding | Applied change |
+| --- | --- | --- |
+| Release contract checks | Three cases detected stale candidate inventory, one a Dapr version mismatch, and eight stale expectations about the shared workflow pin and SDK setup. | Regenerated the pending PD10 inventory. Aligned the selected Aspire Dapr package with the Builds catalog at `17.0.0-preview.1.261120-0454`. Existing workflow checks now use the reviewed domain CI pin `7afc4981` and verify SDK 11 through `global.json`. |
+| Packaged AppHost | On the parent’s recorded gitlinks, the owner-catalog test requested `Hexalith.EventStore.Contracts` 5.3.1 through Tenants while the host resolved 5.3.0. Catalog construction failed. | Reproduced the failure on the original inputs. With the refreshed gitlinks, Tenants and the host both resolve 5.4.0 and the same owner-catalog test passes. |
+| SDK generation | The contract mutation test could rewrite the tracked generated client before its helper comparison finished. | Run NSwag and the helper generator in the isolated project, and compare its outputs to the tracked client and helpers. The mutation changes the scratch helpers and preserves the client bytes. Story 11.12 retains this requirement. |
+| Tracker | Title changes and slug truncation made five existing story keys appear new and four recorded states regress. | Merge using the story number and suffix, retain the recorded key and comments, and reject ambiguous IDs before writing. The live tracker records the completed SDK maintenance action and the remaining hosted Release check. |
+| Provider outcome | The epic moved a possibly effective write directly to manual reconciliation. Story 12.4 had no selected first provider. | The PRD, architecture and Story 12.4 now specify Forgejo first. AR-PROVIDER-05 preserves the operation identity and fence on an uncertain result, suppresses writes and permits up to five read-only checks within 15 minutes. Conflicting or exhausted evidence requires human reconciliation. |
+| External dependencies | The manifest still described Platform 2.12 as unpublished and lacked the current McpCli inventory and parity story. | Record Platform `0aacf132`, McpCli `8042275f`, the approved inventory 1.1.0 and its receipt. Folders accepts each dependency once its selected revision and required evidence are bound together. |
+
+The PRD's broader SM1 target still covers GitHub and Forgejo across REST, SDK, CLI and MCP. The first fixture is intended to demonstrate one provider slice. Architecture and epic criteria specify a real lock, exact committed bytes, the remote ref and a single terminal result after interruption. The UX specification already describes automatic recovery for an unknown outcome and the transition to human reconciliation. These changes add no screen or user interaction. The manifest amendment records the three authority-document digests. [PRD](prd.md) · [Architecture](architecture.md) · [Epics](epics.md) · [UX specification](ux-design-specification.md) · [Execution manifest](planning-story-manifest.yaml)
+
+## Verification on the refreshed checkout
+
+| Check | Local result |
+| --- | --- |
+| Package-mode Release build | `dotnet build Hexalith.Folders.CI.slnx -c Release -m:1 -p:UseNuGetDeps=true -p:UseHexalithProjectReferences=false` succeeded with zero warnings and errors. MSBuild resolved the selected Dapr version for the consuming Aspire project. |
+| Affected Release test projects | Contracts 683 passed. Client 392 passed. AppHost 176 passed, 10 skipped and 6 reported not run, with zero failures using the catalog's Dapr CLI 1.19.1. The suite exercised the previously failing packaged owner-catalog case. |
+| Contract-spine workflow checks | The checked-in PowerShell gate passed all 425 OpenAPI and 75 client-generation cases. The separate McpCli selector passed all 46 cases. These counts are subsets of the project totals above. |
+| SDK working-tree isolation | During a normal run and an interrupted run after scratch generation began, a concurrent reader checked the tracked client hash. The hash stayed stable and the file watcher observed zero writes. |
+| PD10 evidence | Independent regeneration reproduced the pending 1,659-entry inventory byte for byte. Historical inventory digests still verify. The candidate records `pending-a6b` and `production_routed: false`. |
+| BMAD tracker | All 40 generator tests passed. Validation, preview and a scratch write preserved all 189 ordered lifecycle rows and their annotations. The 163 story IDs match the epics and manifest. All 285 prerequisite edges satisfy the graph rules. |
+
+## Handoff and remaining gates
+
+1. **Release maintainer, Builds and Folders AppHost** own the hosted push and contract-spine evidence for the combined repair and gitlinks. The Release action stays open until both pass on that revision.
+2. **Platform and Folders fixture maintainers** own qualification of the selected Platform gitlink. The reviewed November 15 Folders fixture passed bounded history, operational durability and folder durability. The recorded command, delivery and status-read p95 values exceeded their SM4 budgets. Story 12.2 remains in progress with performance, release and governance gates open. [Reviewed qualification](../implementation-artifacts/spec-12-2-historical-source-authority.md) · [Platform story](../../references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-2-12-provision-a-run-owned-workload-binding-authority.md)
+3. **Folders provider maintainer** owns the Forgejo fixture once 12.2, 12.3 and 12.7 qualify. Story 12.1 is complete. Use the real executor and qualified transport, interrupt after remote acceptance, and confirm the ref, exact bytes, one logical commit and one terminal task on resume. GitHub has a separate qualification requirement. [Story 12.4](epics.md#story-124-real-git-commit-executor-and-provider-write-path)
+4. **McpCli and Folders maintainers** own enrollment and consumer parity. McpCli inventory Story 5.8 is done. Stories 6.1 and 6.2 remain in backlog. The SDK and documentation maintainers retain the earlier onboarding action, and CiCd retains the shared-workflow review. [McpCli tracker](../../references/Hexalith.McpCli/_bmad-output/implementation-artifacts/sprint-status.yaml) · [Maintenance actions](../implementation-artifacts/sprint-status.yaml)
+5. **Deployment and consumer owners** supply staging and consumer evidence for Story 1.17. Jerome owns the subsequent exposure decision. The recorded mode is `V1Only`. [Operational handoff](../implementation-artifacts/story-1-17-closure-owner-intake-2026-11-16.md)

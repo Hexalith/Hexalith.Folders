@@ -1418,16 +1418,17 @@ external_nodes:
     repository: references/Hexalith.McpCli
     repository_owner: Hexalith.McpCli maintainers
     accountable_role: McpCli maintainer (single-maintainer model)
-    delivery_role: McpCli Epic 5 owner
+    delivery_role: McpCli Epic 6 owner
     source_work_references:
     - McpCli Story 5.2 — Decide Generic Non-Gateway Capability Contracts
     - McpCli Story 5.8 — Refresh and Re-disposition the Folders Inventory
-    - McpCli Folders enrollment story requested by sprint-change-proposal-2026-11-10 (handoff R3)
+    - McpCli Story 6.1 — Enroll the Folders Contracts release
     release_identifier: hexalith-mcpcli-folders-enrollment-v1
-    observed_repository_commit: c1313a6ab4a35ffd3fc6d76d8ec4f86f77270e62
+    observed_repository_commit: 8042275f8886e728e601b9a8ff34a5bf7a333b2e
     release_version_or_commit: pending-platform-publication
     evidence_paths:
-      inventory: references/Hexalith.McpCli/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.md
+      inventory: references/Hexalith.McpCli/_bmad-output/implementation-artifacts/folders-migration-inventory-v1.1.0.md
+      inventory_approval: references/Hexalith.McpCli/_bmad-output/implementation-artifacts/evidence/story-5-8/approval.json
       source_story_authority: references/Hexalith.McpCli/_bmad-output/planning-artifacts/epics.md
       escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-10.md
     required_evidence:
@@ -1436,8 +1437,7 @@ external_nodes:
       AD-21 Catalog set/type gates.
     - One approved execution vector per included operation with loopback request/result parity.
     acceptance_status: pending
-    acceptance_reason: Requested by sprint-change-proposal-2026-11-10; the McpCli stories that satisfy this node are not yet
-      planned or delivered.
+    acceptance_reason: McpCli records inventory Story 5.8 done and enrollment Story 6.1 in backlog. The selected release and passing operation vectors are outstanding.
     placeholder_acceptance_forbidden: true
     decision_status: pending
     execution_authorization_status: external-owner-controlled
@@ -1450,13 +1450,12 @@ external_nodes:
     repository: references/Hexalith.McpCli
     repository_owner: Hexalith.McpCli maintainers
     accountable_role: McpCli maintainer (single-maintainer model)
-    delivery_role: McpCli Epic 5 owner
+    delivery_role: McpCli Epic 6 owner
     source_work_references:
-    - McpCli Folders shared-head parity and retirement-verification stories requested by sprint-change-proposal-2026-11-10
-      (handoff R3)
+    - McpCli Story 6.2 — Prove Folders shared-head parity and safety
     - AI.Tools migration plan 1.1.0, Retirement and release prerequisites
     release_identifier: hexalith-mcpcli-folders-retirement-gate-v1
-    observed_repository_commit: c1313a6ab4a35ffd3fc6d76d8ec4f86f77270e62
+    observed_repository_commit: 8042275f8886e728e601b9a8ff34a5bf7a333b2e
     release_version_or_commit: pending-platform-publication
     evidence_paths:
       migration_plan: references/Hexalith.AI.Tools/hexalith-mcpcli-migration-instructions.md
@@ -1467,8 +1466,7 @@ external_nodes:
       with passing evidence or withdraw.
     - McpCli selected-environment shared-head parity, safety, and rollback evidence for Folders.
     acceptance_status: pending
-    acceptance_reason: Requested by sprint-change-proposal-2026-11-10; the McpCli stories that satisfy this node are not yet
-      planned or delivered.
+    acceptance_reason: McpCli records shared-head parity Story 6.2 in backlog. Selected-environment parity, safety and rollback evidence are outstanding.
     placeholder_acceptance_forbidden: true
     decision_status: pending
     execution_authorization_status: external-owner-controlled
@@ -1485,9 +1483,11 @@ external_nodes:
     - Platform Story 2.12 — Provision a run-owned workload-binding authority for disposable test environments (requested by
       sprint-change-proposal-2026-11-13)
     release_identifier: hexalith-platform-run-owned-workload-authority-v1
-    observed_repository_commit: 32643bde39b4da0e4538f8388e225727f82122f6
-    release_version_or_commit: pending-platform-publication
+    observed_repository_commit: 0aacf13244fa6b1d9e08d627149d72cf12229167
+    release_version_or_commit: pending-folders-gitlink-qualification
     evidence_paths:
+      platform_story: references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-2-12-provision-a-run-owned-workload-binding-authority.md
+      folders_qualification: _bmad-output/implementation-artifacts/spec-12-2-historical-source-authority.md
       enrollment_runbook: references/Hexalith.Platform/docs/security/workload-binding-enrollment.md
       source_story_authority: references/Hexalith.Platform/_bmad-output/planning-artifacts/epics.md
       escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-13.md
@@ -1498,7 +1498,7 @@ external_nodes:
       and cleanup.
     - The exact Platform commit that Folders pins as its references/Hexalith.Platform gitlink.
     acceptance_status: pending
-    acceptance_reason: Requested by sprint-change-proposal-2026-11-13; Platform Story 2.12 is backlog.
+    acceptance_reason: Platform Story 2.12 is done. Folders recorded three passing strict cases on its November 15 source tuple. Acceptance still requires binding the selected Platform commit and its component and Folders fixture evidence to the Folders gitlink.
     placeholder_acceptance_forbidden: true
     decision_status: pending
     execution_authorization_status: external-owner-controlled
@@ -2369,6 +2369,24 @@ validation_results:
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 planning_amendments:
+- amended_on: '2026-11-21'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  proposal: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-21.md
+  accepted_scope: Correct sprint planning issues and use Forgejo for the first disposable live commit test.
+  changes:
+  - Align AR-PROVIDER-05 with the approved bounded recovery model and record Forgejo in Story 12.4.
+  - Refresh Platform and McpCli observations. Cross-repository acceptance remains pending on the named evidence.
+  changed_authority:
+  - path: _bmad-output/planning-artifacts/prd.md
+    sha256_before: dd6c722fdd5bcd36ce4e46e79c66d65dd8390878119e7e0fa8aecc6508639bb5
+    sha256_after: b7b456d5ec056b7e857d2aa538b958171d10553ca31e3e483fdbf4f2f42fa8f1
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256_before: 561d454f11bebb06d29e77562829346e4593681c245e2e04843bd762bbbdff3d
+    sha256_after: e20fc3b513fd98db6618955ab3f5b40edc5190771a7a75dfd2c1da2a1d8659a2
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256_before: 7a9a17a14fbad771192b7eb3530874290cd987b339f4bd3f73cc7056af3452db
+    sha256_after: 5a039f2ed171a6d51412be0d449ca71db3779e6ffe6d0a4a0a7e4ded40f74481
 - amended_on: '2026-11-20'
   decision_maker: Jerome
   decision_policy: docs/governance/approval-policy.md
