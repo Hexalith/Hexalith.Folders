@@ -1,0 +1,175 @@
+{
+  "story": "12.2",
+  "date": "2026-11-22",
+  "status": "in-progress",
+  "full_acceptance": false,
+  "external_prerequisite": {
+    "id": "EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY",
+    "acceptance": "pending"
+  },
+  "inputs": {
+    "folders_commit": "d58d5d7a54f63f7223b972f22f11c58510a94119",
+    "direct_gitlinks": {
+      "Hexalith.AI.Tools": "87a738ceeba8975c0b087bc5ecee7dfbc14bf73c",
+      "Hexalith.Builds": "d532b1e9b1f595e2c9867bfa9780dccd78c9a2d9",
+      "Hexalith.CiCd": "b7102103ebbe2d3644f9c080834306d890ccbc3d",
+      "Hexalith.Commons": "258f9d20e33bd0ae411cf8b3836a26a131f5b9ae",
+      "Hexalith.EventStore": "147159db98074b7769645ccc4aaaf0099df03326",
+      "Hexalith.FrontComposer": "a9e755da2c060f4bf49e0cc2df094bd8a4940df6",
+      "Hexalith.McpCli": "8042275f8886e728e601b9a8ff34a5bf7a333b2e",
+      "Hexalith.Memories": "45fb2308eb11cf5072c6330a9f6bdad3fbf30cd5",
+      "Hexalith.Parties": "9b192aabf1a12982a3432ba827bf86b6a978fc5c",
+      "Hexalith.Platform": "0aacf13244fa6b1d9e08d627149d72cf12229167",
+      "Hexalith.PolymorphicSerializations": "c6d0dfce6dc4f9a0699a51f80baf021ba5ef5d60",
+      "Hexalith.Projects": "31835eb8e3826ecd799321e00c7203ff0bb27f88",
+      "Hexalith.Tenants": "9196587bf7b94b9f8eb5e235934ca124b58942fb"
+    },
+    "sdk": "11.0.100",
+    "aspire": "17.0.0",
+    "dapr_cli": "1.19.1",
+    "dapr_runtime": "1.19.2",
+    "provider_jar_sha256": "d7266c7e677d4e01e13f49bbe148f10941516534dea6282d82538272d97cbfb1",
+    "test_assembly_sha256": {
+      "Hexalith.Folders.AppHost.Tests": "96bc16571aa75d0782bedc5af4a4e4c1615c93188c1db5e69e68cb550d2dc30a",
+      "Hexalith.Platform.Composition.Tests": "6eb88c9bc0b3c1ef5e11a3d6b10674ac91c495627a421cc3c646c08cb841ed6b"
+    }
+  },
+  "builds": {
+    "configuration": "Debug",
+    "properties": {
+      "UseHexalithProjectReferences": true,
+      "UseNuGetDeps": false,
+      "EnablePrivateCatalogInvocationProof": true
+    },
+    "folders_apphost_tests": "passed",
+    "platform_composition_tests": "passed in a standalone checkout of the same pin with the same dependency revisions as siblings; 10 warnings, 0 errors",
+    "asset_binding": "Folders compiled the three enrollment source files from its recorded Platform gitlink. The standalone Platform build used the same gitlink and dependency commits."
+  },
+  "components": {
+    "keycloak": "26.6.4",
+    "maven_package": {
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    "system_python_unittest": {
+      "command": "/usr/bin/python3 -B -m unittest test_run_owned test_component_fixture",
+      "passed": 58,
+      "errors": 1,
+      "unverified": "test_real_provider_supports_non_1000_caller_with_private_host_files. Runner UID 1000 has no sudo executable for the UID 1001 control."
+    },
+    "python_live": {
+      "command": "/usr/bin/python3 -B verify_component.py --run-owned",
+      "fresh_rsa_probes": 25,
+      "real_container_terminal_controls": 5,
+      "exit": 1,
+      "remaining_control": "UID 1001 portability"
+    },
+    "platform_enrollment_class": {
+      "total": 49,
+      "passed": 48,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 1
+    },
+    "platform_explicit_live": {
+      "command": "verify_component.py --run-owned --platform-assembly <Platform test DLL>",
+      "consumer_fresh_host_passed": 1,
+      "cancellation_passed": 1
+    },
+    "folders_enrollment_configuration": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "not-run": 0
+    },
+    "folders_explicit_live": {
+      "command": "verify_component.py --run-owned --apphost-assembly <Folders test DLL>",
+      "passed": 1,
+      "resources": 8,
+      "workloads": 6,
+      "independent_proof_callers": 2
+    },
+    "setup_attempts": [
+      "The initial Python run preceded the provider JAR and was invalid for qualification. Maven then built the JAR with JDK 21, the managed proxy and system CA store.",
+      "The bundled Python reported one extra CA in the two-root test. This test passed using system Python, and the full system Python run retained the UID 1001 error.",
+      "The first Folders build required PowerShell and a writable .NET runtime directory. The Platform build under Folders inherited two parent analyzer rules (69 errors). The final standalone Platform run used the owning repository configuration and physical sibling checkouts."
+    ]
+  },
+  "strict_folders": {
+    "command": "/usr/bin/python3 -B references/Hexalith.Platform/infrastructure/keycloak-workload-binding/run_owned.py --owner disposable-folders-acceptance --lifetime-seconds <lease> -- dotnet <Folders test DLL> -class Hexalith.Folders.AppHost.Tests.<class> -xml <result.xml>",
+    "environment": {
+      "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+      "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+    },
+    "leases_seconds": {
+      "bounded_history": 3600,
+      "operational_and_folder_durability": 900
+    },
+    "bounded_history_only": {
+      "FOLDERS_BOUNDED_HISTORY_ORIGINAL_SOURCE": "1"
+    },
+    "results": {
+      "OperationalStatusDurabilityAcceptanceTests": {
+        "test_body_sha256": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+        "xunit_xml_sha256": "993a02d3e336294365bc1ebc55c987195264ae0d27365ee5081a5a350513c203",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "launcher_exit": 1
+      },
+      "FolderDurabilityAcceptanceTests": {
+        "test_body_sha256": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+        "xunit_xml_sha256": "2653ee602d0f22b928c1b424aec9ce1346343bc5ccdb6d161a23433b8e0fea96",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "launcher_exit": 1
+      },
+      "OperationalStatusBoundedHistoryAcceptanceTests": {
+        "test_body_sha256": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+        "xunit_xml_sha256": "04c708a4903b7be520da988e3b79491b1021bbce889e447a30974d0ec0b27aed",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "launcher_exit": 1
+      }
+    },
+    "failure": "All three failed in FolderDurabilityAcceptanceFixture.InitializeAsync at OperationalProviderFixture.StartAsync (line 43). Docker returned exit 125 before the test bodies or any SM4 samples. Each launcher reported zero remaining owned containers and temporary paths.",
+    "forgejo_image": {
+      "ref": "codeberg.org/forgejo/forgejo:16.0.3",
+      "index_digest": "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+      "linux_amd64_manifest": "sha256:121ff0f31cfa3f36f051a1590d50c35e1d99491e1788f5f12ced66a957c5be0b",
+      "registry_result": "Index HTTP 200. Referenced linux/amd64 manifest HTTP 404 MANIFEST_UNKNOWN. Docker pull failed by tag and by index digest."
+    }
+  },
+  "sm4": {
+    "current_samples": 0,
+    "current_p95_ms": null,
+    "historical_receipt": "story-12-2-source-authority-reviewed-20261115.json",
+    "historical_measurements_and_existing_budgets": {
+      "command_p95_ms": 15385.685,
+      "command_budget_ms": 1000,
+      "workers_delivery_p95_ms": 4947.242,
+      "workers_delivery_budget_ms": 1000,
+      "status_read_p95_ms": 1176.431,
+      "status_read_budget_ms": 500,
+      "gate": "open"
+    }
+  },
+  "hosted_checks": {
+    "folders_push_ci": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/45002607113",
+    "contract_spine": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/45002606908",
+    "conclusion": "success on the Folders input commit for both; push CI skipped the Aspire and performance jobs"
+  },
+  "open_work": {
+    "platform_and_folders_fixture_maintainers": "Recover the digest-matched Forgejo linux/amd64 image, rerun all three strict cases, and evaluate fresh SM4 samples against the existing budgets.",
+    "platform_fixture_runner_owner": "Run the UID 1001 control on a supported validation host.",
+    "release_and_deployment_owners": "Supply the applicable release/publication, staging and deployed-consumer evidence.",
+    "governance": "Jerome owns the exposure decision after the staging and consumer evidence. The recorded mode is V1Only.",
+    "story_4_18": "Held pending acceptance of 12.2, 4.22 and 11.15."
+  }
+}

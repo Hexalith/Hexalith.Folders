@@ -89,6 +89,10 @@ The frozen defer decision keeps this spec `draft`. The reader remains in memory;
 
 The existing defer decision remains applicable without a new intent decision. This recheck changes only this spec's verification record, preserves its frozen block and `draft` status, and performs no irreversible action. Implementation, builds and topology runs remain deferred; prerequisite delivery and acceptance stay with their owning stories.
 
+**Readiness recheck (2026-11-22).** On Folders `d58d5d7a54f63f7223b972f22f11c58510a94119` and EventStore `2ca76828bf1b9e666b1ed309da4a96f7252290b2`, Story 12.1 is done and the EventStore evolution acceptance covers source and SDK compatibility. Story 12.2 remains in progress with SM4 latency, release and governance gates open. Platform 2.12 is done. Folders still requires matching Platform component and Folders fixture evidence for its recorded Platform gitlink. [November 21 sprint plan](../planning-artifacts/sprint-plan-2026-11-21.md)
+
+Story 4.22 (guarded C6 lifecycle) and Story 11.15 (DCP verification lane) are both in backlog. The manifest keeps 4.18 held with delivery evidence open. The October 6 decision therefore keeps implementation queued. [Execution manifest](../planning-artifacts/planning-story-manifest.yaml) · [Sprint tracker](sprint-status.yaml)
+
 **Commands:**
 - `dotnet build Hexalith.Folders.slnx -c Debug` after prerequisite acceptance.
 - Build/run core, Server, Client and integration projects separately; invoke built xUnit v3 assemblies with `-class` and assert stored end-state.
