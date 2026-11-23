@@ -7,6 +7,13 @@ using Hexalith.Folders.Client.Generation.Shared;
 using Hexalith.Folders.Client.Generation;
 using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
+if (args is ["--validate-contract", string inputPath])
+{
+    YamlMappingNode input = LoadYaml(inputPath);
+    _ = BuildHelpers(input, EnumerateOperations(input).ToArray());
+    return;
+}
+
 Dictionary<string, string> arguments = ParseArguments(args);
 string repositoryRoot = RequiredArgument(arguments, "--repository-root");
 if (string.IsNullOrWhiteSpace(repositoryRoot) || !Path.IsPathFullyQualified(repositoryRoot))
@@ -108,21 +115,24 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
         }
 
         string helperSchemaName = ResolveHelperSchemaName(schemas, operation.RequestSchema);
-        YamlMappingNode schema = RequiredMapping(schemas, helperSchemaName);
-        IReadOnlyDictionary<string, SchemaPropertyModel> schemaProperties = ReadProperties(schema);
+        var schemaProperties = ReadProperties(schemas, operation.RequestSchema, RequiredMapping(schemas, operation.RequestSchema));
+        if (helperSchemaName != operation.RequestSchema)
+        {
+            // Shared helpers may only reference members available on the base request type.
+            schemaProperties = ReadProperties(schemas, helperSchemaName, RequiredMapping(schemas, helperSchemaName));
+        }
+        var operationParameters = IndexParameters(operation);
         List<FieldModel> fields = [];
         List<ParameterModel> helperParameters = [];
 
         foreach (string field in operation.IdempotencyFields)
         {
-            FieldModel fieldModel = ResolveField(operation, field, helperSchemaName, schemaProperties, helperParameters);
+            FieldModel fieldModel = ResolveField(operation.OperationId, field, helperSchemaName, schemas, schemaProperties, operationParameters, helperParameters);
             fields.Add(fieldModel);
         }
 
         IReadOnlyList<ParameterModel> orderedParameters = helperParameters
-            .OrderBy(p => operation.Parameters.Select((parameter, index) => new { parameter, index })
-                .FirstOrDefault(x => NormalizeName(x.parameter.Name) == p.Field)?.index ?? int.MaxValue)
-            .ThenBy(p => p.Field, StringComparer.Ordinal)
+            .OrderBy(p => operationParameters[p.Field].Order)
             .ToArray();
 
         if (!variantsBySchema.TryGetValue(helperSchemaName, out List<HelperVariantModel>? variants))
@@ -180,33 +190,55 @@ static string ResolveHelperSchemaName(YamlMappingNode schemas, string requestSch
     return requestSchemaName;
 }
 
-static FieldModel ResolveField(
-    OperationModel operation,
-    string field,
-    string schemaName,
-    IReadOnlyDictionary<string, SchemaPropertyModel> schemaProperties,
-    List<ParameterModel> helperParameters)
+static Dictionary<string, (string Name, int Order)> IndexParameters(OperationModel operation)
 {
-    Dictionary<string, string> operationParameters = [];
-    foreach (ParameterModel parameter in operation.Parameters)
+    Dictionary<string, (string Name, int Order)> parameters = new(StringComparer.Ordinal);
+    for (int i = 0; i < operation.Parameters.Count; i++)
     {
-        string normalized = NormalizeName(parameter.Name);
-        if (operationParameters.TryGetValue(normalized, out string? existing))
+        ParameterModel parameter = operation.Parameters[i];
+        AddName(parameter.Field, parameter.Name, i);
+        if (parameter.WireName is { } wireName)
         {
-            if (!string.Equals(existing, parameter.Name, StringComparison.Ordinal))
+            string wireField = NormalizeName(wireName);
+            if (wireField != parameter.Field)
             {
-                throw new InvalidOperationException($"Operation {operation.OperationId} has duplicate normalized parameter '{normalized}' from '{existing}' and '{parameter.Name}'.");
+                AddName(wireField, wireName, i);
             }
-
-            continue;
         }
-
-        operationParameters.Add(normalized, parameter.Name);
     }
 
-    if (operationParameters.TryGetValue(field, out string? parameterName))
+    return parameters;
+
+    void AddName(string field, string name, int order)
     {
-        string parameter = EnsureParameter(helperParameters, field, parameterName, operation.OperationId);
+        if (parameters.TryAdd(field, (name, order)))
+        {
+            return;
+        }
+
+        ParameterModel previous = operation.Parameters[parameters[field].Order];
+        ParameterModel current = operation.Parameters[order];
+        string previousName = previous.WireName ?? previous.Name;
+        string currentName = current.WireName ?? current.Name;
+        if (previousName != currentName)
+        {
+            throw new InvalidOperationException($"Operation {operation.OperationId} has duplicate normalized parameter '{field}' from '{previousName}' and '{currentName}'.");
+        }
+    }
+}
+
+static FieldModel ResolveField(
+    string operationId,
+    string field,
+    string schemaName,
+    YamlMappingNode schemas,
+    IReadOnlyDictionary<string, YamlMappingNode> schemaProperties,
+    IReadOnlyDictionary<string, (string Name, int Order)> operationParameters,
+    List<ParameterModel> helperParameters)
+{
+    if (operationParameters.TryGetValue(field, out var source))
+    {
+        string parameter = EnsureParameter(helperParameters, field, source.Name, operationId);
         return new FieldModel(field, "true", parameter);
     }
 
@@ -223,15 +255,24 @@ static FieldModel ResolveField(
     }
 
     string firstJsonName = ToJsonPropertyName(bodyParts[0]);
-    if (!schemaProperties.ContainsKey(firstJsonName))
+    if (!schemaProperties.TryGetValue(firstJsonName, out YamlMappingNode? property))
     {
-        throw new InvalidOperationException($"Operation {operation.OperationId} field '{field}' does not resolve to a request property or operation parameter.");
+        throw new InvalidOperationException($"Operation {operationId} field '{field}' does not resolve to a request property or operation parameter.");
     }
 
     string expression = string.Join(".", bodyParts.Select(ToPropertyName));
     if (bodyParts.Length == 1)
     {
         return new FieldModel(field, "true", expression);
+    }
+
+    for (int i = 1; i < bodyParts.Length; i++)
+    {
+        string jsonName = ToJsonPropertyName(bodyParts[i]);
+        if (!ReadProperties(schemas, schemaName, property).TryGetValue(jsonName, out property))
+        {
+            throw new InvalidOperationException($"Operation {operationId} field '{field}' does not resolve at property '{jsonName}'.");
+        }
     }
 
     string rootProperty = ToPropertyName(bodyParts[0]);
@@ -270,34 +311,78 @@ static string EnsureParameter(List<ParameterModel> parameters, string field, str
     return name;
 }
 
-static IReadOnlyDictionary<string, SchemaPropertyModel> ReadProperties(YamlMappingNode schema)
+static IReadOnlyDictionary<string, YamlMappingNode> ReadProperties(YamlMappingNode schemas, string schemaName, YamlMappingNode schema)
 {
-    Dictionary<string, SchemaPropertyModel> properties = new(StringComparer.Ordinal);
-    AddProperties(schema, properties);
+    HashSet<YamlMappingNode> visiting = new(ReferenceEqualityComparer.Instance);
+    Dictionary<YamlMappingNode, Dictionary<string, YamlMappingNode>> visited = new(ReferenceEqualityComparer.Instance);
+    return Visit(schema, schemaName);
 
-    if (schema.Children.TryGetValue(new YamlScalarNode("oneOf"), out YamlNode? oneOfNode))
+    Dictionary<string, YamlMappingNode> Visit(YamlMappingNode current, string name)
     {
-        foreach (YamlNode branchNode in oneOfNode.ShouldBeSequence("oneOf"))
+        if (visited.TryGetValue(current, out var cached))
         {
-            AddProperties(branchNode.ShouldBeMapping("oneOf branch"), properties);
+            return cached;
         }
-    }
 
-    return properties;
-}
+        if (!visiting.Add(current))
+        {
+            throw new InvalidOperationException($"Cyclic schema composition at '{name}' while reading '{schemaName}'.");
+        }
 
-static void AddProperties(YamlMappingNode schema, Dictionary<string, SchemaPropertyModel> properties)
-{
-    HashSet<string> required = ReadStringSequence(schema, "required").ToHashSet(StringComparer.Ordinal);
-    if (!schema.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? propertiesNode))
-    {
-        return;
-    }
+        Dictionary<string, YamlMappingNode> properties = new(StringComparer.Ordinal);
+        if (current.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
+        {
+            const string prefix = "#/components/schemas/";
+            string reference = referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty;
+            if (!reference.StartsWith(prefix, StringComparison.Ordinal)
+                || reference.Length == prefix.Length || reference.AsSpan(prefix.Length).Contains('/'))
+            {
+                throw new InvalidOperationException($"Schema '{name}' requires a local schema reference of the form '{prefix}<Name>'.");
+            }
 
-    foreach (KeyValuePair<YamlNode, YamlNode> property in propertiesNode.ShouldBeMapping("properties").Children)
-    {
-        string name = property.Key.ShouldBeScalar("property").Value ?? string.Empty;
-        properties[name] = new SchemaPropertyModel(property.Value.ShouldBeMapping("property"), required.Contains(name));
+            string target = reference[prefix.Length..];
+            properties = new(Visit(RequiredMapping(schemas, target), target), StringComparer.Ordinal);
+        }
+
+        if (current.Children.TryGetValue(new YamlScalarNode("allOf"), out YamlNode? allOf))
+        {
+            foreach (YamlNode branch in allOf.ShouldBeSequence("allOf"))
+            {
+                foreach (var member in Visit(branch.ShouldBeMapping("allOf branch"), name))
+                {
+                    properties[member.Key] = member.Value;
+                }
+            }
+        }
+
+        if (current.Children.TryGetValue(new YamlScalarNode("oneOf"), out YamlNode? oneOf))
+        {
+            var alternatives = oneOf.ShouldBeSequence("oneOf").Children
+                .Select(branch => Visit(branch.ShouldBeMapping("oneOf branch"), name)).ToArray();
+            if (alternatives.Length > 0)
+            {
+                foreach (var member in alternatives[0])
+                {
+                    if (alternatives.All(branch => branch.TryGetValue(member.Key, out var value) && value.Equals(member.Value)))
+                    {
+                        properties.TryAdd(member.Key, member.Value);
+                    }
+                }
+            }
+        }
+
+        _ = ReadStringSequence(current, "required");
+        if (current.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? ownProperties))
+        {
+            foreach (var member in ownProperties.ShouldBeMapping("properties").Children)
+            {
+                properties[member.Key.ShouldBeScalar("property").Value ?? string.Empty] = member.Value.ShouldBeMapping("property");
+            }
+        }
+
+        visiting.Remove(current);
+        visited.Add(current, properties);
+        return properties;
     }
 }
 
@@ -544,8 +629,8 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode root, Yam
                 throw new InvalidOperationException("Parameter $ref must identify a non-empty single parameter name.");
             }
 
-            _ = ReadParameterName(ResolveLocalMapping(root, parameter));
-            yield return new ParameterModel(NormalizeName(name), name);
+            string wireName = ReadParameterName(ResolveLocalMapping(root, parameter));
+            yield return new ParameterModel(NormalizeName(name), name, wireName);
         }
         else if (parameter.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? nameNode))
         {
@@ -866,41 +951,24 @@ static string Render(
     code.AppendLine("}");
     code.AppendLine();
 
-    code.AppendLine("public partial class AddFileRequest");
-    code.AppendLine("{");
-    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
-    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
-    code.AppendLine("    {");
-    code.AppendLine("        if (FileOperationKind != AddFileRequestFileOperationKind.Add) throw new JsonSerializationException(\"AddFileRequest requires fileOperationKind add.\");");
-    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Add;");
-    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Add);");
-    code.AppendLine("    }");
-    code.AppendLine("}");
-    code.AppendLine();
-
-    code.AppendLine("public partial class ChangeFileRequest");
-    code.AppendLine("{");
-    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
-    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
-    code.AppendLine("    {");
-    code.AppendLine("        if (FileOperationKind != ChangeFileRequestFileOperationKind.Change) throw new JsonSerializationException(\"ChangeFileRequest requires fileOperationKind change.\");");
-    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Change;");
-    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Change);");
-    code.AppendLine("    }");
-    code.AppendLine("}");
-    code.AppendLine();
-
-    code.AppendLine("public partial class RemoveFileRequest");
-    code.AppendLine("{");
-    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
-    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
-    code.AppendLine("    {");
-    code.AppendLine("        if (FileOperationKind != RemoveFileRequestFileOperationKind.Remove) throw new JsonSerializationException(\"RemoveFileRequest requires fileOperationKind remove.\");");
-    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Remove;");
-    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Remove);");
-    code.AppendLine("    }");
-    code.AppendLine("}");
-    code.AppendLine();
+    foreach (string kind in new[] { "Add", "Change", "Remove" })
+    {
+        string type = kind + "FileRequest";
+        code.AppendLine($"public partial class {type}");
+        code.AppendLine("{");
+        code.AppendLine($"    internal override FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind == {type}FileOperationKind.{kind}");
+        code.AppendLine($"        ? FileMutationRequestFileOperationKind.{kind}");
+        code.AppendLine($"        : throw new JsonSerializationException(\"{type} requires fileOperationKind {kind.ToLowerInvariant()}.\");");
+        code.AppendLine();
+        code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+        code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+        code.AppendLine("    {");
+        code.AppendLine("        base.FileOperationKind = EffectiveFileOperationKind;");
+        code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, base.FileOperationKind);");
+        code.AppendLine("    }");
+        code.AppendLine("}");
+        code.AppendLine();
+    }
 
     RenderExactProblemValidator(code, "FileSafeResourceUnavailableProblem", "_404", "Tenant_access_denied", "Resource_unavailable", false, "No_action");
     RenderExactProblemValidator(code, "FileRangeUnsatisfiableProblem", "_416", "Range_unsatisfiable", "Range_unsatisfiable", false, "Revise_request");
@@ -1004,7 +1072,8 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
     {
         code.AppendLine($"    public string ComputeIdempotencyHash({parameters})");
         code.AppendLine("    {");
-        code.AppendLine("        string operationId = ResolveFileMutationOperationId();");
+        code.AppendLine("        var kind = EffectiveFileOperationKind;");
+        code.AppendLine("        string operationId = ResolveFileMutationOperationId(kind);");
         code.AppendLine("        return operationId switch");
         code.AppendLine("        {");
         foreach (HelperVariantModel variant in helper.Variants)
@@ -1031,20 +1100,14 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
         code.AppendLine("        }");
         code.AppendLine("    }");
         code.AppendLine();
-        code.AppendLine("    private string ResolveFileMutationOperationId() => FileOperationKind switch");
+        code.AppendLine("    internal virtual FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind;");
+        code.AppendLine();
+        code.AppendLine("    private static string ResolveFileMutationOperationId(FileMutationRequestFileOperationKind kind) => kind switch");
         code.AppendLine("    {");
         code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"AddFile\",");
         code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"ChangeFile\",");
         code.AppendLine("        FileMutationRequestFileOperationKind.Remove => \"RemoveFile\",");
-        code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
-        code.AppendLine("    };");
-        code.AppendLine();
-        code.AppendLine("    private string ResolveFileMutationOperationKindWireValue() => FileOperationKind switch");
-        code.AppendLine("    {");
-        code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"add\",");
-        code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"change\",");
-        code.AppendLine("        FileMutationRequestFileOperationKind.Remove => \"remove\",");
-        code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
+        code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{kind}'.\"),");
         code.AppendLine("    };");
     }
 
@@ -1149,11 +1212,9 @@ internal sealed record OperationModel(
     IReadOnlyList<string> ProblemTuples,
     string? AcceptedFreshness);
 
-internal sealed record ParameterModel(string Field, string Name);
+internal sealed record ParameterModel(string Field, string Name, string? WireName = null);
 
 internal sealed record FieldModel(string Path, string PresentExpression, string ValueExpression);
-
-internal sealed record SchemaPropertyModel(YamlMappingNode Schema, bool Required);
 
 internal sealed record HelperVariantModel(
     string OperationId,
@@ -1186,7 +1247,7 @@ internal static class SpecialFields
         // Entry: content_hash_reference (AddFile, ChangeFile equivalence; absent for RemoveFile).
         [("FileMutationRequest", "content_hash_reference")] = new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
         // Entry: file_operation_kind (AddFile, ChangeFile, RemoveFile equivalence; typed enum, always present).
-        [("FileMutationRequest", "file_operation_kind")] = new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
+        [("FileMutationRequest", "file_operation_kind")] = new FieldModel("file_operation_kind", "true", "kind"),
         // Entry: operation_id (NSwag-emitted companion property; preserves null-versus-omitted presence semantics for the shared FileMutationRequest schema).
         [("FileMutationRequest", "operation_id")] = new FieldModel("operation_id", "OperationId is not null", "OperationId"),
         // Entry: path_metadata (AddFile, ChangeFile, RemoveFile equivalence; typed PathMetadata object).

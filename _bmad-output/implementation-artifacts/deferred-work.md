@@ -718,7 +718,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:98-128
 reason: `NormalizeName` acronym handling produces non-obvious fail-closed diagnostics (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:98-128`). No current spine uses acronym-suffix parameters.
-status: open
+status: done 2026-11-23
+resolution: Parameter matching recognizes acronym word boundaries in inline and referenced names. Ambiguous wire names produce an operation-specific diagnostic. See spec-five-deferred-sdk-field-resolution.md.
 
 ### DW-99: Subnormal `double`s from FMA-fused arithmetic may diverge across hardware classes
 
@@ -795,7 +796,8 @@ resolution: The SDK corpus test matches the exact classification vocabulary at t
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317
 reason: `FileMutationRequestFileOperationKind` enum drift detection only checks ordinal collisions, not `EnumMember` wire-value drift (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`).
-status: open
+status: done 2026-11-23
+resolution: The SDK tests compare the generated enum metadata to the base schema and verify each mutation hash against its operation-specific OpenAPI token. See spec-five-deferred-sdk-field-resolution.md.
 
 ### DW-110: `IdempotencyField.ToCanonicalLine()` bypasses `RejectControlCharacters`
 
@@ -1480,7 +1482,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368
 reason: Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — cosmetic refactor; two switches will drift only if a new enum value lands without updating both.
-status: open
+status: done 2026-11-23
+resolution: The shared helper hashes the effective typed enum using the SDK wire encoder. The concrete add, change and remove requests use the same kind for hashing and serialization. See spec-five-deferred-sdk-field-resolution.md.
 
 ### DW-213: `EnsureDeclaredOrder` duplicate-after-sort message wording
 
@@ -1495,7 +1498,8 @@ resolution: `EnsureDeclaredOrder` checks exact duplicates before ordering. `Dupl
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:616-638
 reason: `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
-status: open
+status: done 2026-11-23
+resolution: Each operation builds a single normalized parameter index with declaration order for lookup and helper argument ordering. See spec-five-deferred-sdk-field-resolution.md.
 
 ### DW-215: `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength
 
@@ -1553,7 +1557,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:709-722
 reason: `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — no current spine schema requires it; revisit when composed schemas with idempotency fields arrive.
-status: open
+status: done 2026-11-23
+resolution: The generator resolves properties across local component references and allOf, checks nested paths, and rejects invalid compositions before NSwag replaces the client. See spec-five-deferred-sdk-field-resolution.md.
 
 ### DW-224: `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — only fires for `CreateFolderRequest` today.
 

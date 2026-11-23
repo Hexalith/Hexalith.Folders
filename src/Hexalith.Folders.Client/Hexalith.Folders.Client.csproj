@@ -31,10 +31,18 @@
     <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)/Generated/HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
     <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)/Generation/Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>
   </PropertyGroup>
+  <Target Name="PrepareHexalithFoldersGenerator">
+    <PropertyGroup>
+      <HexalithFoldersGeneratorOptions>-p:UseNuGetDeps=$(UseNuGetDeps) -p:UseHexalithProjectReferences=$(UseHexalithProjectReferences) -p:NuGetAudit=$(NuGetAudit) -p:NuGetAuditMode=$(NuGetAuditMode) -p:NuGetAuditLevel=$(NuGetAuditLevel) -p:ContinuousIntegrationBuild=$(ContinuousIntegrationBuild) -p:RestoreConfigFile=&quot;$(RestoreConfigFile)&quot; -p:EnableNETAnalyzers=$(EnableNETAnalyzers) -p:RunAnalyzers=$(RunAnalyzers) -p:RunAnalyzersDuringBuild=$(RunAnalyzersDuringBuild)</HexalithFoldersGeneratorOptions>
+    </PropertyGroup>
+  </Target>
   <Target Name="GenerateHexalithFoldersClient"
+          DependsOnTargets="PrepareHexalithFoldersGenerator"
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json"
           Outputs="$(HexalithFoldersGeneratedClient)"
           Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; $(HexalithFoldersGeneratorOptions) -- --validate-contract &quot;$(HexalithFoldersContractSpine)&quot;" />
     <MakeDir Directories="$(MSBuildProjectDirectory)/Generated" />
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
           EnvironmentVariables="DOTNET_ROLL_FORWARD=Major"
@@ -42,11 +50,11 @@
   </Target>
   <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
           DependsOnTargets="GenerateHexalithFoldersClient"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)/Generation/Program.cs;$(MSBuildProjectDirectory)/Generation/GeneratedClientPostProcessor.cs;$(HexalithFoldersGeneratedClient)"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)/Generation/Program.cs;$(MSBuildProjectDirectory)/Generation/Shared/YamlContractLoader.cs;$(MSBuildProjectDirectory)/Generation/GeneratedClientPostProcessor.cs;$(HexalithFoldersGeneratedClient)"
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; -p:UseNuGetDeps=$(UseNuGetDeps) -p:UseHexalithProjectReferences=$(UseHexalithProjectReferences) -p:NuGetAudit=$(NuGetAudit) -p:NuGetAuditMode=$(NuGetAuditMode) -p:NuGetAuditLevel=$(NuGetAuditLevel) -p:ContinuousIntegrationBuild=$(ContinuousIntegrationBuild) -p:RestoreConfigFile=&quot;$(RestoreConfigFile)&quot; -p:EnableNETAnalyzers=$(EnableNETAnalyzers) -p:RunAnalyzers=$(RunAnalyzers) -p:RunAnalyzersDuringBuild=$(RunAnalyzersDuringBuild) -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; $(HexalithFoldersGeneratorOptions) -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           DependsOnTargets="GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers"

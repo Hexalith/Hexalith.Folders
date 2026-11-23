@@ -13,7 +13,7 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7";
     public const string GenerationConfigurationSha256 = "16973966e48c29f9bb046eda08be9b06bca5bc3e32ad407bff301041f4ddb2cd";
-    public const string GeneratedHelpersSha256 = "4d9e0b1463362039566fc4eccd8c4239207d607e5f565ad5fedaa89ec6fa8371";
+    public const string GeneratedHelpersSha256 = "953b548666bc9fa9bbbf67b14dc0fa965d26dfb97d1d28de02b8de4da7df368e";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -896,34 +896,43 @@ public partial class ContentAllowedPathMetadata
 
 public partial class AddFileRequest
 {
+    internal override FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind == AddFileRequestFileOperationKind.Add
+        ? FileMutationRequestFileOperationKind.Add
+        : throw new JsonSerializationException("AddFileRequest requires fileOperationKind add.");
+
     [System.Runtime.Serialization.OnSerializing]
     private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
     {
-        if (FileOperationKind != AddFileRequestFileOperationKind.Add) throw new JsonSerializationException("AddFileRequest requires fileOperationKind add.");
-        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Add;
-        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Add);
+        base.FileOperationKind = EffectiveFileOperationKind;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, base.FileOperationKind);
     }
 }
 
 public partial class ChangeFileRequest
 {
+    internal override FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind == ChangeFileRequestFileOperationKind.Change
+        ? FileMutationRequestFileOperationKind.Change
+        : throw new JsonSerializationException("ChangeFileRequest requires fileOperationKind change.");
+
     [System.Runtime.Serialization.OnSerializing]
     private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
     {
-        if (FileOperationKind != ChangeFileRequestFileOperationKind.Change) throw new JsonSerializationException("ChangeFileRequest requires fileOperationKind change.");
-        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Change;
-        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Change);
+        base.FileOperationKind = EffectiveFileOperationKind;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, base.FileOperationKind);
     }
 }
 
 public partial class RemoveFileRequest
 {
+    internal override FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind == RemoveFileRequestFileOperationKind.Remove
+        ? FileMutationRequestFileOperationKind.Remove
+        : throw new JsonSerializationException("RemoveFileRequest requires fileOperationKind remove.");
+
     [System.Runtime.Serialization.OnSerializing]
     private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
     {
-        if (FileOperationKind != RemoveFileRequestFileOperationKind.Remove) throw new JsonSerializationException("RemoveFileRequest requires fileOperationKind remove.");
-        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Remove;
-        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Remove);
+        base.FileOperationKind = EffectiveFileOperationKind;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, base.FileOperationKind);
     }
 }
 
@@ -1208,7 +1217,8 @@ public partial class FileMutationRequest
 {
     public string ComputeIdempotencyHash(string workspaceId, string taskId)
     {
-        string operationId = ResolveFileMutationOperationId();
+        var kind = EffectiveFileOperationKind;
+        string operationId = ResolveFileMutationOperationId(kind);
         return operationId switch
         {
             "AddFile" =>
@@ -1217,7 +1227,7 @@ public partial class FileMutationRequest
                     new[]
                     {
                         new IdempotencyField("content_hash_reference", ContentHashReference is not null, ContentHashReference),
-                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("file_operation_kind", true, kind),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
                         new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
@@ -1231,7 +1241,7 @@ public partial class FileMutationRequest
                     new[]
                     {
                         new IdempotencyField("content_hash_reference", ContentHashReference is not null, ContentHashReference),
-                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("file_operation_kind", true, kind),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
                         new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
@@ -1244,7 +1254,7 @@ public partial class FileMutationRequest
                     "RemoveFile",
                     new[]
                     {
-                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("file_operation_kind", true, kind),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
                         new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
@@ -1265,20 +1275,14 @@ public partial class FileMutationRequest
         }
     }
 
-    private string ResolveFileMutationOperationId() => FileOperationKind switch
+    internal virtual FileMutationRequestFileOperationKind EffectiveFileOperationKind => FileOperationKind;
+
+    private static string ResolveFileMutationOperationId(FileMutationRequestFileOperationKind kind) => kind switch
     {
         FileMutationRequestFileOperationKind.Add => "AddFile",
         FileMutationRequestFileOperationKind.Change => "ChangeFile",
         FileMutationRequestFileOperationKind.Remove => "RemoveFile",
-        _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
-    };
-
-    private string ResolveFileMutationOperationKindWireValue() => FileOperationKind switch
-    {
-        FileMutationRequestFileOperationKind.Add => "add",
-        FileMutationRequestFileOperationKind.Change => "change",
-        FileMutationRequestFileOperationKind.Remove => "remove",
-        _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
+        _ => throw new InvalidOperationException($"Unsupported file operation kind '{kind}'."),
     };
 }
 

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -212,18 +213,89 @@ Workspace_preparation_failed=50
     }
 
     [Fact]
-    public void FileMutationHelperSeparatesAddChangeAndRemove()
+    public void FileMutationKindWireValuesMatchTheContract()
     {
-        var add = CreateFileMutation(FileMutationRequestFileOperationKind.Add, FileMutationRequestTransportOperation.PutFileInline);
-        var change = CreateFileMutation(FileMutationRequestFileOperationKind.Change, FileMutationRequestTransportOperation.PutFileInline);
-        var remove = CreateFileMutation(FileMutationRequestFileOperationKind.Remove, FileMutationRequestTransportOperation.MetadataOnlyRemoval);
-        remove.ContentHashReference = null;
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(LoadInputValidationContract(), "components"), "schemas");
+        YamlMappingNode kind = RequiredMapping(RequiredMapping(RequiredMapping(schemas, "FileMutationRequest"), "properties"), "fileOperationKind");
+        string?[] wireValues = typeof(FileMutationRequestFileOperationKind).GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Select(field => field.GetCustomAttribute<EnumMemberAttribute>()?.Value)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        wireValues.ShouldBe(ReadStringSequence(kind, "enum").Order(StringComparer.Ordinal).ToArray());
+    }
 
-        string workspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001";
-        string taskId = "task_01HZY7Z6N7J4Q2X8Y9V0TSK001";
+    [Theory]
+    [InlineData(FileMutationRequestFileOperationKind.Add, "AddFile")]
+    [InlineData(FileMutationRequestFileOperationKind.Change, "ChangeFile")]
+    [InlineData(FileMutationRequestFileOperationKind.Remove, "RemoveFile")]
+    public void FileMutationHelperSeparatesAddChangeAndRemove(FileMutationRequestFileOperationKind kind, string operationId)
+    {
+        OpenApiOperation operation = LoadOperations().Single(o => o.OperationId == operationId);
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(LoadInputValidationContract(), "components"), "schemas");
+        YamlMappingNode requestSchema = RequiredMapping(schemas, operation.RequestSchema!);
+        YamlMappingNode kindProperty = ((YamlSequenceNode)requestSchema.Children[new YamlScalarNode("allOf")]).Children
+            .Cast<YamlMappingNode>()
+            .Where(branch => branch.Children.ContainsKey(new YamlScalarNode("properties")))
+            .Select(branch => RequiredMapping(branch, "properties"))
+            .Where(properties => properties.Children.ContainsKey(new YamlScalarNode("fileOperationKind")))
+            .Select(properties => RequiredMapping(properties, "fileOperationKind"))
+            .Single();
+        string wireKind = ReadStringSequence(kindProperty, "enum").Single();
+        const string workspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001";
+        const string taskId = "task_01HZY7Z6N7J4Q2X8Y9V0TSK001";
+        var request = CreateFileMutation(kind, kind == FileMutationRequestFileOperationKind.Remove
+            ? FileMutationRequestTransportOperation.MetadataOnlyRemoval
+            : FileMutationRequestTransportOperation.PutFileInline);
+        List<IdempotencyField> fields = [];
+        if (operation.IdempotencyFields.Contains("content_hash_reference"))
+        {
+            fields.Add(new("content_hash_reference", true, request.ContentHashReference));
+        }
 
-        add.ComputeIdempotencyHash(workspaceId, taskId).ShouldNotBe(change.ComputeIdempotencyHash(workspaceId, taskId));
-        remove.ComputeIdempotencyHash(workspaceId, taskId).ShouldNotBe(add.ComputeIdempotencyHash(workspaceId, taskId));
+        fields.AddRange([
+            new("file_operation_kind", true, wireKind),
+            new("operation_id", true, request.OperationId),
+            new("path_metadata", true, request.PathMetadata),
+            new("path_policy_class", true, request.PathMetadata.PathPolicyClass),
+            new("task_id", true, taskId),
+            new("workspace_id", true, workspaceId),
+        ]);
+        request.ComputeIdempotencyHash(workspaceId, taskId).ShouldBe(HexalithIdempotencyHasher.Compute(operationId, fields));
+    }
+
+    [Theory]
+    [InlineData(FileMutationRequestFileOperationKind.Add)]
+    [InlineData(FileMutationRequestFileOperationKind.Change)]
+    [InlineData(FileMutationRequestFileOperationKind.Remove)]
+    public void ConcreteFileMutationHashUsesWireKindBeforeAndAfterSerialization(FileMutationRequestFileOperationKind kind)
+    {
+        FileMutationRequest request = kind switch
+        {
+            FileMutationRequestFileOperationKind.Add => new AddFileRequest(),
+            FileMutationRequestFileOperationKind.Change => new ChangeFileRequest(),
+            FileMutationRequestFileOperationKind.Remove => new RemoveFileRequest(),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind)),
+        };
+        bool remove = kind == FileMutationRequestFileOperationKind.Remove;
+        var expected = CreateFileMutation(kind, remove
+            ? FileMutationRequestTransportOperation.MetadataOnlyRemoval
+            : FileMutationRequestTransportOperation.PutFileInline);
+        request.ExpectedLockFence = expected.ExpectedLockFence;
+        request.RequestSchemaVersion = expected.RequestSchemaVersion;
+        request.OperationId = expected.OperationId = "operation_01HZY7Z6N7J4Q2X8";
+        request.PathMetadata = expected.PathMetadata;
+        request.TransportOperation = expected.TransportOperation;
+        if (!remove)
+        {
+            request.ContentHashReference = expected.ContentHashReference = "hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+            request.ByteLength = 0;
+            request.InlineContent = new PutFileInline { MediaType = "text/plain", ContentBytes = "" };
+        }
+
+        string hash = expected.ComputeIdempotencyHash("workspace", "task");
+        request.ComputeIdempotencyHash("workspace", "task").ShouldBe(hash);
+        _ = JsonConvert.SerializeObject(request);
+        request.ComputeIdempotencyHash("workspace", "task").ShouldBe(hash);
     }
 
     [Fact]

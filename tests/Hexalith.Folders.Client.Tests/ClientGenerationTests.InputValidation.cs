@@ -177,17 +177,109 @@ public sealed partial class ClientGenerationTests
         order.Message.ShouldContain("ordinal-ascending order");
     }
 
+    [Theory]
+    [InlineData("callbackURL", "callback_url")]
+    [InlineData("HTTPStatusCode", "http_status_code")]
+    [InlineData("X-Hexalith-Task-ID", "task_id")]
+    public void GeneratorNormalizesAcronymsAsWords(string name, string field) =>
+        NormalizeName(name).ShouldBe(field);
+
+    [Fact]
+    public void GeneratorRejectsAmbiguousAcronymParametersBeforePublishing()
+    {
+        WithInputValidationDirectory(temp =>
+        {
+            string project = RestoreIsolatedGenerationProject(temp);
+            string output = Path.Combine(Path.GetDirectoryName(project)!, "Generated");
+            Directory.CreateDirectory(output);
+            string client = Path.Combine(output, "HexalithFoldersClient.g.cs");
+            string helpers = Path.Combine(output, "HexalithFoldersIdempotencyHelpers.g.cs");
+            File.WriteAllText(client, "existing client");
+            File.WriteAllText(helpers, "existing helpers");
+            File.SetLastWriteTimeUtc(client, DateTime.UnixEpoch);
+
+            YamlMappingNode contract = LoadInputValidationContract();
+            YamlMappingNode path = RequiredMapping(RequiredMapping(contract, "paths"), "/api/v2/folders");
+            path.Children[new YamlScalarNode("parameters")] = new YamlSequenceNode(QueryParameter("callbackUrl"), QueryParameter("callbackURL"));
+            string contractPath = Path.Combine(temp, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
+            File.Copy(SaveInputValidationContract(temp, contract), contractPath, overwrite: true);
+            ProcessResult result = RunProcess("dotnet", $"msbuild \"{project}\" -t:GenerateHexalithFoldersIdempotencyHelpers -p:Configuration={BuildConfiguration}", temp, 180_000);
+            result.ExitCode.ShouldNotBe(0);
+            RedactDiagnosticOutput(result.Output, temp).ShouldContain("duplicate normalized parameter 'callback_url' from 'callbackUrl' and 'callbackURL'");
+            File.ReadAllText(client).ShouldBe("existing client");
+            File.ReadAllText(helpers).ShouldBe("existing helpers");
+        });
+    }
+
+    [Theory]
+    [InlineData("CreateFolderRequest", "#/components/schemas/CreateFolderRequest", "Cyclic schema composition")]
+    [InlineData("AddFileRequest", "#/components/schemas/MissingBase", "MissingBase")]
+    [InlineData("CreateFolderRequest", "#/components/parameters/FolderId", "requires a local schema reference")]
+    public void GeneratorRejectsInvalidSchemaCompositionBeforePublishing(string schemaName, string reference, string diagnostic)
+    {
+        WithInputValidationDirectory(temp =>
+        {
+            YamlMappingNode contract = LoadInputValidationContract();
+            YamlMappingNode schemas = RequiredMapping(RequiredMapping(contract, "components"), "schemas");
+            YamlMappingNode schema = RequiredMapping(schemas, schemaName);
+            YamlScalarNode allOf = new("allOf");
+            if (!schema.Children.ContainsKey(allOf))
+            {
+                schema.Add(allOf, new YamlSequenceNode());
+            }
+
+            ((YamlSequenceNode)schema.Children[allOf]).Add(new YamlMappingNode { { "$ref", reference } });
+            ProcessResult result = RunInputValidationGenerator(temp, RepositoryRoot, SaveInputValidationContract(temp, contract));
+            result.ExitCode.ShouldNotBe(0);
+            RedactDiagnosticOutput(result.Output, temp).ShouldContain(diagnostic);
+            AssertInputValidationOutputsUntouched(temp);
+        });
+    }
+
+    [Theory]
+    [InlineData("folder_metadata.missing", "does not resolve at property 'missing'")]
+    [InlineData("variant_only", "does not resolve to a request property")]
+    public void GeneratorRejectsUnresolvablePropertyPaths(string field, string diagnostic)
+    {
+        WithInputValidationDirectory(temp =>
+        {
+            YamlMappingNode contract = LoadInputValidationContract();
+            YamlMappingNode operation = RequiredMapping(RequiredMapping(RequiredMapping(contract, "paths"), "/api/v2/folders"), "post");
+            operation.Children[new YamlScalarNode("x-hexalith-idempotency-equivalence")] = new YamlSequenceNode(field);
+            YamlMappingNode schemas = RequiredMapping(RequiredMapping(contract, "components"), "schemas");
+            schemas.Add("VariantProbe", new YamlMappingNode
+            {
+                { "properties", new YamlMappingNode { { "variantOnly", new YamlMappingNode { { "type", "string" } } } } },
+            });
+            RequiredMapping(schemas, "CreateFolderRequest").Add("oneOf", new YamlSequenceNode(
+                new YamlMappingNode { { "$ref", "#/components/schemas/VariantProbe" } }, new YamlMappingNode { { "type", "object" } }));
+            ProcessResult result = RunInputValidationGenerator(temp, RepositoryRoot, SaveInputValidationContract(temp, contract));
+            result.ExitCode.ShouldNotBe(0);
+            RedactDiagnosticOutput(result.Output, temp).ShouldContain(diagnostic);
+            AssertInputValidationOutputsUntouched(temp);
+        });
+    }
+
+    private static YamlMappingNode QueryParameter(string name) => new()
+    {
+        { "name", name },
+        { "in", "query" },
+        { "schema", new YamlMappingNode { { "type", "string" } } },
+    };
+
     [Fact]
     public void GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics()
     {
         WithInputValidationDirectory(temp =>
         {
             YamlMappingNode contract = LoadInputValidationContract();
+            RequiredMapping(RequiredMapping(contract, "components"), "parameters").Add("TraceParameter", QueryParameter("traceURL"));
             RequiredMapping(contract, "paths").Add("/nested-probe", new YamlMappingNode
             {
                 { "post", new YamlMappingNode
                     {
                         { "operationId", "NestedProbe" },
+                        { "parameters", new YamlSequenceNode(new YamlMappingNode { { "$ref", "#/components/parameters/TraceParameter" } }, QueryParameter("requestID")) },
                         { "requestBody", new YamlMappingNode
                             {
                                 { "content", new YamlMappingNode
@@ -202,12 +294,16 @@ public sealed partial class ClientGenerationTests
                             }
                         },
                         { "responses", new YamlMappingNode { { "200", new YamlMappingNode { { "description", "Probe result" } } } } },
-                        { "x-hexalith-idempotency-equivalence", new YamlSequenceNode("root.middle.leaf") },
+                        { "x-hexalith-idempotency-equivalence", new YamlSequenceNode("request_id", "root.middle.leaf", "trace_url") },
                     }
                 },
             });
             YamlMappingNode schemas = RequiredMapping(RequiredMapping(contract, "components"), "schemas");
             schemas.Add("NestedProbeRequest", new YamlMappingNode
+            {
+                { "allOf", new YamlSequenceNode(new YamlMappingNode { { "$ref", "#/components/schemas/NestedProbeBase" } }) },
+            });
+            schemas.Add("NestedProbeBase", new YamlMappingNode
             {
                 { "type", "object" },
                 { "properties", new YamlMappingNode
@@ -262,8 +358,12 @@ public sealed partial class ClientGenerationTests
                 Check(true, "synthetic-value");
                 void Check(bool present, object? value)
                 {
-                    string expected = HexalithIdempotencyHasher.Compute("NestedProbe", [new("root.middle.leaf", present, value)]);
-                    if (request.ComputeIdempotencyHash() != expected) throw new InvalidOperationException("Nested hash mismatch.");
+                    string expected = HexalithIdempotencyHasher.Compute("NestedProbe", [
+                        new("request_id", true, "request"),
+                        new("root.middle.leaf", present, value),
+                        new("trace_url", true, "trace"),
+                    ]);
+                    if (request.ComputeIdempotencyHash("trace", "request") != expected) throw new InvalidOperationException("Nested hash mismatch.");
                 }
                 Console.WriteLine("nested-probe-passed");
                 """);
@@ -284,7 +384,7 @@ public sealed partial class ClientGenerationTests
     private static void GenerateNestedProbeDtos(string temp, YamlMappingNode contract, YamlMappingNode schemas)
     {
         YamlMappingNode probeSchemas = new();
-        foreach (string name in new[] { "NestedProbeRequest", "NestedProbeRoot", "NestedProbeMiddle" })
+        foreach (string name in new[] { "NestedProbeRequest", "NestedProbeBase", "NestedProbeRoot", "NestedProbeMiddle" })
         {
             probeSchemas.Add(name, RequiredMapping(schemas, name));
         }
@@ -294,7 +394,12 @@ public sealed partial class ClientGenerationTests
             { "openapi", "3.1.0" },
             { "info", new YamlMappingNode { { "title", "Synthetic nested probe" }, { "version", "1.0.0" } } },
             { "paths", new YamlMappingNode { { "/nested-probe", RequiredMapping(RequiredMapping(contract, "paths"), "/nested-probe") } } },
-            { "components", new YamlMappingNode { { "schemas", probeSchemas } } },
+            { "components", new YamlMappingNode
+                {
+                    { "schemas", probeSchemas },
+                    { "parameters", new YamlMappingNode { { "TraceParameter", QueryParameter("traceURL") } } },
+                }
+            },
         };
         string probeContractPath = SaveInputValidationContract(temp, probeContract);
         JObject configuration = JObject.Parse(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json")));

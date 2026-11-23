@@ -98,7 +98,7 @@ public static class YamlContractLoader
     public static string? TryReadRequestSchema(YamlMappingNode operation) => ReadRequestSchemaRef(operation);
 
     // Lowercases the input, collapses `_`/`-` separators, and inserts `_` between camelCase
-    // letters so that `folderId`, `folder_id`, and `Folder-Id` all normalize to `folder_id`.
+    // words (including acronym runs such as URL in callbackURL) so that `folderId`, `folder_id`, and `Folder-Id` all normalize to `folder_id`.
     // Used by the generator and tests as the parameter/field lookup key. Header-named OpenAPI
     // parameters with the `x-hexalith-task-id` prefix collapse to `task_id` for backwards
     // compatibility.
@@ -118,7 +118,8 @@ public static class YamlContractLoader
             }
             else if (char.IsLetterOrDigit(character))
             {
-                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
+                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_'
+                    && (!char.IsUpper(value[i - 1]) || (i + 1 < value.Length && char.IsLower(value[i + 1]))))
                 {
                     builder.Append('_');
                 }
