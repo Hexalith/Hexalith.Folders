@@ -1136,7 +1136,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:402-418
 reason: Contract test uses `FindRepositoryRoot()` keyed on `Hexalith.Folders.slnx` filename. Brittle if solution renamed or test run outside the working copy. Revisit when contract tests adopt embedded-resource pattern. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:402-418`)
-status: open
+status: done 2026-11-23
+resolution: The workspace-lock tests embed the canonical spine and notes at build time. Their six tests passed from a copy of the assembly outside the checkout. See spec-five-deferred-artifact-verification-inputs.md.
 
 ### DW-161: `_bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json` ships with `result: fail` (11 dirty paths) inside the same diff being reviewed
 
@@ -1229,7 +1230,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:222-224
 reason: `ProductionUrl` regex in `ExitCriteriaDecisionArtifactTests` would reject legitimate documentation citations such as `https://learn.microsoft.com/...` if any are added later. No current usage; revisit if a citation outside the `.invalid` TLD becomes necessary. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:222-224`)
-status: open
+status: done 2026-11-23
+resolution: Decision checks accept HTTPS Microsoft Learn citations resolved from Markdown links. The S2 issuer and discovery examples still require synthetic .invalid endpoints. See spec-five-deferred-artifact-verification-inputs.md.
 
 ### DW-175: Opaque / provider-token detection (PASETO, Macaroon, GitHub PATs as non-JWTs)
 
@@ -1351,7 +1353,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
 reason: `CollectPrecedingProseContext` early-break limits exemption window to the immediately preceding prose line — intentional per 2026-05-12 review finding ("immediate preceding prose must carry the warning"); a warning comment separated from the recursive command by one non-warning line will not be seen. (`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: The scaffold check uses the nearest prose line and requires the warning to address the command. Backtick and tilde fences both support an adjacent warning. See spec-five-deferred-artifact-verification-inputs.md.
 
 ### DW-193: `C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally` checks backtick-wrapped event names in architecture.md
 
@@ -1366,7 +1369,8 @@ resolution: The C6 check compares states, positive-edge event names and reserved
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
 reason: Dynamic `last reviewed` date in row-date assertions changes failure semantics from hard-coded `"2026-05-11"` to front-matter-derived date — intentional improvement; undocumented scope change. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: The C3 and C4 checks validate ISO calendar dates and require a row under the Decision heading to match the header date. Historical rows remain valid. See spec-five-deferred-artifact-verification-inputs.md.
 
 ### DW-195: `"diff --git"` in `SecretSubstringDenylist` alongside credential patterns produces confusing diagnostic; intent is correct (no patch content in docs) but classification is misleading
 
@@ -1469,7 +1473,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
 reason: F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.
-status: open
+status: done 2026-11-23
+resolution: Contract-rule artifact tests use the shared strict UTF-8 reader for Markdown, YAML, and JSON inputs. It accepts an optional UTF-8 BOM and identifies invalid files by path. See spec-five-deferred-artifact-verification-inputs.md.
 
 ### DW-211: PathTooLongException nuance in `VerifyCurrentDetailed` catch filter
 

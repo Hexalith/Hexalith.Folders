@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: a68812ae020fef0a19d2aba0bdd2730ed8d388117880fa31033218846cac7d36
+candidate_set_sha256: dd214c42c32af55a8e7d664e0c13fc3185902bb3fbac3109505f1b30a1d1ab6a
 artifact_count: 1663
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4786,8 +4786,8 @@ artifacts:
     sha256: 1d85cd29e63373eff98bf44ed5f0621a90fe8caad9985864fc80cda1701d3118
   - path: "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj"
     kind: file
-    bytes: 853
-    sha256: d66e82e84b60fef471d4d8f6cafdee4328c3be3373b22c26cc11f127f11175ba
+    bytes: 1168
+    sha256: a3df0efc0724efbe177402c40a1153ee65990a0d0fd4f3f319431c77cf096b1d
   - path: "tests/Hexalith.Folders.Contracts.Tests/McpCli/ContractSpineDriftGateTests.cs"
     kind: file
     bytes: 35709
@@ -4922,8 +4922,8 @@ artifacts:
     sha256: dfd1c9bfc2063c36daf5ff05fd15b9da8fa6b11654db302aa6ad9a70495fee50
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs"
     kind: file
-    bytes: 25888
-    sha256: edb35dd216f5894f6e3725fb30e62fc01a92141d3a0fcac6ee545cc47d9ea302
+    bytes: 25346
+    sha256: 680016376b8512d9c94c6d8eceb3bb17cda5a63f74ef5af8f86c3dc48b6ebd11
   - path: "tests/Hexalith.Folders.Contracts.Tests/YamlCoreScalar.cs"
     kind: file
     bytes: 3112
@@ -5662,8 +5662,8 @@ artifacts:
     sha256: fd70181fd323deb1a27152476b77d017dce9b9abcdcc59a00d5195afb0f5f3c6
   - path: "tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs"
     kind: file
-    bytes: 20528
-    sha256: cc957b9bd57712930521b7342e83b5cbc6ced8dc3ce98a326f4f34165460ce70
+    bytes: 20262
+    sha256: 5d185f880df30cfbdccce11edd8ac2411448d79ef4f72f80c9b80634bc014d3b
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs"
     kind: file
     bytes: 4983

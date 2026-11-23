@@ -76,8 +76,8 @@ public sealed class ContractRulesArtifactTests
     [Fact]
     public void ContractRulesArtifactDeclaresStableTablesAndOperationRows()
     {
-        string root = RepositoryRoot();
-        string content = File.ReadAllText(Path.Combine(root, "docs", "contract", "idempotency-and-parity-rules.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "contract", "idempotency-and-parity-rules.md"));
 
         string[] requiredHeadings =
         [
@@ -126,8 +126,8 @@ public sealed class ContractRulesArtifactTests
     [Fact]
     public void ContractRulesArtifactCoversIdempotencyReadConsistencyAndNegativeScope()
     {
-        string root = RepositoryRoot();
-        string content = File.ReadAllText(Path.Combine(root, "docs", "contract", "idempotency-and-parity-rules.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "contract", "idempotency-and-parity-rules.md"));
 
         const int mutatingEquivalenceColumnCount = 12;
         foreach (string operation in MutatingCommands)
@@ -180,7 +180,7 @@ public sealed class ContractRulesArtifactTests
         string spinePath = Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
         if (File.Exists(spinePath))
         {
-            string spine = File.ReadAllText(spinePath);
+            string spine = RepositoryArtifacts.ReadText(spinePath);
             spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.5 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
             SpineContractAssertions.AssertNoDownstreamOperationGroups(spine);
         }
@@ -194,8 +194,8 @@ public sealed class ContractRulesArtifactTests
     [Fact]
     public void ParitySchemaDeclaresTransportAndBehavioralColumns()
     {
-        string root = RepositoryRoot();
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests", "fixtures", "parity-contract.schema.json")));
+        string root = RepositoryArtifacts.FindRoot();
+        using JsonDocument document = JsonDocument.Parse(RepositoryArtifacts.ReadText(Path.Combine(root, "tests", "fixtures", "parity-contract.schema.json")));
 
         JsonElement rootElement = document.RootElement;
         string[] rootRequired = rootElement.GetProperty("required").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
@@ -283,8 +283,8 @@ public sealed class ContractRulesArtifactTests
     [Fact]
     public void EncodingCorpusCoversRequiredSyntheticCategories()
     {
-        string root = RepositoryRoot();
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.json")));
+        string root = RepositoryArtifacts.FindRoot();
+        using JsonDocument document = JsonDocument.Parse(RepositoryArtifacts.ReadText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.json")));
 
         document.RootElement.GetProperty("schema_version").GetString().ShouldBe("0.2.0-story-1-5", "schema_version must match the value Story 1.5 bumped to; later stories that change the corpus shape must bump again.");
 
@@ -328,8 +328,8 @@ public sealed class ContractRulesArtifactTests
     [Fact]
     public void EncodingCorpusSchemaDeclaresRequiredCaseShape()
     {
-        string root = RepositoryRoot();
-        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.schema.json")));
+        string root = RepositoryArtifacts.FindRoot();
+        using JsonDocument schema = JsonDocument.Parse(RepositoryArtifacts.ReadText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.schema.json")));
 
         JsonElement caseDefinition = schema.RootElement.GetProperty("$defs").GetProperty("case");
         string[] required = caseDefinition.GetProperty("required").EnumerateArray()
@@ -428,16 +428,4 @@ public sealed class ContractRulesArtifactTests
         string parityOracleRunner = Path.Combine(root, "tests", "tools", "parity-oracle-generator", "Program.cs");
         File.Exists(parityOracleRunner).ShouldBeTrue("Story 1.13 owns the parity-oracle generator runner.");
     }
-
-    private static string RepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-        {
-            directory = directory.Parent;
-        }
-
-        return directory?.FullName ?? throw new InvalidOperationException("Repository root was not found.");
-    }
-
 }

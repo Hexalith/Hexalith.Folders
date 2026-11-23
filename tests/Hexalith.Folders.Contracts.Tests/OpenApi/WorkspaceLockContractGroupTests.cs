@@ -7,9 +7,8 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed class WorkspaceLockContractGroupTests
 {
-    private static readonly string _repositoryRootPath = FindRepositoryRoot();
-    private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
-    private static readonly string _contractNotesFilePath = Path.Combine(_repositoryRootPath, "docs", "contract", "workspace-lock-contract-groups.md");
+    private const string OpenApiResource = "WorkspaceLockContract.Spine.yaml";
+    private const string ContractNotesResource = "WorkspaceLockContract.Notes.md";
 
     private static readonly string[] _workspaceLockOperationIdList =
     [
@@ -31,7 +30,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_MatchStoryAllowListAndResolveRefs()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         Operation[] operations = EnumerateOperations(root).Where(o => _workspaceLockOperationIdList.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
 
         HashSet<string> actual = operations.Select(o => o.OperationId).ToHashSet(StringComparer.Ordinal);
@@ -63,7 +62,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_DeclareRequiredMetadataAndIdempotencyRules()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         Operation[] operations = EnumerateOperations(root).Where(o => _workspaceLockOperationIdList.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
         HashSet<string> mutating = _mutatingOperationIdList.ToHashSet(StringComparer.Ordinal);
 
@@ -112,7 +111,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_ExposeC6LeaseRetryAndSafeProblemDetails()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
@@ -196,10 +195,10 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_DoNotExposeTenantAuthoritySecretMaterialOrForbiddenScope()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
-        string serialized = File.ReadAllText(_openApiFilePath);
-        string notes = File.ReadAllText(_contractNotesFilePath);
+        string serialized = ReadArtifact(OpenApiResource);
+        string notes = ReadArtifact(ContractNotesResource);
         string combined = string.Concat(serialized, "\n", notes);
 
         foreach (string named in EnumerateNamedFields(root))
@@ -262,7 +261,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockSafeDenialEnvelopes_AreExternallyIndistinguishable()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
         // 403 and 404 must be byte-identical so callers cannot distinguish absent-from-forbidden,
@@ -298,7 +297,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOwnershipProof_NeverAppearsInUnauthorizedOrLeakyProblemDetails()
     {
-        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode root = LoadYamlMapping();
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
         YamlMappingNode releaseRequest = RequiredMapping(examples, "ReleaseWorkspaceLockRequest");
@@ -475,15 +474,21 @@ public sealed class WorkspaceLockContractGroupTests
         return current;
     }
 
-    private static YamlMappingNode LoadYamlMapping(string path)
+    private static YamlMappingNode LoadYamlMapping()
     {
-        path.ShouldSatisfyAllConditions(() => File.Exists(path).ShouldBeTrue(path));
-
-        using StreamReader reader = File.OpenText(path);
+        using StringReader reader = new(ReadArtifact(OpenApiResource));
         YamlStream yaml = new();
         yaml.Load(reader);
 
         return yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
+    }
+
+    private static string ReadArtifact(string resourceName)
+    {
+        using Stream stream = typeof(WorkspaceLockContractGroupTests).Assembly.GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Workspace-lock contract test input '{resourceName}' was not embedded.");
+        using StreamReader reader = new(stream);
+        return reader.ReadToEnd();
     }
 
     private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
@@ -521,23 +526,5 @@ public sealed class WorkspaceLockContractGroupTests
         stream.Save(writer, false);
 
         return writer.ToString();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        string current = AppContext.BaseDirectory;
-
-        while (!string.IsNullOrEmpty(current))
-        {
-            if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
-            {
-                return current;
-            }
-
-            DirectoryInfo? parent = Directory.GetParent(current);
-            current = parent?.FullName ?? string.Empty;
-        }
-
-        throw new InvalidOperationException("Could not locate repository root.");
     }
 }

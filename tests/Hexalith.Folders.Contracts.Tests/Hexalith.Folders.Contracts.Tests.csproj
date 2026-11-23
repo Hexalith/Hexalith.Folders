@@ -7,6 +7,10 @@
     <ProjectReference Include="..\..\src\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml" LogicalName="WorkspaceLockContract.Spine.yaml" />
+    <EmbeddedResource Include="../../docs/contract/workspace-lock-contract-groups.md" LogicalName="WorkspaceLockContract.Notes.md" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit.v3" />

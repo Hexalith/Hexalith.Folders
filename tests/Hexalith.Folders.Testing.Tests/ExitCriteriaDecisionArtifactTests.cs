@@ -1,5 +1,9 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Hexalith.Folders.Testing.Tests.Helpers;
+using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Shouldly;
 using Xunit;
 
@@ -7,6 +11,11 @@ namespace Hexalith.Folders.Testing.Tests;
 
 public sealed class ExitCriteriaDecisionArtifactTests
 {
+    private static readonly MarkdownPipeline _markdown = new MarkdownPipelineBuilder().UsePreciseSourceLocation().Build();
+    private static readonly Regex _httpUrl = new(
+        """https?://[^\s<>()`"']+""",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
     private static readonly string[] RequiredArtifacts =
     [
         "docs/exit-criteria/c3-retention.md",
@@ -187,7 +196,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
                     $"{relativePath} must not contain credential material matching /{secret}/.");
             }
 
-            ProductionUrl().IsMatch(content).ShouldBeFalse($"{relativePath} should use non-production .invalid URL placeholders only.");
+            ContainsDisallowedUrl(content).ShouldBeFalse(
+                $"{relativePath} should use synthetic .invalid URLs for examples. Microsoft Learn citations should use HTTPS Markdown links.");
             RawJwt().IsMatch(content).ShouldBeFalse($"{relativePath} must not contain raw JWT examples.");
         }
 
@@ -219,30 +229,89 @@ public sealed class ExitCriteriaDecisionArtifactTests
         foreach (string relativePath in relativePaths)
         {
             string content = RepositoryArtifacts.ReadText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
-            string reviewedDate = ParseFrontMatterValue(content, "last reviewed")
-                ?? throw new InvalidOperationException($"{relativePath} is missing 'last reviewed' front-matter value.");
-
             string[] decisionRows = ExtractDecisionTableRows(content);
+            AssertDecisionReviewDates(content, relativePath, decisionRows);
 
-            decisionRows.ShouldNotBeEmpty($"{relativePath} should include decision rows.");
-            bool containsCurrentReviewDate = false;
             foreach (string row in decisionRows)
             {
                 ApprovalStates.Any(state => row.Contains(state, StringComparison.OrdinalIgnoreCase))
                     .ShouldBeTrue($"{relativePath} row must declare one of the three approval states: {row}");
                 row.ShouldContain("Architecture", Case.Insensitive, $"{relativePath} row must name provenance: {row}");
-                Match reviewDateMatch = Regex.Match(row, @"\|\s*(\d{4}-\d{2}-\d{2})\s*\|$");
-                reviewDateMatch.Success.ShouldBeTrue($"{relativePath} row must end with an ISO review date: {row}");
-                DateOnly.TryParseExact(reviewDateMatch.Groups[1].Value, "yyyy-MM-dd", out _)
-                    .ShouldBeTrue($"{relativePath} row must end with a valid ISO review date: {row}");
-                containsCurrentReviewDate |= string.Equals(reviewDateMatch.Groups[1].Value, reviewedDate, StringComparison.Ordinal);
                 Regex.IsMatch(row, @"\bStory\s+\d+(?:\.\d+)?", RegexOptions.IgnoreCase)
                     .ShouldBeTrue($"{relativePath} row must name a consuming future story matching 'Story <N>[.<M>]': {row}");
             }
-
-            containsCurrentReviewDate.ShouldBeTrue(
-                $"{relativePath} must have at least one decision row reviewed on the document's current review date '{reviewedDate}'.");
         }
+    }
+
+    [Fact]
+    public void DecisionReviewDateCheckAllowsHistoricalRowsAlongsideTheCurrentReview()
+    {
+        const string content = """
+            last reviewed: 2026-09-17
+
+            ## Decision
+            | Class | Review date |
+            | --- | --- |
+            | Historical | 2026-05-11 |
+            | Reviewed | 2026-09-17 |
+            """;
+        AssertDecisionReviewDates(content, "decision.md", ExtractDecisionTableRows(content));
+    }
+
+    [Theory]
+    [InlineData("2026-09-17", "| Mentioned on 2026-09-17 | 2026-05-11 |", "current review date")]
+    [InlineData("2026-02-30", "| Reviewed | 2026-02-28 |", "'last reviewed'")]
+    [InlineData("2026-09-17", "| Reviewed | 2026-09-31 |", "row must end")]
+    public void DecisionReviewDateCheckReportsInvalidOrMissingRowEvidence(string header, string row, string diagnostic)
+    {
+        string content = $"last reviewed: {header}\n\n## Decision\n| Class | Review date |\n| --- | --- |\n{row}";
+        Should.Throw<ShouldAssertException>(() => AssertDecisionReviewDates(content, "decision.md", ExtractDecisionTableRows(content)))
+            .Message.ShouldContain(diagnostic);
+    }
+
+    [Fact]
+    public void SupplementaryTableCannotSupplyTheCurrentDecisionReviewDate()
+    {
+        const string content = """
+            last reviewed: 2026-09-17
+
+            ## Decision
+            | Class | Review date |
+            | --- | --- |
+            | Temporary files | 2026-05-11 |
+
+            ## Machine-Validated Policy Source
+            | Class | Review date |
+            | --- | --- |
+            | Temporary files | 2026-09-17 |
+            """;
+        Should.Throw<ShouldAssertException>(
+            () => AssertDecisionReviewDates(content, "decision.md", ExtractDecisionTableRows(content)))
+            .Message.ShouldContain("current review date");
+    }
+
+    private static void AssertDecisionReviewDates(string content, string relativePath, string[] decisionRows)
+    {
+        HashSet<string> primaryRows = ExtractDecisionTableRows(string.Join('\n', Section(content, "## Decision")))
+            .ToHashSet(StringComparer.Ordinal);
+        primaryRows.ShouldNotBeEmpty($"{relativePath} should include a table with decision rows under '## Decision'.");
+
+        string? reviewedDate = ParseFrontMatterValue(content, "last reviewed");
+        DateOnly.TryParseExact(reviewedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly currentReview)
+            .ShouldBeTrue($"{relativePath} must declare a valid ISO 'last reviewed' date.");
+
+        // A partial review updates the affected rows. Historical rows keep their original dates.
+        bool containsCurrentReviewDate = false;
+        foreach (string row in decisionRows)
+        {
+            Match terminalCell = Regex.Match(row, @"\|[ \t]*(\d{4}-\d{2}-\d{2})[ \t]*\|[ \t]*$");
+            DateOnly.TryParseExact(terminalCell.Groups[1].Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly rowReview)
+                .ShouldBeTrue($"{relativePath} row must end with a valid ISO review date: {row}");
+            containsCurrentReviewDate |= rowReview == currentReview && primaryRows.Contains(row);
+        }
+
+        containsCurrentReviewDate.ShouldBeTrue(
+            $"{relativePath} must have at least one decision row reviewed on the document's current review date '{reviewedDate}'.");
     }
 
     [Fact]
@@ -430,8 +499,37 @@ public sealed class ExitCriteriaDecisionArtifactTests
                 $"s2-oidc-validation.md must document authoritative claim '{claim}'.");
         }
 
-        content.ShouldContain(".invalid", Case.Insensitive,
-            "s2-oidc-validation.md must only use .invalid issuer placeholders.");
+        AssertS2EndpointPlaceholders(content);
+    }
+
+    [Theory]
+    [InlineData("[Docs](https://learn.microsoft.com/docs)", "https://issuer.invalid/discovery", "Issuer placeholder")]
+    [InlineData("https://issuer.invalid/realm", "[Docs](https://learn.microsoft.com/docs)", "JWKS discovery placeholder")]
+    public void S2EndpointExamplesRequireSyntheticUrlsEvenWhenFormattedAsLinks(string issuer, string discovery, string diagnostic)
+    {
+        string content = $"""
+            ## Decision
+            | Environment placeholder | Issuer placeholder | Audience placeholder | JWKS discovery placeholder |
+            | --- | --- | --- | --- |
+            | local | {issuer} | api://audience.invalid | {discovery} |
+            """;
+        Should.Throw<ShouldAssertException>(() => AssertS2EndpointPlaceholders(content))
+            .Message.ShouldContain(diagnostic);
+    }
+
+    private static void AssertS2EndpointPlaceholders(string content)
+    {
+        string[] section = Section(content, "## Decision");
+        foreach ((string header, int column) in new[] { ("Issuer placeholder", 1), ("JWKS discovery placeholder", 3) })
+        {
+            foreach (string cell in TableColumn(section, header, column))
+            {
+                MatchCollection urls = _httpUrl.Matches(cell);
+                urls.Count.ShouldBeGreaterThan(0, $"S2 {header} must include a synthetic HTTPS URL.");
+                urls.All(url => url.Value.StartsWith("https://", StringComparison.OrdinalIgnoreCase) && IsSyntheticUrl(url.Value))
+                    .ShouldBeTrue($"S2 {header} must use a synthetic HTTPS .invalid URL.");
+            }
+        }
     }
 
     [Fact]
@@ -628,9 +726,54 @@ public sealed class ExitCriteriaDecisionArtifactTests
         return Regex.IsMatch(text, header + "(?:" + standardPaths + "|" + pathsAndMetadata + ")", RegexOptions.CultureInvariant);
     }
 
-    private static Regex ProductionUrl() => new(
-        @"https?://(?![a-z0-9.-]+\.invalid(?:[/:)#?[\s]|$))[^\s)]+",
-        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    [Theory]
+    [InlineData("See [Microsoft Learn](https://learn.microsoft.com/en-us/aspnet/core/).", false)]
+    [InlineData("See [Microsoft Learn](<https://learn.microsoft.com/docs> \"Documentation\").", false)]
+    [InlineData("See [Microsoft Learn][reference].\n\n[reference]: https://learn.microsoft.com/docs", false)]
+    [InlineData("Issuer: `https://oidc.local.invalid:8443/realm`.", false)]
+    [InlineData("Issuer: `https://issuer.example/realm`.", true)]
+    [InlineData("Issuer: `https://learn.microsoft.com/en-us/aspnet/core/`.", true)]
+    [InlineData("[Docs](http://learn.microsoft.com/en-us/aspnet/core/)", true)]
+    [InlineData("[Docs](https://learn.microsoft.com.example/docs)", true)]
+    [InlineData("[Docs](https://learn.microsoft.com:8443/docs)", true)]
+    [InlineData("[Docs](https://placeholder@learn.microsoft.com/docs)", true)]
+    [InlineData("[Docs](https://learn.microsoft.com/docs) or https://learn.microsoft.com/docs.", true)]
+    [InlineData("![Image](https://learn.microsoft.com/docs)", true)]
+    [InlineData("Issuer: `[Docs](https://learn.microsoft.com/docs)`", true)]
+    [InlineData("Issuer: `\n[Docs](https://learn.microsoft.com/docs)`", true)]
+    [InlineData("```md\n[Docs](https://learn.microsoft.com/docs)\n```", true)]
+    [InlineData("~~~md\n[Docs](https://learn.microsoft.com/docs)\n~~~", true)]
+    [InlineData("> ```md\n> [Docs](https://learn.microsoft.com/docs)\n> ```", true)]
+    [InlineData("- Example\n\n  ```md\n  [Docs](https://learn.microsoft.com/docs)\n  ```", true)]
+    public void DecisionDocumentUrlCheckAllowsOnlySyntheticExamplesAndApprovedCitations(string text, bool expected)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ContainsDisallowedUrl(text).ShouldBe(expected);
+    }
+
+    private static bool ContainsDisallowedUrl(string content)
+    {
+        // Use source offsets so the same URL elsewhere in the document is still checked.
+        HashSet<int> citationOffsets = Markdown.Parse(content, _markdown).Descendants<LinkInline>()
+            .Where(link => !link.IsImage && IsMicrosoftLearnCitation(link.Url))
+            .Select(link => link.UrlSpan.Start)
+            .Where(start => start >= 0 && start < content.Length)
+            .Select(start => content[start] == '<' ? start + 1 : start)
+            .ToHashSet();
+        return _httpUrl.Matches(content).Any(url => !citationOffsets.Contains(url.Index) && !IsSyntheticUrl(url.Value));
+    }
+
+    private static bool IsMicrosoftLearnCitation(string? url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)
+        && uri.Scheme == Uri.UriSchemeHttps
+        && uri.IsDefaultPort
+        && uri.UserInfo.Length == 0
+        && uri.Host.Equals("learn.microsoft.com", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsSyntheticUrl(string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)
+        && uri.UserInfo.Length == 0
+        && uri.Host.EndsWith(".invalid", StringComparison.OrdinalIgnoreCase);
 
     // Matches three base64url segments after the literal "eyJ" header prefix. To document a
     // forbidden JWT shape inside an artifact without tripping this assertion, write the example

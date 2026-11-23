@@ -570,6 +570,28 @@ public sealed class ScaffoldContractTests
         }
     }
 
+    [Theory]
+    [InlineData("```", "", true)]
+    [InlineData("~~~", "", true)]
+    [InlineData("```", "Run this default setup command:\n", false)]
+    [InlineData("```", "Avoid large downloads during setup.\n", false)]
+    public void DisplayedRecursiveCommandRequiresAnAdjacentWarning(string fence, string interveningProse, bool hasWarning)
+    {
+        string content = $"# Setup\nDo not use:\n{interveningProse}\n{fence}text\ngit submodule update --init --recursive\n{fence}\n";
+        string tempPath = Path.Combine(Path.GetTempPath(), $"submodule-policy-{Guid.NewGuid():N}.md");
+        try
+        {
+            File.WriteAllText(tempPath, content);
+
+            ContainsRecursiveInitProhibition(content).ShouldBe(hasWarning);
+            RecursiveDefaultSetupViolations(tempPath).Count().ShouldBe(hasWarning ? 0 : 1);
+        }
+        finally
+        {
+            File.Delete(tempPath);
+        }
+    }
+
     [Fact]
     public void CanonicalInitCommandSupportsBashPowerShellAndCmdContinuations()
     {
@@ -996,9 +1018,8 @@ public sealed class ScaffoldContractTests
             LogicalLine line = logicalLines[index];
             if (ContainsRecursiveSubmoduleSetup(line.Text))
             {
-                string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
-                if (IsWarningOrNestedOptInContext(line.Text, precedingProse)
-                    && DisplayedRecursiveCommandProhibitionPattern.IsMatch(precedingProse.Trim()))
+                string precedingProse = PrecedingProseLine(logicalLines, index);
+                if (DisplayedRecursiveCommandProhibitionPattern.IsMatch(precedingProse.Trim()))
                 {
                     return true;
                 }
@@ -1118,7 +1139,7 @@ public sealed class ScaffoldContractTests
                 continue;
             }
 
-            string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
+            string precedingProse = PrecedingProseLine(logicalLines, index);
             if (!IsWarningOrNestedOptInContext(line.Text, precedingProse))
             {
                 yield return (line.OriginalLineNumber, line.Text.Trim());
@@ -1166,11 +1187,9 @@ public sealed class ScaffoldContractTests
         return result.ToArray();
     }
 
-    private static string CollectPrecedingProseContext(LogicalLine[] lines, int violationIndex, int maxLines)
+    private static string PrecedingProseLine(LogicalLine[] lines, int violationIndex)
     {
-        List<string> collected = [];
-        int proseLinesSeen = 0;
-        for (int i = violationIndex - 1; i >= 0 && collected.Count < maxLines; i--)
+        for (int i = violationIndex - 1; i >= 0; i--)
         {
             string trimmed = lines[i].Text.TrimStart();
             if (trimmed.StartsWith("# ", StringComparison.Ordinal)
@@ -1180,18 +1199,17 @@ public sealed class ScaffoldContractTests
             {
                 break;
             }
-            if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("```", StringComparison.Ordinal))
+            if (string.IsNullOrWhiteSpace(trimmed)
+                || trimmed.StartsWith("```", StringComparison.Ordinal)
+                || trimmed.StartsWith("~~~", StringComparison.Ordinal))
             {
                 continue;
             }
-            collected.Add(lines[i].Text);
-            proseLinesSeen++;
-            if (proseLinesSeen == 1 && !ContainsRecursivePolicyWarning(trimmed))
-            {
-                break;
-            }
+
+            return trimmed;
         }
-        return string.Join(" ", collected);
+
+        return string.Empty;
     }
 
     private static readonly Regex[] RecursiveSetupPatterns =
@@ -1226,8 +1244,13 @@ public sealed class ScaffoldContractTests
         "not use",
     ];
 
-    private static bool IsWarningOrNestedOptInContext(string commandLine, string precedingContext) =>
-        ContainsRecursivePolicyWarning(commandLine) || ContainsRecursivePolicyWarning(precedingContext);
+    private static bool IsWarningOrNestedOptInContext(string commandLine, string precedingProse) =>
+        ContainsRecursivePolicyWarning(commandLine)
+        || DisplayedRecursiveCommandProhibitionPattern.IsMatch(precedingProse.Trim())
+        || (precedingProse.Contains("submodule", StringComparison.OrdinalIgnoreCase)
+            && (precedingProse.Contains("recursive", StringComparison.OrdinalIgnoreCase)
+                || precedingProse.Contains("nested", StringComparison.OrdinalIgnoreCase))
+            && ContainsRecursivePolicyWarning(precedingProse));
 
     private static bool ContainsRecursivePolicyWarning(string context)
     {

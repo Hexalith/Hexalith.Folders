@@ -26,4 +26,7 @@
     <PackageVersion Update="Aspire.Hosting.Testing" Version="17.0.0" />
     <PackageVersion Update="CommunityToolkit.Aspire.Hosting.Dapr" Version="$(HexalithAspireHostingDaprVersion)" />
   </ItemGroup>
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Hexalith.Folders.Testing.Tests'">
+    <PackageVersion Include="Markdig" Version="1.6.0" />
+  </ItemGroup>
 </Project>
