@@ -182,7 +182,7 @@ Workspace_preparation_failed=50
             actualParameters.Select(p => p.Name).ToArray().ShouldBe(expectedParameterNames, group.Key + " parameter names must match spine path-parameter declaration order");
         }
 
-        foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
+        foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).OfType<string>().Distinct(StringComparer.Ordinal))
         {
             Type type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + schema).ShouldNotBeNull();
             type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Any(m => m.Name == "ComputeIdempotencyHash").ShouldBeFalse(schema);
@@ -420,6 +420,65 @@ Workspace_preparation_failed=50
     }
 
     [Fact]
+    public void VerifyCurrentDetectsClientDriftAndReportsRelativePathsForMissingInputs()
+    {
+        string[] inputs =
+        [
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+            "src/Hexalith.Folders.Client/nswag.json",
+            "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
+            "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+        ];
+        WithInputValidationDirectory(temp =>
+        {
+            string checkout = Directory.CreateDirectory(Path.Combine(temp, "checkout")).FullName;
+            string rootAlias = Path.Combine(checkout, ".");
+            string? symbolicRoot = null;
+            if (!OperatingSystem.IsWindows())
+            {
+                symbolicRoot = Directory.CreateSymbolicLink(Path.Combine(temp, "linked-checkout"), checkout).FullName;
+            }
+
+            var missingDirectory = HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(rootAlias);
+            missingDirectory.IsCurrent.ShouldBeFalse();
+            (missingDirectory.Diagnostic == $"DirectoryNotFoundException: {inputs[0]}").ShouldBeTrue();
+            if (symbolicRoot is not null)
+            {
+                HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(symbolicRoot).ShouldBe(missingDirectory);
+            }
+
+            foreach (string input in inputs)
+            {
+                string target = Path.Combine(checkout, input);
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                File.Copy(Path.Combine(RepositoryRoot, input), target);
+            }
+
+            string client = Path.Combine(checkout, inputs[^1]);
+            string source = NormalizeLineEndings(File.ReadAllText(client));
+            File.WriteAllText(client, source.Replace("\n", "\r\n", StringComparison.Ordinal));
+            HexalithFoldersGeneratedArtifacts.VerifyCurrent(rootAlias).ShouldBeTrue();
+            if (symbolicRoot is not null)
+            {
+                HexalithFoldersGeneratedArtifacts.VerifyCurrent(symbolicRoot).ShouldBeTrue();
+            }
+
+            File.AppendAllText(client, "\r\n// controlled client drift");
+            HexalithFoldersGeneratedArtifacts.VerifyCurrent(rootAlias).ShouldBeFalse();
+            HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(rootAlias).Diagnostic
+                .ShouldBe("generated client content hash does not match SDK generation output");
+
+            foreach (string input in inputs.Reverse())
+            {
+                File.Delete(Path.Combine(checkout, input));
+                var missingFile = HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(rootAlias);
+                missingFile.IsCurrent.ShouldBeFalse();
+                (missingFile.Diagnostic == $"FileNotFoundException: {input}").ShouldBeTrue();
+            }
+        });
+    }
+
+    [Fact]
     public void GeneratedClientAndHelpersMatchIsolatedRegeneration()
     {
         string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-golden-" + Guid.NewGuid().ToString("N"));
@@ -433,8 +492,17 @@ Workspace_preparation_failed=50
 
             string generatedClient = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs");
             string generatedHelpers = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
-            NormalizeLineEndings(File.ReadAllText(generatedClient)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs"))));
-            NormalizeLineEndings(File.ReadAllText(generatedHelpers)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"))));
+            string expectedClient = NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs")));
+            string expectedHelpers = NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+            NormalizeLineEndings(File.ReadAllText(generatedClient)).ShouldBe(expectedClient);
+            NormalizeLineEndings(File.ReadAllText(generatedHelpers)).ShouldBe(expectedHelpers);
+
+            File.AppendAllText(generatedClient, "\n// locally edited client");
+            File.SetLastWriteTimeUtc(generatedHelpers, DateTime.UnixEpoch);
+            generation = RunIsolatedGeneration(project, tempRoot, "Debug", 240_000);
+            generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
+            NormalizeLineEndings(File.ReadAllText(generatedClient)).ShouldBe(expectedClient);
+            NormalizeLineEndings(File.ReadAllText(generatedHelpers)).ShouldBe(expectedHelpers);
         }
         finally
         {
@@ -629,8 +697,12 @@ Workspace_preparation_failed=50
             "POST",
             "api/v2/folders/folder_000000001/workspaces/workspace_000000001/files/add");
         var typed = new HexalithFoldersApiException<ProblemDetails>("message", 400, canonical, new Dictionary<string, IEnumerable<string>>(), problem, null!);
-        typed.ProblemDetails.ShouldNotBeNull();
-        typed.ProblemDetails.Category.ShouldBe(CanonicalErrorCategory.Validation_error);
+        var reads = new ProblemDetails?[8];
+        _ = Parallel.For(0, reads.Length, i => reads[i] = typed.ProblemDetails);
+        ProblemDetails projected = reads[0].ShouldNotBeNull();
+        projected.Category.ShouldBe(CanonicalErrorCategory.Validation_error);
+        reads.ShouldAllBe(value => ReferenceEquals(value, projected));
+        typed.ProblemDetailsParseDiagnostic.ShouldBeNull();
 
         var untyped = new HexalithFoldersApiException("message", 400, canonical, new Dictionary<string, IEnumerable<string>>(), null!);
         untyped.ProblemDetails.ShouldBeNull("raw or arbitrary exception bodies are not declared typed problem results");

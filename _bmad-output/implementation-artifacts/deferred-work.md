@@ -751,7 +751,8 @@ resolution: When both the assembly and application paths are empty, repository d
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5
 reason: `EnumerableExtensions.WhereNotNull<T>` constrained to reference types only (`tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5`).
-status: open
+status: done 2026-11-23
+resolution: SDK conformance uses LINQ OfType<string> to select present request schemas. The one-use reference-only helper was removed. See spec-five-deferred-sdk-verification.md.
 
 ### DW-103: `ScaffoldContractTests` hardcoded expected-reference list (`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:114`). Pre-existing pattern.
 
@@ -771,7 +772,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118
 reason: `ParsedProblemDetailsCache` is a nested `private sealed class` visible to Newtonsoft reflection (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118`).
-status: open
+status: done 2026-11-23
+resolution: Typed Problem Details uses a reference tuple and atomic publication without a nested SDK cache type. Concurrent reads verify a shared projection. See spec-five-deferred-sdk-verification.md.
 
 ### DW-106: `--repository-root` argument not validated for absolute-path-ness inside the generator (`src/Hexalith.Folders.Client/Generation/Program.cs:9-13`).
 
@@ -822,7 +824,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:73-93
 reason: Typed `ProblemDetails` companion folder placement (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:73-93`) — conceptually neither idempotency nor NSwag-generated; could move under `Idempotency/` or split into its own generated file. Non-blocking ownership concern.
-status: open
+status: done 2026-11-23
+resolution: The typed API exception companion lives in the Serialization folder and keeps its generated namespace and public members. See spec-five-deferred-sdk-verification.md.
 
 ### DW-113: Defensive validation for empty parameter `$ref` / empty `name` scalar (`src/Hexalith.Folders.Client/Generation/Program.cs:201-211`) — spine currently has neither; defensive only.
 
@@ -1589,7 +1592,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73
 reason: `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — filesystem-boundary concern; build-time and CI consume canonicalized paths today.
-status: open
+status: done 2026-11-23
+resolution: Verification reports the failing input by its fixed repository-relative path and exception type. Tests cover alternate absolute root spellings and missing files and directories. See spec-five-deferred-sdk-verification.md.
 
 ### DW-227: General-case null-vs-omitted presence tracking [`src/Hexalith.Folders.Client/Generation/Program.cs:546`]
 
@@ -2774,6 +2778,8 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
   summary: Extend the public generated-artifact verification helper to verify the principal generated client as well as helper provenance.
   evidence: The pre-existing `HexalithFoldersGeneratedArtifacts.VerifyCurrent` hashes the spine, generation configuration, and helper file but not the principal generated client; the CI isolated-regeneration test currently supplies the missing protection only inside the repository gate.
+  status: done 2026-11-23
+  resolution: The public checkout verifier compares the normalized principal client against the hash captured after SDK post-processing. The existing three-argument content check is preserved. See spec-five-deferred-sdk-verification.md.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
   summary: Give the `/pushall` skill the collaboration capabilities its required subagent orchestration needs.
@@ -3313,3 +3319,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
   evidence: `ConsumerDocsConformanceTests.AssertManifestEntryValid` compares the raw scalar to lowercase `true`. It already rejected `True` and `TRUE` on the baseline and still accepts quoted `true`. The canonical fixture uses lowercase unquoted `true`. Add consumer docs coverage before changing that gate.
   status: done 2026-11-22
   resolution: The consumer docs and governance gates share the YAML 1.2 core boolean reader. Consumer docs tests cover true spellings, tags, false, numeric and quoted values, and duplicate keys. See spec-five-deferred-contract-gate-diagnostics.md.
+
+- source_spec: `spec-five-deferred-sdk-verification.md`
+  summary: Verify the helper's embedded self-digest value in the checkout verifier.
+  evidence: The existing digest normalization treats any 64-digit hexadecimal declaration and the generation placeholder identically. The checkout verifier can require the expected declared value while preserving the three-argument content check.

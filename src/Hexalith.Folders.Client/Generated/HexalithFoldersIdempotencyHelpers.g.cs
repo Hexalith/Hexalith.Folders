@@ -13,7 +13,8 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7";
     public const string GenerationConfigurationSha256 = "16973966e48c29f9bb046eda08be9b06bca5bc3e32ad407bff301041f4ddb2cd";
-    public const string GeneratedHelpersSha256 = "953b548666bc9fa9bbbf67b14dc0fa965d26dfb97d1d28de02b8de4da7df368e";
+    public const string GeneratedHelpersSha256 = "028597804983b85de68311a5b15f78e12e35a37bf2c471db66ebde9d4e529e8d";
+    private const string GeneratedClientSha256 = "cbb73939e4731804cd53f5b58f8a29f49ffeb272e34cb62d71fc3c7a479cabc2";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -32,64 +33,35 @@ public static class HexalithFoldersGeneratedArtifacts
             return new(false, "repositoryRoot must be a fully qualified path");
         }
 
-        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
-        string configurationPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
-        string helpersPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
+        string inputPath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml";
         try
         {
-            string spine = File.ReadAllText(spinePath);
-            string configuration = File.ReadAllText(configurationPath);
-            string helpers = File.ReadAllText(helpersPath);
+            string spine = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
+            inputPath = "src/Hexalith.Folders.Client/nswag.json";
+            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
+            inputPath = "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs";
+            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
             string? malformed = DetectMalformedHelperConstant(helpers);
             if (malformed is not null)
             {
                 return new(false, malformed);
             }
 
-            return IsCurrent(spine, configuration, helpers)
+            if (!IsCurrent(spine, configuration, helpers))
+            {
+                return new(false, "generated artifact content hashes do not match Contract Spine inputs");
+            }
+
+            inputPath = "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs";
+            string client = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
+            return ComputeSha256(NormalizeText(client)) == GeneratedClientSha256
                 ? new(true, "generated artifacts match Contract Spine inputs")
-                : new(false, "generated artifact content hashes do not match Contract Spine inputs");
-        }
-        catch (FileNotFoundException notFound)
-        {
-            return new(false, $"{nameof(FileNotFoundException)}: {Relativize(repositoryRoot, notFound.FileName ?? notFound.Message)}");
-        }
-        catch (DirectoryNotFoundException directoryMissing)
-        {
-            return new(false, $"{nameof(DirectoryNotFoundException)}: {Relativize(repositoryRoot, directoryMissing.Message)}");
+                : new(false, "generated client content hash does not match SDK generation output");
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
-            return new(false, $"{exception.GetType().Name}: {Relativize(repositoryRoot, exception.Message)}");
+            return new(false, $"{exception.GetType().Name}: {inputPath}");
         }
-    }
-
-    // Strips repositoryRoot+separator from diagnostic strings so the emitted message
-    // does not leak machine-local absolute paths. AC 16 / Round 4 P11 / Round 4 (external) P2.
-    // Case comparison follows the host filesystem (case-insensitive on Windows, case-sensitive
-    // elsewhere). Only the root-plus-separator forms are stripped to avoid corrupting unrelated
-    // substrings that happen to share the bare root prefix (e.g. "C:\\Work" inside "C:\\Workspace\\").
-    private static string Relativize(string repositoryRoot, string message)
-    {
-        if (string.IsNullOrEmpty(message))
-        {
-            return message;
-        }
-
-        StringComparison comparison = OperatingSystem.IsWindows()
-            ? StringComparison.OrdinalIgnoreCase
-            : StringComparison.Ordinal;
-        string trimmedRoot = repositoryRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        string primaryPrefix = trimmedRoot + Path.DirectorySeparatorChar;
-        string altPrefix = trimmedRoot + Path.AltDirectorySeparatorChar;
-
-        string result = message.Replace(primaryPrefix, string.Empty, comparison);
-        if (!string.Equals(primaryPrefix, altPrefix, StringComparison.Ordinal))
-        {
-            result = result.Replace(altPrefix, string.Empty, comparison);
-        }
-
-        return result;
     }
 
     public static bool IsCurrent(string contractSpine, string generationConfiguration, string generatedHelpers)
@@ -115,7 +87,7 @@ public static class HexalithFoldersGeneratedArtifacts
         Match permissive = Regex.Match(NormalizeText(helpers), "^[ \\t]*public const string GeneratedHelpersSha256 = \"(?<value>[^\"]*)\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
         if (!permissive.Success)
         {
-            return "generated helpers file is missing the GeneratedHelpersSha256 constant declaration (regenerate via dotnet msbuild /t:GenerateHexalithFoldersClient)";
+            return "generated helpers file is missing the GeneratedHelpersSha256 constant declaration (regenerate via dotnet msbuild /t:GenerateHexalithFoldersIdempotencyHelpers)";
         }
 
         string captured = permissive.Groups["value"].Value;
@@ -126,7 +98,7 @@ public static class HexalithFoldersGeneratedArtifacts
 
         if (captured.Length != 64 || !captured.All(static c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
         {
-            return $"generated helpers file has a malformed GeneratedHelpersSha256 constant (expected 64 hex characters, got {captured.Length}); regenerate via dotnet msbuild /t:GenerateHexalithFoldersClient";
+            return $"generated helpers file has a malformed GeneratedHelpersSha256 constant (expected 64 hex characters, got {captured.Length}); regenerate via dotnet msbuild /t:GenerateHexalithFoldersIdempotencyHelpers";
         }
 
         return null;
@@ -794,56 +766,6 @@ internal static class HexalithFoldersGeneratedOperationCatalog
 
     internal static bool AllowsGenericProblemTuple(string operationId, string tuple) =>
         GenericProblemTuples.Contains(operationId + "|" + tuple);
-}
-
-public partial class HexalithFoldersApiException
-{
-    internal string? OriginatingOperationId { get; } = Hexalith.Folders.Client.Serialization.HexalithFoldersOperationContext.Current;
-
-    // Thread-safe lazy cache for the parsed Problem Details. Reference-typed wrapper plus
-    // Interlocked.CompareExchange gives lock-free single-VISIBLE-value across concurrent readers.
-    // Note (Round 4 external P11): the actual ParseProblemDetails call may run more than once
-    // under contention — two threads can each enter ParseProblemDetails, both produce a fresh
-    // ParsedProblemDetailsCache, and the loser's value is discarded by CompareExchange. Both
-    // readers then observe the winner's cache, so the visible value is single-init even though
-    // the parse work is not strictly de-duplicated. This is acceptable because parsing is pure;
-    // if parse cost or side-effect concerns surface, switch to LazyInitializer.EnsureInitialized
-    // or System.Threading.Lazy<T> for a true single-parse guarantee.
-    private sealed class ParsedProblemDetailsCache
-    {
-        public ParsedProblemDetailsCache(ProblemDetails? problem, string? diagnostic)
-        {
-            Problem = problem;
-            Diagnostic = diagnostic;
-        }
-
-        public ProblemDetails? Problem { get; }
-        public string? Diagnostic { get; }
-    }
-
-    private ParsedProblemDetailsCache? _parsedProblemDetails;
-
-    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;
-
-    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;
-
-    private ParsedProblemDetailsCache GetParsedProblemDetails()
-    {
-        ParsedProblemDetailsCache? cached = _parsedProblemDetails;
-        if (cached is not null)
-        {
-            return cached;
-        }
-
-        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();
-        ParsedProblemDetailsCache fresh = new(parsed.Problem, parsed.Diagnostic);
-        return System.Threading.Interlocked.CompareExchange(ref _parsedProblemDetails, fresh, null) ?? fresh;
-    }
-
-    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()
-    {
-        return Hexalith.Folders.Client.Serialization.Oq2ProblemProjection.Project(this);
-    }
 }
 
 public partial class PathMetadata

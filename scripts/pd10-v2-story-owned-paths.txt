@@ -83,6 +83,7 @@ src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
 src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
 src/Hexalith.Folders.Client/Idempotency/IdempotencyField.cs
 src/Hexalith.Folders.Client/Serialization/CanonicalErrorCodeProjection.cs
+src/Hexalith.Folders.Client/Serialization/HexalithFoldersApiException.cs
 src/Hexalith.Folders.Client/Serialization/HexalithFoldersOperationContext.cs
 src/Hexalith.Folders.Client/Serialization/OperationFreshness.cs
 src/Hexalith.Folders.Client/Serialization/Oq2ProblemProjection.cs

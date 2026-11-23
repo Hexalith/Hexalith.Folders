@@ -40,6 +40,9 @@
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorInputs)"
           Outputs="$(HexalithFoldersGeneratedClient)"
           Condition="'$(DesignTimeBuild)' != 'true'">
+    <CallTarget Targets="_GenerateHexalithFoldersRawClient" />
+  </Target>
+  <Target Name="_GenerateHexalithFoldersRawClient" DependsOnTargets="PrepareHexalithFoldersGenerator">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
           Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; $(HexalithFoldersGeneratorOptions) -- --validate-contract &quot;$(HexalithFoldersContractSpine)&quot;" />
     <MakeDir Directories="$(MSBuildProjectDirectory)/Generated" />
@@ -52,6 +55,7 @@
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorInputs);$(HexalithFoldersGeneratedClient)"
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
+    <CallTarget Targets="_GenerateHexalithFoldersRawClient" />
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
           Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; --configuration &quot;$(Configuration)&quot; $(HexalithFoldersGeneratorOptions) -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot; --client &quot;$(HexalithFoldersGeneratedClient)&quot;" />
   </Target>

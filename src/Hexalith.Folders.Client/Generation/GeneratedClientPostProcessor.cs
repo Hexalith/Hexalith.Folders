@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Client.Generation.Shared;
@@ -18,7 +17,9 @@ internal static class GeneratedClientPostProcessor
     /// Makes both declared successful range responses flow through the common generated result abstraction.
     /// </summary>
     /// <param name="clientPath">The generated NSwag client source path.</param>
-    public static void Process(string clientPath, string contractPath)
+    /// <param name="contractPath">The Contract Spine path.</param>
+    /// <returns>The normalized, post-processed client source.</returns>
+    public static string Process(string clientPath, string contractPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(clientPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(contractPath);
@@ -105,7 +106,7 @@ internal static class GeneratedClientPostProcessor
         source = RequireClosedSuccessFields(source, contractPath);
         source = RestoreOperationUnavailableEnumUnions(source, contractPath);
 
-        WriteAtomically(clientPath, source);
+        return source;
     }
 
     private static string RelaxGeneratedRequiredFields(string source)
@@ -510,21 +511,6 @@ internal static class GeneratedClientPostProcessor
             || partialBranch.Contains("throw new HexalithFoldersApiException<FileRangeReadPartialResult>", StringComparison.Ordinal))
         {
             throw new InvalidOperationException("Generated-client HTTP 206 branch is not a single successful partial-range return.");
-        }
-    }
-
-    private static void WriteAtomically(string path, string content)
-    {
-        string directory = Path.GetDirectoryName(path) ?? ".";
-        string temporaryPath = Path.Combine(directory, $".{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
-        try
-        {
-            File.WriteAllText(temporaryPath, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-            File.Move(temporaryPath, path, overwrite: true);
-        }
-        finally
-        {
-            File.Delete(temporaryPath);
         }
     }
 

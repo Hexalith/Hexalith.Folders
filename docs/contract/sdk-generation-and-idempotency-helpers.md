@@ -38,10 +38,15 @@ The current generated helper provenance stores:
 
 - Contract Spine SHA-256
 - generation configuration SHA-256
+- generated helper SHA-256 with its own declaration normalized
+- principal NSwag client SHA-256 after postprocessing
 - operation IDs
 - helper field names from `x-hexalith-idempotency-equivalence`
 
-Stale-output detection compares current repository input content hashes rather than timestamps or local paths.
+`HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed` verifies the Contract Spine, generation
+configuration, generated helper, and principal generated client against the SHA-256 hashes built into
+the calling SDK. It normalizes line endings and identifies unreadable inputs by their repository-relative path.
+The three-argument `IsCurrent` method still verifies the spine, configuration, and helper content.
 
 ## Hash Format
 

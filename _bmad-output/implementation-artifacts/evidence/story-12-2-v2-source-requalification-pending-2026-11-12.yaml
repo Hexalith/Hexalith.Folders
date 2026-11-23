@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 133fc526841b4ffa9f1abfeb312763e47132bb161ccea1a9177fd3cf2c26646b
-artifact_count: 1664
+candidate_set_sha256: 119cf440f4bb59a29776beacccdb18c954ee2828a8ea717c16ebb25a128acdc7
+artifact_count: 1665
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -62,8 +62,8 @@ artifacts:
     sha256: b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59
   - path: "docs/contract/sdk-generation-and-idempotency-helpers.md"
     kind: file
-    bytes: 6928
-    sha256: 1fd6f6e4c1d715f413c5c13e8c6733bba3b2004d53de16c9da2793313c616dff
+    bytes: 7345
+    sha256: 3b8f34b6d9a8ce338b0154691bbe3dbc0dc338fd685560443f1aa0b35e2e6c0b
   - path: "docs/operations/canonical-error-catalog.md"
     kind: file
     bytes: 13564
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 119214
-    sha256: b9aaf324b4edc8f546dfbfa83fd2d4fd9c5da659dea5970017c949a5f527b5d9
+    bytes: 119287
+    sha256: f092cc4c54bc09362719b66b835310721f4282092197e1dce70124f157ee02ef
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -314,24 +314,24 @@ artifacts:
     sha256: cbb73939e4731804cd53f5b58f8a29f49ffeb272e34cb62d71fc3c7a479cabc2
   - path: "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs"
     kind: file
-    bytes: 101785
-    sha256: 1462ac5b8885d56df6e9d7e979c5daec909ed51fadbe871ef3c9b9091a2a2954
+    bytes: 98191
+    sha256: 1e72b3aad0081104e57a1d9d4d21f408e7bcec80069195f444e16705501596ff
   - path: "src/Hexalith.Folders.Client/Generated/HexalithFoldersNativeClient.g.cs"
     kind: file
     bytes: 45593
     sha256: 0e14e2937854fd4d3a19c1e67efec34917e72f201c6112bd79fe4df7bca4b1b3
   - path: "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs"
     kind: file
-    bytes: 25708
-    sha256: 37ae07dc937db6658b107075adc52974d91d740a31765f0569552da60a894728
+    bytes: 25274
+    sha256: 513479a618b1bdaa472de47b5c0a40795fc693bac091369140696701d843c458
   - path: "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj"
     kind: file
     bytes: 498
     sha256: 81a519da2f64376e9907c0a215ade32db19b28a26242f3342e7b7516313e787f
   - path: "src/Hexalith.Folders.Client/Generation/Program.cs"
     kind: file
-    bytes: 65512
-    sha256: 1b1066cf3f0ce78b3e5ae2960d2bb6b8090eebc2401e6bf9730e24fc3b23ef49
+    bytes: 60086
+    sha256: 814190a7c1468b09317ee22f3019284e38ddf1d6f15adc2aa3a7cd2f887e95af
   - path: "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj"
     kind: file
     bytes: 407
@@ -346,8 +346,8 @@ artifacts:
     sha256: a378abedaf01da9f1bfc5425bcffaed240eb36b1c3d6d0ad0a15df4289b96f92
   - path: "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
     kind: file
-    bytes: 6449
-    sha256: 7746d8468765214c2237885731f073f275cf949974ea977d4f66e355440e0f67
+    bytes: 6690
+    sha256: 942d1f3e0b0a4e34b59ed4e1273e5c17655939b6002857cb76a90718385fde73
   - path: "src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs"
     kind: file
     bytes: 12860
@@ -360,6 +360,10 @@ artifacts:
     kind: file
     bytes: 902
     sha256: 9a502ec97ca3abca5a7ac1f74be6c71a61cf93a3644cacd5332a3600badddf3c
+  - path: "src/Hexalith.Folders.Client/Serialization/HexalithFoldersApiException.cs"
+    kind: file
+    bytes: 1393
+    sha256: 0ebfce8aabfa670e630d12fa768278f98b06450c3de7eb70be2827133b6b1377
   - path: "src/Hexalith.Folders.Client/Serialization/HexalithFoldersOperationContext.cs"
     kind: file
     bytes: 1549
@@ -4698,8 +4702,8 @@ artifacts:
     sha256: 6a33f9b7442adc239f586ddb357922d55df2c9fa86b3cda322c2e6d4fbe4084a
   - path: "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs"
     kind: file
-    bytes: 116611
-    sha256: 6401819d6a4c391af93fe1e20a5a54fade73eee82974ca5e153fd102b90fa875
+    bytes: 120396
+    sha256: 2507b3307f50564f4d429c12d23bf3ca26d32f535ebefa7466a4ee90cd8be16d
   - path: "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs"
     kind: file
     bytes: 38433
