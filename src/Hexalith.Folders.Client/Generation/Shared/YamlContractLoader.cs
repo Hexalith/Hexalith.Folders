@@ -3,13 +3,8 @@ using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Client.Generation.Shared;
 
-// Canonical YAML loader and name-normalization helpers for the Hexalith Contract Spine. Used by
-// the build-time generator (Generation/Program.cs) and the focused client tests
-// (ClientGenerationTests.cs) so both paths consume the same parsing rules, identical failure
-// semantics, and the same operation / parameter / request-schema discovery logic. Resolves Round 2
-// ResolvedDecision P-shared-1, Round 3 decision D1, and Round 4 findings P15-P18 (guards + scope)
-// and P8 (shared name parsing).
-public static class YamlContractLoader
+/// <summary>Loads and interprets the Contract Spine for the SDK generator and its tests.</summary>
+internal static class YamlContractLoader
 {
     public static YamlMappingNode LoadYaml(string path)
     {
@@ -170,17 +165,4 @@ public static class YamlContractLoader
         string camel = ToParameterName(value);
         return camel.Length == 0 ? camel : char.ToUpperInvariant(camel[0]) + camel[1..];
     }
-
-}
-
-internal static class YamlNodeExtensions
-{
-    public static YamlMappingNode ShouldBeMapping(this YamlNode node, string name) =>
-        node as YamlMappingNode ?? throw new InvalidOperationException($"{name} must be a mapping.");
-
-    public static YamlSequenceNode ShouldBeSequence(this YamlNode node, string name) =>
-        node as YamlSequenceNode ?? throw new InvalidOperationException($"{name} must be a sequence.");
-
-    public static YamlScalarNode ShouldBeScalar(this YamlNode node, string name) =>
-        node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
 }

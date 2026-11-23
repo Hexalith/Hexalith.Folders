@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <IsPackable>true</IsPackable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Generation/**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Generation\**\*.cs" />
-    <EmbeddedResource Remove="Generation\**" />
-    <None Remove="Generation\**" />
     <None Include="Generation\Hexalith.Folders.Client.Generation.csproj" Pack="false" />
     <None Include="Generation\Program.cs" Pack="false" />
   </ItemGroup>
@@ -30,6 +28,7 @@
     <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)/Generated/HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
     <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)/Generated/HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
     <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)/Generation/Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>
+    <HexalithFoldersHelperGeneratorInputs>$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)/Generation/Program.cs;$(MSBuildProjectDirectory)/Generation/GeneratedClientPostProcessor.cs;$(MSBuildProjectDirectory)/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj;$(MSBuildProjectDirectory)/Generation/Shared/YamlContractLoader.cs;$(MSBuildProjectDirectory)/Generation/Shared/YamlNodeExtensions.cs</HexalithFoldersHelperGeneratorInputs>
   </PropertyGroup>
   <Target Name="PrepareHexalithFoldersGenerator">
     <PropertyGroup>
@@ -38,7 +37,7 @@
   </Target>
   <Target Name="GenerateHexalithFoldersClient"
           DependsOnTargets="PrepareHexalithFoldersGenerator"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorInputs)"
           Outputs="$(HexalithFoldersGeneratedClient)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
@@ -50,7 +49,7 @@
   </Target>
   <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
           DependsOnTargets="GenerateHexalithFoldersClient"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)/Generation/Program.cs;$(MSBuildProjectDirectory)/Generation/Shared/YamlContractLoader.cs;$(MSBuildProjectDirectory)/Generation/GeneratedClientPostProcessor.cs;$(HexalithFoldersGeneratedClient)"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorInputs);$(HexalithFoldersGeneratedClient)"
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"

@@ -203,7 +203,7 @@ public sealed partial class ClientGenerationTests
             path.Children[new YamlScalarNode("parameters")] = new YamlSequenceNode(QueryParameter("callbackUrl"), QueryParameter("callbackURL"));
             string contractPath = Path.Combine(temp, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
             File.Copy(SaveInputValidationContract(temp, contract), contractPath, overwrite: true);
-            ProcessResult result = RunProcess("dotnet", $"msbuild \"{project}\" -t:GenerateHexalithFoldersIdempotencyHelpers -p:Configuration={BuildConfiguration}", temp, 180_000);
+            ProcessResult result = RunIsolatedGeneration(project, temp, BuildConfiguration, 180_000);
             result.ExitCode.ShouldNotBe(0);
             RedactDiagnosticOutput(result.Output, temp).ShouldContain("duplicate normalized parameter 'callback_url' from 'callbackUrl' and 'callbackURL'");
             File.ReadAllText(client).ShouldBe("existing client");

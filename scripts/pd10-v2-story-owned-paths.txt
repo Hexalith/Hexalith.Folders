@@ -78,6 +78,7 @@ src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
 src/Hexalith.Folders.Client/Generation/Program.cs
 src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj
 src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs
+src/Hexalith.Folders.Client/Generation/Shared/YamlNodeExtensions.cs
 src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
 src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
 src/Hexalith.Folders.Client/Idempotency/IdempotencyField.cs

@@ -224,6 +224,25 @@ Workspace_preparation_failed=50
         wireValues.ShouldBe(ReadStringSequence(kind, "enum").Order(StringComparer.Ordinal).ToArray());
     }
 
+    [Fact]
+    public void FileMutationHashReportsUnsupportedKindDirectly()
+    {
+        const int unsupportedKind = 999;
+        FileMutationRequest validMutation = CreateFileMutation(
+            FileMutationRequestFileOperationKind.Add,
+            FileMutationRequestTransportOperation.PutFileInline);
+        CreateFolderRequest validCreate = new() { RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V2 };
+        string mutationHash = validMutation.ComputeIdempotencyHash("workspace", "task");
+        string createHash = validCreate.ComputeIdempotencyHash();
+        FileMutationRequest request = new() { FileOperationKind = (FileMutationRequestFileOperationKind)unsupportedKind };
+
+        InvalidOperationException error = Should.Throw<InvalidOperationException>(() => request.ComputeIdempotencyHash("workspace", "task"));
+
+        error.Message.ShouldBe("Unsupported file operation kind '999'.");
+        validMutation.ComputeIdempotencyHash("workspace", "task").ShouldBe(mutationHash);
+        validCreate.ComputeIdempotencyHash().ShouldBe(createHash);
+    }
+
     [Theory]
     [InlineData(FileMutationRequestFileOperationKind.Add, "AddFile")]
     [InlineData(FileMutationRequestFileOperationKind.Change, "ChangeFile")]
@@ -409,17 +428,31 @@ Workspace_preparation_failed=50
         {
             string project = RestoreIsolatedGenerationProject(tempRoot);
 
-            ProcessResult generation = RunProcess(
-                "dotnet",
-                $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
-                tempRoot,
-                240_000);
+            ProcessResult generation = RunIsolatedGeneration(project, tempRoot, "Debug", 240_000);
             generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
 
             string generatedClient = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs");
             string generatedHelpers = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
             NormalizeLineEndings(File.ReadAllText(generatedClient)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs"))));
             NormalizeLineEndings(File.ReadAllText(generatedHelpers)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"))));
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public void RepositoryRootUsesWorkingDirectoryWhenAssemblyAndApplicationPathsAreEmpty()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-root-" + Guid.NewGuid().ToString("N"));
+        string workingDirectory = Path.Combine(tempRoot, "tests", "bin", "published");
+        Directory.CreateDirectory(workingDirectory);
+        try
+        {
+            File.WriteAllText(Path.Combine(tempRoot, "Hexalith.Folders.slnx"), "<Solution />");
+
+            LocateRepositoryRoot(string.Empty, string.Empty, () => workingDirectory).ShouldBe(tempRoot);
         }
         finally
         {
@@ -438,11 +471,7 @@ Workspace_preparation_failed=50
             string contract = Path.Combine(tempRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
             File.AppendAllText(contract, "\n# controlled regeneration input change\n", Encoding.UTF8);
 
-            ProcessResult generation = RunProcess(
-                "dotnet",
-                $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
-                tempRoot,
-                120_000);
+            ProcessResult generation = RunIsolatedGeneration(project, tempRoot, "Debug", 120_000);
             generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
 
             string generated = Path.Combine("src", "Hexalith.Folders.Client", "Generated");
@@ -1507,21 +1536,28 @@ Workspace_preparation_failed=50
         string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
         XDocument document = XDocument.Load(project);
 
+        const string generatorInputsProperty = "HexalithFoldersHelperGeneratorInputs";
+        string generatorInputs = document.Descendants(generatorInputsProperty).Single().Value.Replace('\\', '/');
+        generatorInputs.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+        generatorInputs.ShouldContain("Generation/Program.cs");
+        generatorInputs.ShouldContain("Generation/GeneratedClientPostProcessor.cs");
+        generatorInputs.ShouldContain("Generation/Shared/YamlContractLoader.cs");
+        generatorInputs.ShouldContain("Generation/Shared/YamlNodeExtensions.cs");
+
         XElement target = document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersIdempotencyHelpers");
         target.Attribute("BeforeTargets").ShouldBeNull("ordinary builds must never repair checked-in generated output before freshness verification");
-        target.Attribute("Inputs")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
         string inputs = target.Attribute("Inputs")?.Value ?? string.Empty;
+        inputs.ShouldContain($"$({generatorInputsProperty})");
         inputs.ShouldContain("$(HexalithFoldersGeneratedClient)");
-        inputs.Replace('\\', '/').ShouldContain("Generation/Program.cs");
-        inputs.Replace('\\', '/').ShouldContain("Generation/GeneratedClientPostProcessor.cs");
         target.Attribute("DependsOnTargets")?.Value.ShouldBe("GenerateHexalithFoldersClient");
         target.Attribute("Outputs")?.Value.ShouldBe("$(HexalithFoldersGeneratedHelpers)");
         string command = target.Descendants("Exec").Single().Attribute("Command")?.Value ?? string.Empty;
         command.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
         command.ShouldContain("--client");
 
-        document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersClient")
-            .Attribute("BeforeTargets").ShouldBeNull("ordinary builds must not invoke NSwag in place");
+        XElement rawClientTarget = document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersClient");
+        rawClientTarget.Attribute("BeforeTargets").ShouldBeNull("ordinary builds must not invoke NSwag in place");
+        rawClientTarget.Attribute("Inputs")?.Value.ShouldContain($"$({generatorInputsProperty})");
         document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "VerifyHexalithFoldersGeneratedArtifacts")
             .Attribute("BeforeTargets").ShouldBeNull("freshness is verified by the pre-build CI gate against checked-in files");
 
@@ -1727,6 +1763,7 @@ Workspace_preparation_failed=50
             "Directory.Build.props",
             "Directory.Packages.props",
             "global.json",
+            "nuget.config",
             "references/Hexalith.Builds/Props/Directory.Packages.props",
             "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
             "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
@@ -1737,6 +1774,7 @@ Workspace_preparation_failed=50
             "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
             "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
             "src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs",
+            "src/Hexalith.Folders.Client/Generation/Shared/YamlNodeExtensions.cs",
         ];
         foreach (string file in files)
         {
@@ -1744,9 +1782,17 @@ Workspace_preparation_failed=50
         }
 
         string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-        ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\" -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low", tempRoot, 180_000);
+        string configFile = Path.Combine(tempRoot, "nuget.config");
+        File.ReadAllBytes(configFile).ShouldBe(File.ReadAllBytes(Path.Combine(RepositoryRoot, "nuget.config")));
+        ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\" --configfile \"{configFile}\" -p:NuGetAudit=true -p:NuGetAuditMode=all -p:NuGetAuditLevel=low", tempRoot, 180_000);
         restore.ExitCode.ShouldBe(0, RedactDiagnosticOutput(restore.Output, tempRoot));
         return project;
+    }
+
+    private static ProcessResult RunIsolatedGeneration(string project, string tempRoot, string configuration, int timeoutMilliseconds)
+    {
+        string configFile = Path.Combine(tempRoot, "nuget.config");
+        return RunProcess("dotnet", $"msbuild \"{project}\" -t:GenerateHexalithFoldersIdempotencyHelpers -p:Configuration={configuration} -p:RestoreConfigFile=\"{configFile}\"", tempRoot, timeoutMilliseconds);
     }
 
     private static void CopyRepositoryFile(string relativePath, string destinationRoot)
@@ -1924,13 +1970,18 @@ Workspace_preparation_failed=50
         }
     }
 
-    private static string LocateRepositoryRoot()
+    private static string LocateRepositoryRoot() => LocateRepositoryRoot(typeof(ClientGenerationTests).Assembly.Location, AppContext.BaseDirectory);
+
+    private static string LocateRepositoryRoot(string assemblyLocation, string applicationBaseDirectory, Func<string>? getWorkingDirectory = null)
     {
-        // Assembly.Location returns "" under single-file publish; fall back to AppContext.BaseDirectory.
-        string assemblyLocation = typeof(ClientGenerationTests).Assembly.Location;
-        string startDirectoryPath = string.IsNullOrEmpty(assemblyLocation)
-            ? AppContext.BaseDirectory
-            : (Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory);
+        // Single-file publish can leave Assembly.Location empty.
+        string? startDirectoryPath = Path.GetDirectoryName(assemblyLocation);
+        if (string.IsNullOrEmpty(startDirectoryPath))
+        {
+            startDirectoryPath = string.IsNullOrEmpty(applicationBaseDirectory)
+                ? (getWorkingDirectory ?? Directory.GetCurrentDirectory)()
+                : applicationBaseDirectory;
+        }
 
         DirectoryInfo? directory = new(startDirectoryPath);
         while (directory is not null)
@@ -1943,7 +1994,7 @@ Workspace_preparation_failed=50
             directory = directory.Parent;
         }
 
-        throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the test assembly location.");
+        throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the SDK test directory.");
     }
 
     // ToCamelCase and NormalizeName now live in YamlContractLoader (Hexalith.Folders.Client.Generation.Shared)

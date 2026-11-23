@@ -545,7 +545,8 @@ resolution: Reject temporary and variable-data absolute paths and the actual che
 origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227
 reason: Isolated regeneration does not copy repo-root `nuget.config` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227`]. CI runner happens to use the same `nuget.org`-only sources today; revisit if a private feed is added.
-status: open
+status: done 2026-11-23
+resolution: Isolated regeneration copies and verifies the repository NuGet configuration before using the public generation target. See spec-five-deferred-sdk-generation-boundaries.md.
 
 ### DW-75: Removal of `--no-build` from generator-invoking tests adds an incremental MSBuild check per test
 
@@ -689,15 +690,17 @@ resolution: Golden hash vectors pin the existing integer, binary32, binary64 and
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317
 reason: Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
-status: open
+status: done 2026-11-23
 decision: 2026-08-25 Validate on call — Move drift validation into the file-mutation helper entry point and throw a direct, actionable InvalidOperationException.
+resolution: The named Remove enum member eliminated the static constructor in 76b96cf7edfdf8d3dc461341dda7c8cf9de6c1c4. A regression verifies that an unsupported kind raises InvalidOperationException directly from the mutation hash call. See spec-five-deferred-sdk-generation-boundaries.md.
 
 ### DW-95: `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167
 reason: `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
-status: open
+status: done 2026-11-23
+resolution: The shared loader and node extensions are internal to the non-packable generation assembly. The generator and client tests use the existing friend-assembly declarations. See spec-five-deferred-sdk-generation-boundaries.md.
 
 ### DW-96: Test `GetRawText` doesn't distinguish JSON value types in corpus comparison helper (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`). Pre-existing Round 3 deferral.
 
@@ -740,7 +743,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485
 reason: `LocateRepositoryRoot` fallback if `AppContext.BaseDirectory` is also empty (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485`). Single-file-publish edge case.
-status: open
+status: done 2026-11-23
+resolution: When both the assembly and application paths are empty, repository discovery walks upward from the working directory. See spec-five-deferred-sdk-generation-boundaries.md.
 
 ### DW-102: `EnumerableExtensions.WhereNotNull<T>` constrained to reference types only (`tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5`).
 
@@ -1523,7 +1527,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199
 reason: MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — works as written; revisit when the file layout changes.
-status: open
+status: done 2026-11-23
+resolution: MSBuild excludes Generation from SDK default items and explicitly includes the two non-packable project items. Evaluation verifies that generator code and resources stay out of the client build. See spec-five-deferred-sdk-generation-boundaries.md.
 
 ### DW-218: `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — perf concern; ties into Story 1.14 CI gate review.
 
