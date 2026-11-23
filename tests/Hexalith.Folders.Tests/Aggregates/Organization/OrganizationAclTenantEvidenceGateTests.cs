@@ -1,5 +1,7 @@
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Tests.Authorization;
 using Shouldly;
 using Xunit;
 
@@ -34,6 +36,32 @@ public sealed class OrganizationAclTenantEvidenceGateTests
         repository.EventsAppended.ShouldBe(0);
         repository.DiagnosticsQueried.ShouldBe(0);
         repository.AuditResourcesQueried.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task FutureTenantProjectionShouldRejectBeforeAnyStreamAccess()
+    {
+        DateTimeOffset now = EffectivePermissionsTestSupport.Now;
+        FolderTenantAccessProjection projection = EffectivePermissionsTestSupport.TenantProjection("tenant-a", "user-a");
+        projection.LastEventTimestamp = now.AddTicks(1);
+        TenantAccessAuthorizer authorizer = new(
+            new CountingTenantAccessProjectionStore(projection),
+            new FixedUtcClock(now),
+            new TenantAccessOptions());
+        TenantAccessAuthorizationResult evidence = await authorizer.AuthorizeMutationAsync(
+            new TenantAccessAuthorizationContext("tenant-a", "user-a", "tenant-a"),
+            TestContext.Current.CancellationToken);
+        RecordingOrganizationAclRepository repository = new();
+
+        OrganizationAclResult result = new OrganizationAclTenantGate(repository).Handle(AclCommandFactory.Grant(), evidence);
+
+        evidence.FreshnessStatus.ShouldBe(TenantProjectionFreshnessStatus.Future);
+        evidence.Outcome.ShouldBe(TenantAccessOutcome.MalformedEvidence);
+        result.Code.ShouldBe(OrganizationAclResultCode.MalformedEvidence);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
     }
 
     [Fact]

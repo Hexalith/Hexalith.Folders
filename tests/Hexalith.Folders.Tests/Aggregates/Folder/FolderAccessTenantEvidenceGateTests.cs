@@ -94,6 +94,29 @@ public sealed class FolderAccessTenantEvidenceGateTests
         repository.StreamsLoaded.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData("", "tenant-a")]
+    [InlineData(" ", null)]
+    [InlineData("\t", "tenant-a")]
+    public void BlankClientTenantSourceShouldRejectBeforeStreamConstruction(string source, string? value)
+    {
+        RecordingFolderRepository repository = new();
+        FolderAccessTenantGate gate = new(repository);
+        GrantFolderAccess command = FolderCommandFactory.GrantAccess(
+            clientTenantIds: new Dictionary<string, string?> { [source] = value });
+
+        FolderResult result = gate.Handle(
+            command,
+            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
+            FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
+
+        result.Code.ShouldBe(FolderResultCode.TenantMismatch);
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
     [Fact]
     public void CommandManagedTenantIdDifferingFromAuthoritativeShouldRejectBeforeStreamConstruction()
     {
@@ -123,7 +146,9 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderAccessTenantGate gate = new(repository);
 
         FolderResult result = gate.Handle(
-            FolderCommandFactory.GrantAccess(managedTenantId: "tenant-a"),
+            FolderCommandFactory.GrantAccess(
+                managedTenantId: "tenant-a",
+                clientTenantIds: new Dictionary<string, string?> { ["route"] = "tenant-a", ["header"] = null }),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
             FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
 

@@ -1492,6 +1492,7 @@ tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsReadModelFreshnes
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsRevocationFreshnessTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTaskScopeTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTestSupport.cs
+tests/Hexalith.Folders.Tests/Authorization/EventStoreClaimTransformEvidenceTests.cs
 tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs
 tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
 tests/Hexalith.Folders.Tests/Authorization/GatewayOrganizationStreamSequenceReaderTests.cs

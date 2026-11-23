@@ -14,6 +14,13 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
 
+    [Fact]
+    public void DefaultQueryEvidenceRequiresTenantAndPrincipal()
+    {
+        Should.Throw<ArgumentException>(() => Query(tenantId: null));
+        Should.Throw<ArgumentException>(() => Query(principalId: " "));
+    }
+
     [Theory]
     [InlineData("pending", "workspace_lifecycle_in_progress", false)]
     [InlineData("succeeded", "workspace_committed", false)]
@@ -261,7 +268,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
             workspaceId,
             tenantId,
             principalId,
-            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [WorkspaceCleanupStatusQueryHandler.ActionToken]),
+            claimTransformEvidence ?? FolderLifecycleStatusTestSupport.DefaultClaimTransformEvidence(tenantId, principalId, WorkspaceCleanupStatusQueryHandler.ActionToken),
             correlationId,
             taskId,
             ClientControlledTenantValues: null,

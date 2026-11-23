@@ -1815,7 +1815,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implement-organization-aggregate-acl-baseline (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs:11-37
 reason: Future-dated evidence has no inline test row in `OrganizationAclTenantEvidenceGateTests.RejectedTenantEvidenceShouldPreventAllStreamSideEffects` [`tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs:11-37`] — covered transitively because Story 2.1's authorizer routes future timestamps through `TenantAccessOutcome.MalformedEvidence`, which is in the theory. Adding a direct integration row pinned to a future `LastEventTimestamp` would belt-and-brace this assumption.
-status: open
+status: done 2026-11-23
+resolution: The ACL gate receives a real future-dated tenant authorization result and rejects it before any idempotency, stream or append operation. See spec-five-deferred-authorization-evidence.md.
 
 ### DW-262: `OrganizationStreamName.IsValidSegment` uses `ToLowerInvariant` for canonical-casing check
 
@@ -1835,14 +1836,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~17-23
 reason: `EventStoreClaimTransformEvidence.Allowed` exposes its internal `HashSet<string>` via `IReadOnlySet<string>` (`src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~17-23`) — not exploitable from current call sites; revisit if the evidence is shared across threads or returned to untrusted callers.
-status: open
+status: done 2026-11-23
+resolution: Allowed evidence snapshots normalized permission tokens in an ordinal frozen set. Direct construction and record copies also snapshot assigned sets. Tests exercise source mutation and mutation through a set interface. See spec-five-deferred-authorization-evidence.md.
 
 ### DW-265: Authorization unit tests pin to a single UTC instant
 
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs:~11
 reason: Authorization unit tests pin to a single UTC instant — no DST/timezone-offset or `>` vs `>=` boundary coverage on `ObservedAt > clock.UtcNow` (`tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs:~11`) — fixed-clock pattern is consistent with sibling modules.
-status: open
+status: done 2026-11-23
+resolution: The permission evidence provider is tested one tick before, at and one tick after a fixed UTC clock, with explicit offsets across the repeated autumn hour. See spec-five-deferred-authorization-evidence.md.
 
 ### DW-266: `ConfigurationDaprPolicyEvidenceProvider` does not validate empty/missing allow-lists at registration time
 
@@ -1893,7 +1896,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: FolderAccessTenantGate.HasCompetingClientTenant
 reason: W3: `FolderAccessTenantGate.HasCompetingClientTenant` does not guard whitespace-only keys in `ClientControlledTenantIds` — a whitespace key bypasses the mismatch check entirely while the archive gate explicitly rejects whitespace keys. Pre-existing; not introduced by this change.
-status: open
+status: done 2026-11-23
+resolution: The tenant gate and layered mutation service reject empty or whitespace-only tenant-source keys before reading protected folder data. Tests cover both valid and invalid source names with matching or absent values. See spec-five-deferred-authorization-evidence.md.
 
 ### DW-274: W4: `FolderAccessTenantGate` evaluates ACL evidence before schema validation (inverse of archive gate order)
 
@@ -2437,7 +2441,8 @@ location: tests/Hexalith.Folders.Tests/Queries/Folders
 source_spec: `spec-lifecycle-test-hygiene.md`
 severity: medium
 reason: This predates the bundle and is outside DW-54's named FolderLifecycleStatusTestSupport surface. TaskStatusQueryHandlerTests.cs, WorkspaceCleanupStatusQueryHandlerTests.cs, WorkspaceLockStatusProjectionTests.cs, and WorkspaceStatusQueryHandlerTests.cs each pass nullable tenant/principal values to EventStoreClaimTransformEvidence.Allowed.
-status: open
+status: done 2026-11-23
+resolution: Task status, workspace status, lock status and cleanup status fixtures validate default tenant and principal authority through the shared query helper and retain explicit claim overrides. See spec-five-deferred-authorization-evidence.md.
 
 ### DW-341: Project-level dotnet test is incompatible with the pinned Microsoft.Testing.Platform invocation on .NET 10.
 origin: spec-deferred a2da41ed4f8d

@@ -12,6 +12,13 @@ public sealed class WorkspaceLockStatusProjectionTests
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
 
     [Fact]
+    public void DefaultQueryEvidenceRequiresTenantAndPrincipal()
+    {
+        Should.Throw<ArgumentException>(() => Query(tenantId: null));
+        Should.Throw<ArgumentException>(() => Query(principalId: " "));
+    }
+
+    [Fact]
     public async Task ActiveLockShouldReturnMetadataOnlyLeaseStatus()
     {
         WorkspaceLockStatusQueryResult result = await ExecuteAsync(WorkspaceLockStatusReadModelResult.Available(ActiveSnapshot()));
@@ -138,7 +145,7 @@ public sealed class WorkspaceLockStatusProjectionTests
             workspaceId,
             tenantId,
             principalId,
-            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [WorkspaceLockStatusQueryHandler.ActionToken]),
+            claimTransformEvidence ?? FolderLifecycleStatusTestSupport.DefaultClaimTransformEvidence(tenantId, principalId, WorkspaceLockStatusQueryHandler.ActionToken),
             correlationId,
             taskId,
             ClientControlledTenantValues: null,

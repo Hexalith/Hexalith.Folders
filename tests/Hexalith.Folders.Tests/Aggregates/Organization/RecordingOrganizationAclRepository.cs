@@ -7,6 +7,10 @@ internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepos
     private readonly Dictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
     private OrganizationState _state = OrganizationState.Empty;
 
+    public int AppendsAttempted { get; private set; }
+
+    public int IdempotencyLookups { get; private set; }
+
     public int AuditResourcesQueried { get; private set; }
 
     public int DiagnosticsQueried { get; private set; }
@@ -40,6 +44,7 @@ internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepos
         string fingerprint,
         IReadOnlyList<IOrganizationAclEvent> events)
     {
+        AppendsAttempted++;
         string ledgerKey = LedgerKey(streamName, idempotencyKey);
         if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
         {
@@ -60,9 +65,10 @@ internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepos
         string organizationId,
         string idempotencyKey,
         out string? fingerprint)
-        => _idempotencyFingerprints.TryGetValue(
-            LedgerKey(managedTenantId, organizationId, idempotencyKey),
-            out fingerprint);
+    {
+        IdempotencyLookups++;
+        return _idempotencyFingerprints.TryGetValue(LedgerKey(managedTenantId, organizationId, idempotencyKey), out fingerprint);
+    }
 
     public void RecordIdempotency(string managedTenantId, string organizationId, string idempotencyKey, string fingerprint)
         => _idempotencyFingerprints[LedgerKey(managedTenantId, organizationId, idempotencyKey)] = fingerprint;

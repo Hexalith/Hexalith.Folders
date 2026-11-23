@@ -122,11 +122,35 @@ public sealed class GatewayMutationFinalReauthorizationTests
             "folder-a", FolderAccessOperationIntent.Grant,
             [new FolderAccessOperation(FolderAccessOperationIntent.Grant, FolderAccessPrincipalKind.User, "target-user-a", "read_metadata")],
             "correlation-a", "task-a", "idempotency-access-a", null,
-            EmptyValues(), EmptyValues()), TestContext.Current.CancellationToken);
+            new Dictionary<string, string?> { ["route"] = "tenant-a", ["header"] = null },
+            EmptyValues()), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
         repository.EventsAppended.ShouldBe(0);
         AssertFinalEvidenceMatchesInitial(evidence, "folder-a", FolderAccessMutationService.ActionToken);
+    }
+
+    [Theory]
+    [InlineData(" ", null)]
+    [InlineData("", "tenant-a")]
+    public async Task FolderAccessMutationShouldRejectUnnamedTenantSourcesBeforeReadingPermissions(string source, string? value)
+    {
+        RevokingFolderPermissionEvidenceProvider evidence = new();
+        RecordingFolderRepository repository = SeededFolder();
+        FolderAccessMutationService service = new(AuthorizationService(evidence), repository);
+
+        FolderResult result = await service.MutateAsync(new FolderAccessMutationRequest(
+            "tenant-a", "user-a", Claim(FolderAccessMutationService.ActionToken),
+            "folder-a", FolderAccessOperationIntent.Grant,
+            [new FolderAccessOperation(FolderAccessOperationIntent.Grant, FolderAccessPrincipalKind.User, "target-user-a", "read_metadata")],
+            "correlation-a", "task-a", "idempotency-access-a", null,
+            new Dictionary<string, string?> { [source] = value }, EmptyValues()), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.TenantAccessDenied);
+        evidence.Requests.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
     }
 
     private static RecordingFolderRepository SeededFolder()

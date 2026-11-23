@@ -17,6 +17,13 @@ public sealed class TaskStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
 
+    [Fact]
+    public void DefaultQueryEvidenceRequiresTenantAndPrincipal()
+    {
+        Should.Throw<ArgumentException>(() => Query(tenantId: null));
+        Should.Throw<ArgumentException>(() => Query(principalId: " "));
+    }
+
     [Theory]
     [InlineData("read_task_status", "read_metadata", true)]
     [InlineData("read_metadata", "read_metadata", false)]
@@ -468,7 +475,7 @@ public sealed class TaskStatusQueryHandlerTests
             taskId,
             tenantId,
             principalId,
-            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [TaskStatusQueryHandler.ActionToken]),
+            claimTransformEvidence ?? FolderLifecycleStatusTestSupport.DefaultClaimTransformEvidence(tenantId, principalId, TaskStatusQueryHandler.ActionToken),
             correlationId,
             clientTenantValues ?? new Dictionary<string, string?>(StringComparer.Ordinal),
             FolderId: "folder-a");

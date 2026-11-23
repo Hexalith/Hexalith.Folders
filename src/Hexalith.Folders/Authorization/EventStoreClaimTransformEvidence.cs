@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+
 namespace Hexalith.Folders.Authorization;
 
 public sealed record EventStoreClaimTransformEvidence(
@@ -7,6 +9,13 @@ public sealed record EventStoreClaimTransformEvidence(
     bool IsPresent,
     bool Malformed)
 {
+    /// <summary>Gets a snapshot of the permissions using ordinal token comparison.</summary>
+    public IReadOnlySet<string> PermissionTokens
+    {
+        get;
+        init => field = value.ToFrozenSet(StringComparer.Ordinal);
+    } = PermissionTokens.ToFrozenSet(StringComparer.Ordinal);
+
     /// <summary>Gets the verified delegating principal's claims when this is a delegated transport identity.</summary>
     public EventStoreClaimTransformEvidence? Delegator { get; init; }
 
@@ -23,16 +32,16 @@ public sealed record EventStoreClaimTransformEvidence(
             permissions
                 .Where(static permission => !string.IsNullOrWhiteSpace(permission))
                 .Select(static permission => permission.Trim())
-                .ToHashSet(StringComparer.Ordinal),
+                .ToFrozenSet(StringComparer.Ordinal),
             IsPresent: true,
             Malformed: false);
     }
 
     public static EventStoreClaimTransformEvidence Missing()
-        => new(null, null, new HashSet<string>(StringComparer.Ordinal), IsPresent: false, Malformed: false);
+        => new(null, null, FrozenSet<string>.Empty, IsPresent: false, Malformed: false);
 
     public static EventStoreClaimTransformEvidence MalformedEvidence()
-        => new(null, null, new HashSet<string>(StringComparer.Ordinal), IsPresent: true, Malformed: true);
+        => new(null, null, FrozenSet<string>.Empty, IsPresent: true, Malformed: true);
 
     public bool HasPermissionFor(string actionToken)
     {

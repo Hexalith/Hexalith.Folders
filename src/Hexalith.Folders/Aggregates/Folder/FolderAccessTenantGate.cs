@@ -148,9 +148,10 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
             return true;
         }
 
-        return command.ClientControlledTenantIds.Values.Any(value =>
-            !string.IsNullOrWhiteSpace(value)
-            && !string.Equals(value, authoritativeTenantId, StringComparison.Ordinal));
+        return command.ClientControlledTenantIds.Any(entry =>
+            string.IsNullOrWhiteSpace(entry.Key)
+            || (!string.IsNullOrWhiteSpace(entry.Value)
+                && !string.Equals(entry.Value, authoritativeTenantId, StringComparison.Ordinal)));
     }
 
     private static FolderResultCode? EvaluateAcl(IFolderAccessCommand command, FolderAccessAclEvidence aclEvidence)

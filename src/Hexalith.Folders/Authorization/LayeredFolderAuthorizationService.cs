@@ -577,6 +577,11 @@ public sealed class LayeredFolderAuthorizationService(
         string? firstObserved = null;
         foreach (KeyValuePair<string, string?> entry in comparisonValues)
         {
+            if (string.IsNullOrWhiteSpace(entry.Key))
+            {
+                return true;
+            }
+
             if (entry.Value is null)
             {
                 continue;

@@ -91,6 +91,30 @@ public sealed class FolderPermissionEvidenceProviderTests
         result.FreshnessWatermark.ShouldBeNull();
     }
 
+    [Theory]
+    [InlineData(-1, -4, FolderPermissionEvidenceStatus.Allowed, LayeredAuthorizationOutcomeCodes.Allowed)]
+    [InlineData(0, -5, FolderPermissionEvidenceStatus.Allowed, LayeredAuthorizationOutcomeCodes.Allowed)]
+    [InlineData(1, -5, FolderPermissionEvidenceStatus.Malformed, LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed)]
+    public async Task ProviderShouldCompareObservationInstantsAcrossClockOffsets(
+        int differenceInTicks,
+        int observationOffsetHours,
+        FolderPermissionEvidenceStatus expectedStatus,
+        string expectedCode)
+    {
+        // The US Eastern clock repeats the 1 a.m. hour at 06:00 UTC on this date.
+        DateTimeOffset now = new(2026, 11, 1, 6, 0, 0, TimeSpan.Zero);
+        DateTimeOffset observedAt = now.AddTicks(differenceInTicks).ToOffset(TimeSpan.FromHours(observationOffsetHours));
+        EffectivePermissionsReadModelSnapshot snapshot = Snapshot(true, false, EffectivePermissionsTestSupport.FolderGrant("read_metadata"));
+        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
+            ReadModel(snapshot with { Freshness = snapshot.Freshness with { ObservedAt = observedAt } }),
+            new FixedUtcClock(now));
+
+        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(expectedStatus);
+        result.OutcomeCode.ShouldBe(expectedCode);
+    }
+
     [Fact]
     public async Task ProviderShouldFailClosedWhenSnapshotObservedAtIsFutureDated()
     {

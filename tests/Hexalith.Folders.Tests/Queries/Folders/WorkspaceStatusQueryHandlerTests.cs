@@ -14,6 +14,13 @@ public sealed class WorkspaceStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
 
+    [Fact]
+    public void DefaultQueryEvidenceRequiresTenantAndPrincipal()
+    {
+        Should.Throw<ArgumentException>(() => Query(tenantId: null));
+        Should.Throw<ArgumentException>(() => Query(principalId: " "));
+    }
+
     [Theory]
     [InlineData("committed", "completed", "known_success", false, "retry_not_required", null)]
     [InlineData("locked", "accepted", "known_success", false, "workspace_locked", null)]
@@ -293,7 +300,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
             workspaceId,
             tenantId,
             principalId,
-            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [WorkspaceStatusQueryHandler.ActionToken]),
+            claimTransformEvidence ?? FolderLifecycleStatusTestSupport.DefaultClaimTransformEvidence(tenantId, principalId, WorkspaceStatusQueryHandler.ActionToken),
             correlationId,
             taskId,
             ClientControlledTenantValues: null,
