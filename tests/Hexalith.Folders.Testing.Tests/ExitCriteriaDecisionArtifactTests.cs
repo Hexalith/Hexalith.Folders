@@ -65,8 +65,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
         "client_secret",
         "clientSecret",
         "password=",
-        "aws_access_key_id",
-        "diff --git"
+        "aws_access_key_id"
     ];
 
     private static readonly Regex[] SecretRegexDenylist =
@@ -122,6 +121,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
         "FileMutated",
         "WorkspaceLockReleased",
         "LockLeaseExpired",
+        "LockLeaseBecameStale",
         "CommitSucceeded",
         "CommitFailed",
         "OperatorDiscardRequested",
@@ -136,14 +136,14 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void ExitCriteriaDecisionArtifactsExistWithRequiredDecisionShape()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
 
         foreach (string relativePath in RequiredArtifacts)
         {
             string path = Path.Combine(root, NormalizeForFileSystem(relativePath));
             File.Exists(path).ShouldBeTrue($"{relativePath} should exist.");
 
-            string content = File.ReadAllText(path);
+            string content = RepositoryArtifacts.ReadText(path);
 
             foreach (string key in RequiredMetadataKeys)
             {
@@ -161,11 +161,11 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void ExitCriteriaDecisionArtifactsAvoidPlaceholdersSecretsAndScopeLeakage()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
 
         foreach (string relativePath in RequiredArtifacts)
         {
-            string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
+            string content = RepositoryArtifacts.ReadText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
 
             foreach (Regex placeholder in PlaceholderRegexes)
             {
@@ -173,9 +173,11 @@ public sealed class ExitCriteriaDecisionArtifactTests
                     $"{relativePath} must not contain generic placeholder matching /{placeholder}/.");
             }
 
+            ContainsGitPatch(content).ShouldBeFalse($"{relativePath} must not contain Git patch content.");
+
             foreach (string token in SecretSubstringDenylist)
             {
-                content.ShouldNotContain(token, Case.Insensitive,
+                content.Contains(token, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
                     $"{relativePath} must not contain credential material '{token}'.");
             }
 
@@ -192,12 +194,12 @@ public sealed class ExitCriteriaDecisionArtifactTests
         string spinePath = Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
         if (File.Exists(spinePath))
         {
-            string spine = File.ReadAllText(spinePath);
+            string spine = RepositoryArtifacts.ReadText(spinePath);
             spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.4 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
             SpineContractAssertions.AssertNoDownstreamOperationGroups(spine);
         }
 
-        string c6Mapping = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
+        string c6Mapping = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
         c6Mapping.ShouldContain(
             "FolderStateTransitions.cs",
             Case.Sensitive,
@@ -207,7 +209,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C3AndC4RowsDeclareProvenanceApprovalConsumerAndReviewDate()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string[] relativePaths =
         [
             "docs/exit-criteria/c3-retention.md",
@@ -216,7 +218,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
 
         foreach (string relativePath in relativePaths)
         {
-            string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
+            string content = RepositoryArtifacts.ReadText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
             string reviewedDate = ParseFrontMatterValue(content, "last reviewed")
                 ?? throw new InvalidOperationException($"{relativePath} is missing 'last reviewed' front-matter value.");
 
@@ -246,8 +248,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C3CoversTheSixMandatedDataClasses()
     {
-        string root = RepositoryRoot();
-        string content = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c3-retention.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "exit-criteria", "c3-retention.md"));
 
         // Check table rows only — prose paragraphs must not substitute for table coverage.
         // A row removal that leaves only a prose mention would otherwise pass silently.
@@ -264,8 +266,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C4RowsCarryEitherANumericValueOrASemanticFlag()
     {
-        string root = RepositoryRoot();
-        string content = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c4-input-limits.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "exit-criteria", "c4-input-limits.md"));
         string[] rows = ExtractDecisionTableRows(content);
 
         rows.ShouldNotBeEmpty("c4-input-limits.md must include decision rows.");
@@ -305,9 +307,9 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C7ArtifactPinsApprovedProfileBoundariesOverridesAndProvenance()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string relativePath = "docs/exit-criteria/c7-lock-authorization-timing.md";
-        string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
 
         Dictionary<string, string> expectedMetadata = new(StringComparer.Ordinal)
         {
@@ -366,8 +368,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C7GovernanceApprovalKeepsRuntimeEvidenceReferencePending()
     {
-        string root = RepositoryRoot();
-        string traceability = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "nfr-traceability.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string traceability = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "exit-criteria", "nfr-traceability.md"));
         string[] rows = traceability.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (string nfr in new[] { "NFR7", "NFR21" })
@@ -383,10 +385,10 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void S2OidcArtifactPinsFrozenJwtBearerSettings()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string path = Path.Combine(root, "docs", "exit-criteria", "s2-oidc-validation.md");
         File.Exists(path).ShouldBeTrue("docs/exit-criteria/s2-oidc-validation.md must exist.");
-        string content = File.ReadAllText(path);
+        string content = RepositoryArtifacts.ReadText(path);
 
         string[] jwtBearerSettings =
         [
@@ -411,10 +413,10 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string path = Path.Combine(root, "docs", "exit-criteria", "s2-oidc-validation.md");
         File.Exists(path).ShouldBeTrue("docs/exit-criteria/s2-oidc-validation.md must exist.");
-        string content = File.ReadAllText(path);
+        string content = RepositoryArtifacts.ReadText(path);
 
         string[] authoritativeClaims =
         [
@@ -435,31 +437,129 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [Fact]
     public void C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally()
     {
-        string root = RepositoryRoot();
-        string artifact = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
-        string architecture = File.ReadAllText(Path.Combine(root, "_bmad-output", "planning-artifacts", "architecture.md"));
+        string root = RepositoryArtifacts.FindRoot();
+        string artifact = RepositoryArtifacts.ReadText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
+        string architecture = RepositoryArtifacts.ReadText(Path.Combine(root, "_bmad-output", "planning-artifacts", "architecture.md"));
 
-        foreach (string state in C6States)
-        {
-            artifact.ShouldContain($"`{state}`", Case.Sensitive,
-                $"c6-transition-matrix-mapping.md must mirror state '{state}'.");
-            architecture.ShouldContain($"`{state}`", Case.Sensitive,
-                $"architecture.md must still declare state '{state}'; vocabulary drift between architecture and the C6 mapping artifact.");
-        }
-
-        foreach (string eventName in C6Events)
-        {
-            artifact.ShouldContain($"`{eventName}`", Case.Sensitive,
-                $"c6-transition-matrix-mapping.md must mirror event '{eventName}'.");
-            architecture.ShouldContain($"`{eventName}`", Case.Sensitive,
-                $"architecture.md must still declare event '{eventName}'; vocabulary drift between architecture and the C6 mapping artifact.");
-        }
+        AssertC6Vocabulary(architecture, artifact, C6States, C6Events);
 
         artifact.ShouldContain("state_transition_invalid", Case.Sensitive,
             "c6-transition-matrix-mapping.md must document the canonical default rejection category.");
         artifact.ShouldContain("src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs", Case.Sensitive,
             "c6-transition-matrix-mapping.md must name the future implementation target.");
     }
+
+    [Theory]
+    [InlineData("NewEvent", "ready", "ReservedEvent", "active events")]
+    [InlineData("ActiveEvent", "changed", "ReservedEvent", "state catalogs")]
+    [InlineData("ActiveEvent", "ready", "OtherReserved", "reserved events")]
+    public void C6VocabularyDetectsDriftInDeclarationsDespiteProseMentions(
+        string mappedEvent, string mappedState, string mappedReserved, string diagnostic)
+    {
+        const string architecture = """
+            ### Workspace State Transition Matrix (C6 — Enumerated)
+            | State     | Description |
+            | --- | --- |
+            | ready | state |
+
+            | From → To    | Triggering Event    | Side Effect |
+            | --- | --- | --- |
+            | ready → ready | ActiveEvent / `SecondEvent` (clean/dirty) | none |
+
+            The reserved post-MVP events `ReservedEvent` are excluded.
+            """;
+        string artifact = $"""
+            ### State Catalog
+            | State | Notes |
+            | --- | --- |
+            | {mappedState} | ready remains in this incidental mention. |
+
+            ### Event Vocabulary
+            The active MVP architecture event vocabulary copied for drift checking is:
+
+            `{mappedEvent}`, `SecondEvent`.
+            Reserved post-MVP names `{mappedReserved}` are excluded.
+            Prose mentions `ActiveEvent` and `ReservedEvent`.
+            """;
+
+        Should.Throw<ShouldAssertException>(() => AssertC6Vocabulary(architecture, artifact, ["ready"], ["ActiveEvent"]))
+            .Message.ShouldContain(diagnostic);
+    }
+
+    [Theory]
+    [InlineData("OneEvent / `OtherEvent` (clean/dirty)")]
+    [InlineData("`OneEvent`/OtherEvent by the owner/operator")]
+    public void C6TriggerColumnSeparatesNamesFromGuardDescriptions(string cell)
+        => TriggerNames(cell).ShouldBe(["OneEvent", "OtherEvent"]);
+
+    private static void AssertC6Vocabulary(string architecture, string artifact, string[] requiredStates, string[] requiredEvents)
+    {
+        string[] matrix = Section(architecture, "### Workspace State Transition Matrix (C6 — Enumerated)");
+        string[] catalog = Section(artifact, "### State Catalog");
+        string[] vocabulary = Section(artifact, "### Event Vocabulary");
+
+        string[] architectureStates = TableColumn(matrix, "State", 0).Select(state => state.Trim('`')).ToArray();
+        string[] mappedStates = TableColumn(catalog, "State", 0).Select(state => state.Trim('`')).ToArray();
+        SortedNames(mappedStates).ShouldBe(SortedNames(architectureStates), "C6 state catalogs must agree.");
+        requiredStates.Except(architectureStates, StringComparer.Ordinal).ShouldBeEmpty("Required C6 states are missing.");
+
+        IEnumerable<string> triggers = TableColumn(matrix, "Triggering Event", 1);
+        string[] active = triggers.SelectMany(TriggerNames).Distinct(StringComparer.Ordinal).ToArray();
+        string[] declaredActive = Declaration(vocabulary, "The active MVP architecture event vocabulary copied for drift checking is:", ".");
+        SortedNames(declaredActive).ShouldBe(SortedNames(active), "C6 active events must match the positive-edge table.");
+
+        string[] reserved = Declaration(matrix, "The reserved post-MVP events", "are ");
+        string[] declaredReserved = Declaration(vocabulary, "Reserved post-MVP names", "are ");
+        SortedNames(declaredReserved).ShouldBe(SortedNames(reserved), "C6 reserved events must match their declaration.");
+        active.Intersect(reserved, StringComparer.Ordinal).ShouldBeEmpty("Reserved events cannot be positive edges.");
+        requiredEvents.Except(active.Concat(reserved), StringComparer.Ordinal).ShouldBeEmpty("Required C6 events are missing.");
+    }
+
+    private static string[] Section(string markdown, string heading)
+    {
+        string[] lines = markdown.ReplaceLineEndings("\n").Split('\n');
+        int start = Array.IndexOf(lines, heading);
+        start.ShouldBeGreaterThanOrEqualTo(0, $"Missing section '{heading}'.");
+        return lines.Skip(start + 1).TakeWhile(line => !Regex.IsMatch(line, @"^#{1,3} ")).ToArray();
+    }
+
+    private static IEnumerable<string> TableColumn(string[] section, string header, int column)
+    {
+        int start = Array.FindIndex(section, line => line.StartsWith('|')
+            && line.Trim('|').Split('|', StringSplitOptions.TrimEntries).ElementAtOrDefault(column) == header);
+        start.ShouldBeGreaterThanOrEqualTo(0, $"Missing table '{header}'.");
+        string table = string.Join('\n', section.Skip(start).TakeWhile(line => line.StartsWith('|')));
+        string[] rows = ExtractDecisionTableRows(table);
+        rows.ShouldNotBeEmpty($"Expected rows under '{header}'.");
+        return rows.Select(row => row.Trim('|').Split('|')[column].Trim());
+    }
+
+    private static IEnumerable<string> TriggerNames(string cell)
+    {
+        // The triggering names precede the optional guard description in this table cell.
+        const string Trigger = @"`?(?<name>[A-Z][A-Za-z0-9]*)`?";
+        Match list = Regex.Match(cell, $@"^{Trigger}(?:\s*/\s*{Trigger})*(?:$|\s+(?![\s/]))");
+        list.Success.ShouldBeTrue($"Expected a C6 event name in '{cell}'.");
+        return list.Groups["name"].Captures.Select(capture => capture.Value);
+    }
+
+    private static string[] Declaration(string[] section, string introduction, string terminator)
+    {
+        int start = Array.FindIndex(section, line => line.StartsWith(introduction, StringComparison.Ordinal));
+        start.ShouldBeGreaterThanOrEqualTo(0, $"Missing event declaration '{introduction}'.");
+        string declaration = string.Join(' ', section.Skip(start))[introduction.Length..].TrimStart();
+        int end = declaration.IndexOf(terminator, StringComparison.Ordinal);
+        end.ShouldBeGreaterThan(0, $"Incomplete event declaration '{introduction}'.");
+        return declaration[..end].Split(',', StringSplitOptions.TrimEntries)
+            .Select(item =>
+            {
+                string name = (item.StartsWith("and ", StringComparison.Ordinal) ? item[4..] : item).Trim().Trim('`');
+                Regex.IsMatch(name, @"\A[A-Z][A-Za-z0-9]*\z").ShouldBeTrue($"Invalid event in '{introduction}'.");
+                return name;
+            }).ToArray();
+    }
+
+    private static string[] SortedNames(IEnumerable<string> names) => names.Order(StringComparer.Ordinal).ToArray();
 
     private static string[] ExtractDecisionTableRows(string content)
     {
@@ -508,6 +608,26 @@ public sealed class ExitCriteriaDecisionArtifactTests
 
     private static bool IsEmDashOrHyphen(string cell) => cell is "—" or "–";
 
+    [Theory]
+    [InlineData("A patch starts with `diff --git`.", false)]
+    [InlineData("The example uses diff --git a/example b/example.", false)]
+    [InlineData("## Example\r\n```diff\r\ndiff --git a/old file b/new file\r\n```", true)]
+    [InlineData("    diff --git \"a/old file\" \"b/new file\"", true)]
+    [InlineData("diff --git old.txt new.txt\nindex 1111111..2222222 100644\n--- old.txt\n+++ new.txt\n@@ -1 +1 @@\n-old\n+new", true)]
+    [InlineData("diff --git describes the patch format.\nThis paragraph explains it.", false)]
+    public void DecisionDocumentPatchCheckRecognizesGitHeaders(string text, bool expected)
+        => ContainsGitPatch(text).ShouldBe(expected);
+
+    private static bool ContainsGitPatch(string text)
+    {
+        // Git can omit or customize path prefixes. In that form the next metadata line
+        // distinguishes the patch from prose that happens to start with the command.
+        const string header = @"(?m)^[ \t]*diff --git[ \t]+";
+        const string standardPaths = """["]?a/[^\r\n]+[ \t]+"?b/[^\r\n]+""";
+        const string pathsAndMetadata = @"[^\r\n]+[ \t]+[^\r\n]+\r?\n[ \t]*(?:index |--- |old mode |new file mode |deleted file mode |similarity index |dissimilarity index |Binary files |GIT binary patch)";
+        return Regex.IsMatch(text, header + "(?:" + standardPaths + "|" + pathsAndMetadata + ")", RegexOptions.CultureInvariant);
+    }
+
     private static Regex ProductionUrl() => new(
         @"https?://(?![a-z0-9.-]+\.invalid(?:[/:)#?[\s]|$))[^\s)]+",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -519,27 +639,6 @@ public sealed class ExitCriteriaDecisionArtifactTests
     private static Regex RawJwt() => new(
         @"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
         RegexOptions.CultureInvariant);
-
-
-    private static string RepositoryRoot()
-    {
-        const int MaxAncestors = 12;
-        string start = AppContext.BaseDirectory;
-        DirectoryInfo? directory = new(start);
-        for (int i = 0; i < MaxAncestors && directory is not null; i++)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException(
-            $"Repository root was not found within {MaxAncestors} ancestors starting from '{start}'. " +
-            "Expected an ancestor directory containing 'Hexalith.Folders.slnx'.");
-    }
 
     private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);
 }

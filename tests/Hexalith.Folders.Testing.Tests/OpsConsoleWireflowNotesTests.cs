@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Hexalith.Folders.Testing.Tests.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -503,7 +504,7 @@ public sealed class OpsConsoleWireflowNotesTests
 
     private static string ReadDoc()
     {
-        string path = Path.Combine(RepositoryRoot(), NormalizeForFileSystem(DocRelativePath));
+        string path = Path.Combine(RepositoryArtifacts.FindRoot(), NormalizeForFileSystem(DocRelativePath));
         File.Exists(path).ShouldBeTrue($"{DocRelativePath} must exist — it is the single Story 6.5 deliverable and the gate for Stories 6.6–6.10.");
         return File.ReadAllText(path);
     }
@@ -608,26 +609,6 @@ public sealed class OpsConsoleWireflowNotesTests
         }
 
         return count;
-    }
-
-    private static string RepositoryRoot()
-    {
-        const int MaxAncestors = 12;
-        string start = AppContext.BaseDirectory;
-        DirectoryInfo? directory = new(start);
-        for (int i = 0; i < MaxAncestors && directory is not null; i++)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException(
-            $"Repository root was not found within {MaxAncestors} ancestors starting from '{start}'. " +
-            "Expected an ancestor directory containing 'Hexalith.Folders.slnx'.");
     }
 
     private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);

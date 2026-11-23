@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Hexalith.Folders.Testing.Tests.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -42,16 +43,13 @@ public sealed class FixtureContractTests
         "client_secret=",
         "client_secret:",
         "clientSecret=",
-        "clientSecret\":",
-        "https://api.github.com",
-        "https://github.com/Hexalith",
-        "diff --git"
+        "clientSecret\":"
     ];
 
     [Fact]
     public void NormativeFixturesAreParseableAndCarryOwnershipMetadata()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
 
         foreach (string relativePath in JsonFixturePaths)
         {
@@ -118,7 +116,7 @@ public sealed class FixtureContractTests
     [Fact]
     public void DeferredArtifactAreasCarryMachineCheckableOwnershipNotes()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string[] notePaths =
         [
             "tests/load/README.md",
@@ -148,7 +146,7 @@ public sealed class FixtureContractTests
     [Fact]
     public void SecretShapedFixtureValuesRequireSyntheticSentinelTags()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string auditCorpusPath = Path.Combine(root, "tests", "fixtures", "audit-leakage-corpus.json");
         using JsonDocument document = JsonDocument.Parse(ReadFixtureFile(auditCorpusPath));
 
@@ -186,7 +184,7 @@ public sealed class FixtureContractTests
     [Fact]
     public void AuditLeakageCorpusUsesReviewerVisibleClassificationVocabulary()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string auditCorpusPath = Path.Combine(root, "tests", "fixtures", "audit-leakage-corpus.json");
         using JsonDocument document = JsonDocument.Parse(ReadFixtureFile(auditCorpusPath));
 
@@ -222,7 +220,7 @@ public sealed class FixtureContractTests
     [Fact]
     public void SeededFixturesAvoidRealDataAndProductionMaterial()
     {
-        string root = RepositoryRoot();
+        string root = RepositoryArtifacts.FindRoot();
         string[] relativePaths =
         [
             .. JsonFixturePaths,
@@ -238,11 +236,31 @@ public sealed class FixtureContractTests
             string absolutePath = Path.Combine(root, NormalizeForFileSystem(relativePath));
             string content = ReadFixtureFile(absolutePath);
 
-            foreach (string marker in CredentialMaterialMarkers)
-            {
-                content.ShouldNotContain(marker, Case.Insensitive,
-                    $"{relativePath} must not contain credential material, production endpoints, diffs, or file contents.");
-            }
+            AssertFixtureContent(relativePath, content);
+        }
+    }
+
+    [Fact]
+    public void FixtureCheckAcceptsSyntheticPatchContentAndStillDetectsEmbeddedCredentials()
+    {
+        const string patch = "diff --git a/example b/example\n+synthetic example";
+        AssertFixtureContent("example.patch", patch);
+        Should.Throw<ShouldAssertException>(() => AssertFixtureContent("example.patch", patch + "\n+password=example"))
+            .Message.ShouldContain("marker 'password='");
+    }
+
+    private static void AssertFixtureContent(string relativePath, string content)
+    {
+        foreach (string marker in CredentialMaterialMarkers)
+        {
+            content.Contains(marker, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+                $"{relativePath} must not contain credential material matching marker '{marker}'.");
+        }
+
+        foreach (string endpoint in new[] { "https://api.github.com", "https://github.com/Hexalith" })
+        {
+            content.Contains(endpoint, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+                $"{relativePath} must not contain a production endpoint.");
         }
     }
 
@@ -287,28 +305,6 @@ public sealed class FixtureContractTests
         }
 
         return values;
-    }
-
-    // Patch 1: bounded walk with descriptive error; prevents silent wrong-root on monorepo or flat-publish CI layouts
-    private static string RepositoryRoot()
-    {
-        const int MaxAncestors = 20;
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        string searchStart = directory.FullName;
-        int ancestors = 0;
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-        {
-            if (++ancestors > MaxAncestors)
-            {
-                throw new InvalidOperationException(
-                    $"Repository root not found within {MaxAncestors} ancestor directories of '{searchStart}'.");
-            }
-
-            directory = directory.Parent;
-        }
-
-        return directory?.FullName ?? throw new InvalidOperationException(
-            $"Repository root not found searching from '{searchStart}'.");
     }
 
     private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);

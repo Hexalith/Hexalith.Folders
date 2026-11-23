@@ -1241,7 +1241,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
 location: File.ReadAllText
 reason: `File.ReadAllText` in the doc-verification test makes no encoding assertion — BOM / UTF-16 edge cases would silently misread the artifact. Low risk: project standardizes on UTF-8. Revisit if an editor introduces non-UTF-8 content.
-status: open
+status: done 2026-11-23
+resolution: Decision checks read strict UTF-8 with an optional UTF-8 BOM. Invalid sequences and NUL-containing text fail with the document path. See spec-five-deferred-artifact-checks.md.
 
 ### DW-177: Windows case-insensitive filesystem path normalization in `ExitCriteriaDecisionArtifactTests` could hide an accidental rename to non-canonical casing (e.g., `docs/Exit-Criteria/C3-Retention.md`)
 
@@ -1320,7 +1321,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs
 reason: `"diff --git"` in `CredentialMaterialMarkers` is overly broad; would false-positive on any fixture legitimately containing a diff snippet. Pre-existing marker moved from old `ShouldNotContain` calls; no current fixture affected. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: Synthetic fixture patches are accepted. The fixture scanner still detects embedded credentials and reports the matched marker without printing the fixture. See spec-five-deferred-artifact-checks.md.
 
 ### DW-189: `TestFolderContext` changed from positional record to custom-constructor record
 
@@ -1354,7 +1356,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
 reason: `C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally` checks backtick-wrapped event names in architecture.md — tests pass because events appear backtick-wrapped in prose, but the canonical transition table uses bare cell names; design nuance, not a failure. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: The C6 check compares states, positive-edge event names and reserved names against their respective mapping declarations. Tests cover changes hidden by incidental prose. See spec-five-deferred-artifact-checks.md.
 
 ### DW-194: Dynamic `last reviewed` date in row-date assertions changes failure semantics from hard-coded `"2026-05-11"` to front-matter-derived date
 
@@ -1368,14 +1371,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
 reason: `"diff --git"` in `SecretSubstringDenylist` alongside credential patterns produces confusing diagnostic; intent is correct (no patch content in docs) but classification is misleading. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: Decision documents report Git patches separately from credentials. Tests distinguish discussion of the command from patch headers, including Git output without path prefixes. See spec-five-deferred-artifact-checks.md.
 
 ### DW-196: `RepositoryRoot` `MaxAncestors = 12` magic number; could throw `InvalidOperationException` on deeply nested CI paths. 12 is sufficient for known repo layouts; pre-existing design.
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
 location: RepositoryRoot
 reason: `RepositoryRoot` `MaxAncestors = 12` magic number; could throw `InvalidOperationException` on deeply nested CI paths. 12 is sufficient for known repo layouts; pre-existing design.
-status: open
+status: done 2026-11-23
+resolution: The fixture, decision and wireflow checks walk to the nearest Folders solution. Regressions cover 24 nested directories, nested solutions and a missing marker. See spec-five-deferred-artifact-checks.md.
 
 ### DW-197: S2 OIDC test split into `S2OidcArtifactPinsFrozenJwtBearerSettings` and `S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders`
 
