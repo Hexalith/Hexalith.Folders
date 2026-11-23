@@ -4,6 +4,10 @@
     <DefineConstants Condition="'$(HexalithEventStoreFromSource)' == 'true'">$(DefineConstants);FOLDERS_OWNER_METADATA_SOURCE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../shared/AuditLeakage/*.cs" Link="AuditLeakage/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AssemblyMetadata Include="FoldersSdkIdentityAuthority" Value="source" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <AssemblyMetadata Include="FoldersSdkIdentityAuthority" Value="package" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <AssemblyMetadata Include="FoldersSdkConfiguration" Value="$(Configuration)" />

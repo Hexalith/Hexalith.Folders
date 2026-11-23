@@ -5,6 +5,10 @@
     <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../shared/AuditLeakage/*.cs" Link="AuditLeakage/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Reuse the SDK's byte/CAS persistence double; the production content protocol remains under test. -->
     <Compile Include="../shared/EventStore/RecordingDaprClient.cs" Link="Content/RecordingDaprClient.cs" />
     <Compile Include="../shared/OperationalStatus/OperationalStatusNativeSource.cs" Link="OperationalStatus/OperationalStatusNativeSource.cs" />

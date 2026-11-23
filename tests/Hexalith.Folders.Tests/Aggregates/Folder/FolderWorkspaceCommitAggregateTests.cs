@@ -5,6 +5,8 @@ using Hexalith.Folders.Aggregates.Folder;
 using Shouldly;
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderWorkspaceCommitAggregateTests
@@ -86,11 +88,12 @@ public sealed class FolderWorkspaceCommitAggregateTests
             ["docs-example"] = "CommitWorkspace accepted; inspect workspace status for committed metadata evidence.",
         };
 
-        foreach (string sentinel in ForbiddenSentinelValues())
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
             foreach (KeyValuePair<string, string> surface in commitSurfaces)
             {
-                surface.Value.ShouldNotContain(sentinel, Case.Sensitive, $"Surface {surface.Key} leaked sentinel corpus value.");
+                AuditLeakageMatcher.Contains(surface.Value, sample.Value).ShouldBeFalse(
+                    $"Surface '{surface.Key}' leaked sample '{sample.Id}'.");
             }
         }
     }
@@ -300,32 +303,4 @@ public sealed class FolderWorkspaceCommitAggregateTests
         ];
     }
 
-    private static IReadOnlyList<string> ForbiddenSentinelValues()
-    {
-        string path = Path.Combine(RepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(sample => sample.GetProperty("value").GetString())
-            .Where(value => !string.IsNullOrWhiteSpace(value))
-            .Select(value => value!)
-            .ToArray();
-    }
-
-    private static string RepositoryRoot()
-    {
-        DirectoryInfo? current = new(AppContext.BaseDirectory);
-        while (current is not null)
-        {
-            if (File.Exists(Path.Combine(current.FullName, "Hexalith.Folders.slnx")))
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
-        }
-
-        throw new InvalidOperationException("Could not locate repository root.");
-    }
 }

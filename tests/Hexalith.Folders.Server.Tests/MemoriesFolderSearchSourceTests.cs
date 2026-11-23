@@ -14,6 +14,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Server.Tests;
 
 /// <summary>
@@ -48,7 +50,8 @@ public sealed class MemoriesFolderSearchSourceTests
         FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
 
         // AC3 sentinel: the dropped ContentSnippet (a secret-shaped canary) must not survive into the result.
-        JsonSerializer.Serialize(result).ShouldNotContain(sentinelSecret, Shouldly.Case.Sensitive);
+        AuditLeakageMatcher.Contains(JsonSerializer.Serialize(result), sentinelSecret).ShouldBeFalse(
+            "Context search result leaked the injected snippet.");
 
         result.Status.ShouldBe(FolderSearchSourceStatus.Available);
         FolderSearchSourceHit hit = result.Hits.ShouldHaveSingleItem();
@@ -72,16 +75,18 @@ public sealed class MemoriesFolderSearchSourceTests
     }
 
     [Theory]
-    [MemberData(nameof(LeakageCorpusValues))]
-    public async Task ShouldDropEveryLeakageCorpusSnippetFromResults(string sentinel)
+    [MemberData(nameof(LeakageCorpusIds))]
+    public async Task ShouldDropEveryLeakageCorpusSnippetFromResults(string sampleId)
     {
+        string sentinel = AuditLeakageCorpus.Get(sampleId).Value;
         FakeMemoriesClient client = new(Result(
             Scored("folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-a", 2.5, sentinel)));
         MemoriesFolderSearchSource source = new(client);
 
         FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
 
-        JsonSerializer.Serialize(result).ShouldNotContain(sentinel, Shouldly.Case.Sensitive);
+        AuditLeakageMatcher.Contains(JsonSerializer.Serialize(result), sentinel).ShouldBeFalse(
+            $"Context search result leaked sample '{sampleId}'.");
     }
 
     [Fact]
@@ -218,34 +223,15 @@ public sealed class MemoriesFolderSearchSourceTests
             SourceType = SourceType.File,
         };
 
-    public static IEnumerable<object[]> LeakageCorpusValues()
+    public static TheoryData<string> LeakageCorpusIds()
     {
-        string path = Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
-        foreach (JsonElement sample in document.RootElement.GetProperty("sentinel_samples").EnumerateArray())
+        TheoryData<string> ids = [];
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
-            string? value = sample.GetProperty("value").GetString();
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                yield return [value];
-            }
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
+            ids.Add(sample.Id);
         }
 
-        throw new FileNotFoundException("audit-leakage-corpus.json not found relative to test base directory.");
+        return ids;
     }
 
     private sealed class FakeMemoriesClient : MemoriesClient

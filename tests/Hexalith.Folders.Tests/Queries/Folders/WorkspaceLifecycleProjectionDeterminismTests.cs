@@ -14,6 +14,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
 // These tests follow the production ConfigureAwait(false) convention.
@@ -180,9 +182,10 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             Audit = snapshots.AuditObservations.Select(static observation => observation.ToString()).ToArray(),
         }, JsonOptions);
 
-        foreach (string sentinel in ForbiddenSentinelValues())
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples.Where(sample => sample.Classification != "safe-provenance"))
         {
-            serialized.ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(serialized, sample.Value).ShouldBeFalse(
+                $"Projection snapshot leaked sample '{sample.Id}'.");
         }
     }
 
@@ -216,9 +219,10 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             () => FolderListProjection.Empty.Apply([envelope]));
 
         exception.Message.ShouldContain("before any FolderCreated event");
-        foreach (string sentinel in ForbiddenSentinelValues())
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples.Where(sample => sample.Classification != "safe-provenance"))
         {
-            exception.Message.ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(exception.Message, sample.Value).ShouldBeFalse(
+                $"Projection failure leaked sample '{sample.Id}'.");
         }
     }
 
@@ -540,36 +544,6 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             || string.Equals(propertyName, "lastAttemptedAt", StringComparison.OrdinalIgnoreCase)
             || string.Equals(propertyName, "duration", StringComparison.OrdinalIgnoreCase)
             || string.Equals(propertyName, "durationEvidence", StringComparison.OrdinalIgnoreCase);
-
-    private static IReadOnlyList<string> ForbiddenSentinelValues()
-    {
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(AuditLeakageCorpusPath()));
-        return document.RootElement.GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Where(static sample => !string.Equals(
-                sample.GetProperty("classification").GetString(),
-                "safe-provenance",
-                StringComparison.Ordinal))
-            .Select(static sample => sample.GetProperty("value").GetString() ?? throw new InvalidOperationException("sentinel_value_missing"))
-            .ToArray();
-    }
-
-    private static string AuditLeakageCorpusPath()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            string candidate = Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json");
-            if (File.Exists(candidate))
-            {
-                return candidate;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException("audit_leakage_corpus_missing");
-    }
 
     private sealed record ProjectionSnapshots(
         FolderLifecycleStatusReadModelSnapshot LifecycleStatus,

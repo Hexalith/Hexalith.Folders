@@ -1,8 +1,9 @@
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
 using YamlDotNet.RepresentationModel;
+
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
@@ -11,7 +12,6 @@ public sealed class AuditOpsConsoleContractGroupTests
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
     private static readonly string ContractNotesPath = Path.Combine(RepositoryRoot, "docs", "contract", "audit-ops-console-contract-groups.md");
-    private static readonly string AuditLeakageCorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "audit-leakage-corpus.json");
 
     private static readonly string[] AuditOperationIds =
     [
@@ -216,24 +216,17 @@ public sealed class AuditOpsConsoleContractGroupTests
 
         foreach (string forbidden in forbiddenLeakPatterns)
         {
-            combinedExamples.ShouldNotContain(forbidden, Case.Insensitive, $"Story 1.11 examples must stay synthetic and metadata-only: {forbidden}");
+            combinedExamples.Contains(forbidden, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+                $"Story 1.11 examples contain forbidden marker '{forbidden}'.");
         }
 
         // Project-context rule: redaction/sentinel tests MUST iterate `tests/fixtures/audit-leakage-corpus.json`
         // and assert that none of its synthetic sentinel values are baked into contract examples. The corpus is
         // the canonical source for leakage canaries; a hardcoded inline list would drift.
-        File.Exists(AuditLeakageCorpusPath).ShouldBeTrue(AuditLeakageCorpusPath);
-        using JsonDocument corpus = JsonDocument.Parse(File.ReadAllText(AuditLeakageCorpusPath));
-        JsonElement sentinels = corpus.RootElement.GetProperty("sentinel_samples");
-        sentinels.GetArrayLength().ShouldBeGreaterThan(0);
-        foreach (JsonElement sentinel in sentinels.EnumerateArray())
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
-            string sentinelValue = sentinel.GetProperty("value").GetString() ?? string.Empty;
-            sentinelValue.ShouldNotBeNullOrWhiteSpace();
-            combinedExamples.ShouldNotContain(
-                sentinelValue,
-                Case.Insensitive,
-                $"audit-leakage-corpus sentinel `{sentinel.GetProperty("id").GetString()}` must not appear in Story 1.11 contract examples.");
+            AuditLeakageMatcher.Contains(combinedExamples, sample.Value).ShouldBeFalse(
+                $"Story 1.11 contract examples leaked sample '{sample.Id}'.");
         }
 
         string changedPathEvidence = SerializeYaml(RequiredMapping(schemas, "ChangedPathEvidence"));

@@ -23,6 +23,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Server.Tests;
 
 public sealed class WorkspaceCleanupStatusEndpointTests
@@ -261,7 +263,6 @@ public sealed class WorkspaceCleanupStatusEndpointTests
     [Fact]
     public async Task GetWorkspaceCleanupStatusProblemDetailsAndSuccessShouldNotEmitLeakageCorpusValues()
     {
-        string[] sentinels = LeakageCorpusValues();
         await using WebApplication app = BuildApp(CleanupReadModel());
         await app.StartAsync(TestContext.Current.CancellationToken);
 
@@ -271,11 +272,18 @@ public sealed class WorkspaceCleanupStatusEndpointTests
         deniedRequest.Headers.Add("Idempotency-Key", "idempotency-a");
         using HttpResponseMessage denied = await client.SendAsync(deniedRequest, TestContext.Current.CancellationToken);
 
-        string combined = await success.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
-            + await denied.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        foreach (string sentinel in sentinels)
+        success.StatusCode.ShouldBe(HttpStatusCode.OK);
+        denied.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        denied.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
+
+        string successBody = await success.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        string deniedBody = await denied.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
-            combined.ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(successBody, sample.Value).ShouldBeFalse(
+                $"Workspace success response leaked sample '{sample.Id}'.");
+            AuditLeakageMatcher.Contains(deniedBody, sample.Value).ShouldBeFalse(
+                $"Workspace denial response leaked sample '{sample.Id}'.");
         }
     }
 
@@ -430,35 +438,6 @@ public sealed class WorkspaceCleanupStatusEndpointTests
             WorkspaceCleanupStatusReadModelRequest request,
             CancellationToken cancellationToken = default)
             => Task.FromResult(result);
-    }
-
-    private static string[] LeakageCorpusValues()
-    {
-        using FileStream stream = File.OpenRead(Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json"));
-        using JsonDocument document = JsonDocument.Parse(stream);
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(sample => sample.GetProperty("value").GetString())
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Select(static value => value!)
-            .ToArray();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException("Repository root not found.");
     }
 
     private sealed class StaticTenantContextAccessor(string? authoritativeTenantId, string? principalId) : ITenantContextAccessor

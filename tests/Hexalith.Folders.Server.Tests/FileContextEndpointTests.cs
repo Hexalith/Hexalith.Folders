@@ -22,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shouldly;
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Server.Tests;
 
 public sealed class FileContextEndpointTests
@@ -386,7 +388,6 @@ public sealed class FileContextEndpointTests
     [Fact]
     public async Task SafeDenialProblemDetailsShouldNotEchoLeakageCorpusSentinels()
     {
-        string[] sentinels = LeakageCorpusSentinels();
         RecordingContextSource source = new();
         await using WebApplication app = BuildApp(source, tenantId: null, principalId: null);
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -397,10 +398,10 @@ public sealed class FileContextEndpointTests
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion = "v1",
-                paths = sentinels.Select(value => new
+                paths = AuditLeakageCorpus.Samples.Select(sample => new
                 {
                     normalizedPath = "docs/readme.md",
-                    displayName = value,
+                    displayName = sample.Value,
                     pathPolicyClass = "tenant_sensitive_document",
                     unicodeNormalization = "NFC",
                 }).ToArray(),
@@ -412,9 +413,10 @@ public sealed class FileContextEndpointTests
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
-        foreach (string sentinel in sentinels)
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
-            json.ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(json, sample.Value).ShouldBeFalse(
+                $"File context denial response leaked sample '{sample.Id}'.");
         }
     }
 
@@ -478,35 +480,6 @@ public sealed class FileContextEndpointTests
 
     private static PathMetadata Path(string normalizedPath)
         => new(normalizedPath, normalizedPath.Split('/').Last(), "tenant_sensitive_document", "NFC");
-
-    private static string[] LeakageCorpusSentinels()
-    {
-        string path = System.IO.Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(sample => sample.GetProperty("value").GetString())
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Select(static value => value!)
-            .ToArray();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(System.IO.Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException("Repository root not found.");
-    }
 
     private static IFolderTenantAccessProjectionStore TenantStore()
     {

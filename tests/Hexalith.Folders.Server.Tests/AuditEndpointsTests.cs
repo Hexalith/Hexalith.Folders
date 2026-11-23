@@ -18,6 +18,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Server.Tests;
 
 /// <summary>
@@ -402,19 +404,17 @@ public sealed class AuditEndpointsTests
             "/api/v1/folders/folder-a/audit-trail?filter=anything",  // denial path
         ];
 
-        string[] sentinels = LoadAuditLeakageSentinelValues();
-        sentinels.Length.ShouldBeGreaterThan(5, "leak corpus must seed multiple sentinel categories");
+        IReadOnlyList<AuditLeakageSample> samples = AuditLeakageCorpus.Samples;
+        samples.Count.ShouldBeGreaterThan(5, "leak corpus must seed multiple sentinel categories");
 
         foreach (string path in paths)
         {
             using HttpResponseMessage response = await client.GetAsync(path, TestContext.Current.CancellationToken);
             string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            foreach (string sentinel in sentinels)
+            foreach (AuditLeakageSample sample in samples)
             {
-                body.ShouldNotContain(
-                    sentinel,
-                    Case.Sensitive,
-                    $"Sentinel '{sentinel}' from audit-leakage-corpus.json must never appear in the response body of {path}.");
+                AuditLeakageMatcher.Contains(body, sample.Value).ShouldBeFalse(
+                    $"Audit response for '{path}' leaked sample '{sample.Id}'.");
             }
         }
     }
@@ -492,42 +492,6 @@ public sealed class AuditEndpointsTests
         string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         using JsonDocument document = JsonDocument.Parse(body);
         document.RootElement.GetProperty("details").GetProperty("evidenceSource").GetString().ShouldBe(expectedEvidenceSource);
-    }
-
-    private static string[] LoadAuditLeakageSentinelValues()
-    {
-        string corpusPath = ResolveCorpusPath();
-        string json = File.ReadAllText(corpusPath);
-        using JsonDocument document = JsonDocument.Parse(json);
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(static element => element.GetProperty("value").GetString() ?? string.Empty)
-            .Where(static value => !string.IsNullOrWhiteSpace(value) && value.Length >= 8)
-            .ToArray();
-    }
-
-    private static string ResolveCorpusPath()
-    {
-        string candidate = AppContext.BaseDirectory;
-        for (int i = 0; i < 12; i++)
-        {
-            string maybe = Path.Combine(candidate, "tests", "fixtures", "audit-leakage-corpus.json");
-            if (File.Exists(maybe))
-            {
-                return maybe;
-            }
-
-            DirectoryInfo? parent = Directory.GetParent(candidate);
-            if (parent is null)
-            {
-                break;
-            }
-
-            candidate = parent.FullName;
-        }
-
-        throw new FileNotFoundException("audit-leakage-corpus.json not found relative to test base directory.");
     }
 
     private static WebApplication BuildApp(

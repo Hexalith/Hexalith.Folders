@@ -3,6 +3,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../shared/AuditLeakage/*.cs" Link="AuditLeakage/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>

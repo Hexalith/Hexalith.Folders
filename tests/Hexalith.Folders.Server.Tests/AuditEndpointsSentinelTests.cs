@@ -17,6 +17,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Server.Tests;
 
 /// <summary>
@@ -56,8 +58,8 @@ public sealed class AuditEndpointsSentinelTests
     [MemberData(nameof(AuditEndpointPaths))]
     public async Task EveryAuditEndpointResponseChannelMustBeSentinelClean(string path)
     {
-        string[] sentinels = LoadSentinelSamples();
-        sentinels.Length.ShouldBeGreaterThan(5, "leak corpus must seed multiple sentinel categories.");
+        IReadOnlyList<AuditLeakageSample> samples = AuditLeakageCorpus.Samples;
+        samples.Count.ShouldBeGreaterThan(5, "leak corpus must seed multiple sentinel categories.");
 
         await using WebApplication app = BuildApp();
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -68,22 +70,21 @@ public sealed class AuditEndpointsSentinelTests
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
-        foreach (string sentinel in sentinels)
+        foreach (AuditLeakageSample sample in samples)
         {
-            body.ShouldNotContain(
-                sentinel,
-                Case.Sensitive,
-                $"Sentinel '{Truncate(sentinel)}' from audit-leakage-corpus.json must never appear in body of {path}.");
+            AuditLeakageMatcher.Contains(body, sample.Value).ShouldBeFalse(
+                $"Audit response for '{path}' leaked sample '{sample.Id}'.");
 
-            // Also sweep response headers (status line + every header value).
+            AuditLeakageMatcher.Contains(response.ReasonPhrase ?? string.Empty, sample.Value).ShouldBeFalse(
+                $"Audit response status for '{path}' leaked sample '{sample.Id}'.");
             foreach (KeyValuePair<string, IEnumerable<string>> header in response.Headers.Concat(response.Content.Headers))
             {
+                AuditLeakageMatcher.Contains(header.Key, sample.Value).ShouldBeFalse(
+                    $"Audit response header name for '{path}' leaked sample '{sample.Id}'.");
                 foreach (string value in header.Value)
                 {
-                    value.ShouldNotContain(
-                        sentinel,
-                        Case.Sensitive,
-                        $"Sentinel '{Truncate(sentinel)}' leaked in {header.Key} header on {path}.");
+                    AuditLeakageMatcher.Contains(value, sample.Value).ShouldBeFalse(
+                        $"Audit response header value for '{path}' leaked sample '{sample.Id}'.");
                 }
             }
         }
@@ -94,7 +95,7 @@ public sealed class AuditEndpointsSentinelTests
     {
         // Concern #6 — no surface gets a free pass to skip the sentinel sweep. The inventory
         // must enumerate all four audit-family operations as covered channels.
-        string inventoryPath = ResolveFixture("safety-channel-inventory.json");
+        string inventoryPath = AuditLeakageCorpus.FixturePath("safety-channel-inventory.json");
         string json = File.ReadAllText(inventoryPath);
         using JsonDocument document = JsonDocument.Parse(json);
 
@@ -103,45 +104,6 @@ public sealed class AuditEndpointsSentinelTests
         serialized.ShouldContain("GetAuditRecord");
         serialized.ShouldContain("ListOperationTimeline");
         serialized.ShouldContain("GetOperationTimelineEntry");
-    }
-
-    private static string Truncate(string value)
-        => value.Length <= 32 ? value : value[..32] + "…";
-
-    private static string[] LoadSentinelSamples()
-    {
-        string corpusPath = ResolveFixture("audit-leakage-corpus.json");
-        string json = File.ReadAllText(corpusPath);
-        using JsonDocument document = JsonDocument.Parse(json);
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(static element => element.GetProperty("value").GetString() ?? string.Empty)
-            .Where(static value => !string.IsNullOrWhiteSpace(value) && value.Length >= 8)
-            .ToArray();
-    }
-
-    private static string ResolveFixture(string fileName)
-    {
-        string candidate = AppContext.BaseDirectory;
-        for (int i = 0; i < 12; i++)
-        {
-            string maybe = Path.Combine(candidate, "tests", "fixtures", fileName);
-            if (File.Exists(maybe))
-            {
-                return maybe;
-            }
-
-            DirectoryInfo? parent = Directory.GetParent(candidate);
-            if (parent is null)
-            {
-                break;
-            }
-
-            candidate = parent.FullName;
-        }
-
-        throw new FileNotFoundException($"{fileName} not found relative to test base directory.");
     }
 
     private static WebApplication BuildApp()

@@ -12,6 +12,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.Tests.Observability;
 
 public sealed class FolderAuditObservationTests
@@ -73,9 +75,10 @@ public sealed class FolderAuditObservationTests
     }
 
     [Theory]
-    [MemberData(nameof(ForbiddenSentinelValues))]
-    public void ForbiddenSentinelValuesShouldNotSurviveObservationSanitization(string sentinel)
+    [MemberData(nameof(ForbiddenSentinelIds))]
+    public void ForbiddenSentinelValuesShouldNotSurviveObservationSanitization(string sampleId)
     {
+        string sentinel = AuditLeakageCorpus.Get(sampleId).Value;
         FolderAuditObservation observation = new FolderAuditObservationBuilder
         {
             OperationKind = FolderAuditOperationKind.RestQuery,
@@ -100,16 +103,19 @@ public sealed class FolderAuditObservationTests
             .Build();
 
         string serialized = JsonSerializer.Serialize(observation);
-        serialized.ShouldNotContain(sentinel, Case.Sensitive);
-        observation.ToString().ShouldNotContain(sentinel, Case.Sensitive);
+        AuditLeakageMatcher.Contains(serialized, sentinel).ShouldBeFalse(
+            $"Serialized output leaked sample '{sampleId}'.");
+        AuditLeakageMatcher.Contains(observation.ToString(), sentinel).ShouldBeFalse(
+            $"Observation display leaked sample '{sampleId}'.");
         observation.Duration.ShouldBe(TimeSpan.Zero);
         observation.DurationEvidence.ShouldBe("0ms");
     }
 
     [Theory]
-    [MemberData(nameof(ForbiddenSentinelValues))]
-    public void LifecycleSecurityOutputsShouldNotSerializeForbiddenSentinels(string sentinel)
+    [MemberData(nameof(ForbiddenSentinelIds))]
+    public void LifecycleSecurityOutputsShouldNotSerializeForbiddenSentinels(string sampleId)
     {
+        string sentinel = AuditLeakageCorpus.Get(sampleId).Value;
         object[] outputs =
         [
             FolderLifecycleReplayFixture.SuccessfulLifecycle(),
@@ -142,8 +148,10 @@ public sealed class FolderAuditObservationTests
         foreach (object output in outputs)
         {
             string serialized = JsonSerializer.Serialize(output);
-            serialized.ShouldNotContain(sentinel, Case.Sensitive);
-            (output.ToString() ?? string.Empty).ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(serialized, sentinel).ShouldBeFalse(
+                $"Serialized output leaked sample '{sampleId}'.");
+            AuditLeakageMatcher.Contains(output.ToString() ?? string.Empty, sentinel).ShouldBeFalse(
+                $"Output display leaked sample '{sampleId}'.");
         }
     }
 
@@ -290,9 +298,10 @@ public sealed class FolderAuditObservationTests
     }
 
     [Theory]
-    [MemberData(nameof(ForbiddenSentinelValues))]
-    public void OperationalSignalTagsShouldNotLeakForbiddenSentinels(string sentinel)
+    [MemberData(nameof(ForbiddenSentinelIds))]
+    public void OperationalSignalTagsShouldNotLeakForbiddenSentinels(string sampleId)
     {
+        string sentinel = AuditLeakageCorpus.Get(sampleId).Value;
         List<KeyValuePair<string, object?>> captured = CaptureOperationalSignalTags(emitter =>
         {
             emitter.RecordProjectionLag(900, sentinel);
@@ -304,7 +313,10 @@ public sealed class FolderAuditObservationTests
         captured.ShouldNotBeEmpty();
         foreach (KeyValuePair<string, object?> tag in captured)
         {
-            (tag.Value as string ?? string.Empty).ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(tag.Key, sentinel).ShouldBeFalse(
+                $"Operational tag name leaked sample '{sampleId}'.");
+            AuditLeakageMatcher.Contains(tag.Value as string ?? string.Empty, sentinel).ShouldBeFalse(
+                $"Operational tag leaked sample '{sampleId}'.");
         }
     }
 
@@ -364,38 +376,15 @@ public sealed class FolderAuditObservationTests
         recordingObserver.Observations.ShouldHaveSingleItem();
     }
 
-    public static TheoryData<string> ForbiddenSentinelValues()
+    public static TheoryData<string> ForbiddenSentinelIds()
     {
-        TheoryData<string> values = [];
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(AuditLeakageCorpusPath()));
-        foreach (JsonElement sample in document.RootElement.GetProperty("sentinel_samples").EnumerateArray())
+        TheoryData<string> ids = [];
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples.Where(sample => sample.Classification != "safe-provenance"))
         {
-            if (string.Equals(sample.GetProperty("classification").GetString(), "safe-provenance", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            values.Add(sample.GetProperty("value").GetString() ?? throw new InvalidOperationException("Missing sentinel value."));
+            ids.Add(sample.Id);
         }
 
-        return values;
-    }
-
-    private static string AuditLeakageCorpusPath()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            string candidate = Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json");
-            if (File.Exists(candidate))
-            {
-                return candidate;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new InvalidOperationException("Unable to locate tests/fixtures/audit-leakage-corpus.json.");
+        return ids;
     }
 
     private sealed class ThrowingFolderAuditObserver : IFolderAuditObserver

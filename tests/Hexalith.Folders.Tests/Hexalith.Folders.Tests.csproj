@@ -3,6 +3,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../shared/AuditLeakage/*.cs" Link="AuditLeakage/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Reuse the pinned platform protocol harness; no package version changes. -->
     <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.EventStore.Testing" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />

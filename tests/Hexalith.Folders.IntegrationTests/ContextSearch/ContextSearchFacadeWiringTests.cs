@@ -23,6 +23,8 @@ using Shouldly;
 
 using Xunit;
 
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
+
 namespace Hexalith.Folders.IntegrationTests.ContextSearch;
 
 /// <summary>
@@ -402,39 +404,11 @@ public sealed class ContextSearchFacadeWiringTests
 
     private static void AssertNoLeakageCorpusValue(string body)
     {
-        foreach (string sentinel in LeakageCorpusValues())
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
         {
-            body.ShouldNotContain(sentinel, Case.Sensitive);
+            AuditLeakageMatcher.Contains(body, sample.Value).ShouldBeFalse(
+                $"Context search response leaked sample '{sample.Id}'.");
         }
-    }
-
-    private static string[] LeakageCorpusValues()
-    {
-        string path = Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
-        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
-        return document.RootElement
-            .GetProperty("sentinel_samples")
-            .EnumerateArray()
-            .Select(static sample => sample.GetProperty("value").GetString())
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Select(static value => value!)
-            .ToArray();
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new FileNotFoundException("audit-leakage-corpus.json not found relative to test base directory.");
     }
 
     private static HttpRequestMessage SearchRequest(string folderId, string workspaceId, string queryText, string correlationId)

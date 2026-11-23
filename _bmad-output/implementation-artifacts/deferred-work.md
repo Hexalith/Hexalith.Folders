@@ -2326,7 +2326,8 @@ location: tests/ (nine call sites); candidate home: src/Hexalith.Folders.Testing
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: The same discovery-and-parse block appears in FolderArchiveMetadataLeakageTests, FolderWorkspaceFileMutationAggregateTests, FolderWorkspaceCommitAggregateTests, WorkspaceLifecycleProjectionDeterminismTests, FolderAuditObservationTests, AuditEndpointsTests, AuditEndpointsSentinelTests, WorkspaceStatusEndpointTests and MemoriesFolderSearchSourceTests. Each copy is free to drift in labelling and in blank-value filtering, so "every sentinel is covered" cannot be checked centrally. Pre-existing; this story adds another consumer.
-status: open
+status: done 2026-11-23
+resolution: The core, server, integration, and contract checks load labelled samples through the shared test fixture reader. The safety gate passes its strictly parsed corpus into the same sample reader. See spec-five-deferred-audit-corpus-checks.md.
 
 ### DW-322: The archive surface map uses an invented channel vocabulary that never meets the declared channel inventory, so archive-path channel coverage cannot be measured by any gate.
 origin: spec-deferred 20ac1ac18ee0
@@ -2342,7 +2343,8 @@ location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLe
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: low
 reason: `correlation-metadata` deliberately omits `events`/`projections` from its forbidden list (with the note that production policies decide where correlation may remain visible), and `safe-provenance-operation-id` forbids only `provider-diagnostics`. The tests also ignore `participates_in` and `classification`. The suite passes only because the archive surfaces are built from safe defaults. Pre-existing.
-status: open
+status: done 2026-11-23
+resolution: The accepted archive scan uses the corpus channel names and each sample's declared surfaces and positive participation. Controls verify correlation and safe-provenance scoping. See spec-five-deferred-audit-corpus-checks.md.
 
 ### DW-324: `AcceptedArchiveEventShouldCarryOnlyMetadataEvidence` hand-joins 8 of the 10 `FolderArchived` members, so a newly added property escapes that assertion silently.
 origin: spec-deferred dde60fc80c0f
@@ -2368,7 +2370,8 @@ location: tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: `MemoriesFolderSearchSourceTests.ShouldDropEveryLeakageCorpusSnippetFromResults:84` and `WorkspaceStatusEndpointTests:271` use bare `ShouldNotContain(sentinel)`, which renders both the sentinel and the actual payload into the assertion-messages channel that audit-leakage-corpus.json declares forbidden. They also use a raw substring scan, so a future corpus sample containing any character `JavaScriptEncoder.Default` escapes would serialize as `\uXXXX` and read as clean. Today's corpus is entirely plain ASCII, so the gap is latent rather than live. `AuditEndpointsSentinelTests:76` already truncates for this reason; the repo is inconsistent.
-status: open
+status: done 2026-11-23
+resolution: The Memories and workspace endpoint sweeps use sample IDs and boolean assertions. Each response body is scanned independently so JSON escaping is decoded. See spec-five-deferred-audit-corpus-checks.md.
 
 ### DW-327: Two semantically incompatible leakage detectors now exist in the repository, and nothing pins which one is authoritative.
 origin: spec-deferred 45155f26ae3f
@@ -2376,7 +2379,8 @@ location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTest
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` scans `OrdinalIgnoreCase` with a token-boundary rule, driven by each sample's declared `forbidden_output_surfaces` plus safety-channel-inventory.json. The detector added by this story is `Ordinal` with no token boundary but adds a JSON-decoded walk -- weaker against case mutation, stronger against `\uXXXX` escaping. Neither subsumes the other and no test records the divergence.
-status: open
+status: done 2026-11-23
+resolution: A single matcher checks case-insensitive text and decoded JSON. Repository artifacts retain token-boundary matching and runtime payloads detect embedded values. Tests exercise both modes. See spec-five-deferred-audit-corpus-checks.md.
 
 ### DW-328: The accepted-archive-surface sweep is structurally incapable of failing; its 18 corpus rows scan constant payloads that no sentinel can ever reach.
 origin: spec-deferred c062d48a285d
@@ -2417,7 +2421,8 @@ location: tests/Hexalith.Folders.Server.Tests/FolderCommandRejectedLeakageTests.
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: `ContainsSentinel`, `JsonElementContainsSentinel`, `EscapeEveryCharacter`, `RequireWellFormedJson`, `SentinelById`, both fixture loaders, `RepositoryRoot` and both records (~150 lines) exist twice, as do three detector self-tests. Introduced by this story rather than pre-existing, but not fixable within it: the spec pins `Hexalith.Folders.Tests.csproj` to baseline, so the sanctioned `tests/shared` + `<Compile Include>` route is closed, and the alternative -- a shared helper in `src/Hexalith.Folders.Testing` -- is a public API addition to a packable library. Belongs with the nine-call-site corpus-reader consolidation already on the ledger.
-status: open
+status: done 2026-11-23
+resolution: Archive and rejection coverage share the reader and matcher. The safety gate runs the raw and escaped negative controls once for both consumers. See spec-five-deferred-audit-corpus-checks.md.
 
 ### DW-333: Follow-up review still recommended for dw-archive-leakage-regression-coverage after the damping cap was spent
 origin: review-budget-followup
@@ -3332,3 +3337,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-contract-fixture-verification.md`
   summary: Validate JSON Schema annotations that declare examples inside schema objects.
   evidence: The candidate generator now validates examples attached to file-context media types. Schema-level example annotations need traversal with each subschema's resolution scope and their own regression fixtures.
+
+- source_spec: `spec-five-deferred-audit-corpus-checks.md`
+  summary: Scan decoded YAML artifact keys and values for audit leakage.
+  evidence: The existing artifact scan reads OpenAPI and parity YAML as text. Unicode escapes in a quoted YAML scalar need a decoded scan and a quarantined control.
