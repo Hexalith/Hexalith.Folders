@@ -447,51 +447,63 @@ Workspace_preparation_failed=50
         cases.All(c => c.GetProperty("synthetic_data_only").GetBoolean()).ShouldBeTrue();
         cases.Any(c => c.GetProperty("contains_payload_material").GetBoolean()).ShouldBeFalse();
 
-        JsonElement duplicateKey = cases.Single(c => c.GetProperty("category").GetString() == "duplicate-json-key");
-        Should.Throw<Newtonsoft.Json.JsonReaderException>(() => HexalithIdempotencyHasher.NormalizeJsonText(duplicateKey.GetProperty("input").GetString()!));
-
-        foreach (JsonElement corpusCase in cases.Where(c => c.GetProperty("category").GetString() != "duplicate-json-key"))
+        foreach (JsonElement corpusCase in cases)
         {
-            string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
-            string caseId = corpusCase.GetProperty("id").GetString() ?? "<unidentified>";
-            string left = ComputeCorpusHash(corpusCase.GetProperty("input"));
-            string right = ComputeCorpusHash(corpusCase.GetProperty("comparison_input"));
-
-            if (classification.StartsWith("non-equivalent", StringComparison.Ordinal) ||
-                classification.StartsWith("equivalent-only", StringComparison.Ordinal))
-            {
-                left.ShouldNotBe(right, caseId);
-            }
-            else if (classification == "parser-rejected")
-            {
-                // The corpus's parser-rejected classification describes behavior at the HTTP
-                // idempotency-key parser boundary (Idempotency-Key header validation) — the input
-                // is rejected before any hash computation. The canonical-hasher boundary here is
-                // downstream of that validation; for hash purposes the two corpus inputs simply
-                // produce non-equivalent escaped hashes. The HTTP parser-rejection contract is
-                // enforced by the input validators in Hexalith.Folders.Server (Epic 4).
-                // Round 4 review (P12) made this layering explicit.
-                left.ShouldNotBe(right, caseId);
-            }
-            else if (classification == "equivalent-after-lexicographic-field-ordering")
-            {
-                left.ShouldBe(right, caseId);
-            }
-            else if (classification == "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field" ||
-                     classification == "equivalent-only-when-field-declares-compatibility-normalization")
-            {
-                // Default hasher does not apply generated normalization or compatibility normalization;
-                // AC 6 reads "Unicode normalization where declared" and no current spine field declares
-                // normalization-eligibility. When a field declares opt-in, a normalization-enabled
-                // helper variant will flip this assertion. Tracked in deferred-work.md (Round 4).
-                left.ShouldNotBe(right, caseId);
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    $"Unhandled equivalence_classification '{classification}' for case '{caseId}'. Add an explicit branch when the corpus grows new classification values.");
-            }
+            AssertCorpusComparison(corpusCase);
         }
+    }
+
+    [Theory]
+    [InlineData("null", "null")]
+    [InlineData("\"null\"", "s:null")]
+    [InlineData("true", "b:true")]
+    [InlineData("\"true\"", "s:true")]
+    [InlineData("false", "b:false")]
+    [InlineData("42", "n:42")]
+    [InlineData("\"42\"", "s:42")]
+    [InlineData("18446744073709551615", "n:18446744073709551615")]
+    [InlineData("-9223372036854775808", "n:-9223372036854775808")]
+    [InlineData("-9223372036854775809", "j:-9223372036854775809")]
+    [InlineData("18446744073709551616", "j:18446744073709551616")]
+    [InlineData("1.5", "n:double:3ff8000000000000")]
+    [InlineData("[{\"z\":1,\"a\":true},null]", "j:[{\"a\":true,\"z\":1},null]")]
+    [InlineData("[null,{\"a\":true,\"z\":1}]", "j:[null,{\"a\":true,\"z\":1}]")]
+    [InlineData("{\"when\":\"2000-01-01T01:00:00+01:00\"}", "j:{\"when\":\"2000-01-01T01:00:00+01:00\"}")]
+    public void CorpusValuesReachTheHasherWithTheirJsonTypes(string json, string canonicalValue)
+    {
+        using JsonDocument document = JsonDocument.Parse(json);
+        ComputeCorpusHash(document.RootElement).ShouldBe(ExpectedHash(
+            "operation=Corpus", "field=synthetic_field;present=true;value=" + canonicalValue));
+    }
+
+    [Theory]
+    [InlineData("1e400")]
+    [InlineData("[1e400]")]
+    [InlineData("{\"samples\":[-1e400]}")]
+    public void CorpusRejectsNumbersThatOverflowBinary64(string json)
+    {
+        using JsonDocument document = JsonDocument.Parse(json);
+        Should.Throw<InvalidOperationException>(() => ComputeCorpusHash(document.RootElement))
+            .Message.ShouldContain("finite", Case.Insensitive);
+    }
+
+    [Theory]
+    [InlineData("equivalent-only-for-a-future-rule")]
+    [InlineData("non-equivalent-under-a-future-rule")]
+    public void CorpusComparisonsRejectUnrecognizedRules(string classification)
+    {
+        var corpusCase = System.Text.Json.JsonSerializer.SerializeToElement(new
+        {
+            id = "unclassified-sample",
+            category = "casing",
+            equivalence_classification = classification,
+            input = "alpha",
+            comparison_input = "ALPHA",
+        });
+
+        var error = Should.Throw<InvalidOperationException>(() => AssertCorpusComparison(corpusCase));
+        error.Message.ShouldContain(classification);
+        error.Message.ShouldContain("unclassified-sample");
     }
 
     [Fact]
@@ -1460,6 +1472,58 @@ Workspace_preparation_failed=50
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))]));
     }
 
+    [Fact]
+    public void CanonicalHasherPinsTypedZeros()
+    {
+        (object Value, string Canonical)[] vectors =
+        [
+            (0, "n:0"),
+            (0UL, "n:0"),
+            (+0f, "n:float:00000000"),
+            (-0f, "n:float:00000000"),
+            (+0d, "n:double:0000000000000000"),
+            (-0d, "n:double:0000000000000000"),
+            (0m, "n:decimal:+:0:00000000:00000000:00000000"),
+            (0.00m, "n:decimal:+:2:00000000:00000000:00000000"),
+            (new decimal(0, 0, 0, true, 2), "n:decimal:+:2:00000000:00000000:00000000"),
+        ];
+
+        foreach ((object value, string canonical) in vectors)
+        {
+            HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+                .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=" + canonical));
+        }
+    }
+
+    [Theory]
+    [InlineData(0x0000000000000001UL, "0000000000000001")]
+    [InlineData(0x0000000000000002UL, "0000000000000002")]
+    [InlineData(0x000fffffffffffffUL, "000fffffffffffff")]
+    [InlineData(0x8000000000000001UL, "8000000000000001")]
+    public void CanonicalHasherPreservesBinary64SubnormalBits(ulong bits, string canonicalBits)
+    {
+        double value = BitConverter.UInt64BitsToDouble(bits);
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+            .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:" + canonicalBits));
+    }
+
+    [Fact]
+    public void CanonicalHasherPreservesFusedAndSeparatelyRoundedSubnormalResults()
+    {
+        // In units of the smallest subnormal, the exact product is offset + 3.
+        // At the magnitude of the product, ties-to-even rounds that to offset + 4.
+        double operand = BitConverter.UInt64BitsToDouble(0x0010000000000001UL);
+        double offset = BitConverter.UInt64BitsToDouble(0x0028000000000000UL);
+        double roundedProduct = 3d * operand;
+        double separate = roundedProduct - offset;
+        double fused = Math.FusedMultiplyAdd(3d, operand, -offset);
+
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, separate)])
+            .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000004"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, fused)])
+            .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000003"));
+    }
+
     private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, FileMutationRequestTransportOperation transportOperation) =>
         new()
         {
@@ -1665,13 +1729,78 @@ Workspace_preparation_failed=50
         return new(process.ExitCode, output.ToString());
     }
 
+    private static void AssertCorpusComparison(JsonElement corpusCase)
+    {
+        string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
+        string caseId = corpusCase.GetProperty("id").GetString() ?? "<unidentified>";
+        string? category = corpusCase.GetProperty("category").GetString();
+        JsonElement input = corpusCase.GetProperty("input");
+        JsonElement comparison = corpusCase.GetProperty("comparison_input");
+
+        if (category == "duplicate-json-key")
+        {
+            classification.ShouldBe("parser-rejected", caseId);
+            var error = Should.Throw<JsonReaderException>(() => HexalithIdempotencyHasher.NormalizeJsonText(input.GetString()!));
+            error.Message.ShouldContain($"Property with the name '{corpusCase.GetProperty("field_path").GetString()}' already exists", Case.Sensitive, caseId);
+            _ = HexalithIdempotencyHasher.NormalizeJsonText(comparison.GetString()!);
+            return;
+        }
+
+        // This compares raw SDK fields. Field-specific normalization belongs to the generated helper.
+        bool expectEqual = classification switch
+        {
+            "equivalent-after-lexicographic-field-ordering" => true,
+            "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field" or
+                "equivalent-only-when-field-declares-compatibility-normalization" or
+                "equivalent-only-for-fields-declared-ulid-typed" or
+                "equivalent-only-after-single-safe-decode-and-path-policy-validation" or
+                "non-equivalent-by-default-for-casing-sensitive-string-field" or
+                "non-equivalent-unless-generated-helper-declares-invisible-character-normalization" or
+                "non-equivalent-unless-schema-declares-trimmed-field" or
+                "non-equivalent-unless-schema-declares-default-equivalence" => false,
+            // HTTP validates the key before hashing. Here the control character is escaped as field data.
+            "parser-rejected" when category == "malformed-idempotency-key" => false,
+            _ => throw new InvalidOperationException($"Unhandled classification '{classification}' for corpus case '{caseId}' ({category})."),
+        };
+
+        string left = ComputeCorpusHash(input);
+        string right = ComputeCorpusHash(comparison);
+        if (expectEqual)
+        {
+            left.ShouldBe(right, caseId);
+        }
+        else
+        {
+            left.ShouldNotBe(right, caseId);
+        }
+    }
+
     private static string ComputeCorpusHash(JsonElement value)
     {
-        object? material = value.ValueKind switch
+        // The fixture has JSON types, but no declared CLR type. Use binary64 for fractional
+        // numbers. Integers outside Int64 and UInt64 use the SDK's exact BigInteger JSON form.
+        using JsonTextReader reader = new(new StringReader(value.GetRawText()))
         {
-            JsonValueKind.String => value.GetString(),
-            JsonValueKind.Object => Newtonsoft.Json.Linq.JToken.Parse(value.GetRawText()),
-            _ => value.GetRawText(),
+            DateParseHandling = DateParseHandling.None,
+            FloatParseHandling = FloatParseHandling.Double,
+        };
+        JToken token = JToken.ReadFrom(reader, new JsonLoadSettings
+        {
+            DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error,
+        });
+        // The SDK rejects a non-finite scalar. Guard nested values too, before Json.NET
+        // serializes infinity inside a container as a string.
+        if (token is JContainer container && container.Descendants().OfType<JValue>()
+            .Any(item => item.Value is double number && !double.IsFinite(number)))
+        {
+            throw new InvalidOperationException("Corpus JSON contains a non-finite number.");
+        }
+
+        object? material = token switch
+        {
+            JValue { Value: System.Numerics.BigInteger } when value.TryGetUInt64(out ulong number) => number,
+            JValue scalar => scalar.Value,
+            _ => token,
         };
 
         return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)]);

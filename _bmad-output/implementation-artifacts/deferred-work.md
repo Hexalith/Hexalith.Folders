@@ -681,7 +681,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260
 reason: Cross-type numeric zero encoding asymmetry (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260`). Same logical zero produces different canonical bytes via `double`, `float`, `decimal`, integer. Spec does not require cross-type equivalence.
-status: open
+status: done 2026-11-23
+resolution: Golden hash vectors pin the existing integer, binary32, binary64 and decimal zero encodings. Signed zeros converge within each floating-point type, and decimal zeros retain their scale. See spec-five-deferred-sdk-hash-conformance.md.
 
 ### DW-94: Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
 
@@ -703,7 +704,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
 reason: Test `GetRawText` doesn't distinguish JSON value types in corpus comparison helper (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`). Pre-existing Round 3 deferral.
-status: open
+status: done 2026-11-23
+resolution: Corpus hash vectors now exercise null, boolean, numeric and string inputs through their SDK canonical representations, including UInt64.MaxValue. See spec-five-deferred-sdk-hash-conformance.md.
 
 ### DW-97: Empty-parameter-name corner case slips through `EnsureParameter`
 
@@ -723,7 +725,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-240
 reason: Subnormal `double`s from FMA-fused arithmetic may diverge across hardware classes (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-240`). No current arithmetic-derived idempotency field.
-status: open
+status: done 2026-11-23
+resolution: The SDK suite pins signed and adjacent binary64 subnormals by bit pattern. A fused multiply-add and its separately rounded equivalent produce distinct subnormal results, each with its expected hash. See spec-five-deferred-sdk-hash-conformance.md.
 
 ### DW-100: `Process.WaitForExit(10_000)` after `Kill(entireProcessTree)` return value ignored; Windows handle-release race on `Directory.Delete`
 
@@ -784,7 +787,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322
 reason: Test corpus classification polarity is forward-fragile (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322`). Flips when AC 6 normalization implemented.
-status: open
+status: done 2026-11-23
+resolution: The SDK corpus test matches the exact classification vocabulary at the raw-field boundary. New rules with familiar prefixes fail with the case ID and classification. See spec-five-deferred-sdk-hash-conformance.md.
 
 ### DW-109: `FileMutationRequestFileOperationKind` enum drift detection only checks ordinal collisions, not `EnumMember` wire-value drift
 
@@ -1524,7 +1528,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790
 reason: `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
-status: open
+status: done 2026-11-23
+resolution: The corpus reader passes structured arrays and objects to the hasher. Golden cases verify nested property sorting, array order and preservation of date-shaped text. See spec-five-deferred-sdk-hash-conformance.md.
 
 ### DW-221: `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it
 
