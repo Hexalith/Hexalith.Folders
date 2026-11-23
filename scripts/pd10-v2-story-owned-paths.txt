@@ -1409,7 +1409,6 @@ tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.Corrections.
 tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceStatusEndpointTests.cs
 tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
-tests/Hexalith.Folders.Tests/Aggregates/Folder/CoordinatedSeedEventList.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingDapr.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingValidator.cs
@@ -1466,6 +1465,7 @@ tests/Hexalith.Folders.Tests/Aggregates/Folder/WorkspaceFileMutationExpiringEvid
 tests/Hexalith.Folders.Tests/Aggregates/Folder/WorkspaceFileMutationLeaseClock.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/WorkspacePathPolicyValidatorTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs
+tests/Hexalith.Folders.Tests/Aggregates/Organization/InMemoryOrganizationProviderBindingRepositoryTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs
@@ -1504,6 +1504,7 @@ tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvi
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
 tests/Hexalith.Folders.Tests/Authorization/WorkspaceLockActionCatalogTests.cs
 tests/Hexalith.Folders.Tests/FoldersModuleSmokeTests.cs
+tests/Hexalith.Folders.Tests/Helpers/CoordinatedEventList.cs
 tests/Hexalith.Folders.Tests/Helpers/HelperCompatibilityTests.cs
 tests/Hexalith.Folders.Tests/Helpers/LegacyFingerprintCompatibilityTests.cs
 tests/Hexalith.Folders.Tests/Helpers/ProviderTargetFingerprintCompatibilityTests.cs

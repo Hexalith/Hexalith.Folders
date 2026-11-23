@@ -1,21 +1,34 @@
-using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace Hexalith.Folders.Aggregates.Organization;
 
 /// <summary>
 /// In-memory <see cref="IOrganizationProviderBindingRepository"/> for dev/test hosts. Production hosts
-/// MUST register an EventStore-backed implementation instead (mirrors the folder repository policy):
-/// this store keeps organization state in process memory and does not survive a restart.
+/// must register an EventStore-backed implementation.
+/// This store keeps organization state in process memory until the host restarts.
 /// </summary>
+/// <remarks>
+/// An append publishes the folded state, idempotency fingerprint and event count under one lock.
+/// Each read acquires that lock. Separate read calls may observe different completed appends.
+/// </remarks>
 public sealed class InMemoryOrganizationProviderBindingRepository : IOrganizationProviderBindingRepository
 {
-    private readonly ConcurrentDictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, OrganizationState> _states = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, OrganizationState> _states = new(StringComparer.Ordinal);
     private readonly object _gate = new();
+    private long _eventsAppended;
 
-    // Internal test affordance visible to the test assemblies via the InternalsVisibleTo declared in
-    // InMemoryFolderRepository.cs (assembly-level).
-    internal int EventsAppended { get; private set; }
+    /// <summary>Gets the number of appended events for test diagnostics.</summary>
+    internal long EventsAppended
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _eventsAppended;
+            }
+        }
+    }
 
     /// <inheritdoc/>
     public OrganizationStreamName CreateStreamName(string managedTenantId, string organizationId)
@@ -26,9 +39,10 @@ public sealed class InMemoryOrganizationProviderBindingRepository : IOrganizatio
     {
         ArgumentNullException.ThrowIfNull(streamName);
 
-        return _states.TryGetValue(streamName.Value, out OrganizationState? state)
-            ? state
-            : OrganizationState.Empty;
+        lock (_gate)
+        {
+            return LoadUnderGate(streamName);
+        }
     }
 
     /// <inheritdoc/>
@@ -42,14 +56,19 @@ public sealed class InMemoryOrganizationProviderBindingRepository : IOrganizatio
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
         ArgumentNullException.ThrowIfNull(events);
-        if (events.Count == 0)
-        {
-            throw new ArgumentException("Append requires at least one event.", nameof(events));
-        }
 
         lock (_gate)
         {
             string ledgerKey = LedgerKey(streamName, idempotencyKey);
+            // A replay needs only the non-empty check. For a new key, take a stable batch before
+            // the final ledger lookup because caller-controlled enumeration can reenter append.
+            IReadOnlyList<IOrganizationEvent> batch = _idempotencyFingerprints.ContainsKey(ledgerKey) ? events : events.ToArray();
+            int eventCount = batch.Count;
+            if (eventCount == 0)
+            {
+                throw new ArgumentException("Append requires at least one event.", nameof(events));
+            }
+
             if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
             {
                 return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
@@ -57,10 +76,10 @@ public sealed class InMemoryOrganizationProviderBindingRepository : IOrganizatio
                     : OrganizationAclAppendOutcome.FingerprintConflict;
             }
 
-            OrganizationState next = Load(streamName).Apply(events);
+            OrganizationState next = LoadUnderGate(streamName).Apply(batch);
             _states[streamName.Value] = next;
             _idempotencyFingerprints[ledgerKey] = fingerprint;
-            EventsAppended += events.Count;
+            _eventsAppended += eventCount;
             return OrganizationAclAppendOutcome.Appended;
         }
     }
@@ -74,7 +93,16 @@ public sealed class InMemoryOrganizationProviderBindingRepository : IOrganizatio
         ArgumentNullException.ThrowIfNull(streamName);
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
 
-        return _idempotencyFingerprints.TryGetValue(LedgerKey(streamName, idempotencyKey), out fingerprint);
+        lock (_gate)
+        {
+            return _idempotencyFingerprints.TryGetValue(LedgerKey(streamName, idempotencyKey), out fingerprint);
+        }
+    }
+
+    private OrganizationState LoadUnderGate(OrganizationStreamName streamName)
+    {
+        Debug.Assert(Monitor.IsEntered(_gate));
+        return _states.GetValueOrDefault(streamName.Value, OrganizationState.Empty);
     }
 
     private static string LedgerKey(OrganizationStreamName streamName, string idempotencyKey)

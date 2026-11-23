@@ -62,6 +62,34 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
     }
 
     [Fact]
+    public async Task WorkspaceAndTaskFreshnessShouldKeepTheirEventTimeWhenAFolderIsArchived()
+    {
+        FixedUtcClock clock = new(ProjectionObservedAt);
+        InMemoryFolderLifecycleStatusReadModel lifecycle = new(clock);
+        InMemoryWorkspaceLockStatusReadModel workspaceLock = new(clock);
+        InMemoryWorkspaceStatusReadModel workspace = new(clock);
+        InMemoryWorkspaceCleanupStatusReadModel cleanup = new(clock);
+        InMemoryTaskStatusReadModel task = new(clock);
+        InMemoryFolderRepository repository = BuildRepository(lifecycle, workspaceLock: workspaceLock,
+            workspaceStatus: workspace, workspaceCleanup: cleanup, taskStatus: task);
+        FolderStreamName stream = FolderLifecycleReplayFixture.StreamName;
+        repository.Seed(stream, FolderLifecycleReplayFixture.SuccessfulLifecycle());
+        FolderState state = repository.Load(stream);
+        DateTimeOffset workspaceTime = state.WorkspaceLifecycleUpdatedAt.ShouldNotBeNull();
+        DateTimeOffset archiveTime = workspaceTime.AddHours(1);
+        FolderResult result = FolderAggregate.Handle(state, FolderCommandFactory.Archive(), archiveTime);
+        FolderArchived archived = result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+        repository.AppendIfFingerprintAbsent(stream, archived.IdempotencyKey, archived.IdempotencyFingerprint, result.Events)
+            .ShouldBe(FolderAppendOutcome.Appended);
+
+        (await LifecycleSnapshotAsync(lifecycle)).Freshness.ObservedAt.ShouldBe(archiveTime);
+        (await WorkspaceLockSnapshotAsync(workspaceLock)).Freshness.ObservedAt.ShouldBe(workspaceTime);
+        (await WorkspaceStatusSnapshotAsync(workspace)).Freshness.ObservedAt.ShouldBe(workspaceTime);
+        (await WorkspaceCleanupSnapshotAsync(cleanup)).Freshness.ObservedAt.ShouldBe(workspaceTime);
+        (await TaskStatusSnapshotAsync(task)).Freshness.ObservedAt.ShouldBe(workspaceTime);
+    }
+
+    [Fact]
     public async Task NormalizedComparisonShouldStillFailForNonFreshnessDrift()
     {
         ProjectionSnapshots baseline = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);

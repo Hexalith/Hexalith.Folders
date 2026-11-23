@@ -1,4 +1,5 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Tests.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -59,6 +60,86 @@ public sealed class InMemoryFolderRepositoryConcurrencyTests
     }
 
     [Fact]
+    public async Task ConcurrentArchiveReplaysWithSkewedClocksShouldPreserveTheWinningEvent()
+    {
+        InMemoryFolderRepository repository = new();
+        FolderStreamName streamName = repository.CreateStreamName("tenant-a", "folder-a");
+        repository.Seed(streamName, [CreateFolderEvent("Folder A")]);
+        FolderState state = repository.Load(streamName);
+        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "archive-replay");
+        DateTimeOffset[] instants = [OccurredAt.AddMinutes(1), OccurredAt.AddMinutes(2)];
+        FolderArchived[] candidates = instants
+            .Select(time => FolderAggregate.Handle(state, command, time).Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>())
+            .ToArray();
+        candidates.Select(candidate => candidate.OccurredAt).ShouldBe(instants);
+        using CountdownEvent ready = new(candidates.Length);
+        using ManualResetEventSlim start = new(false);
+        CancellationToken token = TestContext.Current.CancellationToken;
+        Task<FolderAppendOutcome>[] racers = candidates.Select(candidate => StartRacer(ready, start,
+            () => repository.AppendIfFingerprintAbsent(streamName, candidate.IdempotencyKey, candidate.IdempotencyFingerprint, [candidate]), token))
+            .ToArray();
+        try
+        {
+            ready.Wait(CoordinationTimeout, token).ShouldBeTrue();
+        }
+        finally
+        {
+            start.Set();
+        }
+
+        FolderAppendOutcome[] outcomes = await Task.WhenAll(racers).WaitAsync(CoordinationTimeout, token);
+        outcomes.Count(outcome => outcome == FolderAppendOutcome.Appended).ShouldBe(1);
+        outcomes.Count(outcome => outcome == FolderAppendOutcome.FingerprintMatched).ShouldBe(1);
+        FolderArchived winner = candidates[Array.IndexOf(outcomes, FolderAppendOutcome.Appended)];
+        repository.EventsAppended.ShouldBe(1);
+        repository.Load(streamName).ArchivedAt.ShouldBe(winner.OccurredAt);
+        repository.TryGetIdempotencyFingerprint(streamName, command.IdempotencyKey, out string? fingerprint)
+            .ShouldBe(FolderIdempotencyLookupResult.Found);
+        fingerprint.ShouldBe(winner.IdempotencyFingerprint);
+    }
+
+    [Fact]
+    public void AppendShouldCountTheFoldedBatchAndSkipEnumerationOnReplay()
+    {
+        InMemoryFolderRepository repository = new();
+        FolderStreamName stream = repository.CreateStreamName("tenant-a", "folder-a");
+        FolderCreated created = CreateFolderEvent("Folder A");
+        FolderState state = FolderState.Empty.Apply([created], stream);
+        FolderResult archive = FolderAggregate.Handle(state, FolderCommandFactory.Archive(), OccurredAt.AddMinutes(1));
+        FolderArchived archived = archive.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+        List<IFolderEvent> events = [created];
+        CoordinatedEventList<IFolderEvent> input = new(events, 1, CoordinationTimeout, TestContext.Current.CancellationToken);
+        input.ReleaseWriter(() => events.Add(archived));
+
+        repository.AppendIfFingerprintAbsent(stream, created.IdempotencyKey, created.IdempotencyFingerprint, input)
+            .ShouldBe(FolderAppendOutcome.Appended);
+        repository.Load(stream).ArchivedAt.ShouldBe(archived.OccurredAt);
+        repository.EventsAppended.ShouldBe(2);
+
+        repository.AppendIfFingerprintAbsent(stream, created.IdempotencyKey, created.IdempotencyFingerprint, input)
+            .ShouldBe(FolderAppendOutcome.FingerprintMatched);
+        input.EnumerationCount.ShouldBe(1);
+        repository.EventsAppended.ShouldBe(2);
+    }
+
+    [Fact]
+    public void AppendCounterShouldRemainExactAcrossTheInt32Boundary()
+    {
+        InMemoryFolderRepository repository = new();
+        // Set the diagnostic at the 32-bit maximum without constructing billions of events.
+        typeof(InMemoryFolderRepository).GetField("_eventsAppended", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            .ShouldNotBeNull().SetValue(repository, int.MaxValue);
+        FolderStreamName stream = repository.CreateStreamName("tenant-a", "folder-a");
+        FolderCreated created = CreateFolderEvent("Folder A");
+        repository.AppendIfFingerprintAbsent(stream, created.IdempotencyKey, created.IdempotencyFingerprint, [created])
+            .ShouldBe(FolderAppendOutcome.Appended);
+
+        repository.EventsAppended.ShouldBe((long)int.MaxValue + 1);
+        repository.ResetAppendCounters();
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ConcurrentConflictingAppendsShouldKeepStateAndFingerprintFromOneWinner()
     {
         InMemoryFolderRepository repository = new();
@@ -111,8 +192,10 @@ public sealed class InMemoryFolderRepositoryConcurrencyTests
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderCreated folderEvent = CreateFolderEvent("Seeded Folder");
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
-        CoordinatedSeedEventList seedEvents = new(
+        const int ledgerValidationPass = 2;
+        CoordinatedEventList<IFolderEvent> seedEvents = new(
             [folderEvent],
+            ledgerValidationPass,
             CoordinationTimeout,
             cancellationToken);
         Task<bool> seed = StartOperation(
@@ -165,7 +248,7 @@ public sealed class InMemoryFolderRepositoryConcurrencyTests
         }
 
         (await seed.WaitAsync(CoordinationTimeout, cancellationToken).ConfigureAwait(true)).ShouldBeTrue();
-        seedEvents.EnumerationCount.ShouldBe(CoordinatedSeedEventList.BlockOnEnumeration);
+        seedEvents.EnumerationCount.ShouldBe(ledgerValidationPass);
         FolderState loaded = await load
             .WaitAsync(CoordinationTimeout, cancellationToken)
             .ConfigureAwait(true);

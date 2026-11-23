@@ -22,7 +22,7 @@ namespace Hexalith.Folders.Aggregates.Folder;
 /// a plain field rather than an interlocked one, so an un-gated access is a defect rather than a second,
 /// redundant synchronization model. Members whose name ends in
 /// <c>UnderGate</c> require the caller to already hold <c>_gate</c> and assert it in debug builds.
-/// Because the gate is reentrant, code invoked from inside the critical section (event enumerators,
+/// Because the gate is reentrant, code invoked from inside the publication (seed event enumerators,
 /// <c>Apply</c>, read-model snapshot writes) must not call back into this repository: it would observe
 /// half-published state instead of blocking.
 /// </remarks>
@@ -30,7 +30,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 {
     private readonly Dictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
     private readonly Dictionary<string, FolderState> _states = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, DateTimeOffset> _lastObservedAt = new(StringComparer.Ordinal);
+    private readonly Dictionary<(string ManagedTenantId, string FolderId, string Projection), DateTimeOffset> _lastObservedAt = new();
     private readonly object _gate = new();
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
@@ -39,7 +39,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly InMemoryWorkspaceCleanupStatusReadModel? _workspaceCleanupStatusReadModel;
     private readonly InMemoryTaskStatusReadModel? _taskStatusReadModel;
     private readonly TimeProvider _timeProvider;
-    private int _eventsAppended;
+    private long _eventsAppended;
 
     public InMemoryFolderRepository(
         IFolderLifecycleStatusReadModel? lifecycleReadModel = null,
@@ -106,7 +106,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
     // Internal test affordance: read-only counter visible to test assemblies via
     // InternalsVisibleTo. Production code cannot see this property.
-    internal int EventsAppended
+    internal long EventsAppended
     {
         get
         {
@@ -140,12 +140,6 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
         ArgumentNullException.ThrowIfNull(events);
-        if (events.Count == 0)
-        {
-            // Recording an empty-events fingerprint would let a later distinct command with
-            // the same idempotency key falsely conflict against a "no-op" ledger entry.
-            throw new ArgumentException("Append requires at least one event.", nameof(events));
-        }
 
         // Capture the observation time before taking the lock so it reflects the request's
         // arrival ordering rather than the lock-acquisition ordering. Combined with the
@@ -156,6 +150,15 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         lock (_gate)
         {
             string ledgerKey = LedgerKey(streamName, idempotencyKey);
+            // A replay needs only the non-empty check. For a new key, take a stable batch before
+            // the final ledger lookup because caller-controlled enumeration can reenter append.
+            IReadOnlyList<IFolderEvent> batch = _idempotencyFingerprints.ContainsKey(ledgerKey) ? events : events.ToArray();
+            int eventCount = batch.Count;
+            if (eventCount == 0)
+            {
+                throw new ArgumentException("Append requires at least one event.", nameof(events));
+            }
+
             if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
             {
                 return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
@@ -164,10 +167,10 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             }
 
             FolderState current = LoadUnderGate(streamName);
-            FolderState next = current.Apply(events, streamName);
+            FolderState next = current.Apply(batch, streamName);
             _states[streamName.Value] = next;
             _idempotencyFingerprints[ledgerKey] = fingerprint;
-            _eventsAppended += events.Count;
+            _eventsAppended += eventCount;
             SaveLifecycleSnapshot(next, observedAt);
             SaveBranchRefPolicySnapshot(next, observedAt);
             SaveWorkspaceLockStatusSnapshot(next, observedAt);
@@ -274,19 +277,21 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             : FolderState.Empty;
     }
 
-    // Clamps a candidate observation time to the per-folder monotonic maximum and returns the value the
-    // snapshot should publish, so a rewound clock never moves a projection's freshness watermark back.
-    private DateTimeOffset ClampObservedAtUnderGate(string folderKey, DateTimeOffset candidate)
+    // Each projection advances its own watermark for a folder, even when other projections have
+    // already observed later events in the same stream.
+    private DateTimeOffset ClampObservedAtUnderGate(
+        (string ManagedTenantId, string FolderId, string Projection) key,
+        DateTimeOffset candidate)
     {
         Debug.Assert(Monitor.IsEntered(_gate), "ClampObservedAtUnderGate mutates _lastObservedAt and requires the repository gate.");
 
-        if (_lastObservedAt.TryGetValue(folderKey, out DateTimeOffset previous)
+        if (_lastObservedAt.TryGetValue(key, out DateTimeOffset previous)
             && previous > candidate)
         {
             return previous;
         }
 
-        _lastObservedAt[folderKey] = candidate;
+        _lastObservedAt[key] = candidate;
         return candidate;
     }
 
@@ -307,11 +312,8 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             ?? state.RepositoryBindingUpdatedAt
             ?? observedAt;
 
-        // Clamp per-folder so a slow clock or a test-time fake cannot move the watermark
-        // backwards across concurrent writers. The monotonic guarantee is per-stream, not
-        // global; that matches the freshness contract consumers rely on.
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(IFolderLifecycleStatusReadModel)), rawObservedAt);
 
         string? evidencePrincipalId = state.LifecycleState == FolderLifecycleState.Archived
             ? state.ArchiveActorPrincipalId
@@ -355,9 +357,9 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         }
 
         BranchRefPolicyMetadata policy = state.BranchRefPolicy;
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = policy.ConfiguredAt > observedAt ? policy.ConfiguredAt : observedAt;
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(IBranchRefPolicyReadModel)), rawObservedAt);
 
         _branchRefPolicyReadModel.Save(new BranchRefPolicyReadModelSnapshot(
             state.ManagedTenantId,
@@ -389,9 +391,9 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             return;
         }
 
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(IWorkspaceLockStatusReadModel)), rawObservedAt);
 
         _workspaceLockStatusReadModel.Save(new WorkspaceLockStatusReadModelSnapshot(
             state.ManagedTenantId,
@@ -429,9 +431,9 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             return;
         }
 
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(IWorkspaceStatusReadModel)), rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         FolderLifecycleFreshness freshness = new(
@@ -495,9 +497,9 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             return;
         }
 
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(IWorkspaceCleanupStatusReadModel)), rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         (string cleanupStatus, string reasonCode, WorkspaceStatusRetryEligibility retryEligibility) = CleanupVisibilityFor(currentState);
@@ -541,9 +543,9 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             return;
         }
 
-        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(
+            (state.ManagedTenantId, state.FolderId, nameof(ITaskStatusReadModel)), rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         string operationId = string.IsNullOrWhiteSpace(state.WorkspaceOperationId)
@@ -575,9 +577,6 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 AuthorizationWatermark: null),
             state.FolderId));
     }
-
-    private static string LifecycleKey(string managedTenantId, string folderId)
-        => $"{managedTenantId}|{folderId}";
 
     private static FolderRepositoryBindingStatus MapBindingStatus(FolderRepositoryBindingState? state)
         => state switch

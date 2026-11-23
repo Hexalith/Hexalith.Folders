@@ -372,13 +372,13 @@ public sealed class MixedSurfaceHandoffTests
         SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
-        int eventsBeforeChain = host.Repository.EventsAppended;
+        long eventsBeforeChain = host.Repository.EventsAppended;
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted, "REST first-write reaches 'accepted'.");
-        int eventsAfterFirstWrite = host.Repository.EventsAppended;
+        long eventsAfterFirstWrite = host.Repository.EventsAppended;
         eventsAfterFirstWrite.ShouldBeGreaterThan(eventsBeforeChain, "REST first-write produced at least one event.");
 
         // ----- SDK -----
@@ -416,7 +416,7 @@ public sealed class MixedSurfaceHandoffTests
         TestSupport.Kind(mcpResultJson).ShouldBeNull("MCP replay must not surface a failure envelope.");
 
         // ===== Aggregate ledger invariant: no second appended event for the same key/payload. =====
-        int eventsAfterFullChain = host.Repository.EventsAppended;
+        long eventsAfterFullChain = host.Repository.EventsAppended;
         eventsAfterFullChain.ShouldBe(eventsAfterFirstWrite, "Same idempotency key + same payload across four surfaces produces exactly the first writer's events; later surfaces hit FingerprintMatched (no second write).");
         host.Repository.TryGetIdempotencyFingerprint(
             FolderStreamName.Create("tenant-a", "folder_handoff_0001"),
@@ -444,7 +444,7 @@ public sealed class MixedSurfaceHandoffTests
         SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
-        int eventsBeforeChain = host.Repository.EventsAppended;
+        long eventsBeforeChain = host.Repository.EventsAppended;
 
         // ----- REST first writer with payload P (reason: caller_requested) → 202. -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
@@ -452,7 +452,7 @@ public sealed class MixedSurfaceHandoffTests
             reasonCode: "caller_requested");
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
-        int eventsAfterFirstWrite = host.Repository.EventsAppended;
+        long eventsAfterFirstWrite = host.Repository.EventsAppended;
         eventsAfterFirstWrite.ShouldBeGreaterThan(eventsBeforeChain);
 
         // ----- SDK conflicting payload P' → HTTP 409 idempotency_conflict. -----
@@ -501,7 +501,7 @@ public sealed class MixedSurfaceHandoffTests
         mcpJson.Value<string>("code").ShouldBe("idempotency_conflict");
 
         // ===== Aggregate ledger invariant: no second writer event for conflicting payload. =====
-        int eventsAfterFullChain = host.Repository.EventsAppended;
+        long eventsAfterFullChain = host.Repository.EventsAppended;
         eventsAfterFullChain.ShouldBe(eventsAfterFirstWrite, "Conflicting payloads with the same idempotency key across four surfaces produce no additional appended events beyond the first writer; aggregate idempotency ledger detects the fingerprint conflict.");
     }
 

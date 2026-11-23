@@ -54,7 +54,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)"), 2026-08-24
 location: InMemoryFolderRepository:56-91
 reason: Concurrent identical-fingerprint clock skew at `InMemoryFolderRepository:56-91` — current fingerprint composition is deterministic-per-inputs and does not include clock material. Deferred — only becomes live if a future fingerprint dimension adds time-based material.
-status: open
+status: done 2026-11-23
+resolution: A clock-skew regression races equivalent archive decisions made at different instants. Each racer supplies its own event fingerprint. The winner alone determines the ledger entry and archive timestamp. See spec-five-deferred-in-memory-appends.md.
 
 ### DW-9: (Round-3 echo) `IDomainProcessor.ProcessAsync` lacks `CancellationToken`, so `FolderDomainProcessor` passes `CancellationToken.None` into evidence providers
 
@@ -2194,7 +2195,8 @@ location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:152
 source_spec: `spec-inmemory-repository-lock-cleanup.md`
 severity: low
 reason: Before this change the int auto-property used unchecked +=, and the refactor preserves that behavior in the gate-protected backing field. This is not caused by the synchronization cleanup and is not observable through IFolderRepository, but an extreme-lifetime test repository could report a negative diagnostic count.
-status: open
+status: done 2026-11-23
+resolution: The folder diagnostic uses a 64-bit count. A real append across the Int32 boundary and a subsequent reset are covered. See spec-five-deferred-in-memory-appends.md.
 
 ### DW-311: A single per-folder `_lastObservedAt` watermark is shared by all six read-model snapshot writers, so one projection's newer timestamp can advance another projection's reported freshness.
 origin: spec-deferred 94fcd8bf7ae7
@@ -2202,7 +2204,8 @@ location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:255
 source_spec: `spec-inmemory-repository-lock-cleanup.md`
 severity: medium
 reason: Every `Save*Snapshot` clamps against the same `LifecycleKey(managedTenantId, folderId)` entry while sourcing a different candidate time (`state.ArchivedAt`, `policy.ConfiguredAt`, `state.WorkspaceLifecycleUpdatedAt`, or the append's `observedAt`). The clamp is a max, so whichever writer runs with the newest candidate pins `ObservedAt` for every other projection of the same folder. This predates the change -- the same key and the same max semantics were previously expressed through `ConcurrentDictionary.AddOrUpdate` -- and this story only relocated the operation under the gate. It is invisible in the current suite because the new coverage constructs the repository with no read models and `BranchRefPolicyReadModelTests` registers only the branch-policy read model; registering a second read model would surface the interference.
-status: open
+status: done 2026-11-23
+resolution: All six snapshot writers clamp observation time by tenant, folder and projection. A lifecycle and branch-policy test checks independent watermarks through a clock rollback. See spec-five-deferred-in-memory-appends.md.
 
 ### DW-312: The sibling `InMemoryOrganizationProviderBindingRepository` still mixes `ConcurrentDictionary` with `lock (_gate)` and publishes state before its idempotency ledger entry where readers can observe the
 origin: spec-deferred 49c81b636fb6
@@ -2210,7 +2213,8 @@ location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProvi
 source_spec: `spec-inmemory-repository-lock-cleanup.md`
 severity: medium
 reason: Its file comment states it "mirrors the folder repository policy", yet `Load` (line 25) and `TryGetIdempotencyFingerprint` (line 69) never take `_gate`, while `AppendIfFingerprintAbsent` writes `_states[...]` at line 61 and `_idempotencyFingerprints[ledgerKey]` at line 62. A concurrent reader can therefore see appended organization state whose fingerprint is not yet visible, and a caller retrying the same idempotent command would treat it as new work. The only tests touching the type run single-threaded, so nothing observes the window. This story's intent scopes sibling `ConcurrentDictionary` users out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), so it is recorded here rather than fixed.
-status: open
+status: done 2026-11-23
+resolution: State, fingerprint and count readers share the organization append lock. Coordinated readers, equivalent retries and conflicting retries exercise publication. See spec-five-deferred-in-memory-appends.md.
 
 ### DW-313: The sibling `InMemoryOrganizationProviderBindingRepository` file comment claims it "mirrors the folder repository policy", a claim this change made false.
 origin: spec-deferred c9d27f6533b9
@@ -2218,7 +2222,8 @@ location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProvi
 source_spec: `spec-inmemory-repository-lock-cleanup.md`
 severity: low
 reason: Lines 6-7 of that file describe it as mirroring the folder repository's synchronization policy. After this story, `InMemoryFolderRepository` owns all mutable state under one gate with plain `Dictionary` stores, while the sibling still mixes `ConcurrentDictionary` with `lock (_gate)`, leaves `Load` and `TryGetIdempotencyFingerprint` un-gated, keeps `EventsAppended` as an un-gated auto-property, and calls its own public `Load` from inside the gate. The comment now points a reader at a policy the file does not implement. It cannot be corrected here: this story's intent scopes that file out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), which covers a comment edit in it as much as a code edit. Distinct from the synchronization gap already recorded for the same file: that entry is about the publication window, this one is about the documentation now misdescribing the type.
-status: open
+status: done 2026-11-23
+resolution: The organization repository now documents its synchronization boundary, the atomic state it publishes, and the guarantee for individual reads. See spec-five-deferred-in-memory-appends.md.
 
 ### DW-314: FolderCommandRejected.Create accepts noncanonical numeric and whitespace-padded FolderResultCode strings because its whitelist uses permissive Enum.TryParse semantics.
 origin: spec-deferred ad076c3a4bd1

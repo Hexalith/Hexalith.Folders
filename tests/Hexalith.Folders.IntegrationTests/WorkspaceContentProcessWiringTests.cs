@@ -120,7 +120,7 @@ public sealed class WorkspaceContentProcessWiringTests
         body.Bytes.AsSpan().SequenceEqual(bytes).ShouldBeTrue();
         foreach (var write in dapr.TrySaveByteOperations.Where(write => write.Key.Contains(":metadata:", StringComparison.Ordinal)))
             Encoding.UTF8.GetString(write.Value).ShouldNotContain(Convert.ToBase64String(bytes));
-        int before = repository.EventsAppended;
+        long before = repository.EventsAppended;
         using (var content = new MemoryStream(bytes))
         using (HttpResponseMessage stale = await client.UploadWorkspaceFileAsync(descriptor with { OperationId = "stale", ExpectedLockFence = 2 },
             content, "stale-key", "correlation-stale", "task-a", TestContext.Current.CancellationToken).ConfigureAwait(true))

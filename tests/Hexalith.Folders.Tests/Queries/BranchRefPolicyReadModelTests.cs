@@ -84,12 +84,14 @@ public sealed class BranchRefPolicyReadModelTests
     }
 
     [Fact]
-    public async Task InMemoryRepositoryShouldUseNonDecreasingObservedAtForBranchRefPolicySnapshot()
+    public async Task InMemoryRepositoryShouldKeepIndependentNonDecreasingProjectionWatermarks()
     {
         MutableTimeProvider timeProvider = new(Now);
-        InMemoryBranchRefPolicyReadModel readModel = new(new FixedClock(Now.AddMinutes(5)));
+        FixedClock clock = new(Now.AddMinutes(5));
+        InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(clock);
+        InMemoryBranchRefPolicyReadModel readModel = new(clock);
         InMemoryFolderRepository repository = new(
-            lifecycleReadModel: null,
+            lifecycleReadModel,
             branchRefPolicyReadModel: readModel,
             timeProvider);
         FolderStreamName streamName = repository.CreateStreamName("tenant-a", "folder-a");
@@ -172,6 +174,10 @@ public sealed class BranchRefPolicyReadModelTests
         BranchRefPolicyReadModelResult regressedClockResult = await readModel.GetAsync(
             request,
             TestContext.Current.CancellationToken);
+        FolderLifecycleStatusReadModelResult lifecycle = await lifecycleReadModel.GetAsync(
+            new("tenant-a", "folder-a", "principal-a", "read_metadata", "task-a", "correlation-a", null, "eventually_consistent"),
+            TestContext.Current.CancellationToken);
+        lifecycle.Snapshot.ShouldNotBeNull().Freshness.ObservedAt.ShouldBe(Now.AddMinutes(3));
         regressedClockResult.Snapshot.ShouldNotBeNull().Freshness.ObservedAt.ShouldBe(Now.AddMinutes(2));
     }
 
