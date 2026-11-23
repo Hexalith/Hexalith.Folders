@@ -4,9 +4,11 @@ using Hexalith.Folders.Server.Authorization;
 namespace Hexalith.Folders.IntegrationTests;
 
 /// <summary>
-/// Records metadata-only archive policy observations and returns a scoped denial.
+/// Records metadata-only archive policy observations and returns a configured policy outcome.
 /// </summary>
-internal sealed class DenyingFolderArchivePolicyEvidenceProvider : IFolderArchivePolicyEvidenceProvider
+internal sealed class DenyingFolderArchivePolicyEvidenceProvider(
+    FolderArchivePolicyOutcome outcome = FolderArchivePolicyOutcome.Denied,
+    bool mismatchedScope = false) : IFolderArchivePolicyEvidenceProvider
 {
     private int _calls;
 
@@ -37,8 +39,9 @@ internal sealed class DenyingFolderArchivePolicyEvidenceProvider : IFolderArchiv
         LastOrganizationId = command.OrganizationId;
         LastFolderId = command.FolderId;
 
-        return Task.FromResult(FolderArchivePolicyEvidence.Denied(
-            command.ManagedTenantId,
+        return Task.FromResult(new FolderArchivePolicyEvidence(
+            outcome,
+            mismatchedScope ? "tenant-b" : command.ManagedTenantId,
             command.OrganizationId,
             command.FolderId,
             "v1-test-denied"));

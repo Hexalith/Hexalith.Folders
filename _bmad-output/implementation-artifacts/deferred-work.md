@@ -2189,7 +2189,8 @@ location: tests/tools/run-contract-parity-ci-gates.ps1
 source_spec: `spec-archive-process-integration.md`
 severity: medium
 reason: The integration class was already excluded before this bundle: the blocking parity script selects GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests, while the baseline allow-list omits the IntegrationTests project. The four new archive-process rows therefore run locally but inherit the pre-existing CI selection gap.
-status: open
+status: done 2026-11-23
+resolution: The blocking baseline gate runs the full integration assembly, including ArchiveFolderProcessWiringTests. See spec-five-deferred-archive-integration-checks.md.
 
 ### DW-306: The shared gateway double's new `/process` result-payload propagation is asserted by no gate-selected test.
 origin: spec-deferred 2143e3ee7943
@@ -2197,7 +2198,8 @@ location: tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfa
 source_spec: `spec-archive-process-integration.md`
 severity: medium
 reason: `InProcessRejectionPropagatingGatewayClient` now forwards `ResultPayload`, which is the sole input to the REST `idempotentReplay` field. The only assertion on it lives in `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted`, in the class no blocking lane selects. `MixedSurfaceHandoffTests` is gate-selected and drives the same double through a four-surface replay, but asserts 202 / no conflict / no second append without ever reading `idempotentReplay`. Reverting the propagation would leave every gate green while every replay silently reported `idempotentReplay: false`. Closing this means adding an assertion to `MixedSurfaceHandoffTests`, which is outside this intent's "add four archive tests" approach.
-status: open
+status: done 2026-11-23
+resolution: The mixed-surface replay checks the REST first-write marker and the SDK replay marker. See spec-five-deferred-archive-integration-checks.md.
 
 ### DW-307: Only the `Denied` archive-policy outcome has an integration row; the retryable outcomes have none at the `/process` boundary.
 origin: spec-deferred 3563da68a6d4
@@ -2205,7 +2207,8 @@ location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTest
 source_spec: `spec-archive-process-integration.md`
 severity: medium
 reason: `FolderArchivePolicyOutcome` also carries `ScopeMismatch`, `Unavailable`, `Malformed`, and `Stale`, and `EvaluatePolicy` additionally returns `PolicyEvidenceMalformed` when an *Allowed* evidence's tenant/organization/folder do not match the command or its `PolicyVersion` is blank -- the load-bearing anti-forgery check. Those codes are asserted only in `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs`, never across REST -> gateway -> `/process`. `Unavailable`/`Stale` map to a retryable 503, a materially different caller contract than the non-retryable 403 this bundle pins, so a regression that collapsed one into the other would keep every row green. Adding those rows is outside this intent's four-scenario matrix.
-status: open
+status: done 2026-11-23
+resolution: The archive integration matrix verifies the wire rejection, safe REST status and code, retryability, and absence of appends. See spec-five-deferred-archive-integration-checks.md.
 
 ### DW-308: `HasScopedMetadataProperty` rejects any property name containing `policy`, which production's own richer safe-denial body carries.
 origin: spec-deferred 2aadb3b7b785
@@ -2213,7 +2216,8 @@ location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTest
 source_spec: `spec-archive-process-integration.md`
 severity: medium
 reason: `FolderAuthorizationDenialMapper.ToHttpResult` emits `details.policyClass` (alongside `reasonCategory`, `layer`, `freshnessClass`, `timingBucket`) on every layered-authorization denial. The helper passes today only because the gateway double flattens the `/process` 403 into an `EventStoreGatewayException`, so the caller sees `ToArchiveGatewayProblem`'s leaner `SafeProblem` body instead. Any future change that propagates the richer -- and still metadata-only -- denial body to the caller would red these rows on a body that discloses nothing. Closing this means matching exact field names, or exempting the known-safe classifier fields, rather than substring-matching property names.
-status: open
+status: done 2026-11-23
+resolution: The metadata scan permits the exact archive mutation classifier under details.policyClass and rejects misplaced or malformed classifiers. See spec-five-deferred-archive-integration-checks.md.
 
 ### DW-309: Follow-up review still recommended for dw-archive-process-integration after the damping cap was spent
 origin: review-budget-followup
@@ -2284,7 +2288,8 @@ location: tests/tools/run-contract-parity-ci-gates.ps1:71-94
 source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: tests/tools/run-contract-parity-ci-gates.ps1 reaches this project only through two `--filter` expressions naming GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests; run-baseline-ci-gates.ps1 enumerates nine test projects and does not list this one. Reverting the canonical mapping fails 33 assertions locally while every CI lane stays green. Registering classes changes a CI contract that ContractParityCiWorkflowConformanceTests pins, which is broader than DW-15.
-status: open
+status: done 2026-11-23
+resolution: The blocking baseline gate runs the unfiltered integration assembly, including the archive process and canonical gateway mapping suites. See spec-five-deferred-archive-integration-checks.md.
 
 ### DW-317: Roughly twenty result codes now reach a different caller-visible REST status through ToArchiveGatewayProblem, and no test drives the REST leg for any of them.
 origin: spec-deferred 7434a398b12a

@@ -95,6 +95,10 @@ $unitTestProjects = @(
         # runs in no other focused gate, so leaving them masked would hide green tests (the 7.18 AC6 anti-pattern).
         runner_arguments = @()
     },
+    [ordered]@{
+        project_path = 'tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj'
+        runner_arguments = @('-parallelMode', 'collections')
+    },
     # Hermetic SDK lifecycle example tests (RecordingHandler, no AppHost/Dapr/network). Running them here
     # in PR CI satisfies the "examples ... validated by CI" clause for the consumer SDK quickstart/reference.
     [ordered]@{

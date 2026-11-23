@@ -464,10 +464,21 @@ public sealed class ArchiveFolderProcessWiringTests
         }
     }
 
-    [Fact]
-    public async Task ArchivePolicyDenialShouldReturnSafeForbiddenWithoutAppending()
+    [Theory]
+    [InlineData(FolderArchivePolicyOutcome.Denied, false, FolderResultCode.ArchivePolicyDenied, HttpStatusCode.Forbidden, "denied_safe")]
+    [InlineData(FolderArchivePolicyOutcome.ScopeMismatch, false, FolderResultCode.PolicyEvidenceScopeMismatch, HttpStatusCode.Forbidden, "denied_safe")]
+    [InlineData(FolderArchivePolicyOutcome.Malformed, false, FolderResultCode.PolicyEvidenceMalformed, HttpStatusCode.Forbidden, "denied_safe")]
+    [InlineData(FolderArchivePolicyOutcome.Allowed, true, FolderResultCode.PolicyEvidenceMalformed, HttpStatusCode.Forbidden, "denied_safe")]
+    [InlineData(FolderArchivePolicyOutcome.Unavailable, false, FolderResultCode.PolicyEvidenceUnavailable, HttpStatusCode.ServiceUnavailable, "read_model_unavailable")]
+    [InlineData(FolderArchivePolicyOutcome.Stale, false, FolderResultCode.PolicyEvidenceStale, HttpStatusCode.ServiceUnavailable, "projection_stale")]
+    public async Task ArchivePolicyFailureShouldReturnSafeProblemWithoutAppending(
+        FolderArchivePolicyOutcome outcome,
+        bool mismatchedScope,
+        FolderResultCode expectedRejectionCode,
+        HttpStatusCode expectedStatus,
+        string expectedCode)
     {
-        DenyingFolderArchivePolicyEvidenceProvider policyProvider = new();
+        DenyingFolderArchivePolicyEvidenceProvider policyProvider = new(outcome, mismatchedScope);
         ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
         TestHost host = await StartHostAsync(
             policyProvider,
@@ -482,10 +493,21 @@ public sealed class ArchiveFolderProcessWiringTests
             using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
             string responseJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden, responseJson);
+            response.StatusCode.ShouldBe(expectedStatus);
             using JsonDocument document = JsonDocument.Parse(responseJson);
-            AssertMetadataOnlySafeDenial(document.RootElement);
+            JsonElement problem = document.RootElement;
+            problem.GetProperty("code").GetString().ShouldBe(expectedCode);
+            problem.GetProperty("retryable").GetBoolean().ShouldBe(expectedStatus == HttpStatusCode.ServiceUnavailable);
+            if (expectedStatus == HttpStatusCode.Forbidden)
+            {
+                AssertMetadataOnlySafeDenial(problem);
+            }
+            else
+            {
+                AssertNoScopedMetadata(problem);
+            }
             host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Gateway.LastWireRejectionCode.ShouldBe(expectedRejectionCode);
             policyProvider.Calls.ShouldBe(1);
             policyProvider.LastManagedTenantId.ShouldBe("tenant-a");
             policyProvider.LastOrganizationId.ShouldBe("tenant-a");
@@ -1087,7 +1109,12 @@ public sealed class ArchiveFolderProcessWiringTests
         // correlation id also proves the two scans below run against a populated body rather than
         // passing vacuously over an empty or truncated one.
         root.GetProperty("correlationId").GetString().ShouldBe("correlation-archive-key-a");
-        HasScopedMetadataProperty(root).ShouldBeFalse(
+        AssertNoScopedMetadata(root);
+    }
+
+    private static void AssertNoScopedMetadata(JsonElement root)
+    {
+        HasScopedMetadataProperty(root, isProblemDetails: true).ShouldBeFalse(
             "safe denials must not disclose tenant, organization, folder, policy, or existence fields");
 
         // A name-only scan cannot see the likeliest leak vector: a scoped identifier interpolated into
@@ -1134,7 +1161,20 @@ public sealed class ArchiveFolderProcessWiringTests
         }
     }
 
-    private static bool HasScopedMetadataProperty(JsonElement element)
+    [Theory]
+    [InlineData("""{"details":{"policyClass":"mutation"}}""", false)]
+    [InlineData("""{"details":{"policyClass":"unknown"}}""", true)]
+    [InlineData("""{"details":{"policyClass":{"value":"mutation"}}}""", true)]
+    [InlineData("""{"details":{"policyVersion":"v1-test-denied"}}""", true)]
+    [InlineData("""{"details":{"nested":{"policyClass":"mutation"}}}""", true)]
+    [InlineData("""{"policyClass":"mutation"}""", true)]
+    public void ScopedMetadataScanShouldOnlyAllowTheTopLevelDetailsPolicyClassifier(string json, bool hasScopedMetadata)
+    {
+        using JsonDocument document = JsonDocument.Parse(json);
+        HasScopedMetadataProperty(document.RootElement, isProblemDetails: true).ShouldBe(hasScopedMetadata);
+    }
+
+    private static bool HasScopedMetadataProperty(JsonElement element, bool isProblemDetails = false, bool isDetailsObject = false)
     {
         if (element.ValueKind == JsonValueKind.Object)
         {
@@ -1143,9 +1183,15 @@ public sealed class ArchiveFolderProcessWiringTests
                 if (property.Name.Contains("tenant", StringComparison.OrdinalIgnoreCase)
                     || property.Name.Contains("organization", StringComparison.OrdinalIgnoreCase)
                     || property.Name.Contains("folder", StringComparison.OrdinalIgnoreCase)
-                    || property.Name.Contains("policy", StringComparison.OrdinalIgnoreCase)
+                    || (property.Name.Contains("policy", StringComparison.OrdinalIgnoreCase)
+                        && !(isDetailsObject
+                            && property.NameEquals("policyClass")
+                            && property.Value.ValueKind == JsonValueKind.String
+                            && property.Value.ValueEquals("mutation")))
                     || property.Name.Contains("exist", StringComparison.OrdinalIgnoreCase)
-                    || HasScopedMetadataProperty(property.Value))
+                    || HasScopedMetadataProperty(
+                        property.Value,
+                        isDetailsObject: isProblemDetails && property.NameEquals("details")))
                 {
                     return true;
                 }

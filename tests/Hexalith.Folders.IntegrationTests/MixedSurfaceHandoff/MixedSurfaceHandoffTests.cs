@@ -378,6 +378,9 @@ public sealed class MixedSurfaceHandoffTests
         using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted, "REST first-write reaches 'accepted'.");
+        using JsonDocument restBody = JsonDocument.Parse(
+            await restResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+        restBody.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
         long eventsAfterFirstWrite = host.Repository.EventsAppended;
         eventsAfterFirstWrite.ShouldBeGreaterThan(eventsBeforeChain, "REST first-write produced at least one event.");
 
@@ -389,7 +392,7 @@ public sealed class MixedSurfaceHandoffTests
             x_Hexalith_Task_Id: sharedTaskId,
             body: BuildArchiveBody(),
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
-        sdkResult.ShouldNotBeNull();
+        sdkResult.IdempotentReplay.ShouldBeTrue();
 
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(

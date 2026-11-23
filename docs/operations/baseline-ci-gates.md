@@ -36,17 +36,18 @@ The baseline lane runs these projects only:
 - `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
 - `tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj`
 - `tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`
+- `tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj`
 - `samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj`
 
-Microsoft.Testing.Platform runs full-project entries without a selector. The two deliberately selected entries execute the already-built xUnit v3 assemblies directly, never project-level `dotnet test --filter`:
+Microsoft.Testing.Platform runs full-project entries without a selector. The Contracts, Client, and Integration entries execute their built xUnit v3 assemblies directly.
 
 - `Hexalith.Folders.Contracts.Tests.dll` uses repeated `-class` selectors for the deployment-governance allow-list.
 - `Hexalith.Folders.Client.Tests.dll` uses two `-method-` exclusions for the out-of-process regeneration checks already owned by the contract/parity gate.
+- `Hexalith.Folders.IntegrationTests.dll` runs the complete assembly, including archive process wiring and gateway mapping. Live runtime probes still require their existing opt-in.
 - Folders, CLI, MCP, Testing, UI, Workers, and sample tests run as complete projects.
 
 Excluded from this lane:
 
-- `tests/Hexalith.Folders.IntegrationTests`
 - `tests/Hexalith.Folders.UI.E2E.Tests`
 - `tests/load/Hexalith.Folders.LoadTests`
 - `tests/Hexalith.Folders.LoadTests.Tests`

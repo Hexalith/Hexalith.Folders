@@ -13,6 +13,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 {
     private const string WorkflowPath = ".github/workflows/ci.yml";
     private const string GateScriptPath = "tests/tools/run-baseline-ci-gates.ps1";
+    private const string IntegrationProject = "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj";
     private const string OperatorDocPath = "docs/operations/baseline-ci-gates.md";
 
     private static readonly string[] _baselineCategories =
@@ -38,12 +39,12 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+        IntegrationProject,
         "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
     ];
 
     private static readonly string[] _excludedBaselineLanes =
     [
-        "tests/Hexalith.Folders.IntegrationTests",
         "tests/Hexalith.Folders.UI.E2E.Tests",
         "tests/load/Hexalith.Folders.LoadTests",
         "tests/Hexalith.Folders.LoadTests.Tests",
@@ -332,6 +333,10 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests", Case.Sensitive);
         contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.SecurityRedactionCiWorkflowConformanceTests", Case.Sensitive);
 
+        string integrationBlock = GetProjectBlock(script, IntegrationProject);
+        integrationBlock.ShouldContain("runner_arguments = @('-parallelMode', 'collections')", Case.Sensitive);
+        integrationBlock.ShouldNotContain("runner_classes", Case.Sensitive);
+
         string clientBlock = GetProjectBlock(script, "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj");
         clientBlock.ShouldContain("'-method-'", Case.Sensitive);
         clientBlock.ShouldContain("GeneratedClientAndHelpersMatchIsolatedRegeneration", Case.Sensitive);
@@ -361,9 +366,14 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
         JsonElement unitProjects = root.GetProperty("unit_test_projects");
         unitProjects.ValueKind.ShouldBe(JsonValueKind.Array);
-        unitProjects.EnumerateArray()
+        string[] reportedProjects = unitProjects.EnumerateArray()
             .Select(static element => RequiredString(element, "project_path"))
-            .ShouldBe(_baselineUnitProjects);
+            .ToArray();
+        // The checked-in report predates the integration lane. The script assertions above pin the current lane.
+        string[] expectedProjects = reportedProjects.Contains(IntegrationProject, StringComparer.Ordinal)
+            ? _baselineUnitProjects
+            : _baselineUnitProjects.Where(static project => project != IntegrationProject).ToArray();
+        reportedProjects.ShouldBe(expectedProjects);
 
         AssertMetadataOnlyJson(root);
     }
@@ -391,7 +401,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             documentation.ShouldContain(project, Case.Sensitive);
         }
 
-        foreach (string excluded in _excludedBaselineLanes.Take(4))
+        foreach (string excluded in _excludedBaselineLanes.Take(3))
         {
             documentation.ShouldContain(excluded, Case.Sensitive);
         }

@@ -63,6 +63,9 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     /// <summary>Gets the framework-event count returned by the last <c>/process</c> round-trip.</summary>
     public int LastWireEventCount { get; private set; }
 
+    /// <summary>Gets the rejection code returned by the last <c>/process</c> round-trip.</summary>
+    public FolderResultCode? LastWireRejectionCode { get; private set; }
+
     /// <inheritdoc/>
     public async Task<SubmitCommandResponse> SubmitCommandAsync(
         SubmitCommandRequest request,
@@ -70,6 +73,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     {
         string envelopeTenant = envelopeTenantTransform?.Invoke(request.Tenant) ?? request.Tenant;
         ProcessCalls++;
+        LastWireRejectionCode = null;
         using HttpClient client = clientFactory();
         CommandEnvelope envelope = new(
             request.IdempotencyKey ?? request.MessageId,
@@ -98,7 +102,12 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
 
         if (result.IsRejection)
         {
-            throw ToGatewayException(result, request.CorrelationId ?? request.MessageId);
+            // Zero or multiple events cannot unambiguously identify the rejection evidence.
+            FolderResultCode code = result.Events.Count == 1
+                ? ParseRejectionCode(result.Events[0].Payload)
+                : FolderResultCode.MalformedEvidence;
+            LastWireRejectionCode = code;
+            throw ToGatewayException(code, request.CorrelationId ?? request.MessageId);
         }
 
         JsonElement? resultPayload = null;
@@ -134,12 +143,8 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
         CancellationToken cancellationToken = default)
         => throw new NotSupportedException();
 
-    private static EventStoreGatewayException ToGatewayException(DomainServiceWireResult result, string correlationId)
+    private static EventStoreGatewayException ToGatewayException(FolderResultCode resultCode, string correlationId)
     {
-        // Zero or multiple events cannot unambiguously identify the rejection evidence.
-        FolderResultCode resultCode = result.Events.Count == 1
-            ? ParseRejectionCode(result.Events[0].Payload)
-            : FolderResultCode.MalformedEvidence;
         string category = FolderCanonicalErrorMapper.CategoryFor(resultCode);
         int status = FolderCanonicalErrorMapper.StatusFor(category);
 
