@@ -1322,14 +1322,16 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Testing/Polling/Eventually.cs
 reason: Simultaneous-cancellation TOCTOU in `Eventually.UntilAsync`: when both `timeoutSource.Token` and the caller's `cancellationToken` fire in the same quantum, the `when` filter evaluates `false` and raw `OperationCanceledException` propagates instead of `TimeoutException`. Low probability for a testing utility; acceptable trade-off. (`src/Hexalith.Folders.Testing/Polling/Eventually.cs`)
-status: open
+status: done 2026-11-23
+resolution: Poller cancellation reports a timeout when the deadline and caller cancellation have both fired at classification. An already-canceled caller prevents probe invocation. See spec-five-deferred-test-harness.md.
 
 ### DW-187: `TaskId`, `CorrelationId`, `IdempotencyKey` not validated at `TestFolderContext` construction
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs
 reason: `TaskId`, `CorrelationId`, `IdempotencyKey` not validated at `TestFolderContext` construction — intentional asymmetric design: stream-segment fields validated early; header fields validated at header-build time by `ValidateHeaderValue`. (`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`)
-status: open
+status: done 2026-11-23
+resolution: Construction now applies the populated and control-character checks to the task ID, correlation ID, and idempotency key. Tests cover each constructor parameter. See spec-five-deferred-test-harness.md.
 
 ### DW-188: `"diff --git"` in `CredentialMaterialMarkers` is overly broad; would false-positive on any fixture legitimately containing a diff snippet
 
@@ -1344,7 +1346,8 @@ resolution: Synthetic fixture patches are accepted. The fixture scanner still de
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs
 reason: `TestFolderContext` changed from positional record to custom-constructor record — loses compiler-synthesised positional deconstruction and `System.Text.Json` deserialisation support without a custom converter. Testing helper; neither usage pattern expected. (`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`)
-status: open
+status: done 2026-11-23
+resolution: The validated record supports deconstruction in its original positional order. A round-trip test verifies the existing System.Text.Json constructor binding. See spec-five-deferred-test-harness.md.
 
 ### DW-190: `RecursiveSubmoduleViolationDetectionDoesNotTreatBroadNearbyWordingAsExemption` test outcome is correct, but the `proseLinesSeen == 1` early-break prevents line 2 from ever being evaluated
 
@@ -1357,7 +1360,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Testing/Polling/Eventually.cs
 reason: A probe's own `OperationCanceledException` (from an unrelated internal token) may be misattributed as a timeout when `timeoutSource.IsCancellationRequested` is simultaneously true. Very low probability for a test utility. (`src/Hexalith.Folders.Testing/Polling/Eventually.cs`)
-status: open
+status: done 2026-11-23
+resolution: Timeout translation applies to cancellation carrying the polling token. Tests verify that a different probe token propagates, including a child linked to the polling token. See spec-five-deferred-test-harness.md.
 
 ### DW-192: `CollectPrecedingProseContext` early-break limits exemption window to the immediately preceding prose line
 
@@ -2499,7 +2503,8 @@ location: tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj and tests/H
 source_spec: `spec-lifecycle-test-hygiene.md`
 severity: medium
 reason: Both focused project commands fail before test execution because Microsoft.Testing.Platform 2.3.3 rejects the VSTest target under the .NET 10 SDK; direct xUnit v3 assembly execution remains green for the in-scope lanes.
-status: open
+status: done 2026-11-23
+resolution: The .NET 11 test runner and test guides use Microsoft.Testing.Platform project invocations, including per-project coverage and native xUnit class selection. The core and server projects reached test execution through `dotnet test --project`. See spec-five-deferred-test-harness.md.
 
 ### DW-342: The unchanged Forgejo provider source blocks a clean rebuild of the core test assembly.
 
@@ -3346,3 +3351,15 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-audit-corpus-checks.md`
   summary: Scan decoded YAML artifact keys and values for audit leakage.
   evidence: The existing artifact scan reads OpenAPI and parity YAML as text. Unicode escapes in a quoted YAML scalar need a decoded scan and a quarantined control.
+
+- source_spec: `spec-five-deferred-test-harness.md`
+  summary: Align the fixture task header with the Folders HTTP contract.
+  evidence: `TestRequestHeaders` emits `X-Task-Id`, but the OpenAPI `TaskId` parameter and Folders server routes use `X-Hexalith-Task-Id`. The fixture test uses the helper constant on both sides. Coordinate the public constant change with fixture consumers and assert the wire name.
+
+- source_spec: `spec-five-deferred-test-harness.md`
+  summary: Define how the HTTP fixture helper handles non-ASCII identifiers.
+  evidence: The existing fixture validation accepts non-ASCII identifiers. The default HTTP client rejects them during send. Set the wire validation at the HTTP boundary so fixture contexts can also serve non-HTTP tests.
+
+- source_spec: `spec-five-deferred-test-harness.md`
+  summary: Migrate specialized conformance scripts to native Microsoft.Testing.Platform project options.
+  evidence: The docs and Dapr policy gates still pass the VSTest logger option. The pinned runner rejects it before execution, so these scripts depend on an extensionless xUnit apphost fallback. Use native result reporting and check the Windows path when migrating the gates.

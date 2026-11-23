@@ -33,6 +33,43 @@ public sealed class FoldersTestDataFactoryTests
             new TestFolderContextOverrides(FolderId: "folder:001")));
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("fixture\nvalue")]
+    public void FolderContextRejectsInvalidHeaderIdentifiers(string? value)
+    {
+        Should.Throw<ArgumentException>(() => new TestFolderContext(
+            "tenant", "organization", "folder", value!, "correlation", "idempotency"))
+            .ParamName.ShouldBe("taskId");
+        Should.Throw<ArgumentException>(() => new TestFolderContext(
+            "tenant", "organization", "folder", "task", value!, "idempotency"))
+            .ParamName.ShouldBe("correlationId");
+        Should.Throw<ArgumentException>(() => new TestFolderContext(
+            "tenant", "organization", "folder", "task", "correlation", value!))
+            .ParamName.ShouldBe("idempotencyKey");
+    }
+
+    [Fact]
+    public void FolderContextDeconstructsInConstructorOrder()
+    {
+        TestFolderContext context = new("tenant", "organization", "folder", "task", "correlation", "idempotency");
+
+        var (tenant, organization, folder, task, correlation, idempotency) = context;
+
+        (tenant, organization, folder, task, correlation, idempotency)
+            .ShouldBe(("tenant", "organization", "folder", "task", "correlation", "idempotency"));
+    }
+
+    [Fact]
+    public void FolderContextRoundTripsThroughJson()
+    {
+        TestFolderContext context = new("tenant", "organization", "folder", "task:1", "correlation", "idempotency");
+
+        JsonSerializer.Deserialize<TestFolderContext>(JsonSerializer.Serialize(context)).ShouldBe(context);
+    }
+
     [Fact]
     public void AuthorizationContextDefaultsToFoldersPermissionWithoutPayloadAuthority()
     {

@@ -75,7 +75,7 @@ and skip everywhere else so the hermetic full-solution lane stays green without 
 
 ```bash
 HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true \
-  dotnet test tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
+  dotnet test --project tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
 ```
 
 Without the variable set, `AspireFoldersAppHostFixture` reports unavailable and diagnostic tests call

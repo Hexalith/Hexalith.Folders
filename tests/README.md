@@ -23,22 +23,22 @@ Do not run recursive submodule initialization unless nested submodule work is ex
 
 ## Running Tests
 
-Run the full scaffold lane:
+Run the full scaffold lane through the project-by-project runner. `All` and `Coverage` include the UI E2E project. Provision its Playwright browser using the bootstrap command in the UI End-to-End Lane section first.
 
 ```powershell
-dotnet test Hexalith.Folders.slnx
+pwsh tests/run-tests.ps1 -Mode All
 ```
 
 Run the shared testing infrastructure lane:
 
 ```powershell
-dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj
+dotnet test --project tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj
 ```
 
-Run with coverage collection:
+Run with Microsoft.Testing.Platform coverage collection. The runner writes a Cobertura report for each project under `TestResults`.
 
 ```powershell
-dotnet test Hexalith.Folders.slnx --collect:"XPlat Code Coverage"
+pwsh tests/run-tests.ps1 -Mode Coverage
 ```
 
 Run through the helper script:
@@ -53,16 +53,18 @@ Run through the helper script:
 
 ## Debugging Tests
 
-Run a single project while iterating:
+Use `--project` with the SDK pinned in `global.json` to run the core or server project independently.
 
 ```powershell
-dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj
+dotnet test --project tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj
+dotnet test --project tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj
 ```
 
-Run one named test with detailed output:
+Run one test class with detailed output.
 
 ```powershell
-dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~EventuallyTests --logger "console;verbosity=detailed"
+dotnet test --project tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj `
+    --filter-class Hexalith.Folders.Testing.Tests.Integration.EventuallyTests --output Detailed
 ```
 
 For integration failures, prefer inspecting the failing request, headers, correlation ID, idempotency key, and generated test artifacts before widening to the whole solution. Browser headed/debug mode is intentionally not part of the default lane; the UI E2E lane (`tests/Hexalith.Folders.UI.E2E.Tests`) is the live 63-test Playwright lane, blocking in CI as `e2e-gates` and `accessibility-gates`.
@@ -92,7 +94,7 @@ The blocking lane should start with:
 ```powershell
 dotnet restore Hexalith.Folders.slnx
 dotnet build Hexalith.Folders.slnx
-dotnet test Hexalith.Folders.slnx --collect:"XPlat Code Coverage"
+pwsh tests/run-tests.ps1 -Mode Coverage
 ```
 
 Future CI gates should add focused jobs for the parity contract schema, C6 state-transition matrix coverage, redaction sentinel corpus, cache-key tenant prefix enforcement, and provider contract drift checks.

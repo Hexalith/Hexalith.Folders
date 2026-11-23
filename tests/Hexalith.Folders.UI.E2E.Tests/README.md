@@ -90,7 +90,7 @@ The installer honors the same variable as `PlaywrightFixture`; an explicit `-Bro
 Or directly:
 
 ```powershell
-dotnet test tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj
+dotnet test --project tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj
 ```
 
 CI-equivalent local gates (from the repository root, once Bootstrap above has provisioned Chromium). Both

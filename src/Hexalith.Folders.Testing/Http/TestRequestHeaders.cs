@@ -16,24 +16,9 @@ public static class TestRequestHeaders
 
         return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            [CorrelationId] = ValidateHeaderValue(context.CorrelationId, nameof(context.CorrelationId)),
-            [IdempotencyKey] = ValidateHeaderValue(context.IdempotencyKey, nameof(context.IdempotencyKey)),
-            [TaskId] = ValidateHeaderValue(context.TaskId, nameof(context.TaskId))
+            [CorrelationId] = context.CorrelationId,
+            [IdempotencyKey] = context.IdempotencyKey,
+            [TaskId] = context.TaskId
         };
-    }
-
-    private static string ValidateHeaderValue(string value, string parameterName)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException("Header values must be populated.", parameterName);
-        }
-
-        if (value.Any(char.IsControl))
-        {
-            throw new ArgumentException("Header values must not contain control characters.", parameterName);
-        }
-
-        return value;
     }
 }
