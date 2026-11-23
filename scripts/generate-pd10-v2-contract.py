@@ -12,9 +12,15 @@ from typing import Any
 
 import yaml
 from jsonschema import Draft202012Validator
+from referencing import Registry
+from referencing.exceptions import Unresolvable
 
 
 HTTP_METHODS = {"delete", "get", "head", "options", "patch", "post", "put", "trace"}
+FILE_CONTEXT_OPERATIONS = {
+    "AddFile", "ChangeFile", "RemoveFile", "ListFolderFiles", "GetFolderFileMetadata",
+    "SearchFolderFiles", "GlobFolderFiles", "ReadFileRange",
+}
 FORBIDDEN_PROTECTED_CATEGORIES = {
     "not_found",
     "cross_tenant_access_denied",
@@ -1222,30 +1228,48 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
 
 
 def validate_declared_examples(contract: dict[str, Any]) -> None:
-    for path, path_item in contract["paths"].items():
+    for path_item in contract["paths"].values():
         for method, operation in path_item.items():
             if method not in HTTP_METHODS or not isinstance(operation, dict):
                 continue
-            for status, response in operation.get("responses", {}).items():
-                if "$ref" in response:
-                    response = resolve_local_reference(contract, response["$ref"])
-                media_type = response.get("content", {}).get("application/problem+json")
-                if not isinstance(media_type, dict):
-                    continue
-                schema = media_type.get("schema")
-                for example_name, example in media_type.get("examples", {}).items():
-                    if "$ref" in example:
-                        example = resolve_local_reference(contract, example["$ref"])
-                    resolved_schema = resolve_schema(contract, schema)
-                    errors = sorted(
-                        Draft202012Validator(resolved_schema).iter_errors(example["value"]),
-                        key=lambda error: list(error.absolute_path),
-                    )
-                    if errors:
-                        raise ValueError(
-                            f"Example {operation['operationId']}.{status}.{example_name} does not validate "
-                            f"against its fully resolved schema: {errors[0].message}"
-                        )
+            messages = [(f"response {status}", response) for status, response in operation.get("responses", {}).items()]
+            if "requestBody" in operation:
+                messages.append(("request body", operation["requestBody"]))
+            for location, message in messages:
+                label = f"{operation['operationId']} {location}"
+                message = resolve_openapi_object(contract, message, label)
+                for media_name, media in message.get("content", {}).items():
+                    media_type = media_name.partition(";")[0].strip().lower()
+                    if media_type != "application/problem+json" and not (
+                        operation["operationId"] in FILE_CONTEXT_OPERATIONS
+                        and (media_type == "application/json" or media_type.endswith("+json"))
+                    ):
+                        continue
+                    validate_media_examples(contract, media, f"{label} {media_name}")
+
+
+def validate_media_examples(contract: dict[str, Any], media: dict[str, Any], label: str) -> None:
+    examples = []
+    if "example" in media:
+        examples.append(("inline", media["example"]))
+    for name, example in media.get("examples", {}).items():
+        example = resolve_openapi_object(contract, example, f"Example {label} {name}")
+        if "value" not in example:
+            raise ValueError(f"Example {label} {name} must declare a local value.")
+        examples.append((name, example["value"]))
+
+    if not examples:
+        return
+    if "schema" not in media:
+        raise ValueError(f"Example {label} {examples[0][0]} has no bound schema.")
+    validator = Draft202012Validator({**contract, "allOf": [media["schema"]]}, registry=Registry())
+    for name, value in examples:
+        try:
+            error = next(validator.iter_errors(value), None)
+        except Unresolvable:
+            raise ValueError(f"Example {label} {name} has an unresolvable schema reference.") from None
+        if error is not None:
+            raise ValueError(f"Example {label} {name} violates its bound schema at {error.json_path} ({error.validator}).")
 
 
 def validate_declared_statuses_have_runtime_tuples(contract: dict[str, Any]) -> None:
@@ -1273,17 +1297,19 @@ def resolve_local_reference(contract: dict[str, Any], reference: str) -> Any:
     return value
 
 
-def resolve_schema(contract: dict[str, Any], node: Any) -> Any:
-    if isinstance(node, dict):
-        if "$ref" in node:
-            resolved = copy.deepcopy(resolve_local_reference(contract, node["$ref"]))
-            siblings = {key: value for key, value in node.items() if key != "$ref"}
-            if siblings:
-                resolved = {"allOf": [resolved, siblings]}
-            return resolve_schema(contract, resolved)
-        return {key: resolve_schema(contract, value) for key, value in node.items()}
-    if isinstance(node, list):
-        return [resolve_schema(contract, item) for item in node]
+def resolve_openapi_object(contract: dict[str, Any], node: dict[str, Any], label: str) -> dict[str, Any]:
+    seen = set()
+    while "$ref" in node:
+        reference = node["$ref"]
+        if reference in seen:
+            raise ValueError(f"{label} has a circular OpenAPI object reference: {reference!r}.")
+        seen.add(reference)
+        try:
+            node = resolve_local_reference(contract, reference)
+        except (KeyError, ValueError):
+            raise ValueError(f"{label} has an unresolvable OpenAPI object reference: {reference!r}.") from None
+        if not isinstance(node, dict):
+            raise ValueError(f"{label} does not refer to an OpenAPI object: {reference!r}.")
     return node
 
 

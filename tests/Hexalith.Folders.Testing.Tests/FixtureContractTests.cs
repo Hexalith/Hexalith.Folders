@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Hexalith.Folders.Testing.Tests.Helpers;
 using Shouldly;
 using Xunit;
+using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Testing.Tests;
 
@@ -87,31 +88,64 @@ public sealed class FixtureContractTests
         }
 
         string previousSpinePath = Path.Combine(root, "tests", "fixtures", "previous-spine.yaml");
-        string rawPreviousSpine = ReadFixtureFile(previousSpinePath);
-        Dictionary<string, string> previousSpine = ParseTopLevelYamlScalarMap(File.ReadAllLines(previousSpinePath));
+        YamlMappingNode previousSpine = ParsePreviousSpine(ReadFixtureFile(previousSpinePath), "previous-spine.yaml");
 
-        previousSpine.ShouldContainKey("version");
-        previousSpine.ShouldContainKey("source_marker");
-        previousSpine.ShouldContainKey("operations");
-        previousSpine.ShouldNotContainKey("openapi");
+        previousSpine.Children.ShouldContainKey(new YamlScalarNode("version"));
+        previousSpine.Children.ShouldContainKey(new YamlScalarNode("source_marker"));
+        YamlSequenceNode operations = previousSpine.Children[new YamlScalarNode("operations")]
+            .ShouldBeOfType<YamlSequenceNode>("previous-spine.yaml operations");
+        operations.Children.ShouldNotBeEmpty("previous-spine.yaml must include captured operations.");
+        foreach (YamlNode operation in operations.Children)
+        {
+            operation.ShouldBeOfType<YamlMappingNode>("previous-spine.yaml operation")
+                .Children.ShouldContainKey(new YamlScalarNode("operation_id"));
+        }
 
-        // Patch (Story 1.13 P-25): previous-spine.yaml is now a captured baseline of the Contract Spine,
-        // not an empty placeholder. The captured form must contain at least one operation entry written
-        // in YAML block-sequence form ('  - operation_id: ...').
-        rawPreviousSpine.ShouldContain("  - operation_id:", Case.Sensitive,
-            "previous-spine.yaml must declare operations as a non-empty block sequence after baseline capture.");
-
-        // Patch 6: verify all ownership fields are present and boolean flags are explicitly true (AC6 gap)
+        YamlMappingNode baselineOwnership = previousSpine.Children[new YamlScalarNode("ownership")]
+            .ShouldBeOfType<YamlMappingNode>("previous-spine.yaml ownership");
         foreach (string field in OwnershipFields)
         {
-            rawPreviousSpine.ShouldContain(field, Case.Sensitive,
-                $"previous-spine.yaml should contain ownership field '{field}'.");
+            baselineOwnership.Children.ShouldContainKey(new YamlScalarNode(field), $"previous-spine.yaml ownership.{field}");
         }
-        rawPreviousSpine.ShouldContain("non_policy_placeholder: true", Case.Sensitive,
-            "previous-spine.yaml ownership.non_policy_placeholder must be true.");
-        rawPreviousSpine.ShouldContain("synthetic_data_only: true", Case.Sensitive,
-            "previous-spine.yaml ownership.synthetic_data_only must be true.");
+
+        foreach (string field in new[] { "owner_workstream", "future_test_use" })
+        {
+            CheckOwnershipText(baselineOwnership.Children[new YamlScalarNode(field)], field);
+        }
+
+        foreach (string field in new[] { "known_omissions", "mutation_rules" })
+        {
+            YamlSequenceNode values = baselineOwnership.Children[new YamlScalarNode(field)].ShouldBeOfType<YamlSequenceNode>(field);
+            values.Children.ShouldNotBeEmpty($"previous-spine.yaml ownership.{field}");
+            foreach (YamlNode value in values.Children)
+            {
+                CheckOwnershipText(value, field);
+            }
+        }
+
+        foreach (string flag in new[] { "non_policy_placeholder", "synthetic_data_only" })
+        {
+            YamlScalarNode value = baselineOwnership.Children[new YamlScalarNode(flag)].ShouldBeOfType<YamlScalarNode>();
+            value.Value.ShouldBe("true", $"previous-spine.yaml ownership.{flag}");
+            value.Style.ShouldBe(YamlDotNet.Core.ScalarStyle.Plain, $"previous-spine.yaml ownership.{flag} must be boolean.");
+        }
     }
+
+    [Theory]
+    [InlineData("openapi: 3.1.0", "openapi")]
+    [InlineData("root: [{'openapi_version': 3.1.0}]", "openapi_version")]
+    [InlineData("root: {'OpenAPI-Version': 3.1.0}", "OpenAPI-Version")]
+    [InlineData("root: {openapiVersion: 3.1.0}", "openapiVersion")]
+    public void PreviousSpineRejectsOpenApiVersionKeys(string yaml, string key)
+    {
+        Should.Throw<InvalidOperationException>(() => ParsePreviousSpine(yaml, "previous-spine.yaml"))
+            .Message.ShouldContain($"'{key}'", Case.Sensitive);
+    }
+
+    [Fact]
+    public void PreviousSpinePermitsOpenApiReferencesInValues()
+        => ParsePreviousSpine("source_marker: 'openapi: 3.1.0'", "previous-spine.yaml")
+            .Children.ShouldContainKey(new YamlScalarNode("source_marker"));
 
     [Fact]
     public void DeferredArtifactAreasCarryMachineCheckableOwnershipNotes()
@@ -286,25 +320,57 @@ public sealed class FixtureContractTests
         return File.ReadAllText(absolutePath);
     }
 
-    private static Dictionary<string, string> ParseTopLevelYamlScalarMap(string[] lines)
+    private static YamlMappingNode ParsePreviousSpine(string content, string name)
     {
-        Dictionary<string, string> values = new(StringComparer.Ordinal);
+        using StringReader reader = new(content);
+        YamlStream yaml = new();
+        yaml.Load(reader);
+        yaml.Documents.Count.ShouldBe(1, $"{name} must contain one YAML document.");
+        YamlMappingNode root = yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>(name);
+        CheckVersionKeys(root, name, new HashSet<YamlNode>(ReferenceEqualityComparer.Instance));
+        return root;
+    }
 
-        foreach (string line in lines)
+    private static void CheckOwnershipText(YamlNode node, string field)
+    {
+        string location = $"previous-spine.yaml ownership.{field}";
+        YamlScalarNode text = node.ShouldBeOfType<YamlScalarNode>(location);
+        string? value = text.Value;
+        (string.IsNullOrWhiteSpace(value)
+            || (text.Style == YamlDotNet.Core.ScalarStyle.Plain && (value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))))
+            .ShouldBeFalse($"{location} must contain text.");
+    }
+
+    private static void CheckVersionKeys(YamlNode node, string location, HashSet<YamlNode> visited)
+    {
+        if (!visited.Add(node))
         {
-            if (line.Length == 0 || char.IsWhiteSpace(line[0]) || line.StartsWith('#'))
-            {
-                continue;
-            }
-
-            string[] parts = line.Split(':', 2);
-            if (parts.Length == 2)
-            {
-                values[parts[0].Trim()] = parts[1].Trim();
-            }
+            return;
         }
 
-        return values;
+        if (node is YamlMappingNode mapping)
+        {
+            foreach ((YamlNode key, YamlNode value) in mapping.Children)
+            {
+                string field = key.ShouldBeOfType<YamlScalarNode>(location).Value ?? string.Empty;
+                if (field.Equals("openapi", StringComparison.OrdinalIgnoreCase)
+                    || field.Equals("openapiVersion", StringComparison.OrdinalIgnoreCase)
+                    || field.StartsWith("openapi_", StringComparison.OrdinalIgnoreCase)
+                    || field.StartsWith("openapi-", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException($"{location} contains the OpenAPI version key '{field}'.");
+                }
+
+                CheckVersionKeys(value, $"{location}.{field}", visited);
+            }
+        }
+        else if (node is YamlSequenceNode sequence)
+        {
+            for (int index = 0; index < sequence.Children.Count; index++)
+            {
+                CheckVersionKeys(sequence.Children[index], $"{location}[{index}]", visited);
+            }
+        }
     }
 
     private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);

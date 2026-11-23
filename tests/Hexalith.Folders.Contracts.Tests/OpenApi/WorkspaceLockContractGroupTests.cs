@@ -59,6 +59,26 @@ public sealed class WorkspaceLockContractGroupTests
         ResolveRefs(root);
     }
 
+    [Theory]
+    [InlineData("cursor")]
+    [InlineData("{type: string}")]
+    public void ParameterReferenceRequiresAParameterObject(string target)
+    {
+        YamlMappingNode root = ParseYamlMapping($$"""
+            paths:
+              /lookup:
+                get:
+                  parameters:
+                    - $ref: '#/components/parameters/Cursor'
+            components:
+              parameters:
+                Cursor: {{target}}
+            """);
+
+        Should.Throw<ShouldAssertException>(() => ResolveRefs(root)).Message
+            .ShouldContain("must resolve to a Parameter Object", Case.Sensitive);
+    }
+
     [Fact]
     public void WorkspaceLockOperations_DeclareRequiredMetadataAndIdempotencyRules()
     {
@@ -201,14 +221,15 @@ public sealed class WorkspaceLockContractGroupTests
         string notes = ReadArtifact(ContractNotesResource);
         string combined = string.Concat(serialized, "\n", notes);
 
-        foreach (string named in EnumerateNamedFields(root))
+        string[] namedFields = EnumerateNamedFields(root).Distinct(StringComparer.Ordinal).ToArray();
+        foreach (string named in namedFields)
         {
             named.Equals("tenantId", StringComparison.OrdinalIgnoreCase).ShouldBeFalse($"tenant authority must not appear as a client-controlled field; found '{named}'.");
             named.Equals("tenant_id", StringComparison.OrdinalIgnoreCase).ShouldBeFalse($"tenant authority must not appear as a client-controlled field; found '{named}'.");
             named.Equals("managedTenantId", StringComparison.OrdinalIgnoreCase).ShouldBeFalse($"tenant authority must not appear as a client-controlled field; found '{named}'.");
         }
 
-        foreach (string named in EnumerateNamedFields(root))
+        foreach (string named in namedFields)
         {
             bool allowedNonSecretReference = named is "nonSecretCredentialReference" or "lockOwnershipProof";
             if (allowedNonSecretReference)
@@ -330,6 +351,78 @@ public sealed class WorkspaceLockContractGroupTests
         }
     }
 
+    [Theory]
+    [InlineData("#/components/parameters/Cursor", "items/$ref", "schemas")]
+    [InlineData("#/components/schemas/Item/type", "items/$ref", "schemas")]
+    [InlineData("#/components/schemas/Item", "parameters/0/$ref", "parameters")]
+    public void ReferencesMustTargetTheComponentKindRequiredByTheirLocation(string reference, string location, string component)
+    {
+        string schemaRef = component == "schemas" ? reference : "#/components/schemas/Item";
+        string parameterRef = component == "parameters" ? reference : "#/components/parameters/Cursor";
+        YamlMappingNode root = ParseYamlMapping($$"""
+            paths:
+              /lookup:
+                get:
+                  parameters:
+                    - $ref: '{{parameterRef}}'
+                  responses:
+                    '200':
+                      content:
+                        application/json:
+                          schema:
+                            items: {$ref: '{{schemaRef}}'}
+            components:
+              schemas:
+                Item: {type: string}
+              parameters:
+                Cursor:
+                  name: cursor
+                  in: query
+                  schema: {type: string}
+            """);
+
+        Should.Throw<ShouldAssertException>(() => ResolveRefs(root)).Message
+            .ShouldContain(location, Case.Sensitive);
+    }
+
+    [Fact]
+    public void ExampleFieldEnumerationVisitsPayloadKeysWithoutTreatingLabelsAndValuesAsFields()
+    {
+        YamlMappingNode root = ParseYamlMapping("""
+            components:
+              schemas:
+                Result:
+                  properties:
+                    example: {type: string}
+                  example: {singleSchemaCredentialField: synthetic}
+                  examples:
+                    - result: [{exampleCredentialField: synthetic}]
+              examples:
+                tokenLabel:
+                  summary: Describes a credential
+                  value: {name: credentialValue, $ref: ordinary data, componentCredentialField: synthetic}
+              responses:
+                Result:
+                  content:
+                    application/json:
+                      example: {items: [{inlineCredentialField: synthetic}]}
+                    application/problem+json:
+                      examples:
+                        tokenLabel:
+                          value: {namedCredentialField: synthetic}
+            """);
+
+        string[] fields = EnumerateNamedFields(root).ToArray();
+        fields.ShouldContain("singleSchemaCredentialField");
+        fields.ShouldContain("exampleCredentialField");
+        fields.ShouldContain("componentCredentialField");
+        fields.ShouldContain("inlineCredentialField");
+        fields.ShouldContain("namedCredentialField");
+        fields.ShouldNotContain("tokenLabel");
+        fields.ShouldNotContain("credentialValue");
+        ResolveRefs(root);
+    }
+
     private sealed record Operation(string Path, string Method, string OperationId, YamlMappingNode Node, YamlMappingNode PathItem);
 
     private static IEnumerable<Operation> EnumerateOperations(YamlMappingNode root)
@@ -372,27 +465,53 @@ public sealed class WorkspaceLockContractGroupTests
 
     private static IEnumerable<string> EnumerateNamedFields(YamlNode node)
     {
-        if (node is YamlMappingNode mapping)
+        foreach ((_, YamlNode objectNode, string? component) in WalkContract(node, "#"))
         {
-            if (mapping.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? nameNode) && nameNode is YamlScalarNode nameScalar && nameScalar.Value is { } nameValue)
+            if (objectNode is not YamlMappingNode mapping)
             {
-                yield return nameValue;
+                continue;
             }
 
-            if (mapping.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? propsNode) && propsNode is YamlMappingNode propsMapping)
+            if (GetOptionalScalar(mapping, "name") is { } name)
             {
-                foreach (YamlNode propKey in propsMapping.Children.Keys)
+                yield return name;
+            }
+
+            if (component == "schemas" && FindChild(mapping, "properties") is YamlMappingNode properties)
+            {
+                foreach (YamlScalarNode property in properties.Children.Keys.OfType<YamlScalarNode>())
                 {
-                    if (propKey is YamlScalarNode propScalar && propScalar.Value is { } propValue)
-                    {
-                        yield return propValue;
-                    }
+                    yield return property.Value ?? string.Empty;
                 }
             }
 
-            foreach (YamlNode child in mapping.Children.Values)
+            foreach (string field in EnumeratePayloadKeys(FindChild(mapping, component == "examples" ? "value" : "example")))
             {
-                foreach (string nested in EnumerateNamedFields(child))
+                yield return field;
+            }
+
+            if (component == "schemas")
+            {
+                foreach (string field in EnumeratePayloadKeys(FindChild(mapping, "examples")))
+                {
+                    yield return field;
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<string> EnumeratePayloadKeys(YamlNode? node)
+    {
+        if (node is YamlMappingNode mapping)
+        {
+            foreach ((YamlNode key, YamlNode child) in mapping.Children)
+            {
+                if (key is YamlScalarNode { Value: { } field })
+                {
+                    yield return field;
+                }
+
+                foreach (string nested in EnumeratePayloadKeys(child))
                 {
                     yield return nested;
                 }
@@ -400,12 +519,9 @@ public sealed class WorkspaceLockContractGroupTests
         }
         else if (node is YamlSequenceNode sequence)
         {
-            foreach (YamlNode child in sequence.Children)
+            foreach (string nested in sequence.Children.SelectMany(EnumeratePayloadKeys))
             {
-                foreach (string nested in EnumerateNamedFields(child))
-                {
-                    yield return nested;
-                }
+                yield return nested;
             }
         }
     }
@@ -422,41 +538,128 @@ public sealed class WorkspaceLockContractGroupTests
 
     private static void ResolveRefs(YamlMappingNode root)
     {
-        foreach (string reference in EnumerateRefs(root))
+        var objects = WalkContract(root, "#").ToArray();
+        var schemaLocations = objects.Where(entry => entry.Component == "schemas").Select(entry => entry.Location).ToHashSet(StringComparer.Ordinal);
+        foreach ((string location, YamlNode objectNode, string? component) in objects)
         {
-            reference.StartsWith("#/", StringComparison.Ordinal).ShouldBeTrue(reference);
-            ResolvePointer(root, reference[2..].Split('/')).ShouldNotBeNull(reference);
+            if (objectNode is not YamlMappingNode mapping || FindChild(mapping, "$ref") is not { } node)
+            {
+                continue;
+            }
+
+            string reference = node.ShouldBeOfType<YamlScalarNode>(location).Value ?? string.Empty;
+            string context = $"{location}/$ref points to {reference}";
+            reference.StartsWith("#/", StringComparison.Ordinal).ShouldBeTrue(context);
+            string[] segments = reference[2..].Split('/');
+            if (component == "schemas")
+            {
+                (reference.StartsWith("#/components/schemas/", StringComparison.Ordinal) && schemaLocations.Contains(reference))
+                    .ShouldBeTrue($"{context} instead of a schema in #/components/schemas.");
+            }
+            else if (component is not null)
+            {
+                (segments.Length == 3 && segments[0] == "components" && segments[1] == component)
+                    .ShouldBeTrue($"{context} instead of a target in #/components/{component}.");
+            }
+
+            YamlNode? target = ResolvePointer(root, segments);
+            target.ShouldNotBeNull(context);
+            if (component == "parameters")
+            {
+                (target is YamlMappingNode parameter
+                    && (GetOptionalScalar(parameter, "$ref") is not null
+                        || (!string.IsNullOrWhiteSpace(GetOptionalScalar(parameter, "name"))
+                            && GetOptionalScalar(parameter, "in") is "path" or "query" or "header" or "cookie")))
+                    .ShouldBeTrue($"{context} and must resolve to a Parameter Object.");
+            }
         }
     }
 
-    private static IEnumerable<string> EnumerateRefs(YamlNode node)
+    private static IEnumerable<(string Location, YamlNode Node, string? Component)> WalkContract(
+        YamlNode node,
+        string location,
+        string? component = null)
+    {
+        if (node is not YamlMappingNode mapping)
+        {
+            if (component == "schemas" && node is YamlScalarNode { Value: "true" or "false", Style: YamlDotNet.Core.ScalarStyle.Plain })
+            {
+                yield return (location, node, component);
+            }
+
+            yield break;
+        }
+
+        yield return (location, mapping, component);
+        foreach ((YamlNode key, YamlNode child) in mapping.Children)
+        {
+            string name = key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+            string childLocation = $"{location}/{EscapePointerSegment(name)}";
+
+            if (name == "example" || (component == "examples" && name == "value"))
+            {
+                continue;
+            }
+
+            bool schema = component == "schemas";
+            string? entryComponent = (location, schema, name) switch
+            {
+                ("#/components", _, "schemas" or "parameters" or "requestBodies" or "responses" or "headers" or "examples") => name,
+                (_, true, "properties" or "patternProperties" or "$defs" or "dependentSchemas" or "allOf" or "anyOf" or "oneOf" or "prefixItems") => "schemas",
+                (_, false, "parameters" or "examples") => name,
+                _ => null,
+            };
+            if (entryComponent is not null)
+            {
+                foreach (var entry in WalkEntries(child, childLocation, entryComponent))
+                {
+                    yield return entry;
+                }
+            }
+            else if (!schema || name is "items" or "contains" or "additionalProperties" or "unevaluatedProperties"
+                or "unevaluatedItems" or "propertyNames" or "not" or "if" or "then" or "else")
+            {
+                string? childComponent = schema || name == "schema" ? "schemas" : null;
+                foreach (var entry in WalkContract(child, childLocation, childComponent))
+                {
+                    yield return entry;
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<(string Location, YamlNode Node, string? Component)> WalkEntries(
+        YamlNode node,
+        string location,
+        string component)
     {
         if (node is YamlMappingNode mapping)
         {
-            foreach (KeyValuePair<YamlNode, YamlNode> child in mapping.Children)
+            foreach ((YamlNode key, YamlNode value) in mapping.Children)
             {
-                if (child.Key is YamlScalarNode { Value: "$ref" } && child.Value is YamlScalarNode reference)
+                string name = key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+                foreach (var entry in WalkContract(value, $"{location}/{EscapePointerSegment(name)}", component))
                 {
-                    yield return reference.Value ?? string.Empty;
-                }
-
-                foreach (string nestedReference in EnumerateRefs(child.Value))
-                {
-                    yield return nestedReference;
+                    yield return entry;
                 }
             }
         }
         else if (node is YamlSequenceNode sequence)
         {
-            foreach (YamlNode child in sequence.Children)
+            for (int index = 0; index < sequence.Children.Count; index++)
             {
-                foreach (string reference in EnumerateRefs(child))
+                foreach (var entry in WalkContract(sequence.Children[index], $"{location}/{index}", component))
                 {
-                    yield return reference;
+                    yield return entry;
                 }
             }
         }
     }
+
+    private static string EscapePointerSegment(string name) => name.Replace("~", "~0", StringComparison.Ordinal).Replace("/", "~1", StringComparison.Ordinal);
+
+    private static YamlNode? FindChild(YamlMappingNode mapping, string name)
+        => mapping.Children.TryGetValue(new YamlScalarNode(name), out YamlNode? child) ? child : null;
 
     private static YamlNode? ResolvePointer(YamlNode root, IReadOnlyList<string> segments)
     {
@@ -465,7 +668,16 @@ public sealed class WorkspaceLockContractGroupTests
         foreach (string segment in segments)
         {
             string key = segment.Replace("~1", "/", StringComparison.Ordinal).Replace("~0", "~", StringComparison.Ordinal);
-            if (current is not YamlMappingNode mapping || !mapping.Children.TryGetValue(new YamlScalarNode(key), out current!))
+            if (current is YamlMappingNode mapping && FindChild(mapping, key) is { } child)
+            {
+                current = child;
+            }
+            else if (current is YamlSequenceNode sequence && int.TryParse(key, out int index)
+                && index >= 0 && index < sequence.Children.Count)
+            {
+                current = sequence.Children[index];
+            }
+            else
             {
                 return null;
             }
@@ -475,8 +687,11 @@ public sealed class WorkspaceLockContractGroupTests
     }
 
     private static YamlMappingNode LoadYamlMapping()
+        => ParseYamlMapping(ReadArtifact(OpenApiResource));
+
+    private static YamlMappingNode ParseYamlMapping(string content)
     {
-        using StringReader reader = new(ReadArtifact(OpenApiResource));
+        using StringReader reader = new(content);
         YamlStream yaml = new();
         yaml.Load(reader);
 

@@ -74,6 +74,66 @@ public sealed class ContractRulesArtifactTests
     ];
 
     [Fact]
+    public void VerificationCoverageMatchesStoryAcceptanceCriteriaAndTestMethods()
+    {
+        const string rulesArtifact = "docs/contract/idempotency-and-parity-rules.md";
+        string root = RepositoryArtifacts.FindRoot();
+        string content = RepositoryArtifacts.ReadText(Path.Combine(root, rulesArtifact));
+        string story = RepositoryArtifacts.ReadText(Path.Combine(
+            root, "_bmad-output", "implementation-artifacts", "1-5-finalize-idempotency-equivalence-and-adapter-parity-rules.md"));
+
+        string[] storyCriteria = FindSection(story, "## Acceptance Criteria")
+            .Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Split(". ", 2)[0])
+            .Where(number => number.All(char.IsAsciiDigit))
+            .Select(number => $"AC{number}")
+            .ToArray();
+
+        string stableTables = nameof(ContractRulesArtifactDeclaresStableTablesAndOperationRows);
+        string readAndWriteScope = nameof(ContractRulesArtifactCoversIdempotencyReadConsistencyAndNegativeScope);
+        (string Artifact, string Check, string Criteria, string Test, string? Helper)[] expected =
+        [
+            (rulesArtifact, "all MVP operations and Phase 1 candidates appear in stable table rows", "AC1, AC8, AC9", stableTables, null),
+            (rulesArtifact, "every mutating command declares tenant-scoped equivalence, idempotency key behavior, TTL tier, duplicate outcome, conflict outcome, correlation behavior, and task identity behavior", "AC2, AC8", readAndWriteScope, null),
+            (rulesArtifact, "every non-mutating operation declares read-consistency class, safe denial shape, audit keys, correlation behavior, projection expectation, and non-idempotent semantics", "AC3, AC8, AC9", readAndWriteScope, null),
+            (rulesArtifact, "SDK, CLI, and MCP sourcing and projection rules preserve architecture Adapter Parity Contract dimensions", "AC4", stableTables, null),
+            ("tests/fixtures/parity-contract.schema.json", "transport and behavioral parity columns are required and adapter/failure-kind enums are bounded", "AC5", nameof(ParitySchemaDeclaresTransportAndBehavioralColumns), null),
+            ("tests/fixtures/idempotency-encoding-corpus.json", "synthetic corpus covers Unicode normalization, zero-width joiner, casing, ordering, whitespace, null versus omitted, percent encoding, malformed keys, and duplicate keys; schema_version is pinned and every case carries comparison_input plus field_path", "AC6", nameof(EncodingCorpusCoversRequiredSyntheticCategories), null),
+            ("tests/fixtures/idempotency-encoding-corpus.schema.json", "case shape, category enum, and equivalence_classification enum are declared so future contributors cannot omit required fields", "AC6", nameof(EncodingCorpusSchemaDeclaresRequiredCaseShape), null),
+            ("negative-scope guardrail", "no OpenAPI spine reshape, parity result rows, generated SDK output, NSwag configuration, parity-oracle runner, REST/CLI/MCP behavior, CI workflow gate, or nested-submodule initialization is added by this story", "AC7, AC8", readAndWriteScope, nameof(AssertNoStory15ContrabandScope)),
+        ];
+
+        foreach (string test in expected.Select(row => row.Test).Distinct(StringComparer.Ordinal))
+        {
+            (typeof(ContractRulesArtifactTests).GetMethod(test)?.IsDefined(typeof(FactAttribute), inherit: false) == true)
+                .ShouldBeTrue($"{test} must be an executable test.");
+        }
+
+        string[][] rows = FindSection(content, "## Verification Coverage")
+            .Split('\n', StringSplitOptions.TrimEntries)
+            .Where(line => line.StartsWith('|'))
+            .Select(SplitRowCells)
+            .Skip(2)
+            .ToArray();
+        foreach (string[] row in rows)
+        {
+            row.Length.ShouldBe(5, "Verification Coverage rows must have five columns.");
+            row[4].ShouldBe("implemented", $"Verification Coverage status for {row[1]}");
+        }
+
+        var actual = rows.Select(row => (Artifact: row[0].Trim('`'), Check: row[1], Criteria: row[2], Method: row[3])).ToArray();
+        var coverage = expected.Select(row => (
+            row.Artifact,
+            row.Check,
+            row.Criteria,
+            Method: $"`{nameof(ContractRulesArtifactTests)}.{row.Test}`" + (row.Helper is null ? string.Empty : $" plus `{row.Helper}`")));
+        actual.Order().ShouldBe(coverage.Order(), "Verification Coverage must cite the tests that cover each criterion.");
+        string[] coveredCriteria = actual.SelectMany(row => row.Criteria.Split(", ")).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+        coveredCriteria.SequenceEqual(storyCriteria.Order(StringComparer.Ordinal), StringComparer.Ordinal)
+            .ShouldBeTrue("Verification Coverage must account for all story criteria.");
+    }
+
+    [Fact]
     public void ContractRulesArtifactDeclaresStableTablesAndOperationRows()
     {
         string root = RepositoryArtifacts.FindRoot();
@@ -111,6 +171,8 @@ public sealed class ContractRulesArtifactTests
         {
             content.ShouldContain(header, Case.Sensitive);
         }
+
+        AssertAdapterParityRules(content);
 
         foreach (string operation in MvpOperations.Concat(PhaseOneCandidates))
         {
@@ -363,28 +425,57 @@ public sealed class ContractRulesArtifactTests
         equivalenceClassifications.ShouldContain("parser-rejected", "Encoding-corpus schema must enumerate parser-rejected as a valid equivalence classification.");
     }
 
-    private static string FindMarkdownRow(string content, string sectionHeading, string operation)
+    private static void AssertAdapterParityRules(string content)
     {
-        int sectionStart = content.IndexOf(sectionHeading, StringComparison.Ordinal);
-        sectionStart.ShouldBeGreaterThanOrEqualTo(0, $"{sectionHeading} should exist.");
+        (string Dimension, string Sdk, string Cli, string Mcp)[] dimensions =
+        [
+            ("idempotency key sourcing", "`IIdempotencyKeyProvider`", "`--idempotency-key` or `--allow-auto-key`", "required `idempotencyKey`"),
+            ("correlation ID sourcing", "`ICorrelationIdProvider`", "`--correlation-id`", "optional `correlationId`"),
+            ("task ID sourcing", "caller-provided header", "required `--task-id`", "required `taskId`"),
+            ("credential sourcing", "DI access token provider", "`HEXALITH_TOKEN`, credential file, then `--token`", "`auth.token` or `auth.tokenFile`"),
+            ("pre-SDK error projection", "before HTTP call", "usage/config errors exit 64; missing credentials exit 65", "missing credentials `credential_missing`"),
+            ("post-SDK error projection", "canonical Problem Details fields", "canonical category maps to CLI exit code", "canonical category maps to MCP failure kind"),
+        ];
+        foreach ((string dimension, string sdk, string cli, string mcp) in dimensions)
+        {
+            string[] cells = SplitRowCells(FindMarkdownRow(content, "## Adapter Parity Dimensions", dimension));
+            cells.Length.ShouldBe(6, dimension);
+            cells[1].ShouldContain(sdk, Case.Sensitive, dimension);
+            cells[2].ShouldContain(cli, Case.Sensitive, dimension);
+            cells[3].ShouldContain(mcp, Case.Sensitive, dimension);
+        }
 
-        int nextSection = content.IndexOf("\n## ", sectionStart + sectionHeading.Length, StringComparison.Ordinal);
-        string section = nextSection < 0 ? content[sectionStart..] : content[sectionStart..nextSection];
-        string marker = $"| `{operation}` |";
+        string[] credentials = SplitRowCells(FindMarkdownRow(content, "## Adapter Outcome Parity", "missing credentials"));
+        credentials.Length.ShouldBe(7, "missing credentials");
+        credentials[4..].ShouldBe(["credential_missing", "65", "credential_missing"]);
+    }
+
+    private static string FindMarkdownRow(string content, string sectionHeading, string rowLabel)
+    {
+        string section = FindSection(content, sectionHeading);
         string[] matches = section
             .Split('\n')
-            .Select(line => line.TrimEnd('\r'))
-            .Where(line => line.StartsWith(marker, StringComparison.Ordinal))
+            .Where(line => line.StartsWith($"| {rowLabel} |", StringComparison.Ordinal)
+                || line.StartsWith($"| `{rowLabel}` |", StringComparison.Ordinal))
             .ToArray();
 
         if (matches.Length != 1)
         {
             throw new InvalidOperationException(
-                $"Expected exactly one row starting with '{marker}' in section '{sectionHeading.Trim()}', but found {matches.Length}. " +
-                "Either the operation is missing from the table, the row is duplicated, or the section heading is wrong.");
+                $"Expected exactly one row for '{rowLabel}' in section '{sectionHeading.Trim()}', but found {matches.Length}.");
         }
 
         return matches[0];
+    }
+
+    private static string FindSection(string content, string heading)
+    {
+        content = content.ReplaceLineEndings("\n");
+        int start = content.IndexOf($"\n{heading}\n", StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0, $"{heading} should exist.");
+        start += heading.Length + 2;
+        int end = content.IndexOf("\n## ", start, StringComparison.Ordinal);
+        return end < 0 ? content[start..] : content[start..end];
     }
 
     private static string[] SplitRowCells(string row)

@@ -1067,7 +1067,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-9-author-file-mutation-and-context-query-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs:ResolveRefs
 reason: P13: `FileContextContractGroupTests.ResolveRefs` only verifies that `$ref` targets exist; examples are not validated against their target schemas. Adding examples-must-be-valid coverage requires a JSON-Schema validator (e.g., `JsonSchema.Net` or `NJsonSchema`) in the contract test project. Belongs to a wider contract-test-harness story alongside Story 1.13/1.14 gates. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs:ResolveRefs`, `tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs`)
-status: open
+status: done 2026-11-23
+resolution: The candidate generator validates bound file-context JSON request and response examples against Draft 2020-12 schemas, including referenced and inline values. Historical v1 fixtures retain their targeted checks. See spec-five-deferred-contract-fixture-verification.md.
 
 ### DW-150: P18: `FileTreeResult` example is reused as the response example for `ListFolderFiles`, `SearchFolderFiles`, and `GlobFolderFiles` even though the example hardcodes `limits.queryFamily: tree`
 
@@ -1095,14 +1096,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:300-352
 reason: `ResolveRefs` in the contract validator only verifies that JSON-pointer targets exist; it does not check that a `$ref` under `schema:` actually points to a schema component (or that a `$ref` under `parameters:` points to a parameter). Easy to enhance once a wider validator pass is undertaken. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:300-352`)
-status: open
+status: done 2026-11-23
+resolution: The workspace-lock contract suite checks that schema and parameter references resolve to the expected kinds, and reports the location and target of a mismatch. See spec-five-deferred-contract-fixture-verification.md.
 
 ### DW-154: `EnumerateNamedFields` does not descend into inline example map keys when checking for forbidden token-shaped names
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:250-288
 reason: `EnumerateNamedFields` does not descend into inline example map keys when checking for forbidden token-shaped names — only walks `properties:` keys and `name:` scalars. A property name accidentally introduced inline in an example would slip past. Revisit when example-introspection coverage is broadened. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:250-288`)
-status: open
+status: done 2026-11-23
+resolution: The workspace-lock field guard walks the payload keys of inline, named, component, and schema examples, including map keys in arrays. See spec-five-deferred-contract-fixture-verification.md.
 
 ### DW-155: `EnumerateNamedFields` yields the same property names twice via the recursion path
 
@@ -1176,7 +1179,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-3-seed-minimally-valid-normative-fixtures (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata
 reason: `openapi` guard prefix too narrow — `ShouldNotContainKey("openapi")` catches only the exact key; `openapi_version` or `openapi:` nested under another key would bypass it. Low risk: `source_marker` and `mutation_rules` already document the intent; revisit if the guard needs hardening. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata`)
-status: open
+status: done 2026-11-23
+resolution: The previous-spine fixture test parses YAML and rejects OpenAPI version keys in nested maps and sequences while allowing mentions in scalar values. See spec-five-deferred-contract-fixture-verification.md.
 
 ### DW-166: `.editorconfig` `async_methods_should_end_with_async` rule may flag controller actions and Blazor lifecycle overrides at feature-implementation time
 
@@ -1467,7 +1471,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
 location: docs/contract/idempotency-and-parity-rules.md
 reason: F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
-status: open
+status: done 2026-11-23
+resolution: The artifact suite compares the verification table with the acceptance criteria in Story 1.5 and the executable tests named in code. See spec-five-deferred-contract-fixture-verification.md.
 
 ### DW-209: F3: `equivalence_classification` strings not enum-typed
 
@@ -3323,3 +3328,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-sdk-verification.md`
   summary: Verify the helper's embedded self-digest value in the checkout verifier.
   evidence: The existing digest normalization treats any 64-digit hexadecimal declaration and the generation placeholder identically. The checkout verifier can require the expected declared value while preserving the three-argument content check.
+
+- source_spec: `spec-five-deferred-contract-fixture-verification.md`
+  summary: Validate JSON Schema annotations that declare examples inside schema objects.
+  evidence: The candidate generator now validates examples attached to file-context media types. Schema-level example annotations need traversal with each subschema's resolution scope and their own regression fixtures.

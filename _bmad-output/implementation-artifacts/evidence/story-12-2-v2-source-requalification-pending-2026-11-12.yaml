@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 119cf440f4bb59a29776beacccdb18c954ee2828a8ea717c16ebb25a128acdc7
+candidate_set_sha256: 3d5e01bf77e27c9f74210d1dee59c39464946bec784076d8bbce723caf9c2434
 artifact_count: 1665
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -102,8 +102,8 @@ artifacts:
     sha256: 2da102f22ad3530a5de5088c076e1dcb2dd21b5fd5fd62ad049f528212bb2309
   - path: "scripts/generate-pd10-v2-contract.py"
     kind: file
-    bytes: 57855
-    sha256: 0cf56009a6ba68d632f521f3a5f4dec6209297d6b022a223d2cf3eebfbbf6de0
+    bytes: 59106
+    sha256: 553e8db040e334b9f00f009f384af09ee4396ac5278b0a8b2ff25fd27e02a356
   - path: "scripts/generate-pd10-v2-runtime-catalog.py"
     kind: file
     bytes: 4534
@@ -4898,8 +4898,8 @@ artifacts:
     sha256: cb58eff8bd004c677c4f576118238b517a3c476138c72ad06c7d666af2ce81d6
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs"
     kind: file
-    bytes: 6939
-    sha256: d87d401d39d03868d2badb35d21b21a25f0b71a649166f46c1a8ef66e41a9241
+    bytes: 8298
+    sha256: 490ac904c21b98e20238221d5a51dc61a9402693291319515554a740fd46ef44
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs"
     kind: file
     bytes: 15705
@@ -4930,8 +4930,8 @@ artifacts:
     sha256: dfd1c9bfc2063c36daf5ff05fd15b9da8fa6b11654db302aa6ad9a70495fee50
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs"
     kind: file
-    bytes: 25346
-    sha256: 680016376b8512d9c94c6d8eceb3bb17cda5a63f74ef5af8f86c3dc48b6ebd11
+    bytes: 34248
+    sha256: 0dd992db5514534ad08bd984e4d111dc04b4879762d8684021299b271c02b5b2
   - path: "tests/Hexalith.Folders.Contracts.Tests/YamlCoreScalar.cs"
     kind: file
     bytes: 3112
@@ -5670,8 +5670,8 @@ artifacts:
     sha256: fd70181fd323deb1a27152476b77d017dce9b9abcdcc59a00d5195afb0f5f3c6
   - path: "tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs"
     kind: file
-    bytes: 20262
-    sha256: 5d185f880df30cfbdccce11edd8ac2411448d79ef4f72f80c9b80634bc014d3b
+    bytes: 27014
+    sha256: de724014f936d27db09f3cd40bdb54cbdf5bb668366635b6495df0e35892d8f7
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs"
     kind: file
     bytes: 4983

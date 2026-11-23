@@ -26,6 +26,29 @@ public sealed class Pd10V2GeneratorTests
         File.ReadAllBytes(output).ShouldBe(File.ReadAllBytes(CandidatePath));
     }
 
+    [Theory]
+    [InlineData("AddFileInlineRequest", "byteLength: 33", "byteLength: invalid", "AddFile request body", "$.byteLength")]
+    [InlineData("FileRangeReadCompleteResult", "endOffset: 1", "endOffset: invalid", "ReadFileRange response 200", "$.range.endOffset")]
+    public void GeneratorRejectsFileContextExamplesThatViolateTheirBoundSchema(
+        string example, string original, string replacement, string operation, string instancePath)
+    {
+        ArgumentNullException.ThrowIfNull(original);
+        string source = NewTempPath("historical-v1.yaml");
+        string output = NewTempPath("candidate.yaml");
+        string text = File.ReadAllText(SourcePath);
+        int exampleStart = text.IndexOf($"\n    {example}:\n", StringComparison.Ordinal);
+        exampleStart.ShouldBeGreaterThanOrEqualTo(0);
+        int valueStart = text.IndexOf(original, exampleStart, StringComparison.Ordinal);
+        valueStart.ShouldBeGreaterThan(exampleStart);
+        File.WriteAllText(source, string.Concat(text.AsSpan(0, valueStart), replacement, text.AsSpan(valueStart + original.Length)));
+
+        Run(source, MatrixPath, output, out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain(operation, Case.Sensitive);
+        diagnostics.ShouldContain(instancePath, Case.Sensitive);
+        File.Exists(output).ShouldBeFalse();
+    }
+
     [Fact]
     public void GeneratorRejectsAnOutputAliasWithoutChangingHistoricalV1()
     {
