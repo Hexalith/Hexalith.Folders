@@ -198,6 +198,22 @@ public sealed class FolderRepositoryBackedCreationGateTests
         repository.AppendsAttempted.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task CreationShouldAuthorizeAgainstTheRequestedExistingFolder()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        RecordingFolderPermissionEvidenceProvider permissions = new();
+        RepositoryBackedFolderCreationService service = Service(repository, new RecordingRepositoryCreationReadinessValidator(ReadinessReady()), permissions);
+
+        await service.CreateAsync(Request(), TestContext.Current.CancellationToken);
+
+        // The authorization matrix binds this operation to a folder administer grant on an existing folder, so the
+        // permission check must target the requested folder rather than a tenant-level folder-create scope.
+        permissions.Requests.ShouldNotBeEmpty();
+        permissions.Requests.ShouldAllBe(request => request.OperationScope == "folder-a"
+            && request.ActionToken == RepositoryBackedFolderCreationService.ActionToken);
+    }
+
     private static RepositoryBackedFolderCreationService Service(
         IFolderRepository repository,
         IRepositoryCreationReadinessValidator readiness,
@@ -356,11 +372,14 @@ public sealed class FolderRepositoryBackedCreationGateTests
     {
         public int Calls { get; private set; }
 
+        public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
+
         public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
             FolderPermissionEvidenceRequest request,
             CancellationToken cancellationToken = default)
         {
             Calls++;
+            Requests.Add(request);
             return Task.FromResult(revokeAfterFirstRead && Calls > 1
                 ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8")
                 : FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"));
