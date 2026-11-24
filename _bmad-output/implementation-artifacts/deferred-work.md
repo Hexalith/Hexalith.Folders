@@ -1945,7 +1945,8 @@ origin: migrated from legacy ledger ("Deferred from: code review of 10-6-replace
 location: src/Hexalith.Folders.Workers/SemanticIndexing/MemoriesSemanticIndexingPort.cs:201-215
 source_spec: _bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md
 reason: The story's Dev Notes assert that emitting all five identity keys means `BuildArchivedAttributes` (`src/Hexalith.Folders.Workers/SemanticIndexing/MemoriesSemanticIndexingPort.cs:201-215`) clones the preserved `IndexedAttributes` and only flips `folders.status` to `archived`, rather than taking its identity-reconstruction fallback. That claim is prose only — no test in this story drives a real metadata-derived upsert followed by an archive re-send. The archive egress is out of scope #3 for Story 10.6, so the interaction is surfaced here rather than fixed.
-status: open
+status: done 2026-11-24
+resolution: Exercises the real materializer and Memories port in sequence and verifies that the archived publication preserves every original attribute except status, as well as the original text and document identity.
 
 ### DW-294: Forgejo silently ignores the now-required provider idempotency admission.
 
