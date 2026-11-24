@@ -2543,9 +2543,14 @@ resolution: Folder-scoped archive and commit apply use the existing read scope c
   summary: Tombstoned and removed file-version keys remain in the folder index, so ListFolderAsync keeps doing N+1 loads over a monotonically growing key set.
   evidence: Pre-existing AddToFolderIndexAsync-only index; remove/archive never prune keys. Not introduced by Server read registration.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
-  summary: SemanticIndexingBridgeProjection.Project throws InvalidOperationException embedding the raw read-model key.
-  evidence: Pre-existing write-path exception; Server search/status inject ISemanticIndexingBridgeReadModel and do not call ApplyFolderEventsAsync/Project.
+### DW-353: SemanticIndexingBridgeProjection.Project throws InvalidOperationException embedding the raw read-model key.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+reason: Pre-existing write-path exception; Server search/status inject ISemanticIndexingBridgeReadModel and do not call ApplyFolderEventsAsync/Project.
+status: done 2026-11-24
+resolution: The missing-projection exception carries a fixed diagnostic without the read-model key.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
   summary: A deserialized SemanticIndexingBridgeFolderIndex with null EntryKeys would NullReferenceException in ListFolderAsync and folder-scoped apply.

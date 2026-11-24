@@ -370,7 +370,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         return projection.Get(expectedKey)
             ?? current
             ?? throw new InvalidOperationException(
-                $"Semantic indexing bridge event produced no read model for key '{expectedKey}'.");
+                "Semantic indexing bridge event produced no read model.");
     }
 
     private static string FolderIndexKey(string managedTenantId, string folderId)
