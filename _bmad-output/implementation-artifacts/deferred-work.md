@@ -2557,9 +2557,14 @@ reason: Pre-existing write-path exception; Server search/status inject ISemantic
 status: done 2026-11-24
 resolution: The missing-projection exception carries a fixed diagnostic without the read-model key.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
-  summary: A deserialized SemanticIndexingBridgeFolderIndex with null EntryKeys would NullReferenceException in ListFolderAsync and folder-scoped apply.
-  evidence: Pre-existing nested DTO; writers always construct an empty list. Would only appear if Dapr state were poisoned JSON.
+### DW-355: A deserialized SemanticIndexingBridgeFolderIndex with null EntryKeys would NullReferenceException in ListFolderAsync and folder-scoped apply.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+reason: Pre-existing nested DTO; writers always construct an empty list. Would only appear if Dapr state were poisoned JSON.
+status: done 2026-11-24
+resolution: Missing and null entry arrays fail with a bounded diagnostic before file writes. An empty array remains readable and a nonempty index can be serialized and reloaded. The write reload also verifies that the entry still matches its physical key and folder.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand after OpenAPI cli parity and the indexing-status command landed.
