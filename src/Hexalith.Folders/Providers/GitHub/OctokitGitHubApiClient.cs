@@ -157,12 +157,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         GitHubBindingRepository? repository;
         try
         {
-            IApiResponse<GitHubBindingRepository> response = await _client.Connection.Get<GitHubBindingRepository>(
-                ApiUrls.Repository(request.Target.Owner, request.Target.RepositoryName),
-                parameters: null,
-                accepts: null,
-                cancellationToken).ConfigureAwait(false);
-            repository = response.Body;
+            repository = await ReadBindingRepositoryAsync(request.Target, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
         catch (Exception exception)
         {
@@ -183,9 +182,10 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
         }
 
-        if (repository.Archived || repository.Disabled)
+        GitHubApiFailureCondition availability = RepositoryAvailability(repository);
+        if (availability != GitHubApiFailureCondition.None)
         {
-            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
+            return GitHubRepositoryBindingResult.Failure(availability);
         }
 
         if (!string.Equals(repository.DefaultBranch, request.Target.DefaultBranch, StringComparison.Ordinal))
@@ -210,6 +210,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.UnsupportedRefOperation);
         }
 
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        }
+
         Branch branch;
         try
         {
@@ -221,6 +226,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         catch (Exception exception)
         {
             return MapBindingObservationFailure(exception, GitHubApiFailureCondition.MissingBranchOrRef);
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
         if (!string.Equals(branch.Name, request.Target.SelectedRef, StringComparison.Ordinal))
@@ -805,12 +815,16 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
         try
         {
-            Repository existing = await _client.Repository.Get(
-                request.Target.Owner,
-                request.Target.RepositoryName).ConfigureAwait(false);
-            if (!TryCanonicalRepositoryId(existing?.Id ?? 0, out string? canonicalRepositoryId))
+            GitHubBindingRepository? existing = await ReadBindingRepositoryAsync(request.Target, cancellationToken).ConfigureAwait(false);
+            if (existing is null || !TryCanonicalRepositoryId(existing.Id, out string? canonicalRepositoryId))
             {
                 return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.MalformedResponse);
+            }
+
+            GitHubApiFailureCondition availability = RepositoryAvailability(existing);
+            if (availability != GitHubApiFailureCondition.None)
+            {
+                return GitHubRepositoryCreationResult.Failure(availability);
             }
 
             return request.Target.EquivalentExistingAuthorized
@@ -1982,6 +1996,24 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 ProviderRepositoryVisibility.Public => !repository.Private,
                 _ => true,
             };
+
+    private async Task<GitHubBindingRepository?> ReadBindingRepositoryAsync(
+        ProviderRepositoryResolvedTarget target,
+        CancellationToken cancellationToken)
+    {
+        IApiResponse<GitHubBindingRepository> response = await _client.Connection.Get<GitHubBindingRepository>(
+            ApiUrls.Repository(target.Owner, target.RepositoryName), parameters: null, accepts: null, cancellationToken)
+            .ConfigureAwait(false);
+        return response.Body;
+    }
+
+    private static GitHubApiFailureCondition RepositoryAvailability(GitHubBindingRepository repository)
+        => (repository.Archived, repository.Disabled) switch
+        {
+            (true, _) or (_, true) => GitHubApiFailureCondition.RepositoryConflict,
+            (false, false) => GitHubApiFailureCondition.None,
+            _ => GitHubApiFailureCondition.MalformedResponse,
+        };
 
     private static bool TryCanonicalRepositoryId(long repositoryId, out string? canonicalRepositoryId)
     {

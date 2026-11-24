@@ -200,12 +200,15 @@ public sealed class FolderArchiveMetadataLeakageTests
 
         using JsonDocument inventory = JsonDocument.Parse(File.ReadAllText(
             AuditLeakageCorpus.FixturePath("safety-channel-inventory.json")));
-        HashSet<string?> scannableChannels = inventory.RootElement.GetProperty("channels").EnumerateArray()
-            .Where(channel => channel.GetProperty("scan_forbidden_values").GetBoolean())
-            .Select(channel => channel.GetProperty("channel").GetString())
-            .ToHashSet(StringComparer.Ordinal);
-        expectedChannels.ShouldAllBe(channel => scannableChannels.Contains(channel));
+        Dictionary<string, bool> inventoryChannels = inventory.RootElement.GetProperty("channels").EnumerateArray()
+            .ToDictionary(
+                channel => channel.GetProperty("channel").GetString()!,
+                channel => channel.GetProperty("scan_forbidden_values").GetBoolean(),
+                StringComparer.Ordinal);
+        expectedChannels.ShouldAllBe(channel => inventoryChannels.GetValueOrDefault(channel, false));
         expectedChannels.ShouldAllBe(channel => AuditLeakageCorpus.OutputSurfaces.Contains(channel));
+        inventoryChannels.Keys.Except(AuditLeakageCorpus.OutputSurfaces, StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal).ShouldBe(["negative-control-quarantine", "provider-credential-references", "sentinel-corpus-contract"]);
 
         // These corpus channels are exercised by separate artifact or runtime gates.
         string[] outsideArchiveSweep =

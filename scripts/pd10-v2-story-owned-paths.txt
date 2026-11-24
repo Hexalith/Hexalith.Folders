@@ -877,6 +877,7 @@ src/Hexalith.Folders/Providers/GitHub/DaprBackedGitHubCredentialResolver.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiClientRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiFailureCondition.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiVersionHttpClient.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubBindingRepository.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCanonicalEvidenceWriter.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCommitRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCommitResult.cs
@@ -905,8 +906,10 @@ src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingResult.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationResult.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubResponseBufferingHandler.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubResponseLimitExceededException.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubSafeTargetFingerprint.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubTransportOptions.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubTreeEntry.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubTreeObservationException.cs
 src/Hexalith.Folders/Providers/GitHub/IGitHubApiClient.cs
@@ -1569,6 +1572,7 @@ tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.Operations.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.Preparation.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Operations.cs
+tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Timeout.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ProviderCallCeilingConformanceTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordedGitHubHttpRequest.cs
@@ -1579,6 +1583,7 @@ tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingGitHubHttpMessageHandler.
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderOperationOutcomeStore.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderOperationSourceResolver.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderRepositoryTargetResolver.cs
+tests/Hexalith.Folders.Tests/Providers/GitHub/StalledGitHubResponseContent.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ThrowingProviderRepositoryTargetResolver.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ThrowingReadOnlyList.cs
 tests/Hexalith.Folders.Tests/Providers/Readiness/ProviderReadinessValidationServiceTests.cs

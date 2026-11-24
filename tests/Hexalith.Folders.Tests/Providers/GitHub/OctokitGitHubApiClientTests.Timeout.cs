@@ -1,11 +1,11 @@
+using System.Net;
+
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.GitHub;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using Octokit.Internal;
 
 using Shouldly;
 
@@ -27,17 +27,26 @@ public sealed partial class OctokitGitHubApiClientTests
         provider.GetRequiredService<IGitHubApiClientFactory>().ShouldBeOfType<OctokitGitHubApiClientFactory>();
     }
 
-    [Fact]
-    public async Task FactoryAppliesConfiguredDeadlineToOctokitObservation()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FactoryAppliesConfiguredDeadlineToOctokitObservation(bool stallBody)
     {
         using ServiceProvider provider = ConfiguredTransport("00:00:01");
         GitHubTransportOptions options = provider.GetRequiredService<IOptions<GitHubTransportOptions>>().Value;
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        deadline.CancelAfter(TimeSpan.FromSeconds(10));
         RecordingGitHubHttpMessageHandler handler = new(async (_, token) =>
         {
+            if (stallBody)
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StalledGitHubResponseContent(deadline.Token) };
+            }
+
             await Task.Delay(Timeout.InfiniteTimeSpan, token).ConfigureAwait(true);
             throw new InvalidOperationException("The simulated transport must finish by cancellation.");
         });
-        OctokitGitHubApiClientFactory factory = new(() => new HttpClientAdapter(() => handler), () => handler, options.RequestTimeout);
+        OctokitGitHubApiClientFactory factory = new(() => handler, () => handler, options.RequestTimeout);
         await using GitHubCredentialLease credential = GitHubCredentialLease.CreateForTesting("token-sentinel");
         IGitHubApiClient client = await factory.CreateAsync(
             new GitHubApiClientRequest(
@@ -45,9 +54,6 @@ public sealed partial class OctokitGitHubApiClientTests
                 "provider-binding-a", "correlation-a"),
             credential,
             TestContext.Current.CancellationToken);
-        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
-        deadline.CancelAfter(TimeSpan.FromSeconds(10));
-
         GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(BindingRequest(), deadline.Token);
 
         result.FailureCondition.ShouldBe(GitHubApiFailureCondition.TimeoutDuringObservation);

@@ -224,7 +224,8 @@ public static class FoldersServiceCollectionExtensions
                 .GetSection(GitHubTransportOptions.SectionName).Bind(options))
             .Validate(static options => options.RequestTimeout >= TimeSpan.FromSeconds(1)
                 && options.RequestTimeout <= TimeSpan.FromMinutes(2),
-                "GitHub RequestTimeout must be between 1 and 120 seconds.");
+                "GitHub RequestTimeout must be between 1 and 120 seconds.")
+            .ValidateOnStart();
         services.TryAddSingleton<IGitHubApiClientFactory, OctokitGitHubApiClientFactory>();
         services.AddHttpClient(ForgejoHttpApiClientFactory.HttpClientName, static client =>
         {

@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.GitHub;
-using Octokit.Internal;
 using Shouldly;
 using Xunit;
 
@@ -153,13 +152,16 @@ public sealed partial class OctokitGitHubApiClientTests
                 ? isPrivate.GetBoolean() ? "private" : "public"
                 : null;
 
-    [Fact]
-    public async Task CreateRepositoryReconcilesEquivalentExistingByCanonicalIdentity()
+    [Theory]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    public async Task CreateRepositoryReconcilesEquivalentExistingAndActiveRepository(bool archived, bool disabled, bool expectedSuccess)
     {
         int calls = 0;
         RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls == 1
             ? JsonResponse(HttpStatusCode.UnprocessableEntity, RepositoryExistsJson())
-            : JsonResponse(HttpStatusCode.OK, RepositoryJson(101))));
+            : JsonResponse(HttpStatusCode.OK, RepositoryJson(101, archived: archived, disabled: disabled))));
         IGitHubApiClient client = await CreateClientAsync(handler);
         GitHubRepositoryCreationRequest request = CreationRequest() with
         {
@@ -174,9 +176,10 @@ public sealed partial class OctokitGitHubApiClientTests
             request,
             TestContext.Current.CancellationToken);
 
-        result.IsSuccess.ShouldBeTrue();
-        result.EquivalentExisting.ShouldBeTrue();
-        result.CanonicalRepositoryId.ShouldBe("101");
+        result.IsSuccess.ShouldBe(expectedSuccess);
+        result.EquivalentExisting.ShouldBe(expectedSuccess);
+        result.CanonicalRepositoryId.ShouldBe(expectedSuccess ? "101" : null);
+        result.FailureCondition.ShouldBe(expectedSuccess ? null : GitHubApiFailureCondition.RepositoryConflict);
         handler.Requests.Count.ShouldBe(2);
         handler.Requests[1].Method.ShouldBe(HttpMethod.Get);
         handler.Requests[1].RequestUri.AbsolutePath.ShouldBe("/repos/octokit-owner-sentinel/octokit-repository-sentinel");
@@ -435,6 +438,39 @@ public sealed partial class OctokitGitHubApiClientTests
         handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
     }
 
+    [Theory]
+    [InlineData("archived")]
+    [InlineData("disabled")]
+    public async Task ValidateBindingRequiresRepositoryStatusFlagsBeforeObservingBranch(string field)
+    {
+        string payload = RepositoryJson(101).Replace($"\"{field}\": false,", string.Empty, StringComparison.Ordinal);
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, payload);
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(), TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+    }
+
+    [Fact]
+    public async Task ValidateBindingCancellationDuringRepositoryObservationPreventsBranchRequests()
+    {
+        using CancellationTokenSource cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+        {
+            cancellation.Cancel();
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, RepositoryJson(101)));
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(BindingRequest(), cancellation.Token);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+    }
+
     [Fact]
     public async Task ValidateBindingUsesExactSelectedRefAndMapsMissingRefSafely()
     {
@@ -555,7 +591,7 @@ public sealed partial class OctokitGitHubApiClientTests
     private static async ValueTask<IGitHubApiClient> CreateClientAsync(RecordingGitHubHttpMessageHandler handler)
     {
         OctokitGitHubApiClientFactory factory = new(
-            () => new HttpClientAdapter(() => handler),
+            () => handler,
             () => handler);
         GitHubCredentialLease credential = GitHubCredentialLease.CreateForTesting("token-sentinel");
         try

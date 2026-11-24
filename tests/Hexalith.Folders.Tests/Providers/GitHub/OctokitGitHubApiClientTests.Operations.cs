@@ -109,7 +109,7 @@ public sealed partial class OctokitGitHubApiClientTests
     public async Task OperationHandlerConstructionFailureMapsToKnownUnavailableWithoutEscaping()
     {
         OctokitGitHubApiClientFactory factory = new(
-            static () => new Octokit.Internal.HttpClientAdapter(static () => new HttpClientHandler()),
+            static () => new HttpClientHandler(),
             static () => throw new InvalidOperationException("provider-body-sentinel"));
         GitHubCredentialLease credential = GitHubCredentialLease.CreateForTesting("token-sentinel");
         IGitHubApiClient client;

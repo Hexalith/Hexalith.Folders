@@ -33,7 +33,7 @@ public sealed class FolderLifecycleStatusNoFallbackTests
         FolderLifecycleFreshness current = FolderLifecycleStatusTestSupport.Freshness();
         FolderLifecycleFreshness future = current with { ObservedAt = FolderLifecycleStatusTestSupport.Now.AddSeconds(1) };
         FolderLifecycleStatusReadModelSnapshot? snapshot = status == FolderLifecycleStatusReadModelStatus.Available
-            ? FolderLifecycleStatusTestSupport.ActiveBound() with { Freshness = future }
+            ? FolderLifecycleStatusTestSupport.ActiveBound() with { Freshness = futureSnapshotOnly ? future : current }
             : null;
         CountingLifecycleStatusReadModel readModel = new(new(status, snapshot, futureSnapshotOnly ? current : future));
         FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(

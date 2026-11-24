@@ -9,10 +9,10 @@ internal sealed class GitHubBindingRepository
     public long Id { get; set; }
 
     /// <summary>Gets or sets whether the repository is archived.</summary>
-    public bool Archived { get; set; }
+    public bool? Archived { get; set; }
 
     /// <summary>Gets or sets whether GitHub has disabled the repository.</summary>
-    public bool Disabled { get; set; }
+    public bool? Disabled { get; set; }
 
     /// <summary>Gets or sets the repository's default branch.</summary>
     public string? DefaultBranch { get; set; }

@@ -207,7 +207,7 @@ public sealed class WorkspaceLockStatusQueryHandler(
         }
 
         return snapshot.Freshness.Stale
-            ? Unavailable(query, snapshot.Freshness, snapshot.Freshness.ReasonCode ?? "projection_stale")
+            ? Unavailable(query, snapshot.Freshness, "projection_stale")
             : null;
     }
 

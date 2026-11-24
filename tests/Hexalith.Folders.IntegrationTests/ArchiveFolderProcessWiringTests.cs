@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Handlers;
@@ -19,6 +20,7 @@ using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -49,6 +51,62 @@ public sealed class ArchiveFolderProcessWiringTests
         "user-a",
         "v1-test-denied",
     ];
+
+    public static TheoryData<string> ArchiveLeakageSampleIds()
+    {
+        TheoryData<string> cases = new();
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
+        {
+            cases.Add(sample.Id);
+        }
+
+        return cases;
+    }
+
+    [Theory]
+    [MemberData(nameof(ArchiveLeakageSampleIds))]
+    public async Task ArchiveDoesNotCopyRetainedFolderMetadataToExposedSurfaces(string sampleId)
+    {
+        AuditLeakageSample sample = AuditLeakageCorpus.Get(sampleId);
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a", description: sample.Value);
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage response = await host.Client.SendAsync(request, cancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Repository.EventsAppended.ShouldBe(1);
+            FolderState archived = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            archived.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+            string.Equals(archived.Description, sample.Value, StringComparison.Ordinal)
+                .ShouldBeTrue($"The retained folder state must contain corpus sample '{sample.Id}'.");
+
+            DomainServiceWireEvent emitted = host.Gateway.LastWireEvents.ShouldHaveSingleItem();
+            JsonSerializer.Deserialize<FolderArchived>(emitted.Payload).ShouldNotBeNull();
+            AuditLeakageMatcher.Contains(Encoding.UTF8.GetString(emitted.Payload), sample.Value)
+                .ShouldBeFalse($"The archive event echoed corpus sample '{sample.Id}'.");
+            AuditLeakageMatcher.Contains(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(true), sample.Value)
+                .ShouldBeFalse($"The archive response echoed corpus sample '{sample.Id}'.");
+
+            FolderLifecycleStatusReadModelResult projection = await host.LifecycleReadModel.GetAsync(
+                new FolderLifecycleStatusReadModelRequest("tenant-a", "folder-a", "user-a", "read_metadata",
+                    TaskId: null, CorrelationId: null, AuthorizationWatermark: null, "eventually_consistent"),
+                cancellationToken).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelSnapshot snapshot = projection.Snapshot.ShouldNotBeNull();
+            snapshot.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Archived);
+            AuditLeakageMatcher.Contains(JsonSerializer.Serialize(snapshot), sample.Value)
+                .ShouldBeFalse($"The lifecycle projection echoed corpus sample '{sample.Id}'.");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
 
     [Theory]
     [InlineData("user-a", false)]
@@ -1433,7 +1491,12 @@ public sealed class ArchiveFolderProcessWiringTests
             RevocationFreshnessEstablished: true,
             TaskScope: null));
 
-    private static void SeedFolder(InMemoryFolderRepository repository, string tenantId, string organizationId, string folderId)
+    private static void SeedFolder(
+        InMemoryFolderRepository repository,
+        string tenantId,
+        string organizationId,
+        string folderId,
+        string? description = null)
         => repository.Seed(
             FolderStreamName.Create(tenantId, folderId),
             [
@@ -1442,7 +1505,7 @@ public sealed class ArchiveFolderProcessWiringTests
                     organizationId,
                     folderId,
                     "Folder",
-                    null,
+                    description,
                     null,
                     [],
                     FolderLifecycleState.Active,

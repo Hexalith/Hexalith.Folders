@@ -110,6 +110,21 @@ public sealed class WorkspaceLockStatusProjectionTests
         result.RetryEligibility.Freshness.ShouldBe(result.Freshness);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task AvailableStaleSnapshotWithBlankReasonFailsClosed(string reason)
+    {
+        WorkspaceLockStatusReadModelSnapshot snapshot = ActiveSnapshot();
+        snapshot = snapshot with { Freshness = snapshot.Freshness with { Stale = true, ReasonCode = reason } };
+
+        WorkspaceLockStatusQueryResult result = await ExecuteAsync(WorkspaceLockStatusReadModelResult.Available(snapshot));
+
+        result.Code.ShouldBe(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable);
+        result.Freshness.ReasonCode.ShouldBe("projection_stale");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+    }
+
     private static async Task<WorkspaceLockStatusQueryResult> ExecuteAsync(WorkspaceLockStatusReadModelResult readModelResult)
     {
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();

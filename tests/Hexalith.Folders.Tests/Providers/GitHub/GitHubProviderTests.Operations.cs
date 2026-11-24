@@ -1073,7 +1073,7 @@ public sealed partial class GitHubProviderTests
         services.AddSingleton<IProviderOperationOutcomeStore>(RecordingProviderOperationOutcomeStore.Acquired());
         services.AddSingleton<IGitHubCredentialResolver>(RecordingGitHubCredentialResolver.SuccessPerCall("token-sentinel"));
         services.AddSingleton<IGitHubApiClientFactory>(new OctokitGitHubApiClientFactory(
-            () => new Octokit.Internal.HttpClientAdapter(() => handler),
+            () => handler,
             () => new PooledGitHubHttpMessageHandler(handler)));
         services.AddFoldersProviderReadiness();
         await using ServiceProvider serviceProvider = services.BuildServiceProvider();
@@ -1112,7 +1112,7 @@ public sealed partial class GitHubProviderTests
         services.AddSingleton<IProviderOperationOutcomeStore>(RecordingProviderOperationOutcomeStore.Acquired());
         services.AddSingleton<IGitHubCredentialResolver>(RecordingGitHubCredentialResolver.SuccessPerCall("token-sentinel"));
         services.AddSingleton<IGitHubApiClientFactory>(new OctokitGitHubApiClientFactory(
-            () => new Octokit.Internal.HttpClientAdapter(() => handler),
+            () => handler,
             () => new PooledGitHubHttpMessageHandler(handler)));
         services.AddFoldersProviderReadiness();
         await using ServiceProvider serviceProvider = services.BuildServiceProvider();

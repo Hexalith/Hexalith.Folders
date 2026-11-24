@@ -61,7 +61,10 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     public int ProcessCalls { get; private set; }
 
     /// <summary>Gets the framework-event count returned by the last <c>/process</c> round-trip.</summary>
-    public int LastWireEventCount { get; private set; }
+    public int LastWireEventCount => LastWireEvents.Count;
+
+    /// <summary>Gets the serialized events returned by the last <c>/process</c> round-trip.</summary>
+    internal IReadOnlyList<DomainServiceWireEvent> LastWireEvents { get; private set; } = [];
 
     /// <summary>Gets the rejection code returned by the last <c>/process</c> round-trip.</summary>
     public FolderResultCode? LastWireRejectionCode { get; private set; }
@@ -98,7 +101,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
         DomainServiceWireResult result = (await response.Content
             .ReadFromJsonAsync<DomainServiceWireResult>(cancellationToken)
             .ConfigureAwait(false))!;
-        LastWireEventCount = result.Events.Count;
+        LastWireEvents = result.Events;
 
         if (result.IsRejection)
         {
