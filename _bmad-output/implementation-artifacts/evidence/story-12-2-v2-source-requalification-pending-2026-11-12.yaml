@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 0771de75714ac43bd0537e04df56b5efec1a5d232c2a80fc355eaa9404ca9d67
+candidate_set_sha256: e136f7194c771729f6b15a43939a5ef27605445e9f70274683bbf0cbb3789d11
 artifact_count: 1680
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1754,8 +1754,8 @@ artifacts:
     sha256: 7bba67dc1948bc6dff29348e509cb241b93578bf93fb612ee581d07e7dabd6d5
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs"
     kind: file
-    bytes: 11445
-    sha256: 8656a2acf4419896d2f6b6faac627d0d374c80b25db5e955412e4325012bf70c
+    bytes: 11613
+    sha256: 298ecc77e30d549cdff1be3003c1f15db1b4d3ccef32b878e9f91876ac061f64
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderAclContract.cs"
     kind: file
     bytes: 6459

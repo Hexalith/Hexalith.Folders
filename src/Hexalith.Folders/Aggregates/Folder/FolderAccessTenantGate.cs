@@ -69,6 +69,11 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
             return FolderResult.Rejected(authoritativeCommand, validation.Code);
         }
 
+        if (validation.IdempotencyFingerprint is not { } fingerprint)
+        {
+            return FolderResult.Rejected(authoritativeCommand, FolderResultCode.MalformedEvidence);
+        }
+
         FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
         if (aclRejection is not null)
         {
@@ -90,7 +95,7 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             authoritativeCommand.IdempotencyKey,
-            validation.IdempotencyFingerprint!,
+            fingerprint,
             result.Events);
 
         return outcome switch

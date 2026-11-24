@@ -1848,7 +1848,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: FolderAccessTenantGate.cs:110
 reason: W8: `FolderAccessTenantGate.cs:110` null-forgiving `validation.IdempotencyFingerprint!` after `IsAccepted` guard — static factory methods never produce null; raw constructor bypass is the only path. Pre-existing.
-status: open
+status: done 2026-11-24
+resolution: An accepted validation result must carry a fingerprint before the access gate evaluates ACL evidence or calls the repository.
 
 ### DW-279: `hasMore`/`nextCursor` in `ContextSearchQueryHandler.cs:211-212` are derived from the index's raw `TotalCount` (before the Folders-side security trim + hydration), so a page whose remaining…
 
