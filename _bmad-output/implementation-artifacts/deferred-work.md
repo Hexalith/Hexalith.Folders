@@ -1731,7 +1731,8 @@ decision: 2026-08-25 Wire in Story 12.1 — Add the gate to the real organizatio
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implement-organization-aggregate-acl-baseline (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs:53
 reason: Validator silently overwrites identical-tuple operations via `unique[$"{intent}|{tupleKey}"] = operation` [`src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs:53`] — today `OrganizationAclOperation` has only `(PrincipalKind, PrincipalId, Action, Intent)`, so the overwrite is loss-less. If new fields are added later (metadata, expiry, justification) the overwrite becomes a silent bug; add an equality guard before overwrite when the operation shape grows.
-status: open
+status: done 2026-11-24
+resolution: Identical operations retain their first entry. A same-tuple non-equivalent operation fails as a replay conflict.
 
 ### DW-261: Future-dated evidence has no inline test row in `OrganizationAclTenantEvidenceGateTests.RejectedTenantEvidenceShouldPreventAllStreamSideEffects`
 

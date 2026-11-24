@@ -73,7 +73,11 @@ public static partial class OrganizationAclCommandValidator
             }
 
             tupleIntents[tupleKey] = operation.Intent;
-            unique[$"{operation.Intent}|{tupleKey}"] = operation;
+            string operationKey = $"{operation.Intent}|{tupleKey}";
+            if (!unique.TryAdd(operationKey, operation) && unique[operationKey] != operation)
+            {
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReplayConflict, operation);
+            }
         }
 
         OrganizationAclOperation[] ordered = unique

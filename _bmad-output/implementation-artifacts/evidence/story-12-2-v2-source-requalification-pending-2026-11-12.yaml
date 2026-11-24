@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: f64a149f05a4687e803fe8d12ad78880b57737d704e68afef120f641a2d4a628
+candidate_set_sha256: 3810942308c95ace7875cb8111a6fcdc710c5b0753bc6d2c9235928b2420d087
 artifact_count: 1679
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -2274,8 +2274,8 @@ artifacts:
     sha256: cf1a5ead704c31519afa610c59d6887e3d2f3dc518389095b619eb822dbdfbc7
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs"
     kind: file
-    bytes: 5095
-    sha256: 5f157ceebda3272274edfcfcae6c8b70560ae8836562623651e1eb5a5e5f5bbb
+    bytes: 5344
+    sha256: 8dc5f3c91583552056d0d8176976bf2983a38d4feca0ad985a50da500578e198
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs"
     kind: file
     bytes: 941
@@ -5934,8 +5934,8 @@ artifacts:
     sha256: 74ba1d13c3046d3e656af56f2faf977950f15c3a0b6fa5829098111877ef40d9
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs"
     kind: file
-    bytes: 4533
-    sha256: 183214281648ef96acf34fe5eaa1be9272aa300a763f81668cb7689599fc03e1
+    bytes: 4661
+    sha256: e5adedd93a78e0699c17f0740b0654dbb62181317286db935939788487cf6908
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs"
     kind: file
     bytes: 2638
