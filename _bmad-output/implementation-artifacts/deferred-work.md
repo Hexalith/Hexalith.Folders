@@ -1849,7 +1849,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implement-organization-aggregate-acl-baseline (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs
 reason: `OrganizationAclMetadataLeakageTests` scans only the happy-path single-Grant result; multi-op `Initialize` results, rejection paths (including the pre-allow tenant-denied path that echoes raw `OrganizationId`/`CorrelationId`), and event-only JSON serialization are not exercised against the leakage sentinel corpus [`tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs`] — leakage coverage one fact deep, deferrable as a test hardening pass.
-status: open
+status: done 2026-11-24
+resolution: Rejects unsafe event evidence and redacts authorization and validation results while retaining a failed batch position. Shared-corpus checks cover grants, initialization, concrete events, and rejection.
 
 ### DW-259: `OrganizationAclTenantGate` has no DI/composition root wiring yet
 

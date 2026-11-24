@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 
 namespace Hexalith.Folders.Aggregates.Organization;
@@ -17,19 +18,19 @@ public static partial class OrganizationAclCommandValidator
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReservedTenant);
         }
 
-        if (!OrganizationStreamName.IsValidManagedTenant(command.ManagedTenantId))
+        if (!OrganizationStreamName.IsValidManagedTenant(command.ManagedTenantId) || !IsSafeMetadataIdentifier(command.ManagedTenantId))
         {
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidTenant);
         }
 
-        if (!OrganizationStreamName.IsValidSegment(command.OrganizationId))
+        if (!OrganizationStreamName.IsValidSegment(command.OrganizationId) || !IsSafeMetadataIdentifier(command.OrganizationId))
         {
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidOrganization);
         }
 
-        if (!IsValidIdentifier(command.CorrelationId)
-            || !IsValidIdentifier(command.TaskId)
-            || !IsValidIdentifier(command.IdempotencyKey))
+        if (!IsSafeMetadataIdentifier(command.CorrelationId)
+            || !IsSafeMetadataIdentifier(command.TaskId)
+            || !IsSafeMetadataIdentifier(command.IdempotencyKey))
         {
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.MalformedEvidence);
         }
@@ -100,7 +101,12 @@ public static partial class OrganizationAclCommandValidator
         return string.Join("|", [command.CommandType, .. operationTokens]);
     }
 
-    internal static bool IsValidPrincipalId(string? value) => IsValidIdentifier(value);
+    internal static bool IsValidPrincipalId(string? value) => IsSafeMetadataIdentifier(value);
+
+    /// <summary>Checks identifier evidence before it can appear in an ACL event or rejection.</summary>
+    internal static bool IsSafeMetadataIdentifier(string? value)
+        => FolderCommandValidator.IsSafeEvidenceIdentifier(value)
+            && !OrganizationProviderBindingSecretDetector.ContainsForbiddenValue(value);
 
     internal static bool IsValidIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
