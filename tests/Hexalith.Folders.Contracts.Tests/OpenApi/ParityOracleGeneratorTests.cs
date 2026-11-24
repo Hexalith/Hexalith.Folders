@@ -9,9 +9,6 @@ using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
-// Serialize generator invocations across the test class: each test shells out to `dotnet run`
-// against the same generator project, and concurrent invocations can race on the project's
-// obj/ build locks. Disabling per-class parallelism removes that race deterministically.
 [Collection("ParityOracleGenerator")]
 public sealed class ParityOracleGeneratorTests
 {
@@ -388,6 +385,48 @@ operations:
         }
 
         File.Exists(oracle).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorAcceptsOptionPrefixedPathBeforeTerminalSentinel()
+    {
+        string temp = NewTempDirectory("hexalith-parity-end-of-options");
+
+        GeneratorResult result = RunGeneratorArguments(
+            ["--repository-root", _repositoryRootPath, "--output=--oracle.yaml", "--"],
+            temp);
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+        File.Exists(Path.Combine(temp, "--oracle.yaml")).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GeneratorRejectsOperandsAfterEndOfOptionsWithoutWritingOutput()
+    {
+        string output = Path.Combine(NewTempDirectory("hexalith-parity-positional-argument"), "parity.yaml");
+
+        GeneratorResult result = RunGeneratorArguments(
+            ["--repository-root", _repositoryRootPath, "--output", output, "--", "--allow-empty-baseline"]);
+
+        result.ExitCode.ShouldNotBe(0);
+        result.Error.ShouldContain("Positional arguments after '--' are not supported.");
+        File.Exists(output).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GeneratorRejectsUnknownOptionsWithoutWritingOutput(bool inlineValue)
+    {
+        string output = Path.Combine(NewTempDirectory("hexalith-parity-unknown-option"), "parity.yaml");
+        List<string> arguments = ["--repository-root", _repositoryRootPath, "--output", output];
+        arguments.AddRange(inlineValue ? ["--ouptut=ignored", "--"] : ["--ouptut", "ignored", "--"]);
+
+        GeneratorResult result = RunGeneratorArguments(arguments);
+
+        result.ExitCode.ShouldNotBe(0);
+        result.Error.ShouldContain("Unknown argument '--ouptut'.");
+        File.Exists(output).ShouldBeFalse();
     }
 
     [Fact]
@@ -966,18 +1005,35 @@ operations:
         bool forceBaselineOverwrite = false,
         string? repositoryRoot = null)
     {
-        string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
-        string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
-        string baselineArgument = initializeBaseline ? " --initialize-baseline" : string.Empty;
-        string forceArgument = forceBaselineOverwrite ? " --force-baseline-overwrite" : string.Empty;
+        List<string> arguments = ["--repository-root", repositoryRoot ?? _repositoryRootPath,
+            "--contract", contractPath, "--output", outputPath];
+        if (previousSpinePath is not null) arguments.AddRange(["--previous-spine", previousSpinePath]);
+        if (schemaPath is not null) arguments.AddRange(["--schema", schemaPath]);
+        if (initializeBaseline) arguments.Add("--initialize-baseline");
+        if (forceBaselineOverwrite) arguments.Add("--force-baseline-overwrite");
+        return RunGeneratorArguments(arguments);
+    }
+
+    private static GeneratorResult RunGeneratorArguments(
+        IEnumerable<string> arguments,
+        string? workingDirectory = null)
+    {
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{repositoryRoot ?? _repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{baselineArgument}{forceArgument}",
+            WorkingDirectory = workingDirectory ?? _repositoryRootPath,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };
+        string targetFramework = "net" + new System.Runtime.Versioning.FrameworkName(AppContext.TargetFrameworkName!).Version.ToString(2);
+        string generatorAssembly = Path.Combine(Path.GetDirectoryName(_generatorProjectPath)!, "bin",
+            _buildConfiguration, targetFramework, Path.GetFileNameWithoutExtension(_generatorProjectPath) + ".dll");
+        info.ArgumentList.Add(generatorAssembly);
+        foreach (string argument in arguments)
+        {
+            info.ArgumentList.Add(argument);
+        }
 
         using Process process = Process.Start(info)!;
 

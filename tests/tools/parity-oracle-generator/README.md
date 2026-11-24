@@ -23,6 +23,10 @@ Optional arguments:
 --help                      Show usage and exit.
 ```
 
+Use `--key=value` when a path starts with `--`. A terminal `--` ends
+option parsing. The generator takes only named options, so any argument
+after that marker is rejected.
+
 ### Initialize the baseline
 
 Run once whenever the Contract Spine is intentionally rewritten:

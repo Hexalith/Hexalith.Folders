@@ -615,7 +615,8 @@ resolution: Duplicate audit-key names fail before sorting instead of being silen
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs GeneratorOptions.Parse
 reason: Argument parser lacks `--` end-of-options sentinel [`tests/tools/parity-oracle-generator/Program.cs GeneratorOptions.Parse`] — not exercised; current callers never pass values starting with `--`.
-status: open
+status: done 2026-11-24
+resolution: The named-options CLI accepts a terminal -- and --key=value for paths that start with two dashes. CLI regressions cover both a literal path and rejected trailing operands.
 
 ### DW-84: `NormalizeName` leading separator/digit silently produces invalid names
 

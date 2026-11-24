@@ -1598,10 +1598,19 @@ internal sealed record GeneratorOptions(
         Dictionary<string, string> parsed = new(StringComparer.Ordinal);
         HashSet<string> flags = new(StringComparer.Ordinal);
 
-        int i = 0;
-        while (i < args.Length)
+        for (int i = 0; i < args.Length; i++)
         {
             string token = args[i];
+            if (token == "--")
+            {
+                if (i + 1 != args.Length)
+                {
+                    throw new ArgumentException("Positional arguments after '--' are not supported.");
+                }
+
+                break;
+            }
+
             if (!token.StartsWith("--", StringComparison.Ordinal))
             {
                 throw new ArgumentException($"Unexpected positional argument '{token}' at position {i}; arguments must be --key value pairs or --flag.");
@@ -1613,33 +1622,46 @@ internal sealed record GeneratorOptions(
                 {
                     throw new ArgumentException($"Flag '{token}' supplied more than once.");
                 }
-                i += 1;
+
                 continue;
             }
 
-            if (i + 1 >= args.Length)
+            int equals = token.IndexOf('=');
+            string name = equals < 0 ? token : token[..equals];
+            if (name is not ("--repository-root" or "--contract" or "--schema" or "--previous-spine" or "--output"))
             {
-                throw new ArgumentException($"Missing value for argument '{token}'.");
+                throw new ArgumentException($"Unknown argument '{name}'.");
             }
 
-            string value = args[i + 1];
-            if (value.StartsWith("--", StringComparison.Ordinal))
+            string value;
+            if (equals >= 0)
             {
-                throw new ArgumentException($"Missing value for argument '{token}'; got another flag '{value}'.");
+                value = token[(equals + 1)..];
+            }
+            else
+            {
+                if (i + 1 >= args.Length)
+                {
+                    throw new ArgumentException($"Missing value for argument '{token}'.");
+                }
+
+                value = args[++i];
+                if (value.StartsWith("--", StringComparison.Ordinal))
+                {
+                    throw new ArgumentException($"Missing value for argument '{token}'; got another flag '{value}'.");
+                }
             }
 
-            if (parsed.ContainsKey(token))
+            if (!parsed.TryAdd(name, value))
             {
-                throw new ArgumentException($"Argument '{token}' supplied more than once.");
+                throw new ArgumentException($"Argument '{name}' supplied more than once.");
             }
-
-            parsed[token] = value;
-            i += 2;
         }
 
         if (flags.Contains("--help"))
         {
-            Console.WriteLine("Usage: parity-oracle-generator [--repository-root <path>] [--contract <path>] [--schema <path>] [--previous-spine <path>] [--output <path>] [--initialize-baseline] [--force-baseline-overwrite] [--allow-empty-baseline]");
+            Console.WriteLine("Usage: parity-oracle-generator [--repository-root <path>] [--contract <path>] [--schema <path>] [--previous-spine <path>] [--output <path>] [--initialize-baseline] [--force-baseline-overwrite] [--allow-empty-baseline] [--]");
+            Console.WriteLine("Use --key=value for a path that starts with '--'.");
             Environment.Exit(0);
         }
 
