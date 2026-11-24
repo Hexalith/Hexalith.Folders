@@ -61,3 +61,4 @@ The [previous batch](spec-ten-deferred-items-2026-11-24.md#entries-skipped) reco
 - Fixed during server verification. Event admission uses credential-shape checks so valid message IDs containing operation words still work. Rejection output retains the stricter metadata filter.
 - Fixed. Excluded-only parity routes skip parameter resolution, and the diagnostic identifies the method without reading out the raw route.
 - Fixed. The JWT scan keeps the previous matching behavior for tokens adjacent to other text.
+- Fixed during the final suite. A timed-out HTTP probe now retries within the existing browser fixture startup budget.
