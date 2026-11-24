@@ -205,7 +205,7 @@ public static partial class FoldersDomainServiceEndpoints
                     correlationId,
                     TaskContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"),
                     WorkspaceContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Workspace-Id"),
-                    ClientControlledTenantIds: ClientTenantIds(httpContext)),
+                    ClientControlledTenantIds: FolderClientIdentityValues.TenantIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(result, correlationId);
@@ -394,8 +394,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(WorkspaceLockStatusQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId, taskId);
@@ -465,8 +465,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(WorkspaceLockStatusQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToWorkspaceRetryEligibilityHttpResult(httpContext, result, correlationId, taskId);
@@ -535,8 +535,8 @@ public static partial class FoldersDomainServiceEndpoints
                     workspaceId,
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToWorkspaceTransitionEvidenceHttpResult(httpContext, result, correlationId, taskId);
@@ -606,8 +606,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(WorkspaceStatusQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId, taskId);
@@ -644,9 +644,9 @@ public static partial class FoldersDomainServiceEndpoints
                     tenantContext.PrincipalId,
                     claimTransformEvidence.GetEvidence(TaskStatusQueryHandler.ActionToken),
                     correlationId,
-                    ClientTenantIds(httpContext),
+                    FolderClientIdentityValues.TenantIds(httpContext),
                     folderId,
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId);
@@ -785,8 +785,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(WorkspaceCleanupStatusQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId, taskId);
@@ -1165,8 +1165,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(ContextSearchQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext),
                     body.QueryText,
                     body.Limit,
                     body.Cursor),
@@ -1209,8 +1209,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence(ContextSearchQueryHandler.ActionToken),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return FolderIndexingStatusToHttpResult(httpContext, result, correlationId, taskId);
@@ -1264,8 +1264,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence("read_branch_ref_policy"),
                     correlationId,
                     taskId,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId, taskId);
@@ -1320,8 +1320,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence("read_metadata"),
                     correlationId,
                     TaskId: taskId,
-                    ClientControlledTenantValues: ClientTenantIds(httpContext),
-                    ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
+                    ClientControlledTenantValues: FolderClientIdentityValues.TenantIds(httpContext),
+                    ClientControlledPrincipalValues: FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId, taskId);
@@ -1389,8 +1389,8 @@ public static partial class FoldersDomainServiceEndpoints
                     claimTransformEvidence.GetEvidence("read_metadata"),
                     correlationId,
                     TaskId: taskId,
-                    ClientControlledTenantValues: ClientTenantIds(httpContext),
-                    ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
+                    ClientControlledTenantValues: FolderClientIdentityValues.TenantIds(httpContext),
+                    ClientControlledPrincipalValues: FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToRepositoryBindingHttpResult(httpContext, result, folderId, repositoryBindingId, correlationId, taskId);
@@ -1516,8 +1516,8 @@ public static partial class FoldersDomainServiceEndpoints
                     folderId,
                     correlationId,
                     TaskId: null,
-                    ClientTenantIds(httpContext),
-                    ClientPrincipalIds(httpContext)),
+                    FolderClientIdentityValues.TenantIds(httpContext),
+                    FolderClientIdentityValues.PrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToFolderAclEntryListHttpResult(httpContext, result, correlationId, cursor, limit);
@@ -4361,8 +4361,8 @@ public static partial class FoldersDomainServiceEndpoints
                 claimTransformEvidence.GetEvidence(actionToken),
                 correlationId,
                 taskId,
-                ClientTenantIds(httpContext),
-                ClientPrincipalIds(httpContext),
+                FolderClientIdentityValues.TenantIds(httpContext),
+                FolderClientIdentityValues.PrincipalIds(httpContext),
                 paths,
                 queryText,
                 globPattern,
@@ -5437,8 +5437,8 @@ public static partial class FoldersDomainServiceEndpoints
                 claimTransformEvidence.GetEvidence(WorkspaceStatusQueryHandler.ActionToken),
                 correlationId,
                 taskId,
-                ClientTenantIds(httpContext),
-                ClientPrincipalIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext),
+                FolderClientIdentityValues.PrincipalIds(httpContext)),
             cancellationToken).ConfigureAwait(false);
 
         if (result.Code != WorkspaceStatusQueryResultCode.Allowed)
@@ -5904,25 +5904,6 @@ public static partial class FoldersDomainServiceEndpoints
             EffectivePermissionLevel.Write => "write",
             EffectivePermissionLevel.Administer => "administer",
             _ => "read",
-        };
-
-    private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
-        };
-
-    private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
-        // Principal identity is header-only — query-string sources are not accepted to
-        // reduce attack surface.
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["header_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Principal-Id"),
-            ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
         };
 
     private static void AddLifecycleSuccessHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)

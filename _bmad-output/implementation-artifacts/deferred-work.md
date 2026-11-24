@@ -2669,6 +2669,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: ClientTenantIds and ClientPrincipalIds remain copy-pasted across Audit, Domain, Provider, and OpsConsole endpoint files.
   evidence: 11.4 consolidation left the identity-header maps as four independent implementations.
+  status: done 2026-11-25
+  resolution: `FolderClientIdentityValues.TenantIds` and `PrincipalIds` now build the client-controlled identity maps for the Audit, Domain, provider-readiness and OpsConsole endpoints, which no longer keep private copies. Source keys and header-only principal reads are unchanged. The all-values collectors stay separate: `Pd10V2CandidateCompatibilitySeam`, `HistoricalMutationAuthorization` and `WorkspaceOperationEvidence` record every supplied value under an indexed key and also read a `principalId` query value. `FolderClientIdentityValuesTests` pins the keys, the sources and the skipping of unsafe values.
 
 
 ## Deferred from: code review of spec-11-3-apply-wire-preserving-repository-hygiene.md (2026-09-12)

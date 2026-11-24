@@ -140,7 +140,7 @@ public static class OpsConsoleDiagnosticsEndpoints
             tenantContext.PrincipalId,
             claimTransformEvidence.GetEvidence(TenantScopedDiagnosticsQueryHandler.ReadActionToken),
             correlationId,
-            ClientTenantIds(httpContext),
+            FolderClientIdentityValues.TenantIds(httpContext),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -168,7 +168,7 @@ public static class OpsConsoleDiagnosticsEndpoints
             tenantContext.PrincipalId,
             claimTransformEvidence.GetEvidence(TenantScopedDiagnosticsQueryHandler.ReadActionToken),
             correlationId,
-            ClientTenantIds(httpContext),
+            FolderClientIdentityValues.TenantIds(httpContext),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -370,8 +370,8 @@ public static class OpsConsoleDiagnosticsEndpoints
             folderId,
             correlationId,
             FolderHttpHeaderReader.ReadHeader(httpContext, TaskHeaderName),
-            ClientTenantIds(httpContext),
-            ClientPrincipalIds(httpContext));
+            FolderClientIdentityValues.TenantIds(httpContext),
+            FolderClientIdentityValues.PrincipalIds(httpContext));
 
     // -------------------------------------------------------------------------------------------------
     // Result mapping.
@@ -410,24 +410,6 @@ public static class OpsConsoleDiagnosticsEndpoints
 
         httpContext.Response.Headers[FreshnessHeaderName] = freshness;
     }
-
-    private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
-        };
-
-    private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
-        // Principal identity is header-only — query-string sources are not accepted to reduce attack surface.
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["header_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Principal-Id"),
-            ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
-        };
 
     private static bool TryReadCorrelation(HttpContext httpContext, out string? correlationId)
     {

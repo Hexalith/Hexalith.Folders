@@ -146,7 +146,7 @@ public static partial class ProviderReadinessEndpoints
                 claimTransformEvidence.GetEvidence(GetProviderBindingQueryHandler.ReadActionToken),
                 providerBindingRef,
                 correlationId,
-                ClientTenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext)),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -274,7 +274,7 @@ public static partial class ProviderReadinessEndpoints
                 correlationId,
                 cursor,
                 limit,
-                ClientTenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext)),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -353,7 +353,7 @@ public static partial class ProviderReadinessEndpoints
                 requestedCapability,
                 correlationId,
                 claimTransformEvidence.GetEvidence(ProviderReadinessValidationService.ReadActionToken),
-                ClientTenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext)),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -544,16 +544,6 @@ public static partial class ProviderReadinessEndpoints
             or "provider_errors"
             or "failure_behavior";
     }
-
-    private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
-        };
 
     private static bool TryReadSupportEvidencePagination(
         HttpContext httpContext,

@@ -300,6 +300,7 @@ src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs
 src/Hexalith.Folders.Server/FolderCanonicalErrorMapper.cs
 src/Hexalith.Folders.Server/FolderCanonicalPathIdentifier.cs
 src/Hexalith.Folders.Server/FolderCanonicalSegmentIdentifier.cs
+src/Hexalith.Folders.Server/FolderClientIdentityValues.cs
 src/Hexalith.Folders.Server/FolderCommandRejected.cs
 src/Hexalith.Folders.Server/FolderDomainProcessor.ContentBatch.cs
 src/Hexalith.Folders.Server/FolderDomainProcessor.Native.cs
@@ -1299,6 +1300,7 @@ tests/Hexalith.Folders.Server.Tests/FolderAclEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderCanonicalErrorMapperTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderCanonicalIdentifierTests.cs
+tests/Hexalith.Folders.Server.Tests/FolderClientIdentityValuesTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderCommandRejectedLeakageTests.cs
 tests/Hexalith.Folders.Server.Tests/FolderDomainProcessorRejectionTests.cs
