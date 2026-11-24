@@ -999,7 +999,6 @@ public sealed partial class GitHubProviderTests
     public async Task ProductionRegistrationResolvesOneConcreteGitHubProviderAndFailsClosedWithoutOperationSource()
     {
         ServiceCollection services = new();
-        services.AddLogging();
         services.AddSingleton<TimeProvider>(new FixedTimeProvider(OperationNow.AddMinutes(1)));
         services.AddFoldersProviderReadiness();
         await using ServiceProvider provider = services.BuildServiceProvider(
@@ -1007,6 +1006,7 @@ public sealed partial class GitHubProviderTests
 
         IGitProvider[] gitProviders = provider.GetServices<IGitProvider>().ToArray();
         gitProviders.Count(static candidate => candidate is GitHubProvider).ShouldBe(1);
+        gitProviders.Count(static candidate => candidate.ProviderKey == "forgejo").ShouldBe(1);
         IProviderCapabilityResolver resolver = provider.GetRequiredService<IProviderCapabilityResolver>();
         IGitProvider? github = await resolver.ResolveAsync(
             GitHubProviderConstants.ProviderFamily,

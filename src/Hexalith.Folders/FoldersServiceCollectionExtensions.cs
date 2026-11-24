@@ -381,6 +381,7 @@ public static class FoldersServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
+        services.AddLogging();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IFolderAuditObserver, NoOpFolderAuditObserver>());
         services.TryAddSingleton<IFolderTelemetryEmitter, FolderTelemetryEmitter>();
 
