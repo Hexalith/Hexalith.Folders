@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 6647f0c4c2b4c2d07a40038748aeebff959384da0a49d37d8413809f0590ab92
+candidate_set_sha256: 95419afdc7ee8b4dea0c0d54535e808f88bfaf7f1ed861365f055b8515b50eb7
 artifact_count: 1670
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -2274,8 +2274,8 @@ artifacts:
     sha256: cf1a5ead704c31519afa610c59d6887e3d2f3dc518389095b619eb822dbdfbc7
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs"
     kind: file
-    bytes: 5167
-    sha256: 4ded54542bfee92a5794c6393c7a9c8bca60fe3ccbcfcd5df0569c63b6e8f796
+    bytes: 5095
+    sha256: 5f157ceebda3272274edfcfcae6c8b70560ae8836562623651e1eb5a5e5f5bbb
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs"
     kind: file
     bytes: 941
@@ -2306,8 +2306,8 @@ artifacts:
     sha256: c13b33101428b11772e367d5402e35a0542a2421915b9995b9a96844bcd2e939
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs"
     kind: file
-    bytes: 3981
-    sha256: 3f66ddcfcd56d0450085459a32e6fece56eae74f97b2ba46f4f6d34a563b1c93
+    bytes: 4126
+    sha256: 09fb3f3ff89d0705598447e219d6d19e3fafa807a38f7e1adbed5e02e358fdb6
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs"
     kind: file
     bytes: 507
@@ -2346,8 +2346,8 @@ artifacts:
     sha256: 4ba44cdd33bc45fbb5ef693a6b83baf1f2ff298b9bf4d54558fefc172e15e925
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationProviderBindingSecretDetector.cs"
     kind: file
-    bytes: 3109
-    sha256: c37face05b1487a6d2b351eb415442e8c1652b38f0392b101364561e63dee0a1
+    bytes: 3120
+    sha256: 972b36cb59175fcd453ac8fb0f5204cffb6e736f2889b1682837b2944fb12ead
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationProviderBindingTenantGate.cs"
     kind: file
     bytes: 5518
@@ -5922,8 +5922,8 @@ artifacts:
     sha256: 81c35b485f494224baac72ad7d27ad8aac02cd5413f806d5b7c86a2f42a09207
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs"
     kind: file
-    bytes: 4768
-    sha256: 0a65e5c190f10a7d0968f6d22ed52ee2b7fe68ec60468701e3b0dbc77f57f9cf
+    bytes: 4825
+    sha256: daea63c916bb6837362e8ffdb4a82c9dd74a30c6779e3e459831f491358958ea
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs"
     kind: file
     bytes: 4023

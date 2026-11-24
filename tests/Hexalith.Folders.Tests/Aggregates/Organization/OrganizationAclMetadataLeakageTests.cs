@@ -14,7 +14,7 @@ public sealed class OrganizationAclMetadataLeakageTests
     {
         IOrganizationAclCommand[] commands =
         [
-            AclCommandFactory.Grant(),
+            AclCommandFactory.Grant(idempotencyKey: "message-create_repository_backed_folder"),
             AclCommandFactory.Initialize(
                 AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant, principalId: "principal-a"),
                 AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant, principalId: "principal-b")),

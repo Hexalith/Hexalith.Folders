@@ -58,5 +58,6 @@ The [previous batch](spec-ten-deferred-items-2026-11-24.md#entries-skipped) reco
 - Fixed. Regenerated the SDK helper, enforced NFC when decoding as well as encoding, and pinned the existing digest for composed metadata.
 - Accepted. The dependency guard uses MSBuild's initial-target mechanism for restore and build. Targetless property introspection evaluates and prints properties without executing validation targets.
 - Fixed. Organization ACL commands reject credential-shaped evidence before event creation. Rejections retain the batch operation index after redaction.
+- Fixed during server verification. Event admission uses credential-shape checks so valid message IDs containing operation words still work. Rejection output retains the stricter metadata filter.
 - Fixed. Excluded-only parity routes skip parameter resolution, and the diagnostic identifies the method without reading out the raw route.
 - Fixed. The JWT scan keeps the previous matching behavior for tokens adjacent to other text.

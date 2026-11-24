@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+using Hexalith.Folders.Aggregates.Folder;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
 public sealed record OrganizationAclResult(
@@ -77,7 +79,10 @@ public sealed record OrganizationAclResult(
                 : null;
 
     private static string? SafeEvidence(string? value)
-        => OrganizationAclCommandValidator.IsSafeMetadataIdentifier(value) ? value : null;
+        => OrganizationAclCommandValidator.IsSafeMetadataIdentifier(value)
+            && FolderCommandValidator.IsSafeEvidenceIdentifier(value)
+                ? value
+                : null;
 
     private static int? FindOperationIndex(IReadOnlyList<OrganizationAclOperation> operations, OrganizationAclOperation? failure)
     {

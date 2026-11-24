@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 
-using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 
 namespace Hexalith.Folders.Aggregates.Organization;
@@ -105,7 +104,7 @@ public static partial class OrganizationAclCommandValidator
 
     /// <summary>Checks identifier evidence before it can appear in an ACL event or rejection.</summary>
     internal static bool IsSafeMetadataIdentifier(string? value)
-        => FolderCommandValidator.IsSafeEvidenceIdentifier(value)
+        => IsValidIdentifier(value)
             && !OrganizationProviderBindingSecretDetector.ContainsForbiddenValue(value);
 
     internal static bool IsValidIdentifier(string? value)
