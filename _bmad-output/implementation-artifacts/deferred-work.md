@@ -1202,7 +1202,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establish-root-configuration-and-submodule-policy (2026-05-12)"), 2026-08-24
 location: .editorconfig:31-39
 reason: Private-field naming rule covers `private` accessibility only; `protected`/`internal` field naming silently allowed — deferred until those modifiers actually appear. (`.editorconfig:31-39`)
-status: open
+status: done 2026-11-24
+resolution: EditorConfig enforces PascalCase for internal, protected, protected internal, and private protected fields. A Roslyn probe verifies the four diagnostics and accepts corrected names and the existing private-field convention.
 
 ### DW-168: `CA1062`, `CA2007` severities set to `warning` combined with root `TreatWarningsAsErrors=true` could mass-fail builds when real code lands
 
