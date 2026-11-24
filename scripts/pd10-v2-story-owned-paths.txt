@@ -1507,6 +1507,7 @@ tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsLayeringTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsMetadataLeakageTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsReadModelFreshnessTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsRevocationFreshnessTests.cs
+tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsSnapshotScopeTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTaskScopeTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTestSupport.cs
 tests/Hexalith.Folders.Tests/Authorization/EventStoreClaimTransformEvidenceTests.cs

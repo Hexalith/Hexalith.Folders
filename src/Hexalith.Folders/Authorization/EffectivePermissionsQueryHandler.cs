@@ -77,6 +77,13 @@ public sealed class EffectivePermissionsQueryHandler(
 
         return readModelResult.Status switch
         {
+            EffectivePermissionsReadModelStatus.Available when readModelResult.Snapshot is not null
+                && !IsRequestedScope(readModelResult.Snapshot, managedTenantId, query.FolderId) =>
+                SafeResult(
+                    EffectivePermissionsResultCode.ReadModelUnavailable,
+                    query.FolderId,
+                    query,
+                    EffectivePermissionsFreshness.SafeUnavailable(clock.UtcNow, "projection_malformed")),
             EffectivePermissionsReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, principalScopes, readModelResult.Snapshot),
             EffectivePermissionsReadModelStatus.Stale =>
@@ -90,6 +97,15 @@ public sealed class EffectivePermissionsQueryHandler(
             _ => SafeResult(EffectivePermissionsResultCode.ReadModelUnavailable, query.FolderId, query, readModelResult.Freshness),
         };
     }
+
+    // The reader must answer for the requested scope. Another tenant's or folder's snapshot never shapes the result,
+    // and its freshness metadata is not echoed.
+    private static bool IsRequestedScope(
+        EffectivePermissionsReadModelSnapshot snapshot,
+        string managedTenantId,
+        string? folderId)
+        => string.Equals(snapshot.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+            && string.Equals(snapshot.FolderId, folderId, StringComparison.Ordinal);
 
     private static EffectivePermissionsQueryResult Compute(
         EffectivePermissionsQuery query,

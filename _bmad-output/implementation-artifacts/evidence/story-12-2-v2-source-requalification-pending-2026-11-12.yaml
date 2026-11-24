@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 31515612b20c37a6a1c3c8a646e983eaeb25dd5960364d78ac90e833e77bc02f
-artifact_count: 1686
+candidate_set_sha256: 9b1ea4a054714f6e71e2ba5f00f347abfd0aefe72357660d3156fd741495f71d
+artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120725
-    sha256: 51d867b71a6baaad680d10631fbe0dec752d47fe950ec005d853b17c0ff34823
+    bytes: 120810
+    sha256: 8b38006656e4952242b636140e7b7b17958cd7a0fd398d6b2726eaa4139e18e1
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -2470,8 +2470,8 @@ artifacts:
     sha256: 7e58d295d4b301ecd0c824501195e0cb6bd3ee247a10f958909c63d5d932f847
   - path: "src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs"
     kind: file
-    bytes: 7328
-    sha256: f1f1a9e7c55a9490bb32bbbeedad3f50d62f8d8c40460c7a9fd89cf2ae99a8a5
+    bytes: 7863
+    sha256: 2be928d8a0274e99a08ae5eebfd27506cacadfd13383db37696bb9f50d7a5914
   - path: "src/Hexalith.Folders/Authorization/EffectivePermissionsFreshness.cs"
     kind: file
     bytes: 420
@@ -2482,8 +2482,8 @@ artifacts:
     sha256: 03cd63c09da6edea0a4242468e6d65bedee725e82f09d79e5193ca072f1ff26d
   - path: "src/Hexalith.Folders/Authorization/EffectivePermissionsQueryHandler.cs"
     kind: file
-    bytes: 13928
-    sha256: 37f00f0e059ec0d1a3304cbf36a77f3c959e09f3818b30623863257a09652757
+    bytes: 14900
+    sha256: 930dc06f82399fc67389323c388b995e6d64c74850fb5034b075c6b11901edf3
   - path: "src/Hexalith.Folders/Authorization/EffectivePermissionsQueryResult.cs"
     kind: file
     bytes: 406
@@ -6056,6 +6056,10 @@ artifacts:
     kind: file
     bytes: 3069
     sha256: a6630c04f99ed7d87bb4d59ca80fc990b0aabc41bd1271594a9d238c56731497
+  - path: "tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsSnapshotScopeTests.cs"
+    kind: file
+    bytes: 1747
+    sha256: b239e1497909c86d6cdfe8b5938a0a672e8e3130f54708581f674209cc04a526
   - path: "tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTaskScopeTests.cs"
     kind: file
     bytes: 8893
@@ -6070,8 +6074,8 @@ artifacts:
     sha256: 5bfbec54424c0b96c45fb3f11b1f132acb89950184e17a72d027d931a8f89437
   - path: "tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs"
     kind: file
-    bytes: 10601
-    sha256: 7079bb07266456346e5d01b2b5ed0e304940a826d7778bfc066d6b5a439603de
+    bytes: 14165
+    sha256: 54dc7caa85943c2c1d4fca8face8f37fca38a24a8a1f1f0f7d36a9e690971dde
   - path: "tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs"
     kind: file
     bytes: 13834

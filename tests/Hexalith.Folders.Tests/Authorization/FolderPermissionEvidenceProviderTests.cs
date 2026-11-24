@@ -1,3 +1,4 @@
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Shouldly;
@@ -184,6 +185,84 @@ public sealed class FolderPermissionEvidenceProviderTests
 
         result.Status.ShouldBe(FolderPermissionEvidenceStatus.Denied);
         result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.FolderAclDenied);
+    }
+
+    [Theory]
+    [InlineData("tenant-b", "folder-a")]
+    [InlineData("tenant-a", "folder-b")]
+    [InlineData("TENANT-A", "folder-a")]
+    [InlineData("tenant-a", "organization_baseline")]
+    public async Task ProviderShouldFailClosedWhenTheReaderReturnsAForeignScopeSnapshot(
+        string snapshotTenantId,
+        string snapshotFolderId)
+    {
+        EffectivePermissionsReadModelSnapshot foreign = Snapshot(
+            revocationFreshnessEstablished: true,
+            stale: false,
+            EffectivePermissionsTestSupport.FolderGrant("read_metadata")) with
+        {
+            ManagedTenantId = snapshotTenantId,
+            FolderId = snapshotFolderId,
+        };
+        RecordingEffectivePermissionsReadModel model = new(EffectivePermissionsReadModelResult.Available(foreign));
+
+        FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(
+                model,
+                new FixedUtcClock(Now))
+            .GetEvidenceAsync(Request(), TestContext.Current.CancellationToken);
+
+        model.Requests.ShouldBe(1);
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Malformed);
+        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed);
+        result.FreshnessWatermark.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData("tenant-b", "folder-a")]
+    [InlineData("tenant-a", "folder-b")]
+    public async Task ProviderShouldFailClosedWhenABoundedStaleSnapshotBelongsToAnotherScope(
+        string snapshotTenantId,
+        string snapshotFolderId)
+    {
+        EffectivePermissionsReadModelSnapshot foreign = Snapshot(
+            revocationFreshnessEstablished: true,
+            stale: true,
+            EffectivePermissionsTestSupport.FolderGrant("read_metadata")) with
+        {
+            ManagedTenantId = snapshotTenantId,
+            FolderId = snapshotFolderId,
+        };
+        RecordingEffectivePermissionsReadModel model = new(EffectivePermissionsReadModelResult.Stale(foreign));
+
+        FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(
+                model,
+                new FixedUtcClock(Now))
+            .GetEvidenceAsync(Request(allowBoundedStale: true), TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Malformed);
+        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed);
+    }
+
+    [Fact]
+    public async Task ProviderShouldAllowOrganizationScopeEvidenceForTheReservedOrganizationScope()
+    {
+        EffectivePermissionsReadModelSnapshot organization = Snapshot(
+            revocationFreshnessEstablished: true,
+            stale: false,
+            EffectivePermissionsTestSupport.FolderGrant("create_folder")) with
+        {
+            FolderId = FolderStreamName.ReservedOrganizationPermissionScope,
+        };
+        RecordingEffectivePermissionsReadModel model = new(EffectivePermissionsReadModelResult.Available(organization));
+
+        FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(
+                model,
+                new FixedUtcClock(Now))
+            .GetEvidenceAsync(
+                Request(operationScope: FolderStreamName.ReservedOrganizationPermissionScope, actionToken: "create_folder"),
+                TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
     }
 
     private static FolderPermissionEvidenceRequest Request(

@@ -76,6 +76,14 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
         FolderPermissionEvidenceRequest request,
         EffectivePermissionsReadModelSnapshot snapshot)
     {
+        // The reader must answer for the requested scope. Evidence about another tenant or folder never grants or
+        // denies this request, so a mismatched snapshot is malformed reader output.
+        if (!string.Equals(snapshot.ManagedTenantId, request.ManagedTenantId, StringComparison.Ordinal)
+            || !string.Equals(snapshot.FolderId, request.OperationScope, StringComparison.Ordinal))
+        {
+            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null);
+        }
+
         if (snapshot.LifecycleState == EffectivePermissionsFolderLifecycleState.Missing)
         {
             return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null);
