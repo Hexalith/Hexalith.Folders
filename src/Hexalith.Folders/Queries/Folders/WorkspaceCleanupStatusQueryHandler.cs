@@ -14,7 +14,6 @@ public sealed class WorkspaceCleanupStatusQueryHandler(
 {
     public const string ActionToken = "read_workspace_cleanup_status";
     private const string ActorPresentIdentifier = "actor_present";
-    private const string DeniedSafeOutcome = "denied_safe";
     private const string ReadYourWrites = "read_your_writes";
 
     private static readonly HashSet<string> CleanupStatuses = new(StringComparer.Ordinal)
@@ -106,16 +105,16 @@ public sealed class WorkspaceCleanupStatusQueryHandler(
             WorkspaceCleanupStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, allowed, readModelResult.Snapshot),
             WorkspaceCleanupStatusReadModelStatus.Available =>
-                SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             WorkspaceCleanupStatusReadModelStatus.Stale =>
-                SafeResult(WorkspaceCleanupStatusQueryResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
+                SafeResult(WorkspaceCleanupStatusQueryResultCode.ProjectionStale, readModelResult.Freshness.ToUnavailableWithFallback("projection_stale"), query, null),
             WorkspaceCleanupStatusReadModelStatus.Unavailable =>
-                SafeResult(WorkspaceCleanupStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(WorkspaceCleanupStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_unavailable"), query, null),
             WorkspaceCleanupStatusReadModelStatus.Malformed =>
-                SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
+                SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_malformed"), query, null),
             WorkspaceCleanupStatusReadModelStatus.NotFound =>
                 SafeResult(WorkspaceCleanupStatusQueryResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
-            _ => SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
+            _ => SafeResult(WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailable(), query, null),
         };
     }
 
@@ -213,7 +212,7 @@ public sealed class WorkspaceCleanupStatusQueryHandler(
         {
             return SafeResult(
                 WorkspaceCleanupStatusQueryResultCode.ProjectionStale,
-                snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "projection_stale" },
+                snapshot.Freshness.ToUnavailableWithFallback("projection_stale"),
                 query,
                 null);
         }
@@ -227,7 +226,7 @@ public sealed class WorkspaceCleanupStatusQueryHandler(
         string reasonCode)
         => SafeResult(
             WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable,
-            freshness with { Stale = true, ReasonCode = SafeReasonCode(freshness.ReasonCode, reasonCode) },
+            freshness.ToUnavailableForHandler(SafeReasonCode(freshness.ReasonCode, reasonCode)),
             query,
             null);
 
@@ -241,10 +240,10 @@ public sealed class WorkspaceCleanupStatusQueryHandler(
             FolderId: null,
             WorkspaceId: null,
             TaskId: null,
-            Status: DeniedSafeOutcome,
-            ReasonCode: DeniedSafeOutcome,
-            RetryEligibility: new WorkspaceStatusRetryEligibility(false, DeniedSafeOutcome),
-            Freshness: freshness,
+            Status: FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken(),
+            ReasonCode: FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken(),
+            RetryEligibility: new WorkspaceStatusRetryEligibility(false, FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken()),
+            Freshness: freshness.ToUnavailable(),
             CorrelationId: query.CorrelationId,
             ObservedAt: null,
             LastAttemptedAt: null,

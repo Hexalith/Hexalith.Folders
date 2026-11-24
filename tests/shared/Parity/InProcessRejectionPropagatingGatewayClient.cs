@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -61,10 +62,16 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     public int ProcessCalls { get; private set; }
 
     /// <summary>Gets the framework-event count returned by the last <c>/process</c> round-trip.</summary>
-    public int LastWireEventCount { get; private set; }
+    public int LastWireEventCount => LastWireEvents.Count;
+
+    /// <summary>Gets the serialized events returned by the last <c>/process</c> round-trip.</summary>
+    internal IReadOnlyList<DomainServiceWireEvent> LastWireEvents { get; private set; } = [];
 
     /// <summary>Gets the rejection code returned by the last <c>/process</c> round-trip.</summary>
     public FolderResultCode? LastWireRejectionCode { get; private set; }
+
+    /// <summary>Gets whether the last process response carried a marked transport denial.</summary>
+    public bool LastProcessReturnedMarkedDenial { get; private set; }
 
     /// <inheritdoc/>
     public async Task<SubmitCommandResponse> SubmitCommandAsync(
@@ -73,7 +80,9 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     {
         string envelopeTenant = envelopeTenantTransform?.Invoke(request.Tenant) ?? request.Tenant;
         ProcessCalls++;
+        LastWireEvents = [];
         LastWireRejectionCode = null;
+        LastProcessReturnedMarkedDenial = false;
         using HttpClient client = clientFactory();
         CommandEnvelope envelope = new(
             request.IdempotencyKey ?? request.MessageId,
@@ -87,24 +96,27 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
             principalIdAccessor() ?? "actor-present",
             request.Extensions);
 
-        HttpResponseMessage response = await client
+        using HttpResponseMessage response = await client
             .PostAsJsonAsync("/process", new DomainServiceRequest(envelope, CurrentState: null), cancellationToken)
             .ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
+            LastProcessReturnedMarkedDenial = response.StatusCode == HttpStatusCode.Forbidden
+                && response.Headers.TryGetValues("X-Hexalith-Authorization-Denial", out var denialMarkers)
+                && denialMarkers.SequenceEqual(["v1"], StringComparer.Ordinal);
             throw new EventStoreGatewayException((int)response.StatusCode, response.ReasonPhrase ?? "Process failed", correlationId: request.CorrelationId);
         }
 
-        DomainServiceWireResult result = (await response.Content
+        DomainServiceWireResult? result = await response.Content
             .ReadFromJsonAsync<DomainServiceWireResult>(cancellationToken)
-            .ConfigureAwait(false))!;
-        LastWireEventCount = result.Events.Count;
+            .ConfigureAwait(false);
+        LastWireEvents = result?.Events ?? [];
 
-        if (result.IsRejection)
+        if (result is null || result.IsRejection)
         {
-            // Zero or multiple events cannot unambiguously identify the rejection evidence.
-            FolderResultCode code = result.Events.Count == 1
-                ? ParseRejectionCode(result.Events[0].Payload)
+            // A rejection must carry a single usable event.
+            FolderResultCode code = LastWireEvents is [{ } rejection]
+                ? ParseRejectionCode(rejection.Payload)
                 : FolderResultCode.MalformedEvidence;
             LastWireRejectionCode = code;
             throw ToGatewayException(code, request.CorrelationId ?? request.MessageId);

@@ -15,7 +15,6 @@ public sealed class TaskStatusQueryHandler(
 {
     public const string ActionToken = "read_task_status";
     private const string EventuallyConsistent = "eventually_consistent";
-    private const string DeniedSafeOutcome = "denied_safe";
     private static readonly HashSet<string> LifecycleStates = new(StringComparer.Ordinal)
     {
         "requested",
@@ -181,16 +180,16 @@ public sealed class TaskStatusQueryHandler(
             TaskStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, tenantAccess, readModelResult.Snapshot),
             TaskStatusReadModelStatus.Available =>
-                SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             TaskStatusReadModelStatus.Stale =>
-                SafeResult(TaskStatusQueryResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
+                SafeResult(TaskStatusQueryResultCode.ProjectionStale, readModelResult.Freshness.ToUnavailableWithFallback("projection_stale"), query, null),
             TaskStatusReadModelStatus.Unavailable =>
-                SafeResult(TaskStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(TaskStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_unavailable"), query, null),
             TaskStatusReadModelStatus.Malformed =>
-                SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             TaskStatusReadModelStatus.NotFound =>
                 SafeResult(TaskStatusQueryResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
-            _ => SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
+            _ => SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailable(), query, null),
         };
     }
 
@@ -213,7 +212,7 @@ public sealed class TaskStatusQueryHandler(
                 : "snapshot_scope_mismatch";
             FolderLifecycleFreshness freshness = snapshot.Freshness is null
                 ? new FolderLifecycleFreshness(EventuallyConsistent, DateTimeOffset.UnixEpoch, null, Stale: true, reasonCode)
-                : snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? reasonCode };
+                : snapshot.Freshness.ToUnavailableWithFallback(reasonCode);
 
             return SafeResult(
                 TaskStatusQueryResultCode.ReadModelUnavailable,
@@ -244,13 +243,13 @@ public sealed class TaskStatusQueryHandler(
         => new(
             code,
             TaskId: null,
-            CurrentState: DeniedSafeOutcome,
+            CurrentState: FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken(),
             TerminalState: null,
             LastOperationId: null,
             LastFailureCategory: null,
-            new WorkspaceStatusRetryEligibility(false, DeniedSafeOutcome),
+            new WorkspaceStatusRetryEligibility(false, FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken()),
             RetryAfter: null,
-            freshness,
+            freshness.ToUnavailable(),
             query.CorrelationId,
             authorizationDenial);
 

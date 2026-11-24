@@ -85,8 +85,9 @@ public sealed class OrganizationAclCommandValidationTests
     public void InitializeShouldCollapseExactDuplicateOperationsBeforeEvents()
     {
         OrganizationAclOperation operation = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant);
-        InitializeOrganizationAclBaseline command = AclCommandFactory.Initialize(operation, operation);
+        InitializeOrganizationAclBaseline command = AclCommandFactory.Initialize(operation, operation with { });
 
+        OrganizationAclCommandValidator.Validate(command).Operations.ShouldHaveSingleItem().ShouldBeSameAs(operation);
         OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
 
         result.Code.ShouldBe(OrganizationAclResultCode.Accepted);

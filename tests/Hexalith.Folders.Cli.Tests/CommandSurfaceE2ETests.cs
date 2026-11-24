@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Hexalith.Folders.Cli.Errors;
 using Hexalith.Folders.Cli.Tests.TestSupport;
 using Hexalith.Folders.Client.Generated;
 
@@ -52,6 +53,20 @@ public sealed class CommandSurfaceE2ETests : IDisposable
 
         exit.ShouldBe(0, $"the '{group}' group should expose a command that reaches the SDK and succeeds");
         harness.ClientFactoryInvoked.ShouldBeTrue($"the '{group}' command should build and call the SDK client");
+    }
+
+    [Theory]
+    [InlineData("folder", "status", "")]
+    [InlineData("folder", "status", " \t ")]
+    [InlineData("context", "indexing-status", "\u00a0")]
+    public async Task BlankRequiredIdentifiersAreUsageErrorsBeforeCallingTheSdk(string group, string command, string identifier)
+    {
+        CliTestHarness harness = new();
+
+        int exit = await harness.RunAsync(group, command, "--folder-id", identifier, "--base-address", BaseAddress, "--token", Token);
+
+        exit.ShouldBe(FoldersExitCodes.UsageError);
+        harness.ClientFactoryInvoked.ShouldBeFalse();
     }
 
     [Fact]

@@ -227,7 +227,8 @@ public sealed class FolderLifecycleStatusProjectionTests
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-b", "user-b"),
             TestContext.Current.CancellationToken).ConfigureAwait(false);
         InMemoryFolderLifecycleStatusReadModel readModel = new(new FixedUtcClock(DateTimeOffset.UtcNow));
-        readModel.Save(FolderLifecycleStatusTestSupport.Snapshot(
+        IFolderLifecycleStatusSeed seed = readModel;
+        seed.Save(FolderLifecycleStatusTestSupport.Snapshot(
             "tenant-a",
             "shared-folder-id",
             FolderLifecycleProjectionState.Active,
@@ -235,7 +236,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             "repository_binding_tenant_a",
             "provider_binding_tenant_a",
             FolderLifecycleStatusTestSupport.EvidenceScope("tenant-a", "user-a", correlationId: "corr-a")));
-        readModel.Save(FolderLifecycleStatusTestSupport.Snapshot(
+        seed.Save(FolderLifecycleStatusTestSupport.Snapshot(
             "tenant-b",
             "shared-folder-id",
             FolderLifecycleProjectionState.Active,

@@ -596,6 +596,7 @@ src/Hexalith.Folders/Authorization/ClientTenantValues.cs
 src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs
 src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs
+src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptionsValidator.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs
@@ -877,6 +878,7 @@ src/Hexalith.Folders/Providers/GitHub/DaprBackedGitHubCredentialResolver.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiClientRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiFailureCondition.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubApiVersionHttpClient.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubBindingRepository.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCanonicalEvidenceWriter.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCommitRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubCommitResult.cs
@@ -905,8 +907,10 @@ src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingResult.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationRequest.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationResult.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubResponseBufferingHandler.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubResponseLimitExceededException.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubSafeTargetFingerprint.cs
+src/Hexalith.Folders/Providers/GitHub/GitHubTransportOptions.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubTreeEntry.cs
 src/Hexalith.Folders/Providers/GitHub/GitHubTreeObservationException.cs
 src/Hexalith.Folders/Providers/GitHub/IGitHubApiClient.cs
@@ -1024,6 +1028,7 @@ src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs
 src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs
 src/Hexalith.Folders/Queries/Folders/IBranchRefPolicyReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs
+src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusSeed.cs
 src/Hexalith.Folders/Queries/Folders/ITaskStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IWorkspaceCleanupStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IWorkspaceLockStatusReadModel.cs
@@ -1170,6 +1175,8 @@ tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
 tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs
 tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
 tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs
+tests/Hexalith.Folders.Client.Tests/IdempotencyHasherCancellationTests.cs
+tests/Hexalith.Folders.Client.Tests/IdempotencyHasherScalarTests.cs
 tests/Hexalith.Folders.Contracts.Tests/ContractsSmokeTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/AccessibilityCiWorkflowConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/AdrRunbookDocsConformanceTests.cs
@@ -1219,6 +1226,7 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2ContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs
+tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.AuditLeakageMatcher.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.RunnerTests.cs
@@ -1411,6 +1419,7 @@ tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.Corrections.
 tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceStatusEndpointTests.cs
 tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/ArchiveCancellationClock.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingDapr.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingValidator.cs
@@ -1567,6 +1576,7 @@ tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.Operations.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.Preparation.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Operations.cs
+tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Timeout.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ProviderCallCeilingConformanceTests.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordedGitHubHttpRequest.cs
@@ -1577,6 +1587,7 @@ tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingGitHubHttpMessageHandler.
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderOperationOutcomeStore.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderOperationSourceResolver.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderRepositoryTargetResolver.cs
+tests/Hexalith.Folders.Tests/Providers/GitHub/StalledGitHubResponseContent.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ThrowingProviderRepositoryTargetResolver.cs
 tests/Hexalith.Folders.Tests/Providers/GitHub/ThrowingReadOnlyList.cs
 tests/Hexalith.Folders.Tests/Providers/Readiness/ProviderReadinessValidationServiceTests.cs
@@ -1621,6 +1632,9 @@ tests/fixtures/parity-contract.yaml
 tests/fixtures/pattern-example-manifest.yaml
 tests/fixtures/previous-spine.yaml
 tests/load/Hexalith.Folders.LoadTests.csproj
+tests/shared/AuditLeakage/AuditLeakageCorpus.cs
+tests/shared/AuditLeakage/AuditLeakageMatcher.cs
+tests/shared/AuditLeakage/AuditLeakageSample.cs
 tests/shared/EventStore/RecordingDaprClient.cs
 tests/shared/NativeContent/NativeContentAuthority.cs
 tests/shared/NativeContent/NativeContentClock.cs
@@ -1652,6 +1666,7 @@ tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs
 tests/tools/Task36FoldObserver/StartupHook.cs
 tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
 tests/tools/Task36FoldObserver/Task36HostingStartup.cs
+tests/tools/parity-oracle-generator/OperationSchemaReferences.cs
 tests/tools/parity-oracle-generator/Program.cs
 tests/tools/parity-oracle-generator/README.md
 tests/tools/run-adr-runbook-docs-gates.ps1

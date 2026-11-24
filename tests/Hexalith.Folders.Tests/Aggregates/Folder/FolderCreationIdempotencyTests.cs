@@ -19,6 +19,10 @@ public sealed class FolderCreationIdempotencyTests
 
         first.Code.ShouldBe(FolderResultCode.Created);
         second.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        first.IsAccepted.ShouldBeTrue();
+        second.IsAccepted.ShouldBeTrue();
+        second.IdempotencyKey.ShouldBe(first.IdempotencyKey);
+        second.Events.ShouldBeEmpty();
         repository.EventsAppended.ShouldBe(1);
     }
 
@@ -39,6 +43,7 @@ public sealed class FolderCreationIdempotencyTests
             AclEvidence());
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        result.IsAccepted.ShouldBeFalse();
         repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(1);
     }

@@ -33,7 +33,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly Dictionary<(string ManagedTenantId, string FolderId, string Projection), DateTimeOffset> _lastObservedAt = new();
     private readonly object _gate = new();
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
-    private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
+    private readonly IFolderLifecycleStatusSeed? _lifecycleSeed;
     private readonly InMemoryWorkspaceLockStatusReadModel? _workspaceLockStatusReadModel;
     private readonly InMemoryWorkspaceStatusReadModel? _workspaceStatusReadModel;
     private readonly InMemoryWorkspaceCleanupStatusReadModel? _workspaceCleanupStatusReadModel;
@@ -50,13 +50,11 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         IWorkspaceCleanupStatusReadModel? workspaceCleanupStatusReadModel = null,
         ITaskStatusReadModel? taskStatusReadModel = null)
     {
-        // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
-        // if a different IFolderLifecycleStatusReadModel implementation was injected so the
-        // wiring drift is visible at startup rather than silently dropping snapshots.
-        if (lifecycleReadModel is not null && lifecycleReadModel is not InMemoryFolderLifecycleStatusReadModel)
+        // Reject read-only stores here so the in-memory repository cannot silently drop snapshots.
+        if (lifecycleReadModel is not null && lifecycleReadModel is not IFolderLifecycleStatusSeed)
         {
             throw new ArgumentException(
-                $"InMemoryFolderRepository requires {nameof(InMemoryFolderLifecycleStatusReadModel)}; received {lifecycleReadModel.GetType().Name}.",
+                $"InMemoryFolderRepository requires an {nameof(IFolderLifecycleStatusSeed)}; received {lifecycleReadModel.GetType().Name}.",
                 nameof(lifecycleReadModel));
         }
 
@@ -96,7 +94,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         }
 
         _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
-        _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
+        _lifecycleSeed = (IFolderLifecycleStatusSeed?)lifecycleReadModel;
         _workspaceLockStatusReadModel = (InMemoryWorkspaceLockStatusReadModel?)workspaceLockStatusReadModel;
         _workspaceStatusReadModel = (InMemoryWorkspaceStatusReadModel?)workspaceStatusReadModel;
         _workspaceCleanupStatusReadModel = (InMemoryWorkspaceCleanupStatusReadModel?)workspaceCleanupStatusReadModel;
@@ -135,11 +133,28 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         string idempotencyKey,
         string fingerprint,
         IReadOnlyList<IFolderEvent> events)
+        => Append(streamName, idempotencyKey, fingerprint, events, CancellationToken.None);
+
+    FolderAppendOutcome IFolderRepository.AppendIfFingerprintAbsent(
+        FolderStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IFolderEvent> events,
+        CancellationToken cancellationToken)
+        => Append(streamName, idempotencyKey, fingerprint, events, cancellationToken);
+
+    private FolderAppendOutcome Append(
+        FolderStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IFolderEvent> events,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(streamName);
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
         ArgumentNullException.ThrowIfNull(events);
+        cancellationToken.ThrowIfCancellationRequested();
 
         // Capture the observation time before taking the lock so it reflects the request's
         // arrival ordering rather than the lock-acquisition ordering. Combined with the
@@ -149,6 +164,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         lock (_gate)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             string ledgerKey = LedgerKey(streamName, idempotencyKey);
             // A replay needs only the non-empty check. For a new key, take a stable batch before
             // the final ledger lookup because caller-controlled enumeration can reenter append.
@@ -168,6 +184,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
             FolderState current = LoadUnderGate(streamName);
             FolderState next = current.Apply(batch, streamName);
+            cancellationToken.ThrowIfCancellationRequested();
             _states[streamName.Value] = next;
             _idempotencyFingerprints[ledgerKey] = fingerprint;
             _eventsAppended += eventCount;
@@ -297,7 +314,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
     private void SaveLifecycleSnapshot(FolderState state, DateTimeOffset observedAt)
     {
-        if (_lifecycleReadModel is null
+        if (_lifecycleSeed is null
             || !state.IsCreated
             || string.IsNullOrWhiteSpace(state.ManagedTenantId)
             || string.IsNullOrWhiteSpace(state.FolderId))
@@ -325,7 +342,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             ? state.ArchiveCorrelationId
             : state.RepositoryBindingCorrelationId ?? state.ArchiveCorrelationId;
 
-        _lifecycleReadModel.Save(new FolderLifecycleStatusReadModelSnapshot(
+        _lifecycleSeed.Save(new FolderLifecycleStatusReadModelSnapshot(
             state.ManagedTenantId,
             state.FolderId,
             state.LifecycleState == FolderLifecycleState.Archived

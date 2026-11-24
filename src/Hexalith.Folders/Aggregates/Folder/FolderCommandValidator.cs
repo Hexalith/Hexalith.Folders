@@ -107,6 +107,12 @@ public static partial class FolderCommandValidator
 
         if (command is ArchiveFolder archive)
         {
+            if (archive.DecisionIdempotencyFingerprint is { } decisionFingerprint
+                && string.IsNullOrWhiteSpace(decisionFingerprint))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.MalformedEvidence);
+            }
+
             if (!string.Equals(archive.RequestSchemaVersion, "v1", StringComparison.Ordinal)
                 || !TryParseArchiveReasonCode(archive.ArchiveReasonCode, out FolderArchiveReasonCode archiveReasonCode))
             {

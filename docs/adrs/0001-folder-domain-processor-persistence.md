@@ -4,7 +4,7 @@ Date: 2026-05-20
 
 ## Status
 
-Accepted for Story 2.8b implementation.
+Accepted for Story 2.8b implementation. The persistence decision and result mapping below describe that story. The current deployed server uses `ActorFoldedFolderRepository` for command-local state and returns accepted events for the EventStore actor to persist.
 
 ## Context
 
@@ -28,14 +28,9 @@ Because EventStore currently drops `ResultPayload` for no-op domain results, acc
 
 ## Cancellation Boundary
 
-`IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` has no `CancellationToken`. IO-bearing work remains in the endpoint/gateway/request-handler path where cancellation is available. The processor and evidence providers used inside it are intentionally bounded, in-memory/scoped operations:
+The Folders `/process` request handler uses EventStore's `IAsyncDomainProcessor` contract to pass the request token to the processor. Archive ACL and policy evidence providers and final mutation reauthorization receive that token. The processor checks it before invoking the synchronous archive gate. Cancellation during an evidence check unwinds the scoped authorization handoff. This token belongs to the EventStore callback. An admitted command may continue in EventStore after the original public HTTP caller disconnects.
 
-- layered authorization has already run with the request `CancellationToken`;
-- archive ACL evidence reads the current scoped layered authorization result;
-- baseline archive policy evidence is a deterministic in-memory policy stub;
-- gate persistence uses `IFolderRepository`, whose current contract is synchronous.
-
-Extending `IDomainProcessor` with cancellation would require EventStore contract work and is deferred.
+The original two-argument `IDomainProcessor` entry point remains available for callers of that contract.
 
 ## Layered Authorization Evidence Handoff
 

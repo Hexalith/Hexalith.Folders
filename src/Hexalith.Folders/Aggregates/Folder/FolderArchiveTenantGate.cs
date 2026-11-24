@@ -17,11 +17,21 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         TenantAccessAuthorizationResult tenantAccess,
         FolderArchiveAclEvidence aclEvidence,
         FolderArchivePolicyEvidence policyEvidence)
+        => HandleCancellable(command, tenantAccess, aclEvidence, policyEvidence, CancellationToken.None);
+
+    /// <summary>Evaluates and appends an archive decision while it remains cancellable.</summary>
+    public FolderResult HandleCancellable(
+        ArchiveFolder command,
+        TenantAccessAuthorizationResult tenantAccess,
+        FolderArchiveAclEvidence aclEvidence,
+        FolderArchivePolicyEvidence policyEvidence,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(tenantAccess);
         ArgumentNullException.ThrowIfNull(aclEvidence);
         ArgumentNullException.ThrowIfNull(policyEvidence);
+        cancellationToken.ThrowIfCancellationRequested();
 
         if (!tenantAccess.IsAllowed)
         {
@@ -93,9 +103,10 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             authoritativeCommand.ManagedTenantId,
             authoritativeCommand.FolderId);
 
-        FolderState state = _repository.Load(streamName);
+        FolderState state = _repository.Load(streamName, cancellationToken);
         DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
         FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, occurredAt);
+        cancellationToken.ThrowIfCancellationRequested();
         if (result.Events.Count == 0)
         {
             return result;
@@ -105,17 +116,18 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             streamName,
             authoritativeCommand.IdempotencyKey,
             decisionFingerprint,
-            result.Events);
+            result.Events,
+            cancellationToken);
 
         return outcome switch
         {
             FolderAppendOutcome.Appended => result,
             FolderAppendOutcome.FingerprintMatched =>
-                FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay),
+                FolderResult.Replayed(authoritativeCommand),
             FolderAppendOutcome.FingerprintConflict =>
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict =>
-                ResolveAppendConflict(_repository, streamName, authoritativeCommand),
+                ResolveAppendConflict(_repository, streamName, authoritativeCommand, cancellationToken),
             // Explicit default — any future FolderAppendOutcome enum value must be wired
             // before it reaches here. Defaulting silently to MalformedEvidence would hide
             // real outcomes; fail closed but with a distinct code that tests can detect.
@@ -126,11 +138,13 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
     private FolderResult ResolveAppendConflict(
         IFolderRepository repository,
         FolderStreamName streamName,
-        ArchiveFolder command)
+        ArchiveFolder command,
+        CancellationToken cancellationToken)
     {
-        FolderState refreshed = repository.Load(streamName);
+        FolderState refreshed = repository.Load(streamName, cancellationToken);
         DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
         FolderResult refreshedResult = FolderAggregate.Handle(refreshed, command, occurredAt);
+        cancellationToken.ThrowIfCancellationRequested();
         return refreshedResult.Events.Count == 0
             ? refreshedResult
             : FolderResult.Rejected(command, FolderResultCode.AppendConflict);

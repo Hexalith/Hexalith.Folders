@@ -14,7 +14,6 @@ public sealed class WorkspaceLockStatusQueryHandler(
 {
     public const string ActionToken = "read_workspace_lock";
     private const string ActorPresentIdentifier = "actor_present";
-    private const string DeniedSafeOutcome = "denied_safe";
     private const string ReadYourWrites = "read_your_writes";
 
     private readonly ILogger<WorkspaceLockStatusQueryHandler> _logger = logger ?? NullLogger<WorkspaceLockStatusQueryHandler>.Instance;
@@ -93,16 +92,16 @@ public sealed class WorkspaceLockStatusQueryHandler(
             WorkspaceLockStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, allowed, readModelResult.Snapshot),
             WorkspaceLockStatusReadModelStatus.Available =>
-                SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             WorkspaceLockStatusReadModelStatus.Stale =>
-                SafeResult(WorkspaceLockStatusQueryResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
+                SafeResult(WorkspaceLockStatusQueryResultCode.ProjectionStale, readModelResult.Freshness.ToUnavailableWithFallback("projection_stale"), query, null),
             WorkspaceLockStatusReadModelStatus.Unavailable =>
-                SafeResult(WorkspaceLockStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(WorkspaceLockStatusQueryResultCode.ProjectionUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_unavailable"), query, null),
             WorkspaceLockStatusReadModelStatus.Malformed =>
-                SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
+                SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_malformed"), query, null),
             WorkspaceLockStatusReadModelStatus.NotFound =>
                 SafeResult(WorkspaceLockStatusQueryResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
-            _ => SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
+            _ => SafeResult(WorkspaceLockStatusQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailable(), query, null),
         };
     }
 
@@ -208,7 +207,7 @@ public sealed class WorkspaceLockStatusQueryHandler(
         }
 
         return snapshot.Freshness.Stale
-            ? Unavailable(query, snapshot.Freshness, snapshot.Freshness.ReasonCode ?? "projection_stale")
+            ? Unavailable(query, snapshot.Freshness, "projection_stale")
             : null;
     }
 
@@ -218,7 +217,7 @@ public sealed class WorkspaceLockStatusQueryHandler(
         string reasonCode)
         => SafeResult(
             WorkspaceLockStatusQueryResultCode.ReadModelUnavailable,
-            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? reasonCode },
+            freshness.ToUnavailableWithFallback(reasonCode),
             query,
             null);
 
@@ -227,16 +226,20 @@ public sealed class WorkspaceLockStatusQueryHandler(
         FolderLifecycleFreshness freshness,
         WorkspaceLockStatusQuery query,
         LayeredFolderAuthorizationResult? authorizationDenial)
-        => new(
+    {
+        FolderLifecycleFreshness unavailable = freshness.ToUnavailable();
+        string denied = FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken();
+        return new(
             code,
             WorkspaceId: null,
-            LockState: DeniedSafeOutcome,
+            LockState: denied,
             Lease: null,
-            RetryEligibility: new(false, null, DeniedSafeOutcome, query.CorrelationId, query.TaskId, DeniedSafeOutcome, freshness),
-            freshness,
+            RetryEligibility: new(false, null, denied, query.CorrelationId, query.TaskId, denied, unavailable),
+            unavailable,
             query.CorrelationId,
             query.TaskId,
             authorizationDenial);
+    }
 
     private static WorkspaceLockStatusQueryResultCode MapAuthorizationDenial(LayeredFolderAuthorizationResult authorization)
         => authorization.Decision.OutcomeCode switch

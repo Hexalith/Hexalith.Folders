@@ -160,7 +160,7 @@ public sealed class WorkspaceCommitService(
         return outcome switch
         {
             FolderAppendOutcome.Appended => aggregateResult,
-            FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
+            FolderAppendOutcome.FingerprintMatched => FolderResult.Replayed(command),
             FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),
             _ => FolderResult.Rejected(command, FolderResultCode.MalformedEvidence),

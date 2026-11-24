@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
@@ -11,6 +13,7 @@ namespace Hexalith.Folders.Workers.Tests;
 public sealed class EventStoreSemanticIndexingBridgeStoreTests
 {
     private const string StoreName = EventStoreSemanticIndexingBridgeStore.StateStoreName;
+    private const string FolderIndexKey = "tenant-a:semantic-indexing:folder:folder-a:file-versions";
     private static readonly DateTimeOffset OccurredAt = new(2026, 6, 23, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
@@ -211,6 +214,95 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
         reloaded.Freshness.Watermark.ShouldBe(2);
     }
 
+    [Theory]
+    [InlineData("tenant-b", "folder-a")]
+    [InlineData("tenant-a", "folder-b")]
+    [InlineData("tenant-a", "folder-a")]
+    public async Task FolderScopedArchiveShouldIgnoreIndexedRowsOutsideItsFolder(string managedTenantId, string folderId)
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        WorkspaceFileMutationAccepted mutation = Mutation();
+        string key = SemanticIndexingFileVersionIdentity.From(mutation).ReadModelKey;
+        await bridgeStore.ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 1, mutation)], cancellationToken)
+            .ConfigureAwait(true);
+        await readModelStore.SaveAsync(StoreName, key, SwappedIdentityEntry(managedTenantId, folderId), cancellationToken)
+            .ConfigureAwait(true);
+        ReadModelEntry<SemanticIndexingBridgeEntry> before = await readModelStore
+            .GetAsync<SemanticIndexingBridgeEntry>(StoreName, key, cancellationToken).ConfigureAwait(true);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> updated = await bridgeStore
+            .ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 2, Archived())], cancellationToken)
+            .ConfigureAwait(true);
+
+        updated.ShouldBeEmpty();
+        ReadModelEntry<SemanticIndexingBridgeEntry> after = await readModelStore
+            .GetAsync<SemanticIndexingBridgeEntry>(StoreName, key, cancellationToken).ConfigureAwait(true);
+        after.Value.ShouldBe(before.Value);
+        after.ETag.ShouldBe(before.ETag);
+    }
+
+    [Theory]
+    [InlineData("""{"managedTenantId":"tenant-a","folderId":"folder-a"}""")]
+    [InlineData("""{"managedTenantId":"tenant-a","folderId":"folder-a","entryKeys":null}""")]
+    public async Task PersistedFolderIndexWithoutEntryKeysShouldFailClosed(string indexJson)
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        using JsonDocument index = JsonDocument.Parse(indexJson);
+        await readModelStore.SaveAsync<object>(StoreName, FolderIndexKey, index.RootElement.Clone(), cancellationToken)
+            .ConfigureAwait(true);
+
+        await Should.ThrowAsync<JsonException>(() => bridgeStore.ListFolderAsync("tenant-a", "folder-a", cancellationToken));
+        await Should.ThrowAsync<JsonException>(() => bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Archived())], cancellationToken));
+        await Should.ThrowAsync<JsonException>(() => bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 3, Mutation("remove", null))], cancellationToken));
+        await Should.ThrowAsync<JsonException>(() => bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 4, Mutation())], cancellationToken));
+        readModelStore.Keys.ShouldBe([$"{StoreName}:{FolderIndexKey}"]);
+    }
+
+    [Fact]
+    public async Task ConflictingProjectionEvidenceShouldReportSequenceWithoutTheStateKey()
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        WorkspaceFileMutationAccepted first = Mutation();
+        WorkspaceFileMutationAccepted conflicting = first with { IdempotencyFingerprint = "fingerprint-conflict-a" };
+        await bridgeStore.ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 1, first)], cancellationToken)
+            .ConfigureAwait(true);
+
+        InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>(() => bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, conflicting)], cancellationToken));
+
+        exception.Message.ShouldBe("Semantic indexing bridge received conflicting event evidence at sequence 1.");
+    }
+
+    [Fact]
+    public async Task PersistedEmptyEntryKeysShouldRoundTripAndAllowIndexing()
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        using JsonDocument index = JsonDocument.Parse("""{"managedTenantId":"tenant-a","folderId":"folder-a","entryKeys":[]}""");
+        await readModelStore.SaveAsync<object>(StoreName, FolderIndexKey, index.RootElement.Clone(), cancellationToken)
+            .ConfigureAwait(true);
+
+        (await bridgeStore.ListFolderAsync("tenant-a", "folder-a", cancellationToken).ConfigureAwait(true)).ShouldBeEmpty();
+        IReadOnlyList<SemanticIndexingBridgeEntry> persisted = await bridgeStore
+            .ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 1, Mutation())], cancellationToken)
+            .ConfigureAwait(true);
+        readModelStore.RoundTripJson(StoreName, FolderIndexKey);
+        EventStoreSemanticIndexingBridgeStore reloaded = new(readModelStore);
+        (await reloaded.ListFolderAsync("tenant-a", "folder-a", cancellationToken).ConfigureAwait(true))
+            .ShouldBe(persisted);
+        persisted.ShouldHaveSingleItem();
+    }
+
     [Fact]
     public async Task ApplyFolderEventsAsyncShouldTombstoneKnownFileVersionWhenRemoveHasNoContentHash()
     {
@@ -343,18 +435,18 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
             "sha256:a",
             "folders://tenant-a/organizations/organization-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-lookup");
 
-    private static SemanticIndexingBridgeEntry SwappedIdentityEntry()
+    private static SemanticIndexingBridgeEntry SwappedIdentityEntry(string managedTenantId = "tenant-b", string folderId = "folder-b")
         => new(
             new SemanticIndexingFileVersionIdentity(
-                "tenant-b",
+                managedTenantId,
                 "organization-b",
-                "folder-b",
+                folderId,
                 "workspace-b",
                 "operation-b",
                 "path-digest-b",
                 "fv-foreign",
                 "sha256:b",
-                "folders://tenant-b/organizations/organization-b/folders/folder-b/workspaces/workspace-b/file-versions/fv-foreign"),
+                $"folders://{managedTenantId}/organizations/organization-b/folders/{folderId}/workspaces/workspace-b/file-versions/fv-foreign"),
             SemanticIndexingBridgeStatus.Indexed,
             "poisoned_identity",
             retryable: false,
@@ -403,10 +495,18 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
 
     private sealed class InMemoryReadModelStoreDouble : IReadModelStore
     {
+        private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
         private readonly Dictionary<string, Entry> _entries = new(StringComparer.Ordinal);
         private long _etagSequence;
 
         public IReadOnlyCollection<string> Keys => _entries.Keys.Order(StringComparer.Ordinal).ToArray();
+
+        public void RoundTripJson(string storeName, string key)
+        {
+            string composite = Compose(storeName, key);
+            Entry entry = _entries[composite];
+            _entries[composite] = entry with { Value = JsonSerializer.SerializeToElement(entry.Value, JsonOptions) };
+        }
 
         public Task<ReadModelEntry<TValue>> GetAsync<TValue>(
             string storeName,
@@ -418,9 +518,13 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
             ArgumentException.ThrowIfNullOrWhiteSpace(key);
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _entries.TryGetValue(Compose(storeName, key), out Entry? entry)
-                ? Task.FromResult(new ReadModelEntry<TValue>((TValue)entry.Value, entry.ETag))
-                : Task.FromResult(new ReadModelEntry<TValue>(null, null));
+            if (!_entries.TryGetValue(Compose(storeName, key), out Entry? entry))
+            {
+                return Task.FromResult(new ReadModelEntry<TValue>(null, null));
+            }
+
+            TValue? value = entry.Value is JsonElement json ? json.Deserialize<TValue>(JsonOptions) : (TValue)entry.Value;
+            return Task.FromResult(new ReadModelEntry<TValue>(value, entry.ETag));
         }
 
         public Task SaveAsync<TValue>(

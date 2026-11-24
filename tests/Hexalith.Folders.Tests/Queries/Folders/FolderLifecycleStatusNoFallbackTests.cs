@@ -2,6 +2,8 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 using Xunit;
@@ -19,6 +21,53 @@ namespace Hexalith.Folders.Tests.Queries.Folders;
 /// </summary>
 public sealed class FolderLifecycleStatusNoFallbackTests
 {
+    [Fact]
+    public void LifecycleStatusHandlerAcceptsARequestScopedReader()
+    {
+        ServiceCollection services = new();
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddScoped<IFolderLifecycleStatusReadModel, ThrowingLifecycleStatusReadModel>();
+        services.AddFoldersLifecycleStatus();
+        using ServiceProvider provider = services.BuildServiceProvider(validateScopes: true);
+        using IServiceScope first = provider.CreateScope();
+        using IServiceScope second = provider.CreateScope();
+
+        FolderLifecycleStatusQueryHandler handler = first.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>();
+        first.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>().ShouldBeSameAs(handler);
+        second.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>().ShouldNotBeSameAs(handler);
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Available, true)]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Available, false)]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Stale, false)]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Unavailable, false)]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Malformed, false)]
+    [InlineData(FolderLifecycleStatusReadModelStatus.NotFound, false)]
+    public async Task FutureFreshnessFailsClosedUsingTheLocalClock(
+        FolderLifecycleStatusReadModelStatus status,
+        bool futureSnapshotOnly)
+    {
+        FolderLifecycleFreshness current = FolderLifecycleStatusTestSupport.Freshness();
+        FolderLifecycleFreshness future = current with { ObservedAt = FolderLifecycleStatusTestSupport.Now.AddSeconds(1) };
+        FolderLifecycleStatusReadModelSnapshot? snapshot = status == FolderLifecycleStatusReadModelStatus.Available
+            ? FolderLifecycleStatusTestSupport.ActiveBound() with { Freshness = futureSnapshotOnly ? future : current }
+            : null;
+        CountingLifecycleStatusReadModel readModel = new(new(status, snapshot, futureSnapshotOnly ? current : future));
+        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(
+            new CountingTenantAccessProjectionStore(FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"])),
+            readModel);
+
+        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
+            FolderLifecycleStatusTestSupport.Query(), TestContext.Current.CancellationToken).ConfigureAwait(false);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
+        result.FolderId.ShouldBeNull();
+        result.Freshness.ShouldBe(FolderLifecycleFreshness.SafeUnavailable(
+            FolderLifecycleStatusTestSupport.Now, "freshness_observed_in_future"));
+        readModel.Requests.ShouldBe(1);
+    }
+
     [Fact]
     public async Task DoesNotFallbackToAggregateWhenLifecycleProjectionUnavailable()
     {

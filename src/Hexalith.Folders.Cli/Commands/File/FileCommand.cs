@@ -42,10 +42,10 @@ internal static class FileCommand
         Option<string> operationId = CommandOptions.RequiredId("--operation-id", "Opaque per-file operation identifier.");
         Option<long> expectedFileVersion = new("--expected-file-version") { Description = "Caller-observed file version; zero for a new file.", Required = true };
         Option<long> expectedLockFence = new("--expected-lock-fence") { Description = "Caller-observed positive lock acquisition fence.", Required = true };
-        Option<string> file = CommandOptions.RequiredId("--file", "Path to the local file content, or - to read bytes from stdin.");
-        Option<string> path = CommandOptions.RequiredId("--path", "Workspace-root-relative normalized path.");
-        Option<string> displayName = CommandOptions.RequiredId("--display-name", "Human-readable file name.");
-        Option<string> mediaType = CommandOptions.RequiredId("--media-type", "RFC 6838 media type (type/subtype).");
+        Option<string> file = CommandOptions.RequiredValue("--file", "Path to the local file content, or - to read bytes from stdin.");
+        Option<string> path = CommandOptions.RequiredValue("--path", "Workspace-root-relative normalized path.");
+        Option<string> displayName = CommandOptions.RequiredValue("--display-name", "Human-readable file name.");
+        Option<string> mediaType = CommandOptions.RequiredValue("--media-type", "RFC 6838 media type (type/subtype).");
         Option<string?> contentMediaType = new("--content-media-type") { Description = "Optional original media type when it differs from --media-type." };
         Option<string> pathPolicyClass = new("--path-policy-class") { Description = "Path policy classification.", DefaultValueFactory = _ => "metadata_only" };
 

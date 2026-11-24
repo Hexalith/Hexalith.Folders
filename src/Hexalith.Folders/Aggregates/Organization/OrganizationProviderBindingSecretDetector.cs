@@ -25,6 +25,7 @@ public static partial class OrganizationProviderBindingSecretDetector
         return BearerPattern().IsMatch(value)
             || PemPattern().IsMatch(value)
             || JwtPattern().IsMatch(value)
+            || OpaqueCredentialPattern().IsMatch(value)
             || CredentialUrlPattern().IsMatch(value)
             || ConnectionStringPattern().IsMatch(value)
             || DiffPattern().IsMatch(value)
@@ -54,6 +55,9 @@ public static partial class OrganizationProviderBindingSecretDetector
 
     [GeneratedRegex(@"[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}", RegexOptions.CultureInvariant)]
     private static partial Regex JwtPattern();
+
+    [GeneratedRegex(@"\A(?:(?:AKIA|ASIA)[A-Z0-9]{15,16}|(?:gh[pousr]|[a-z][a-z0-9]*_pat)_[A-Za-z0-9_]{30,})\z", RegexOptions.CultureInvariant)]
+    private static partial Regex OpaqueCredentialPattern();
 
     [GeneratedRegex(@"[a-z][a-z0-9+.-]*://[^/\s:@]+:[^/\s@]+@", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex CredentialUrlPattern();

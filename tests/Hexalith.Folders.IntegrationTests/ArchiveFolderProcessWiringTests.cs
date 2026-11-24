@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Handlers;
@@ -19,6 +20,7 @@ using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
+using Hexalith.Folders.Tests.Shared.AuditLeakage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -49,6 +51,62 @@ public sealed class ArchiveFolderProcessWiringTests
         "user-a",
         "v1-test-denied",
     ];
+
+    public static TheoryData<string> ArchiveLeakageSampleIds()
+    {
+        TheoryData<string> cases = new();
+        foreach (AuditLeakageSample sample in AuditLeakageCorpus.Samples)
+        {
+            cases.Add(sample.Id);
+        }
+
+        return cases;
+    }
+
+    [Theory]
+    [MemberData(nameof(ArchiveLeakageSampleIds))]
+    public async Task ArchiveDoesNotCopyRetainedFolderMetadataToExposedSurfaces(string sampleId)
+    {
+        AuditLeakageSample sample = AuditLeakageCorpus.Get(sampleId);
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a", description: sample.Value);
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage response = await host.Client.SendAsync(request, cancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Repository.EventsAppended.ShouldBe(1);
+            FolderState archived = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            archived.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+            string.Equals(archived.Description, sample.Value, StringComparison.Ordinal)
+                .ShouldBeTrue($"The retained folder state must contain corpus sample '{sample.Id}'.");
+
+            DomainServiceWireEvent emitted = host.Gateway.LastWireEvents.ShouldHaveSingleItem();
+            JsonSerializer.Deserialize<FolderArchived>(emitted.Payload).ShouldNotBeNull();
+            AuditLeakageMatcher.Contains(Encoding.UTF8.GetString(emitted.Payload), sample.Value)
+                .ShouldBeFalse($"The archive event echoed corpus sample '{sample.Id}'.");
+            AuditLeakageMatcher.Contains(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(true), sample.Value)
+                .ShouldBeFalse($"The archive response echoed corpus sample '{sample.Id}'.");
+
+            FolderLifecycleStatusReadModelResult projection = await host.LifecycleReadModel.GetAsync(
+                new FolderLifecycleStatusReadModelRequest("tenant-a", "folder-a", "user-a", "read_metadata",
+                    TaskId: null, CorrelationId: null, AuthorizationWatermark: null, "eventually_consistent"),
+                cancellationToken).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelSnapshot snapshot = projection.Snapshot.ShouldNotBeNull();
+            snapshot.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Archived);
+            AuditLeakageMatcher.Contains(JsonSerializer.Serialize(snapshot), sample.Value)
+                .ShouldBeFalse($"The lifecycle projection echoed corpus sample '{sample.Id}'.");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
 
     [Theory]
     [InlineData("user-a", false)]
@@ -313,7 +371,7 @@ public sealed class ArchiveFolderProcessWiringTests
     public async Task ArchiveRequestCancelledMidProcessorShouldUnwindAuthorizationWithoutAppending()
     {
         using CancellationTokenSource requestCancellation = new();
-        CancelMidFlightFolderArchivePolicyEvidenceProvider policyProvider = new(requestCancellation);
+        CancelMidFlightFolderArchivePolicyEvidenceProvider policyProvider = new();
         ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
         TestHost host = await StartHostAsync(
             policyProvider,
@@ -333,6 +391,7 @@ public sealed class ArchiveFolderProcessWiringTests
             await policyProvider.Entered
                 .WaitAsync(SignalTimeout, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            await requestCancellation.CancelAsync().ConfigureAwait(true);
             await Should.ThrowAsync<OperationCanceledException>(
                 async () => await responseTask.ConfigureAwait(true));
             await policyProvider.ServerCancellationObserved
@@ -371,8 +430,33 @@ public sealed class ArchiveFolderProcessWiringTests
         }
         finally
         {
+            await requestCancellation.CancelAsync().ConfigureAwait(true);
             await host.DisposeAsync().ConfigureAwait(true);
         }
+    }
+
+    [Fact]
+    public async Task ArchiveProcessCancellationReachedDuringAppendShouldPreventPublication()
+    {
+        using CancellationTokenSource cancellation = new();
+        FixedTimeProvider repositoryClock = new(Now);
+        TestHost host = await StartHostAsync(
+            repositoryTimeProvider: repositoryClock, processCancellation: cancellation.Token).ConfigureAwait(true);
+        await using var hostScope = host.ConfigureAwait(true);
+        SeedTenant(host.TenantStore, "tenant-a", "user-a");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
+        repositoryClock.OnRead = cancellation.Cancel;
+
+        using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+        await Should.ThrowAsync<OperationCanceledException>(() => host.Client.SendAsync(request, cancellation.Token));
+
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        host.Gateway.ProcessCalls.ShouldBe(1);
+        host.Repository.Load(stream).LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        host.Repository.TryGetIdempotencyFingerprint(stream, "archive-key-a", out _)
+            .ShouldBe(FolderIdempotencyLookupResult.Missing);
+        host.Repository.EventsAppended.ShouldBe(0);
     }
 
     [Fact]
@@ -389,10 +473,14 @@ public sealed class ArchiveFolderProcessWiringTests
             using HttpResponseMessage first = await host.Client
                 .SendAsync(firstRequest, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            DomainServiceWireEvent archivedEvent = host.Gateway.LastWireEvents.ShouldHaveSingleItem();
+            archivedEvent.EventTypeName.ShouldBe(typeof(FolderArchived).FullName);
+
             using HttpRequestMessage replayRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage replay = await host.Client
                 .SendAsync(replayRequest, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            host.Gateway.LastWireEvents.ShouldBeEmpty();
 
             string firstJson = await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             string replayJson = await replay.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -447,6 +535,7 @@ public sealed class ArchiveFolderProcessWiringTests
             using JsonDocument document = JsonDocument.Parse(responseJson);
             AssertMetadataOnlySafeDenial(document.RootElement);
             host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Gateway.LastProcessReturnedMarkedDenial.ShouldBeTrue();
             policyProvider.Calls.ShouldBe(0);
 
             // This denial returns before BeginScope, so a null accessor is a leak guard on the
@@ -1215,14 +1304,16 @@ public sealed class ArchiveFolderProcessWiringTests
         IFolderArchivePolicyEvidenceProvider? archivePolicyEvidenceProvider = null,
         Func<string, string>? envelopeTenantTransform = null,
         ILayeredFolderAuthorizationResultAccessor? authorizationAccessor = null,
-        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null,
+        TimeProvider? repositoryTimeProvider = null,
+        CancellationToken? processCancellation = null)
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         InMemoryEffectivePermissionsReadModel permissions = new();
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
         TimeProvider timeProvider = new FixedTimeProvider(Now);
-        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
+        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: repositoryTimeProvider ?? timeProvider);
         InMemoryOrganizationProviderBindingRepository organizationRepository = new();
         Uri? hostUri = null;
         InProcessRejectionPropagatingGatewayClient gateway = new(
@@ -1293,6 +1384,20 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton(timeProvider);
 
         WebApplication app = builder.Build();
+        if (processCancellation is { CanBeCanceled: true } processToken)
+        {
+            app.Use((context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/process", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Share the test token so cancellation is observable inside the synchronous append.
+                    context.RequestAborted = processToken;
+                }
+
+                return next(context);
+            });
+        }
+
         if (archivePolicyEvidenceProvider is CancelMidFlightFolderArchivePolicyEvidenceProvider cancellationProvider)
         {
             app.Use(async (context, next) =>
@@ -1431,7 +1536,12 @@ public sealed class ArchiveFolderProcessWiringTests
             RevocationFreshnessEstablished: true,
             TaskScope: null));
 
-    private static void SeedFolder(InMemoryFolderRepository repository, string tenantId, string organizationId, string folderId)
+    private static void SeedFolder(
+        InMemoryFolderRepository repository,
+        string tenantId,
+        string organizationId,
+        string folderId,
+        string? description = null)
         => repository.Seed(
             FolderStreamName.Create(tenantId, folderId),
             [
@@ -1440,7 +1550,7 @@ public sealed class ArchiveFolderProcessWiringTests
                     organizationId,
                     folderId,
                     "Folder",
-                    null,
+                    description,
                     null,
                     [],
                     FolderLifecycleState.Active,
@@ -1557,6 +1667,12 @@ public sealed class ArchiveFolderProcessWiringTests
 
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
     {
-        public override DateTimeOffset GetUtcNow() => now;
+        internal Action? OnRead { get; set; }
+
+        public override DateTimeOffset GetUtcNow()
+        {
+            OnRead?.Invoke();
+            return now;
+        }
     }
 }

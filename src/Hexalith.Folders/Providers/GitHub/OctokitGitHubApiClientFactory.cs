@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 using Octokit;
 using Octokit.Internal;
 
@@ -10,27 +12,31 @@ internal sealed class OctokitGitHubApiClientFactory : IGitHubApiClientFactory
         PooledConnectionLifetime = TimeSpan.FromMinutes(10),
         PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
     };
-    private readonly Func<IHttpClient> _httpClientFactory;
+    private readonly Func<HttpMessageHandler> _octokitHandlerFactory;
     private readonly Func<HttpMessageHandler> _operationHandlerFactory;
+    private readonly TimeSpan _requestTimeout;
 
-    public OctokitGitHubApiClientFactory()
-        : this(
-            static () => new HttpClientAdapter(static () => new PooledGitHubHttpMessageHandler(SharedHandler)),
-            static () => new PooledGitHubHttpMessageHandler(SharedHandler))
+    internal OctokitGitHubApiClientFactory()
+        : this(Options.Create(new GitHubTransportOptions()))
     {
     }
 
-    internal OctokitGitHubApiClientFactory(Func<IHttpClient> httpClientFactory)
-        : this(httpClientFactory, static () => new HttpClientHandler())
+    public OctokitGitHubApiClientFactory(IOptions<GitHubTransportOptions> options)
+        : this(
+            static () => new PooledGitHubHttpMessageHandler(SharedHandler),
+            static () => new PooledGitHubHttpMessageHandler(SharedHandler),
+            (options ?? throw new ArgumentNullException(nameof(options))).Value.RequestTimeout)
     {
     }
 
     internal OctokitGitHubApiClientFactory(
-        Func<IHttpClient> httpClientFactory,
-        Func<HttpMessageHandler> operationHandlerFactory)
+        Func<HttpMessageHandler> octokitHandlerFactory,
+        Func<HttpMessageHandler> operationHandlerFactory,
+        TimeSpan? requestTimeout = null)
     {
-        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        _octokitHandlerFactory = octokitHandlerFactory ?? throw new ArgumentNullException(nameof(octokitHandlerFactory));
         _operationHandlerFactory = operationHandlerFactory ?? throw new ArgumentNullException(nameof(operationHandlerFactory));
+        _requestTimeout = requestTimeout ?? GitHubTransportOptions.DefaultRequestTimeout;
     }
 
     public ValueTask<IGitHubApiClient> CreateAsync(
@@ -42,7 +48,9 @@ internal sealed class OctokitGitHubApiClientFactory : IGitHubApiClientFactory
         ArgumentNullException.ThrowIfNull(credential);
         cancellationToken.ThrowIfCancellationRequested();
 
-        IHttpClient versionedHttpClient = new GitHubApiVersionHttpClient(_httpClientFactory(), request.ApiVersion);
+        IHttpClient transport = new HttpClientAdapter(() => new GitHubResponseBufferingHandler(_octokitHandlerFactory()));
+        IHttpClient versionedHttpClient = new GitHubApiVersionHttpClient(transport, request.ApiVersion);
+        versionedHttpClient.SetRequestTimeout(_requestTimeout);
         Connection connection = new(new ProductHeaderValue(request.ProductHeader), versionedHttpClient);
         GitHubClient client = new(connection)
         {

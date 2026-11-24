@@ -369,6 +369,8 @@ GPT-5 Codex
 - Updated scaffold regression tests for Story 1.7 operation paths and aligned README submodule setup with the current root-level submodule inventory.
 - Validation passed: `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore`; `dotnet build Hexalith.Folders.slnx --no-restore`; `dotnet test Hexalith.Folders.slnx --no-restore`.
 
+- 2026-11-24 preflight follow-up. The [timestamped preflight](../process-notes/predev-preflight-2026-05-12T190331Z.json) recorded 11 dirty paths, all accounted for in this story’s file list. The sprint YAML, artifacts directory, lessons ledger, and status-to-artifact consistency checks passed. Git records the story changes in `50c8495a26eacfaa744370754846669306b776d7`. The failed cleanliness check records the in-progress working tree at capture time. The JSON evidence retains its original result.
+
 ### File List
 
 - README.md

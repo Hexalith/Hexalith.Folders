@@ -6,6 +6,7 @@ using Hexalith.Folders.Observability;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Tests.Aggregates.Folder;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 
 using Shouldly;
@@ -18,6 +19,18 @@ namespace Hexalith.Folders.Tests.Observability;
 
 public sealed class FolderAuditObservationTests
 {
+    [Fact]
+    public void ObservabilityResolvesTelemetryFromBareServiceCollection()
+    {
+        ServiceCollection services = new();
+        services.AddFoldersObservability();
+
+        using ServiceProvider provider = services.BuildServiceProvider(
+            new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
+
+        provider.GetRequiredService<IFolderTelemetryEmitter>().ShouldBeOfType<FolderTelemetryEmitter>();
+    }
+
     [Theory]
     [InlineData(" correlation-a\n", "correlation-a")]
     [InlineData("correlation\na", null)]

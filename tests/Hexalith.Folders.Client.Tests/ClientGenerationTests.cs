@@ -244,6 +244,58 @@ Workspace_preparation_failed=50
     }
 
     [Theory]
+    [InlineData(FileMutationRequestFileOperationKind.Add, "sha256:81e675ba90f195b669e1434a032e4a32efcc15721f6eabb2737c77fe43b8d5f4")]
+    [InlineData(FileMutationRequestFileOperationKind.Change, "sha256:e2006e6d19a3932d910d2ac8e319e8a4a6eb4c1408f65e8700bfe1cd5bcd2cbd")]
+    [InlineData(FileMutationRequestFileOperationKind.Remove, "sha256:876919e6f6ce2ef665262093c958a65e78844e6988ae111d7f5112690a59ab8e")]
+    public void FileMutationHashRequiresDeclaredNfcWithoutRewritingAcceptedMetadata(
+        FileMutationRequestFileOperationKind kind,
+        string expectedHash)
+    {
+        bool remove = kind == FileMutationRequestFileOperationKind.Remove;
+        FileMutationRequest request = CreateFileMutation(kind, remove
+            ? FileMutationRequestTransportOperation.MetadataOnlyRemoval
+            : FileMutationRequestTransportOperation.PutFileInline);
+        request.ContentHashReference = remove
+            ? null
+            : "hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+        if (!remove)
+        {
+            request.ByteLength = 0;
+            request.InlineContent = new PutFileInline { MediaType = "text/plain", ContentBytes = "" };
+        }
+
+        request.PathMetadata.DisplayName = "Cafe\u0301.txt";
+        Should.Throw<JsonSerializationException>(() => request.ComputeIdempotencyHash("workspace", "task"))
+            .Message.ShouldBe("Path metadata must use NFC.");
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(request));
+
+        request.PathMetadata.DisplayName = "Caf\u00e9.txt";
+        request.ComputeIdempotencyHash("workspace", "task").ShouldBe(expectedHash);
+        _ = JsonConvert.SerializeObject(request);
+        request.ComputeIdempotencyHash("workspace", "task").ShouldBe(expectedHash);
+        request.PathMetadata.DisplayName.ShouldBe("Caf\u00e9.txt");
+
+        request.PathMetadata.NormalizedPath = "Cafe\u0301.txt";
+        Should.Throw<JsonSerializationException>(() => request.ComputeIdempotencyHash("workspace", "task"));
+    }
+
+    [Theory]
+    [InlineData(typeof(PathMetadata))]
+    [InlineData(typeof(VisiblePathMetadata))]
+    [InlineData(typeof(ContentAllowedPathMetadata))]
+    public void DecodedPathMetadataRequiresDeclaredNfc(Type metadataType)
+    {
+        const string composed = """
+            {"normalizedPath":"docs/readme.md","displayName":"Caf\u00e9.txt","pathPolicyClass":"content_allowed","unicodeNormalization":"NFC"}
+            """;
+        string decomposed = composed.Replace(@"\u00e9", @"e\u0301", StringComparison.Ordinal);
+
+        JsonConvert.DeserializeObject(composed, metadataType).ShouldNotBeNull();
+        Should.Throw<JsonSerializationException>(() => JsonConvert.DeserializeObject(decomposed, metadataType))
+            .Message.ShouldBe("Path metadata must use NFC.");
+    }
+
+    [Theory]
     [InlineData(FileMutationRequestFileOperationKind.Add, "AddFile")]
     [InlineData(FileMutationRequestFileOperationKind.Change, "ChangeFile")]
     [InlineData(FileMutationRequestFileOperationKind.Remove, "RemoveFile")]
@@ -279,7 +331,7 @@ Workspace_preparation_failed=50
             new("task_id", true, taskId),
             new("workspace_id", true, workspaceId),
         ]);
-        request.ComputeIdempotencyHash(workspaceId, taskId).ShouldBe(HexalithIdempotencyHasher.Compute(operationId, fields));
+        request.ComputeIdempotencyHash(workspaceId, taskId).ShouldBe(HexalithIdempotencyHasher.Compute(operationId, fields, TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -592,12 +644,12 @@ Workspace_preparation_failed=50
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Test", [
             new IdempotencyField("z_field", true, "last"),
             new IdempotencyField("a_field", true, "first"),
-        ]));
+        ], TestContext.Current.CancellationToken));
 
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Test", [
             new IdempotencyField("a_field", true, "first"),
             new IdempotencyField("a_field", true, "duplicate"),
-        ]));
+        ], TestContext.Current.CancellationToken));
 
         Should.Throw<Newtonsoft.Json.JsonReaderException>(() => HexalithIdempotencyHasher.NormalizeJsonText("{\"operation_id\":\"a\",\"operation_id\":\"b\"}"));
     }
@@ -1643,13 +1695,13 @@ Workspace_preparation_failed=50
     [Fact]
     public void CanonicalHasherPinsPrimitiveEdgeFormatting()
     {
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, int.MinValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-2147483648"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, ulong.MaxValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:18446744073709551615"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 0)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:0"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, -1)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-1"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.0m)])
-            .ShouldNotBe(HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.00m)]));
-        Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))]));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, int.MinValue)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-2147483648"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, ulong.MaxValue)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:18446744073709551615"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 0)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:0"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, -1)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-1"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.0m)], TestContext.Current.CancellationToken)
+            .ShouldNotBe(HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.00m)], TestContext.Current.CancellationToken));
+        Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))], TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -1670,7 +1722,7 @@ Workspace_preparation_failed=50
 
         foreach ((object value, string canonical) in vectors)
         {
-            HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+            HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)], TestContext.Current.CancellationToken)
                 .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=" + canonical));
         }
     }
@@ -1683,7 +1735,7 @@ Workspace_preparation_failed=50
     public void CanonicalHasherPreservesBinary64SubnormalBits(ulong bits, string canonicalBits)
     {
         double value = BitConverter.UInt64BitsToDouble(bits);
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:" + canonicalBits));
     }
 
@@ -1698,9 +1750,9 @@ Workspace_preparation_failed=50
         double separate = roundedProduct - offset;
         double fused = Math.FusedMultiplyAdd(3d, operand, -offset);
 
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, separate)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, separate)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000004"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, fused)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, fused)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000003"));
     }
 
@@ -1993,7 +2045,7 @@ Workspace_preparation_failed=50
             _ => token,
         };
 
-        return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)]);
+        return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)], TestContext.Current.CancellationToken);
     }
 
     private static IReadOnlyList<OpenApiOperation> LoadOperations()

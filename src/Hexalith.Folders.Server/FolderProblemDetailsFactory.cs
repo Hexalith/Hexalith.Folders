@@ -239,9 +239,12 @@ internal static class FolderProblemDetailsFactory
             StatusCodes.Status401Unauthorized => "Authentication required.",
             StatusCodes.Status404NotFound => "Resource not available.",
             StatusCodes.Status408RequestTimeout => "Query timeout.",
-            StatusCodes.Status409Conflict => category == "idempotency_key_expired"
-                ? "Idempotency key expired."
-                : "Idempotency conflict.",
+            StatusCodes.Status409Conflict => category switch
+            {
+                "idempotency_key_expired" => "Idempotency key expired.",
+                "idempotency_conflict" => "Idempotency conflict.",
+                _ => "Conflict.",
+            },
             StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
             StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
             StatusCodes.Status422UnprocessableEntity => "Validation outcome.",

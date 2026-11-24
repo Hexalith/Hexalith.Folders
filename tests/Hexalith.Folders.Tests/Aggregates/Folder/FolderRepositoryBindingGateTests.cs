@@ -424,17 +424,19 @@ public sealed class FolderRepositoryBindingGateTests
     }
 
     [Theory]
-    [InlineData("idempotency_conflict", nameof(FolderResultCode.IdempotencyConflict))]
-    [InlineData("idempotency_key_expired", nameof(FolderResultCode.IdempotencyKeyExpired))]
-    public async Task ProviderConflictIdempotencyReasonsShouldMapToIdempotencyResults(
+    [InlineData(ProviderFailureCategory.ProviderConflict, "idempotency_conflict", FolderResultCode.IdempotencyConflict)]
+    [InlineData(ProviderFailureCategory.ProviderConflict, "idempotency_key_expired", FolderResultCode.IdempotencyKeyExpired)]
+    [InlineData(ProviderFailureCategory.ProviderConflict, "repository_conflict", FolderResultCode.RepositoryConflict)]
+    [InlineData(ProviderFailureCategory.ProviderValidationFailed, "provider_validation_failed", FolderResultCode.ValidationFailed)]
+    public async Task ProviderFailuresMapToSpecificBindingResults(
+        ProviderFailureCategory category,
         string reasonCode,
-        string expectedResultName)
+        FolderResultCode expectedResult)
     {
-        FolderResultCode expectedResult = Enum.Parse<FolderResultCode>(expectedResultName);
         RecordingFolderRepository repository = SeededRepository();
         RecordingRepositoryBindingReadinessValidator readiness = new(ReadinessReady());
         RecordingProviderBindingReader bindingReader = new(Binding());
-        RecordingProviderCapabilityResolver resolver = new(new ConflictReasonGitProvider(reasonCode));
+        RecordingProviderCapabilityResolver resolver = new(new FailingBindingGitProvider(category, reasonCode));
         RepositoryBindingService service = Service(repository, readiness, bindingReader, resolver);
 
         FolderResult result = await service.BindAsync(
@@ -740,7 +742,7 @@ public sealed class FolderRepositoryBindingGateTests
         public override DateTimeOffset GetUtcNow() => now;
     }
 
-    private sealed class ConflictReasonGitProvider(string reasonCode) : IGitProvider
+    private sealed class FailingBindingGitProvider(ProviderFailureCategory category, string reasonCode) : IGitProvider
     {
         public string ProviderFamily => "github";
 
@@ -761,7 +763,7 @@ public sealed class FolderRepositoryBindingGateTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(ProviderRepositoryBindingResult.Failure(
                 request,
-                ProviderFailureCategory.ProviderConflict,
+                category,
                 reasonCode));
 
         public ProviderCapabilityComparisonResult CompareCapabilityProfiles(

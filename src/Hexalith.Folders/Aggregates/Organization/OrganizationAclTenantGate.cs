@@ -15,16 +15,22 @@ public sealed class OrganizationAclTenantGate(IOrganizationAclRepository reposit
         {
             return OrganizationAclResult.Rejected(
                 Map(tenantAccess.Outcome),
-                SafePassthrough(tenantAccess.TenantId),
-                SafePassthrough(command.OrganizationId),
-                SafePassthrough(command.CorrelationId),
-                SafePassthrough(command.TaskId),
-                SafePassthrough(command.IdempotencyKey));
+                managedTenantId: null,
+                organizationId: null,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey);
         }
 
         if (string.IsNullOrWhiteSpace(tenantAccess.TenantId))
         {
-            return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.MissingAuthoritativeTenant);
+            return OrganizationAclResult.Rejected(
+                OrganizationAclResultCode.MissingAuthoritativeTenant,
+                managedTenantId: null,
+                organizationId: null,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey);
         }
 
         if (!string.IsNullOrWhiteSpace(command.PayloadTenantId)
@@ -33,10 +39,10 @@ public sealed class OrganizationAclTenantGate(IOrganizationAclRepository reposit
             return OrganizationAclResult.Rejected(
                 OrganizationAclResultCode.TenantMismatch,
                 tenantAccess.TenantId,
-                SafePassthrough(command.OrganizationId),
-                SafePassthrough(command.CorrelationId),
-                SafePassthrough(command.TaskId),
-                SafePassthrough(command.IdempotencyKey));
+                organizationId: null,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey);
         }
 
         IOrganizationAclCommand authoritativeCommand = command.WithManagedTenantId(tenantAccess.TenantId);
@@ -82,9 +88,6 @@ public sealed class OrganizationAclTenantGate(IOrganizationAclRepository reposit
             _ => throw new InvalidOperationException($"Unhandled OrganizationAclAppendOutcome: {outcome}."),
         };
     }
-
-    private static string? SafePassthrough(string? value)
-        => OrganizationAclCommandValidator.IsValidIdentifier(value) ? value : null;
 
     private static OrganizationAclResultCode Map(TenantAccessOutcome outcome)
         => outcome switch

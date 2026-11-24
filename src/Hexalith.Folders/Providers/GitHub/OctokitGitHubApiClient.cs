@@ -86,7 +86,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         try
         {
             Repository created = await _client.Repository.Create(request.Target.Owner, repository).ConfigureAwait(false);
-            return TryCanonicalRepositoryId(created, out string? canonicalRepositoryId)
+            return TryCanonicalRepositoryId(created?.Id ?? 0, out string? canonicalRepositoryId)
                 ? GitHubRepositoryCreationResult.Success(canonicalRepositoryId: canonicalRepositoryId)
                 : GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
         }
@@ -154,19 +154,21 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
-        Repository repository;
+        GitHubBindingRepository? repository;
         try
         {
-            repository = await _client.Repository.Get(
-                request.Target.Owner,
-                request.Target.RepositoryName).ConfigureAwait(false);
+            repository = await ReadBindingRepositoryAsync(request.Target, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
         catch (Exception exception)
         {
             return MapBindingObservationFailure(exception, GitHubApiFailureCondition.NotFoundOrHidden);
         }
 
-        if (!TryCanonicalRepositoryId(repository, out string? canonicalRepositoryId))
+        if (repository is null || !TryCanonicalRepositoryId(repository.Id, out string? canonicalRepositoryId))
         {
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.MalformedResponse);
         }
@@ -178,6 +180,12 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 StringComparison.Ordinal))
         {
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
+        }
+
+        GitHubApiFailureCondition availability = RepositoryAvailability(repository);
+        if (availability != GitHubApiFailureCondition.None)
+        {
+            return GitHubRepositoryBindingResult.Failure(availability);
         }
 
         if (!string.Equals(repository.DefaultBranch, request.Target.DefaultBranch, StringComparison.Ordinal))
@@ -202,6 +210,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.UnsupportedRefOperation);
         }
 
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        }
+
         Branch branch;
         try
         {
@@ -213,6 +226,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         catch (Exception exception)
         {
             return MapBindingObservationFailure(exception, GitHubApiFailureCondition.MissingBranchOrRef);
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
         if (!string.Equals(branch.Name, request.Target.SelectedRef, StringComparison.Ordinal))
@@ -797,12 +815,16 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
         try
         {
-            Repository existing = await _client.Repository.Get(
-                request.Target.Owner,
-                request.Target.RepositoryName).ConfigureAwait(false);
-            if (!TryCanonicalRepositoryId(existing, out string? canonicalRepositoryId))
+            GitHubBindingRepository? existing = await ReadBindingRepositoryAsync(request.Target, cancellationToken).ConfigureAwait(false);
+            if (existing is null || !TryCanonicalRepositoryId(existing.Id, out string? canonicalRepositoryId))
             {
                 return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.MalformedResponse);
+            }
+
+            GitHubApiFailureCondition availability = RepositoryAvailability(existing);
+            if (availability != GitHubApiFailureCondition.None)
+            {
+                return GitHubRepositoryCreationResult.Failure(availability);
             }
 
             return request.Target.EquivalentExistingAuthorized
@@ -1965,7 +1987,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
     /// Compares the observed repository visibility against the approved policy. Octokit exposes
     /// <c>Visibility</c> only on newer payloads, so <c>Private</c> is the authoritative fallback.
     /// </summary>
-    private static bool IsVisibilityCompatible(ProviderRepositoryVisibility expected, Repository repository)
+    private static bool IsVisibilityCompatible(ProviderRepositoryVisibility expected, GitHubBindingRepository repository)
         => repository.Visibility is { } observed
             ? TryMapVisibility(expected, out RepositoryVisibility mapped) && observed == mapped
             : expected switch
@@ -1975,10 +1997,28 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 _ => true,
             };
 
-    private static bool TryCanonicalRepositoryId(Repository repository, out string? canonicalRepositoryId)
+    private async Task<GitHubBindingRepository?> ReadBindingRepositoryAsync(
+        ProviderRepositoryResolvedTarget target,
+        CancellationToken cancellationToken)
     {
-        canonicalRepositoryId = repository.Id > 0
-            ? repository.Id.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        IApiResponse<GitHubBindingRepository> response = await _client.Connection.Get<GitHubBindingRepository>(
+            ApiUrls.Repository(target.Owner, target.RepositoryName), parameters: null, accepts: null, cancellationToken)
+            .ConfigureAwait(false);
+        return response.Body;
+    }
+
+    private static GitHubApiFailureCondition RepositoryAvailability(GitHubBindingRepository repository)
+        => (repository.Archived, repository.Disabled) switch
+        {
+            (true, _) or (_, true) => GitHubApiFailureCondition.RepositoryConflict,
+            (false, false) => GitHubApiFailureCondition.None,
+            _ => GitHubApiFailureCondition.MalformedResponse,
+        };
+
+    private static bool TryCanonicalRepositoryId(long repositoryId, out string? canonicalRepositoryId)
+    {
+        canonicalRepositoryId = repositoryId > 0
+            ? repositoryId.ToString(System.Globalization.CultureInfo.InvariantCulture)
             : null;
         return canonicalRepositoryId is not null;
     }

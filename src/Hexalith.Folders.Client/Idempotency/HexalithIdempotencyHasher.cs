@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -12,18 +13,47 @@ namespace Hexalith.Folders.Client.Idempotency;
 public static class HexalithIdempotencyHasher
 {
     public static string Compute(string operationId, IEnumerable<IdempotencyField> fields)
+        => Compute(operationId, fields, CancellationToken.None);
+
+    /// <summary>Computes the canonical hash while observing cancellation between fields.</summary>
+    public static string Compute(
+        string operationId,
+        IEnumerable<IdempotencyField> fields,
+        CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
         RejectControlCharacters(operationId, nameof(operationId));
         ArgumentNullException.ThrowIfNull(fields);
+        cancellationToken.ThrowIfCancellationRequested();
 
-        IdempotencyField[] orderedFields = fields.ToArray();
-        EnsureDeclaredOrder(orderedFields);
+        List<IdempotencyField> orderedFields = [];
+        using (IEnumerator<IdempotencyField> enumerator = fields.GetEnumerator())
+        {
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!enumerator.MoveNext())
+                {
+                    break;
+                }
+
+                orderedFields.Add(enumerator.Current);
+            }
+        }
+
+        EnsureDeclaredOrder(orderedFields, cancellationToken);
 
         List<string> lines = ["operation=" + Escape(operationId)];
-        lines.AddRange(orderedFields.Select(field => field.ToCanonicalLine()));
+        foreach (IdempotencyField field in orderedFields)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            lines.Add(field.ToCanonicalLine());
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
         string canonical = string.Join('\n', lines);
         byte[] digest = SHA256.HashData(Encoding.UTF8.GetBytes(canonical));
+        cancellationToken.ThrowIfCancellationRequested();
         return "sha256:" + Convert.ToHexString(digest).ToLowerInvariant();
     }
 
@@ -58,6 +88,14 @@ public static class HexalithIdempotencyHasher
             double number => CanonicalizeFloatingPoint(number),
             float number => CanonicalizeFloatingPoint(number),
             byte or sbyte or short or ushort or int or uint or long or ulong => "n:" + Convert.ToString(value, CultureInfo.InvariantCulture),
+            // Preserve the existing JSON canonical forms for these scalar types.
+            Half number => "j:\"" + number.ToString("G", CultureInfo.InvariantCulture) + "\"",
+            BigInteger number => "j:" + number.ToString(CultureInfo.InvariantCulture),
+            Int128 number => "j:\"" + number.ToString(CultureInfo.InvariantCulture) + "\"",
+            UInt128 number => "j:\"" + number.ToString(CultureInfo.InvariantCulture) + "\"",
+            nint number => "j:{\"value\":" + number.ToInt64().ToString(CultureInfo.InvariantCulture) + "}",
+            nuint number => "j:{\"value\":" + number.ToUInt64().ToString(CultureInfo.InvariantCulture) + "}",
+            Version version => "j:\"" + version + "\"",
             _ => "j:" + NormalizeJson(value),
         };
     }
@@ -208,11 +246,12 @@ public static class HexalithIdempotencyHasher
         }
     }
 
-    private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields)
+    private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields, CancellationToken cancellationToken)
     {
         HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (IdempotencyField field in fields)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
             RejectControlCharacters(field.Path, "field path");
             if (!seen.Add(field.Path))
@@ -224,6 +263,7 @@ public static class HexalithIdempotencyHasher
         string? previous = null;
         foreach (IdempotencyField field in fields)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
             {
                 throw new InvalidOperationException(

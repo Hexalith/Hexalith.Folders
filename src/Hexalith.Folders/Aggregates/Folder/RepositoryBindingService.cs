@@ -209,7 +209,7 @@ public sealed class RepositoryBindingService(
         {
             return outcome switch
             {
-                FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
+                FolderAppendOutcome.FingerprintMatched => FolderResult.Replayed(command),
                 FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
                 FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),
                 _ => FolderResult.Rejected(command, FolderResultCode.MalformedEvidence),
@@ -493,6 +493,7 @@ public sealed class RepositoryBindingService(
             ProviderFailureCategory.ProviderAuthenticationRequired
                 or ProviderFailureCategory.ProviderPermissionInsufficient => FolderResultCode.ProviderPermissionInsufficient,
             ProviderFailureCategory.ProviderConflict => MapProviderConflict(result.ReasonCode),
+            ProviderFailureCategory.ProviderValidationFailed => FolderResultCode.ValidationFailed,
             _ => FolderResultCode.ProviderReadinessFailed,
         };
 

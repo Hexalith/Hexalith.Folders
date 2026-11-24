@@ -43,7 +43,16 @@ internal sealed class ActorFoldedFolderRepository(FolderEventReplay replay) : IF
     /// <inheritdoc/>
     public FolderAppendOutcome AppendIfFingerprintAbsent(FolderStreamName streamName,
         string idempotencyKey, string fingerprint, IReadOnlyList<IFolderEvent> events)
+        => PreflightAppend(streamName, idempotencyKey, fingerprint, events, CancellationToken.None);
+
+    FolderAppendOutcome IFolderRepository.AppendIfFingerprintAbsent(FolderStreamName streamName,
+        string idempotencyKey, string fingerprint, IReadOnlyList<IFolderEvent> events, CancellationToken cancellationToken)
+        => PreflightAppend(streamName, idempotencyKey, fingerprint, events, cancellationToken);
+
+    private FolderAppendOutcome PreflightAppend(FolderStreamName streamName,
+        string idempotencyKey, string fingerprint, IReadOnlyList<IFolderEvent> events, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         RequireStream(streamName);
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
@@ -61,6 +70,7 @@ internal sealed class ActorFoldedFolderRepository(FolderEventReplay replay) : IF
 
         // Preflight the fold. EventStore owns the only write after this process result is returned.
         _ = _state.Apply(events, streamName);
+        cancellationToken.ThrowIfCancellationRequested();
         return FolderAppendOutcome.Appended;
     }
 

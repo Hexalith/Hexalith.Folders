@@ -113,7 +113,9 @@ public sealed class OperationalStatusProjectionHandlerTests
     {
         WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
         using WebApplication app = builder.Build();
-        app.Services.GetRequiredService<IFolderLifecycleStatusReadModel>().ShouldBeOfType<EventStoreOperationalStatusReadModel>();
+        IFolderLifecycleStatusReadModel lifecycleReader = app.Services.GetRequiredService<IFolderLifecycleStatusReadModel>();
+        lifecycleReader.ShouldBeOfType<EventStoreOperationalStatusReadModel>();
+        (lifecycleReader is IFolderLifecycleStatusSeed).ShouldBeFalse();
         app.Services.GetRequiredService<IWorkspaceStatusReadModel>().ShouldBeSameAs(app.Services.GetRequiredService<ITaskStatusReadModel>());
         app.Services.GetServices<IAsyncDomainProjectionHandler>().ShouldContain(static handler => handler is OperationalStatusProjectionHandler);
         var response = new FolderDomainProjectionHandler().Project(OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]));

@@ -193,7 +193,10 @@ public sealed class FoldersDomainServiceRequestHandler(
         authorizationResultAccessor.BeginScope(authorization);
         try
         {
-            DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
+            IDomainProcessor processor = processorList[0];
+            DomainResult result = processor is IAsyncDomainProcessor asyncProcessor
+                ? await asyncProcessor.ProcessAsync(request.Command, request.CurrentState, cancellationToken).ConfigureAwait(false)
+                : await processor.ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
             return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
         }
         catch (OrganizationAclAuthorizationDeniedException denial)

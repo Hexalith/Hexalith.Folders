@@ -120,6 +120,10 @@ public abstract class PopulatedConsoleHostFixture : IAsyncLifetime
             {
                 // Retry briefly while Kestrel finalizes startup.
             }
+            catch (OperationCanceledException exception) when (exception.InnerException is TimeoutException)
+            {
+                // A timed-out probe can be retried within the startup budget.
+            }
 
             await Task.Delay(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
         }

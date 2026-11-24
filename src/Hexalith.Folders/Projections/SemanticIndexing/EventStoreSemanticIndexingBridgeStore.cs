@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
@@ -121,9 +123,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             ReadModelEntry<SemanticIndexingBridgeEntry> current = await _store
                 .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, key, cancellationToken)
                 .ConfigureAwait(false);
-            if (current.Value is { } entry
-                && string.Equals(entry.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
-                && string.Equals(entry.Identity.FolderId, folderId, StringComparison.Ordinal))
+            if (current.Value is { } entry && MatchesFolderIndexEntry(entry.Identity, key, managedTenantId, folderId))
             {
                 entries.Add(entry);
             }
@@ -245,6 +245,14 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         CancellationToken cancellationToken)
     {
         SemanticIndexingFileVersionIdentity identity = SemanticIndexingFileVersionIdentity.From(accepted);
+        if (!IsRemove(accepted))
+        {
+            // Validate an existing index before creating a row that the index could not enumerate.
+            _ = await _store.GetAsync<SemanticIndexingBridgeFolderIndex>(
+                StateStoreName, FolderIndexKey(identity.ManagedTenantId, identity.FolderId), cancellationToken)
+                .ConfigureAwait(false);
+        }
+
         return await ReadModelWritePolicy.UpdateAsync<SemanticIndexingBridgeEntry>(
             _store,
             StateStoreName,
@@ -324,7 +332,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             ReadModelEntry<SemanticIndexingBridgeEntry> current = await _store
                 .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, key, cancellationToken)
                 .ConfigureAwait(false);
-            if (current.Value is null)
+            if (current.Value is null || !MatchesFolderIndexEntry(current.Value.Identity, key, managedTenantId, folderId))
             {
                 continue;
             }
@@ -333,7 +341,9 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
                 _store,
                 StateStoreName,
                 key,
-                loaded => Project(loaded ?? current.Value, envelope, key),
+                loaded => loaded is not null && MatchesFolderIndexEntry(loaded.Identity, key, managedTenantId, folderId)
+                    ? Project(loaded, envelope, key)
+                    : throw new InvalidOperationException("The semantic indexing bridge entry changed scope before the write."),
                 new ReadModelWriteContext(
                     "folders semantic indexing bridge",
                     nameof(SemanticIndexingBridgeEntry),
@@ -353,7 +363,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             _store,
             StateStoreName,
             FolderIndexKey(entry.Identity.ManagedTenantId, entry.Identity.FolderId),
-            current => (current ?? new SemanticIndexingBridgeFolderIndex(entry.Identity.ManagedTenantId, entry.Identity.FolderId)).Add(entry.Identity.ReadModelKey),
+            current => (current ?? new SemanticIndexingBridgeFolderIndex(entry.Identity.ManagedTenantId, entry.Identity.FolderId, [])).Add(entry.Identity.ReadModelKey),
             new ReadModelWriteContext(
                 "folders semantic indexing bridge folder index",
                 nameof(SemanticIndexingBridgeFolderIndex),
@@ -372,7 +382,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         return projection.Get(expectedKey)
             ?? current
             ?? throw new InvalidOperationException(
-                $"Semantic indexing bridge event produced no read model for key '{expectedKey}'.");
+                "Semantic indexing bridge event produced no read model.");
     }
 
     private static string FolderIndexKey(string managedTenantId, string folderId)
@@ -380,6 +390,15 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
 
     private static bool IsRemove(WorkspaceFileMutationAccepted accepted)
         => string.Equals(accepted.FileOperationKind, "remove", StringComparison.Ordinal);
+
+    private static bool MatchesFolderIndexEntry(
+        SemanticIndexingFileVersionIdentity identity,
+        string key,
+        string managedTenantId,
+        string folderId)
+        => string.Equals(identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+            && string.Equals(identity.FolderId, folderId, StringComparison.Ordinal)
+            && string.Equals(identity.ReadModelKey, key, StringComparison.Ordinal);
 
     private static bool IsSamePath(
         SemanticIndexingFileVersionIdentity current,
@@ -395,10 +414,8 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         string FolderId,
         IReadOnlyList<string> EntryKeys)
     {
-        public SemanticIndexingBridgeFolderIndex(string managedTenantId, string folderId)
-            : this(managedTenantId, folderId, [])
-        {
-        }
+        public IReadOnlyList<string> EntryKeys { get; init; } = EntryKeys
+            ?? throw new JsonException("Semantic indexing bridge folder index is missing its entry keys.");
 
         public SemanticIndexingBridgeFolderIndex Add(string key)
         {

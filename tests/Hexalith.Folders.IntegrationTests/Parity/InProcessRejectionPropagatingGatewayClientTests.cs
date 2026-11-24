@@ -170,6 +170,26 @@ public sealed class InProcessRejectionPropagatingGatewayClientTests
             }, eventCount).ConfigureAwait(true);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NullRejectionEventListOrElementShouldUseMalformedEvidenceMapping(bool nullElement)
+    {
+        await WithWireHostAsync<object?>(
+            () => new DomainServiceWireResult(IsRejection: true, Events: nullElement ? [null!] : null!),
+            async (gateway, cancellationToken) =>
+            {
+                const string correlationId = "correlation-null-event-a";
+                EventStoreGatewayException exception = await SubmitAsync(
+                    gateway, correlationId, cancellationToken).ConfigureAwait(true);
+                exception.StatusCode.ShouldBe(400);
+                exception.ReasonCode.ShouldBe("validation_error");
+                exception.CorrelationId.ShouldBe(correlationId);
+                gateway.LastWireRejectionCode.ShouldBe(FolderResultCode.MalformedEvidence);
+                return null;
+            }).ConfigureAwait(true);
+    }
+
     private static Task<EventStoreGatewayException> SubmitRejectedCommandAsync(
         string rejectionPayload,
         string correlationId)
@@ -205,10 +225,23 @@ public sealed class InProcessRejectionPropagatingGatewayClientTests
             () => gateway.SubmitCommandAsync(request, cancellationToken)).ConfigureAwait(true);
     }
 
-    private static async Task<T> WithRejectionHostAsync<T>(
+    private static Task<T> WithRejectionHostAsync<T>(
         Func<byte[]?> rejectionPayloadProvider,
         Func<InProcessRejectionPropagatingGatewayClient, CancellationToken, Task<T>> body,
         int eventCount = 1)
+        => WithWireHostAsync(
+            () => new DomainServiceWireResult(
+                IsRejection: true,
+                Events: Enumerable.Range(0, eventCount)
+                    .Select(_ => new DomainServiceWireEvent(
+                        typeof(FolderCommandRejected).FullName!,
+                        rejectionPayloadProvider()!))
+                    .ToArray()),
+            body);
+
+    private static async Task<T> WithWireHostAsync<T>(
+        Func<DomainServiceWireResult> response,
+        Func<InProcessRejectionPropagatingGatewayClient, CancellationToken, Task<T>> body)
     {
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
@@ -220,15 +253,7 @@ public sealed class InProcessRejectionPropagatingGatewayClientTests
         WebApplication app = builder.Build();
         try
         {
-            app.MapPost(
-                "/process",
-                () => new DomainServiceWireResult(
-                    IsRejection: true,
-                    Events: Enumerable.Range(0, eventCount)
-                        .Select(_ => new DomainServiceWireEvent(
-                            typeof(FolderCommandRejected).FullName!,
-                            rejectionPayloadProvider()!))
-                        .ToArray()));
+            app.MapPost("/process", response);
 
             await app.StartAsync(cancellationToken).ConfigureAwait(true);
             InProcessRejectionPropagatingGatewayClient gateway = new(

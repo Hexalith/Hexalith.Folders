@@ -74,4 +74,17 @@ public sealed partial class SafetyInvariantGateTests
             "provider-diagnostics",
             operation.Value).ShouldBeFalse();
     }
+
+    [Fact]
+    public void ArtifactScanChecksSafeProvenanceAgainstTheDeclaredChannel()
+    {
+        AuditLeakageSample sample = AuditLeakageCorpus.Get("safe-provenance-operation-id");
+        const string artifact = "tests/fixtures/synthetic-operation.txt";
+
+        ScanText(artifact, "events", sample.Value, [sample]).ShouldBeEmpty();
+        SafetyScanDiagnostic diagnostic = ScanText(artifact, "provider-diagnostics", sample.Value, [sample]).ShouldHaveSingleItem();
+        diagnostic.SampleId.ShouldBe(sample.Id);
+        diagnostic.OutputChannel.ShouldBe("provider-diagnostics");
+        diagnostic.ToString().ShouldNotContain(sample.Value);
+    }
 }

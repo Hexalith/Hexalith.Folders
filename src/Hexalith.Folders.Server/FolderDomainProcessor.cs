@@ -39,7 +39,7 @@ public sealed partial class FolderDomainProcessor(
     IOrganizationAclRepository? actorOrganizationAclRepository = null,
     Microsoft.AspNetCore.Http.IHttpContextAccessor? httpContextAccessor = null,
     Content.WorkspaceContentBatch? contentBatch = null,
-    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor, Hexalith.EventStore.DomainService.IDomainCommandPayloadInventory
+    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor, IAsyncDomainProcessor, Hexalith.EventStore.DomainService.IDomainCommandPayloadInventory
 {
     /// <inheritdoc/>
     public IReadOnlyList<Type> CommandPayloadTypes => CatalogPayloadTypes;
@@ -105,10 +105,23 @@ public sealed partial class FolderDomainProcessor(
     private readonly IOrganizationProviderBindingRepository? _actorOrganizationRepository = actorOrganizationRepository;
     private readonly IOrganizationAclRepository? _actorOrganizationAclRepository = actorOrganizationAclRepository;
 
-    public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+    public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+        => ProcessWithObservationAsync(command, currentState, CancellationToken.None);
+
+    Task<DomainResult> IAsyncDomainProcessor.ProcessAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
+        => ProcessWithObservationAsync(command, currentState, cancellationToken);
+
+    private async Task<DomainResult> ProcessWithObservationAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Stopwatch stopwatch = Stopwatch.StartNew();
-        DomainResult result = await ProcessCoreAsync(command, currentState).ConfigureAwait(false);
+        DomainResult result = await ProcessCoreAsync(command, currentState, cancellationToken).ConfigureAwait(false);
         stopwatch.Stop();
 
         await EmitProcessObservationAsync(command, result, stopwatch.Elapsed).ConfigureAwait(false);
@@ -116,7 +129,10 @@ public sealed partial class FolderDomainProcessor(
         return result;
     }
 
-    private async Task<DomainResult> ProcessCoreAsync(CommandEnvelope command, object? currentState)
+    private async Task<DomainResult> ProcessCoreAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -174,7 +190,7 @@ public sealed partial class FolderDomainProcessor(
 
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
         {
-            return await ProcessArchiveAsync(command).ConfigureAwait(false);
+            return await ProcessArchiveAsync(command, cancellationToken).ConfigureAwait(false);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
@@ -658,7 +674,9 @@ public sealed partial class FolderDomainProcessor(
         return value is "user" or "group" or "role" or "delegated_service_agent";
     }
 
-    private async Task<DomainResult> ProcessArchiveAsync(CommandEnvelope envelope)
+    private async Task<DomainResult> ProcessArchiveAsync(
+        CommandEnvelope envelope,
+        CancellationToken cancellationToken)
     {
         ArchiveFolderPayload? payload;
         try
@@ -718,10 +736,10 @@ public sealed partial class FolderDomainProcessor(
 
         TenantAccessAuthorizationResult tenantAccess = BuildTenantAccess(allowed);
         FolderArchiveAclEvidence aclEvidence = await _archiveAclEvidenceProvider
-            .GetEvidenceAsync(command, CancellationToken.None)
+            .GetEvidenceAsync(command, cancellationToken)
             .ConfigureAwait(false);
         FolderArchivePolicyEvidence policyEvidence = await _archivePolicyEvidenceProvider
-            .GetEvidenceAsync(command, CancellationToken.None)
+            .GetEvidenceAsync(command, cancellationToken)
             .ConfigureAwait(false);
 
         LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
@@ -742,7 +760,7 @@ public sealed partial class FolderDomainProcessor(
                     command.ClientTenantIds,
                     ClientControlledPrincipalValues: null),
                 includeFolderAcl: true,
-                CancellationToken.None)
+                cancellationToken)
             .ConfigureAwait(false);
         if (!finalAuthorization.IsAllowed)
         {
@@ -751,18 +769,17 @@ public sealed partial class FolderDomainProcessor(
                 FolderResult.Rejected(command, MapLayeredAuthorization(finalAuthorization.Decision.OutcomeCode)));
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         FolderResult result;
         try
         {
-            result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
+            result = _archiveGate.HandleCancellable(command, tenantAccess, aclEvidence, policyEvidence, cancellationToken);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Any unexpected exception from the gate (e.g. an evidence constructor invariant
             // violation) must fail closed without leaking type/stack metadata through the
-            // gateway response or framework 500 path. OperationCanceledException is allowed
-            // to propagate so cancellation semantics are preserved if a future async
-            // dependency adds them.
+            // gateway response or framework 500 path. Cancellation propagates to EventStore.
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
@@ -1554,8 +1571,7 @@ public sealed partial class FolderDomainProcessor(
                 && Enum.TryParse(failure.GetString(), out FolderResultCode code)
                 && Enum.IsDefined(code)
                 && string.Equals(code.ToString(), failure.GetString(), StringComparison.Ordinal)
-                && code is not (FolderResultCode.Accepted or FolderResultCode.Created
-                    or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied))
+                && !FolderResult.IsAcceptedCode(code))
             {
                 return code;
             }
@@ -1590,14 +1606,9 @@ public sealed partial class FolderDomainProcessor(
             : TenantProjectionFreshnessStatus.Fresh;
 
     private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result)
-        => result.Events.Count > 0 ? AcceptedResult(result) : result.Code switch
-        {
-            FolderResultCode.Accepted
-                or FolderResultCode.Created
-                or FolderResultCode.IdempotentReplay
-                or FolderResultCode.AlreadyApplied => AcceptedResult(result),
-            _ => Rejection(envelope, result.Code, result),
-        };
+        => result.Events.Count > 0 || result.IsAccepted
+            ? AcceptedResult(result)
+            : Rejection(envelope, result.Code, result);
 
     private static DomainResult AcceptedResult(FolderResult result)
     {
@@ -1607,8 +1618,7 @@ public sealed partial class FolderDomainProcessor(
             CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
             TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
             IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null,
-            FailureCode: result.Code is FolderResultCode.Accepted or FolderResultCode.Created
-                or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied ? null : result.Code.ToString());
+            FailureCode: result.IsAccepted ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);

@@ -114,6 +114,28 @@ public sealed class FolderProblemDetailsFactoryTests
     }
 
     [Theory]
+    [InlineData("idempotency_conflict", "Idempotency conflict.")]
+    [InlineData("idempotency_key_expired", "Idempotency key expired.")]
+    [InlineData("lock_conflict", "Conflict.")]
+    [InlineData("duplicate_binding", "Conflict.")]
+    [InlineData("repository_conflict", "Conflict.")]
+    [InlineData("reconciliation_required", "Conflict.")]
+    public void DomainConflictTitleShouldReflectItsCategory(string category, string expectedTitle)
+    {
+        ProblemHttpResult problem = FolderProblemDetailsFactory.ForDomain(
+            FolderCanonicalErrorMapper.StatusFor(category),
+            category,
+            category,
+            retryable: false,
+            correlationId: "corr-a",
+            taskId: null).ShouldBeOfType<ProblemHttpResult>();
+
+        problem.StatusCode.ShouldBe(StatusCodes.Status409Conflict);
+        problem.ProblemDetails.Title.ShouldBe(expectedTitle);
+        problem.ProblemDetails.Extensions["category"].ShouldBe(category);
+    }
+
+    [Theory]
     [InlineData(StatusCodes.Status503ServiceUnavailable, "unknown_provider_outcome")]
     [InlineData(StatusCodes.Status409Conflict, "reconciliation_required")]
     public void DomainUnresolvedOutcomeShouldCarryFinalStateDetail(int statusCode, string category)

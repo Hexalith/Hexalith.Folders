@@ -19,6 +19,7 @@ using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Queries.ProviderReadiness;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -78,7 +79,7 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddFoldersLayeredAuthorization();
         services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
-        services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
+        services.TryAddScoped<FolderLifecycleStatusQueryHandler>();
         services.TryAddSingleton<IBranchRefPolicyReadModel, InMemoryBranchRefPolicyReadModel>();
         services.TryAddSingleton<BranchRefPolicyQueryHandler>();
         services.TryAddSingleton<IWorkspaceLockStatusReadModel, InMemoryWorkspaceLockStatusReadModel>();
@@ -218,6 +219,13 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersObservability();
         services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
+        services.AddOptions<GitHubTransportOptions>()
+            .Configure<IServiceProvider>(static (options, provider) => provider.GetService<IConfiguration>()?
+                .GetSection(GitHubTransportOptions.SectionName).Bind(options))
+            .Validate(static options => options.RequestTimeout >= TimeSpan.FromSeconds(1)
+                && options.RequestTimeout <= TimeSpan.FromMinutes(2),
+                "GitHub RequestTimeout must be between 1 and 120 seconds.")
+            .ValidateOnStart();
         services.TryAddSingleton<IGitHubApiClientFactory, OctokitGitHubApiClientFactory>();
         services.AddHttpClient(ForgejoHttpApiClientFactory.HttpClientName, static client =>
         {
@@ -381,6 +389,7 @@ public static class FoldersServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
+        services.AddLogging();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IFolderAuditObserver, NoOpFolderAuditObserver>());
         services.TryAddSingleton<IFolderTelemetryEmitter, FolderTelemetryEmitter>();
 
@@ -392,7 +401,21 @@ public static class FoldersServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddFoldersTenantAccess();
-        services.AddOptions<DaprPolicyEvidenceOptions>().BindConfiguration(DaprPolicyEvidenceOptions.SectionName);
+        services.AddOptions<DaprPolicyEvidenceOptions>()
+            .Configure<IConfiguration>(static (options, configuration) =>
+            {
+                if (configuration.GetSection(DaprPolicyEvidenceOptions.SectionName).GetChildren().Any(static setting =>
+                        string.Equals(setting.Key, nameof(DaprPolicyEvidenceOptions.AllowedTargetAppIds), StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(setting.Key, nameof(DaprPolicyEvidenceOptions.AllowedServiceInvocationClasses), StringComparison.OrdinalIgnoreCase)))
+                {
+                    // The binder appends to initialized arrays. An explicit policy owns both allow-lists.
+                    options.AllowedTargetAppIds = [];
+                    options.AllowedServiceInvocationClasses = [];
+                }
+            })
+            .BindConfiguration(DaprPolicyEvidenceOptions.SectionName)
+            .ValidateOnStart();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DaprPolicyEvidenceOptions>, DaprPolicyEvidenceOptionsValidator>());
         services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
         services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();

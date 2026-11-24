@@ -25,6 +25,37 @@ public sealed class FolderArchiveCommandValidationTests
         archived.CorrelationId.ShouldBe("correlation-a");
         archived.TaskId.ShouldBe("task-a");
         archived.IdempotencyKey.ShouldBe("idempotency-archive-a");
+        archived.IdempotencyFingerprint.ShouldNotBeNullOrWhiteSpace();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" \t")]
+    public void BlankArchiveDecisionFingerprintShouldRejectWithoutEvents(string fingerprint)
+    {
+        ArchiveFolder command = FolderCommandFactory.Archive().WithDecisionFingerprint(fingerprint);
+
+        FolderResult result = FolderAggregate.Handle(CreatedState(), command);
+
+        result.Code.ShouldBe(FolderResultCode.MalformedEvidence);
+        result.Events.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ValidArchiveDecisionFingerprintShouldSurviveReplay()
+    {
+        string fingerprint = "sha256:" + new string('a', 64);
+        ArchiveFolder command = FolderCommandFactory.Archive().WithDecisionFingerprint(fingerprint);
+        FolderState active = CreatedState();
+
+        FolderResult archived = FolderAggregate.Handle(active, command);
+        FolderState rebuilt = active.Apply(archived.Events, FolderStreamName.Create("tenant-a", "folder-a"));
+        FolderResult replay = FolderAggregate.Handle(rebuilt, command);
+
+        archived.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>().IdempotencyFingerprint.ShouldBe(fingerprint);
+        rebuilt.IdempotencyFingerprints[command.IdempotencyKey].ShouldBe(fingerprint);
+        replay.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        replay.Events.ShouldBeEmpty();
     }
 
     [Fact]

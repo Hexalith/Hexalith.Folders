@@ -131,6 +131,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
         result.CurrentState.ShouldBe("denied_safe");
         result.Freshness.Stale.ShouldBeTrue();
         result.Freshness.ReasonCode.ShouldBe("projection_stale");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
     }
 
     [Fact]

@@ -70,6 +70,29 @@ public sealed class MutationEnvelopeEndpointMatrixTests
 
     [Theory]
     [MemberData(nameof(MutatingRoutes))]
+    public async Task RepeatedSubmissionShouldKeepTheKeyAndGenerateANewMessageId(string routeName)
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(cancellationToken).ConfigureAwait(true);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage firstRequest = CreateValidRequest(routeName);
+        using HttpResponseMessage firstResponse = await client.SendAsync(firstRequest, cancellationToken).ConfigureAwait(true);
+        using HttpRequestMessage retryRequest = CreateValidRequest(routeName);
+        using HttpResponseMessage retryResponse = await client.SendAsync(retryRequest, cancellationToken).ConfigureAwait(true);
+
+        firstResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        retryResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        gateway.Requests.Count.ShouldBe(2);
+        gateway.Requests[0].ShouldBeKeyedUlidEnvelope("idempotency-a");
+        gateway.Requests[1].ShouldBeKeyedUlidEnvelope("idempotency-a");
+        gateway.Requests[1].MessageId.ShouldNotBe(gateway.Requests[0].MessageId);
+    }
+
+    [Theory]
+    [MemberData(nameof(MutatingRoutes))]
     public async Task MutatingEndpointShouldRejectDuplicateJsonPropertiesBeforeGatewayAdmission(string routeName)
     {
         RecordingEventStoreGatewayClient gateway = new();

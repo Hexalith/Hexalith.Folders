@@ -292,7 +292,7 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
     }
 
     [Fact]
-    public async Task RealMaterializerAndPortShouldPublishFacadeDiscoverableMetadataOnlyEntry()
+    public async Task RealMaterializerAndPortShouldPreserveMetadataWhenArchivingIndexedEntry()
     {
         const string sensitiveContentReference = "C:/repo/secret-token snippet-shaped file://source";
         SemanticIndexingContentMaterializationRequest materializationRequest = CreateRequest(
@@ -350,6 +350,38 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
         entry.Text.ShouldNotContain("secret-token", Case.Sensitive);
         entry.Text.ShouldNotContain("file://", Case.Sensitive);
         entry.Text.ShouldNotContain(materializationRequest.Identity.SourceUri, Case.Sensitive);
+
+        string indexedEventId = result.PublishedEventId.ShouldNotBeNull();
+        SemanticIndexingResult archiveResult = await port.SoftDeleteFileVersionAsync(
+            new SemanticIndexingArchiveRequest(
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.FolderId,
+                request.FileVersionId,
+                indexedEventId,
+                result.IndexedText,
+                result.IndexedAttributes,
+                request.CorrelationId,
+                request.TaskId),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        archiveResult.Status.ShouldBe(SemanticIndexingStatus.Accepted);
+        archiveResult.PublishedEventId.ShouldBe(indexedEventId);
+        object?[][] calls = dapr.ReceivedCalls().Select(call => call.GetArguments()).ToArray();
+        calls.Length.ShouldBe(2);
+        SearchIndexEntryChanged archived = calls[1][2].ShouldBeOfType<SearchIndexEntryChanged>();
+        archived.TenantId.ShouldBe(entry.TenantId);
+        archived.AggregateId.ShouldBe(entry.AggregateId);
+        archived.Text.ShouldBe(entry.Text);
+        calls[1][3].ShouldBeOfType<Dictionary<string, string>>()["cloudevent.id"]
+            .ShouldBe(calls[0][3].ShouldBeOfType<Dictionary<string, string>>()["cloudevent.id"]);
+        Dictionary<string, string> expected = new(entry.Attributes, StringComparer.Ordinal)
+        {
+            [FoldersSemanticIndexingAttributes.StatusAttribute] = FoldersSemanticIndexingAttributes.StatusArchived,
+        };
+        archived.Attributes.OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .ShouldBe(expected.OrderBy(static pair => pair.Key, StringComparer.Ordinal));
+        entry.Attributes[FoldersSemanticIndexingAttributes.StatusAttribute].ShouldBe(FoldersSemanticIndexingAttributes.StatusActive);
     }
 
     private static SemanticIndexingContentMaterializationRequest CreateRequest(

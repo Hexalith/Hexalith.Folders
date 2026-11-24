@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -9,9 +10,6 @@ using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
-// Serialize generator invocations across the test class: each test shells out to `dotnet run`
-// against the same generator project, and concurrent invocations can race on the project's
-// obj/ build locks. Disabling per-class parallelism removes that race deterministically.
 [Collection("ParityOracleGenerator")]
 public sealed class ParityOracleGeneratorTests
 {
@@ -194,6 +192,55 @@ public sealed class ParityOracleGeneratorTests
         string committed = NormalizeLineEndings(File.ReadAllText(_oracleFilePath));
         string generated = NormalizeLineEndings(File.ReadAllText(first));
         committed.ShouldBe(generated, "Committed parity-contract.yaml is out of sync with generator output. Regenerate the oracle via `dotnet run --project tests/tools/parity-oracle-generator`.");
+    }
+
+    [Fact]
+    public void ProvenanceReportsExactInputBytesAlongsideNormalizedHashes()
+    {
+        string temp = NewTempDirectory("hexalith-parity-provenance");
+        string contract = Path.Combine(temp, "contract.yaml");
+        string schema = Path.Combine(temp, "schema.json");
+        string output = Path.Combine(temp, "parity.yaml");
+
+        File.WriteAllText(contract, NormalizeLineEndings(File.ReadAllText(_openApiFilePath)), new UTF8Encoding(false));
+        File.WriteAllText(schema, NormalizeLineEndings(File.ReadAllText(_schemaFilePath)), new UTF8Encoding(false));
+        GeneratorResult plain = RunGeneratorDetailed(contract, output, schemaPath: schema);
+        plain.ExitCode.ShouldBe(0, customMessage: plain.Output + plain.Error);
+        string[] plainHeaders = File.ReadAllLines(output);
+        string plainContractHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(contract)));
+        string plainSchemaHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+
+        File.WriteAllText(contract, File.ReadAllText(contract).Replace("\n", "\r\n", StringComparison.Ordinal), new UTF8Encoding(false));
+        File.WriteAllText(schema, File.ReadAllText(schema), new UTF8Encoding(true));
+        GeneratorResult rewritten = RunGeneratorDetailed(contract, output, schemaPath: schema);
+        rewritten.ExitCode.ShouldBe(0, customMessage: rewritten.Output + rewritten.Error);
+        string[] rewrittenHeaders = File.ReadAllLines(output);
+        string rawContractHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(contract)));
+        string rawSchemaHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+
+        plainHeaders.ShouldContain($"# contract_spine_raw_sha256: {plainContractHash}");
+        plainHeaders.ShouldContain($"# parity_schema_raw_sha256: {plainSchemaHash}");
+        rewrittenHeaders.ShouldContain($"# contract_spine_sha256: {plainContractHash}");
+        rewrittenHeaders.ShouldContain($"# parity_schema_sha256: {plainSchemaHash}");
+        rewrittenHeaders.ShouldContain($"# contract_spine_raw_sha256: {rawContractHash}");
+        rewrittenHeaders.ShouldContain($"# parity_schema_raw_sha256: {rawSchemaHash}");
+        rawContractHash.ShouldNotBe(plainContractHash);
+        rawSchemaHash.ShouldNotBe(plainSchemaHash);
+    }
+
+    [Fact]
+    public void ProvenancePreservesBomAwareSchemaDecoding()
+    {
+        string temp = NewTempDirectory("hexalith-parity-encoded-schema");
+        string schema = Path.Combine(temp, "schema.json");
+        string output = Path.Combine(temp, "parity.yaml");
+        File.WriteAllText(schema, File.ReadAllText(_schemaFilePath), Encoding.Unicode);
+
+        GeneratorResult result = RunGeneratorDetailed(_openApiFilePath, output, schemaPath: schema);
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+        string rawHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+        File.ReadLines(output).ShouldContain($"# parity_schema_raw_sha256: {rawHash}");
     }
 
     [Fact]
@@ -388,6 +435,48 @@ operations:
         }
 
         File.Exists(oracle).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorAcceptsOptionPrefixedPathBeforeTerminalSentinel()
+    {
+        string temp = NewTempDirectory("hexalith-parity-end-of-options");
+
+        GeneratorResult result = RunGeneratorArguments(
+            ["--repository-root", _repositoryRootPath, "--output=--oracle.yaml", "--"],
+            temp);
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+        File.Exists(Path.Combine(temp, "--oracle.yaml")).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GeneratorRejectsOperandsAfterEndOfOptionsWithoutWritingOutput()
+    {
+        string output = Path.Combine(NewTempDirectory("hexalith-parity-positional-argument"), "parity.yaml");
+
+        GeneratorResult result = RunGeneratorArguments(
+            ["--repository-root", _repositoryRootPath, "--output", output, "--", "--allow-empty-baseline"]);
+
+        result.ExitCode.ShouldNotBe(0);
+        result.Error.ShouldContain("Positional arguments after '--' are not supported.");
+        File.Exists(output).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GeneratorRejectsUnknownOptionsWithoutWritingOutput(bool inlineValue)
+    {
+        string output = Path.Combine(NewTempDirectory("hexalith-parity-unknown-option"), "parity.yaml");
+        List<string> arguments = ["--repository-root", _repositoryRootPath, "--output", output];
+        arguments.AddRange(inlineValue ? ["--ouptut=ignored", "--"] : ["--ouptut", "ignored", "--"]);
+
+        GeneratorResult result = RunGeneratorArguments(arguments);
+
+        result.ExitCode.ShouldNotBe(0);
+        result.Error.ShouldContain("Unknown argument '--ouptut'.");
+        File.Exists(output).ShouldBeFalse();
     }
 
     [Fact]
@@ -899,6 +988,69 @@ operations:
     private static int RunGenerator(string contractPath, string outputPath) =>
         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
 
+    [Theory]
+    [InlineData(true, "request body")]
+    [InlineData(false, "response")]
+    public void UnresolvedOperationSchemaReferencesPreventEmission(bool request, string location)
+    {
+        string directory = NewTempDirectory("hexalith-parity-schema-reference");
+        string contract = WriteMutatedContract(directory, operation =>
+        {
+            YamlStream yaml = new();
+            using StringReader reader = new("""
+                description: Synthetic body
+                content:
+                  application/json:
+                    schema:
+                      allOf:
+                      - !!str '$ref': '#/components/schemas/MissingSchema'
+                """);
+            yaml.Load(reader);
+            YamlNode container = yaml.Documents.Single().RootNode;
+
+            if (request)
+            {
+                operation.Children[new YamlScalarNode("requestBody")] = container;
+            }
+            else
+            {
+                YamlMappingNode responses = RequiredMapping(operation, "responses");
+                responses.Children[responses.Children.Keys.First()] = container;
+            }
+        });
+
+        AssertGeneratorRejectsWithoutWriting(contract, directory, $"unresolved OpenAPI {location} schema reference");
+    }
+
+    [Fact]
+    public void ExcludedMethodDiagnosticsOmitRawPaths()
+    {
+        string directory = NewTempDirectory("hexalith-parity-excluded-method");
+        string contract = Path.Combine(directory, "candidate.yaml");
+        string output = Path.Combine(directory, "parity.yaml");
+        const string sentinel = "synthetic-diagnostic-path";
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        RequiredMapping(root, "paths").Add(
+            new YamlScalarNode($"/{sentinel}"),
+            new YamlMappingNode
+            {
+                { "head", new YamlMappingNode() },
+                { "parameters", new YamlSequenceNode(new YamlMappingNode { { "$ref", "#/components/parameters/Unused" } }) },
+            });
+        using (StreamWriter writer = new(contract, false, new UTF8Encoding(false)))
+        {
+            new YamlStream(new YamlDocument(root)).Save(writer, false);
+        }
+
+        GeneratorResult result = RunGeneratorDetailed(contract, output);
+
+        result.ExitCode.ShouldBe(0, result.Error);
+        string oracle = File.ReadAllText(output);
+        oracle.ShouldContain("category=non_inventory_method operation=- source=paths");
+        oracle.ShouldNotContain(sentinel);
+        (result.Output + result.Error).ShouldNotContain(sentinel);
+    }
+
     private static string WriteMutatedContract(string directory, Action<YamlMappingNode> mutate, bool readOperation = false)
     {
         YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
@@ -966,18 +1118,35 @@ operations:
         bool forceBaselineOverwrite = false,
         string? repositoryRoot = null)
     {
-        string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
-        string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
-        string baselineArgument = initializeBaseline ? " --initialize-baseline" : string.Empty;
-        string forceArgument = forceBaselineOverwrite ? " --force-baseline-overwrite" : string.Empty;
+        List<string> arguments = ["--repository-root", repositoryRoot ?? _repositoryRootPath,
+            "--contract", contractPath, "--output", outputPath];
+        if (previousSpinePath is not null) arguments.AddRange(["--previous-spine", previousSpinePath]);
+        if (schemaPath is not null) arguments.AddRange(["--schema", schemaPath]);
+        if (initializeBaseline) arguments.Add("--initialize-baseline");
+        if (forceBaselineOverwrite) arguments.Add("--force-baseline-overwrite");
+        return RunGeneratorArguments(arguments);
+    }
+
+    private static GeneratorResult RunGeneratorArguments(
+        IEnumerable<string> arguments,
+        string? workingDirectory = null)
+    {
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{repositoryRoot ?? _repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{baselineArgument}{forceArgument}",
+            WorkingDirectory = workingDirectory ?? _repositoryRootPath,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };
+        string targetFramework = "net" + new System.Runtime.Versioning.FrameworkName(AppContext.TargetFrameworkName!).Version.ToString(2);
+        string generatorAssembly = Path.Combine(Path.GetDirectoryName(_generatorProjectPath)!, "bin",
+            _buildConfiguration, targetFramework, Path.GetFileNameWithoutExtension(_generatorProjectPath) + ".dll");
+        info.ArgumentList.Add(generatorAssembly);
+        foreach (string argument in arguments)
+        {
+            info.ArgumentList.Add(argument);
+        }
 
         using Process process = Process.Start(info)!;
 

@@ -8,6 +8,29 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 public sealed class FolderAccessAdministratorAclGateTests
 {
     [Theory]
+    [InlineData(FolderAccessAclOutcome.Allowed)]
+    [InlineData(FolderAccessAclOutcome.Denied)]
+    [InlineData(FolderAccessAclOutcome.Unavailable)]
+    public void MalformedAccessCommandShouldHaveTheSameResultAcrossAclOutcomes(FolderAccessAclOutcome outcome)
+    {
+        RecordingFolderRepository repository = new();
+        FolderAccessTenantGate gate = new(repository);
+        GrantFolderAccess command = FolderCommandFactory.GrantAccess(action: "unrecognized_action");
+        FolderAccessAclEvidence evidence = outcome == FolderAccessAclOutcome.Allowed
+            ? FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a")
+            : new(outcome, "tenant-a", "tenant-a", "folder-a", "principal-a", FolderAccessAclEvidence.ManagementAction);
+
+        FolderResult result = gate.Handle(command, TenantEvidence(), evidence);
+
+        result.Code.ShouldBe(FolderResultCode.UnsupportedAction);
+        result.Events.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Theory]
     [InlineData(FolderAccessAclOutcome.Denied, FolderResultCode.FolderAclDenied)]
     [InlineData(FolderAccessAclOutcome.Unavailable, FolderResultCode.AclEvidenceUnavailable)]
     [InlineData(FolderAccessAclOutcome.Malformed, FolderResultCode.AclEvidenceUnavailable)]

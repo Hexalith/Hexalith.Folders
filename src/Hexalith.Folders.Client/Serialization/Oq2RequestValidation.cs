@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Client.Generated;
@@ -35,6 +36,38 @@ internal static class Oq2RequestValidation
             || !Enum.IsDefined(path.PathPolicyClass))
         {
             throw new JsonSerializationException("Path metadata is incomplete or noncanonical.");
+        }
+
+        ValidatePathNormalization(path);
+    }
+
+    /// <summary>Rejects non-NFC text in metadata that declares the NFC profile.</summary>
+    public static void ValidatePathNormalization(PathMetadata? path)
+    {
+        if (path is { UnicodeNormalization: PathMetadataUnicodeNormalization.NFC })
+        {
+            ValidatePathNormalization(path.NormalizedPath, path.DisplayName);
+        }
+    }
+
+    /// <summary>Validates the decoded text of metadata with a verified NFC declaration.</summary>
+    public static void ValidatePathNormalization(string? normalizedPath, string? displayName)
+    {
+        if (!IsNfc(normalizedPath) || !IsNfc(displayName))
+        {
+            throw new JsonSerializationException("Path metadata must use NFC.");
+        }
+    }
+
+    private static bool IsNfc(string? value)
+    {
+        try
+        {
+            return value is null || value.IsNormalized(NormalizationForm.FormC);
+        }
+        catch (ArgumentException)
+        {
+            return false;
         }
     }
 

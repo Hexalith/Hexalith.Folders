@@ -23,6 +23,10 @@ Optional arguments:
 --help                      Show usage and exit.
 ```
 
+Use `--key=value` when a path starts with `--`. A terminal `--` ends
+option parsing. The generator takes only named options, so any argument
+after that marker is rejected.
+
 ### Initialize the baseline
 
 Run once whenever the Contract Spine is intentionally rewritten:
@@ -43,7 +47,9 @@ The command creates the selected baseline with the captured operation inventory 
 
 ## Deterministic Output
 
-Rows are sorted by `operation_id`, arrays are sorted when source order is not normative, output is UTF-8 without BOM and LF-only, and timestamps are not emitted. Safe provenance appears only as comments containing content hashes and repository-relative source names.
+Rows are sorted by `operation_id`, arrays are sorted when source order is not normative, output is UTF-8 without BOM and LF-only, and timestamps are not emitted. The header comments `contract_spine_raw_sha256` and `parity_schema_raw_sha256` identify the exact bytes of the selected contract and schema. The existing `contract_spine_sha256` and `parity_schema_sha256` values ignore newline differences and the UTF-8 BOM. The previous spine is a separate input used for drift comparisons.
+
+Operation schema references use same-document JSON Pointers. The generator resolves references reachable from request and response schemas before writing the oracle, including parameter and response-header schemas. Keep schema definitions in the same OpenAPI document using components and JSON Pointers.
 
 ## Failure Behavior
 

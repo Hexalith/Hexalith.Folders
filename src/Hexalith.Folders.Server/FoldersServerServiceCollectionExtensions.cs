@@ -142,6 +142,8 @@ public static class FoldersServerServiceCollectionExtensions
         // Enroll the existing bespoke processor in the SDK's domain capability lookup.
         services.TryAddKeyedScoped<IDomainProcessor>(FoldersServerModule.DomainName, static (provider, _) =>
             provider.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single());
+        services.TryAddKeyedScoped<IAsyncDomainProcessor>(FoldersServerModule.DomainName, static (provider, _) =>
+            provider.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
 
