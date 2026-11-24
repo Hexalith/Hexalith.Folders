@@ -2574,9 +2574,14 @@ resolution: Missing and null entry arrays fail with a bounded diagnostic before 
   summary: Context search still returns one item per duplicate source hit for the same file-version identity.
   evidence: Pre-existing handler loop; this story only changed Indexed-only IsVisible and the post-auth IsAvailable gate. DuplicateSourceHitsForOneIdentityShouldNotDiscloseRawCandidateCounts asserts no raw counts, not a single item.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
-  summary: CLI RequiredId options accept whitespace identifiers and forward them to the SDK.
-  evidence: Pre-existing CommandOptions.RequiredId has Required=true but no IsNullOrWhiteSpace guard on any command, including indexing-status.
+### DW-356: CLI RequiredId options accept whitespace identifiers and forward them to the SDK.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+reason: Pre-existing CommandOptions.RequiredId has Required=true but no IsNullOrWhiteSpace guard on any command, including indexing-status.
+status: done 2026-11-24
+resolution: The parser rejects empty and whitespace identifiers before creating an SDK client. File arguments still use their command-specific validation.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: Live file-remove and folder-archive pruning is not proven by a public mutation round trip.

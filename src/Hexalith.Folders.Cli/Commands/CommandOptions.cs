@@ -88,7 +88,24 @@ internal static class CommandOptions
     /// <param name="name">The option name (including leading dashes).</param>
     /// <param name="description">The option description.</param>
     /// <returns>A new required option.</returns>
-    public static Option<string> RequiredId(string name, string description) => new(name)
+    public static Option<string> RequiredId(string name, string description)
+    {
+        Option<string> option = RequiredValue(name, description);
+        option.Validators.Add(result =>
+        {
+            if (result.Tokens is [var token] && string.IsNullOrWhiteSpace(token.Value))
+            {
+                result.AddError($"The {name} option requires a non-blank value.");
+            }
+        });
+        return option;
+    }
+
+    /// <summary>Creates a required option for text passed to the command's own validation.</summary>
+    /// <param name="name">The option name, including leading dashes.</param>
+    /// <param name="description">The option description.</param>
+    /// <returns>A new required option.</returns>
+    public static Option<string> RequiredValue(string name, string description) => new(name)
     {
         Description = description,
         Required = true,
