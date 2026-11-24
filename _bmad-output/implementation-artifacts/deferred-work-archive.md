@@ -1246,3 +1246,874 @@ status: done 2026-09-06
 archived: 2026-09-18
 resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808-823 now has the closing brace before HasNoPriorOutcomeFields.
 
+### DW-8: Concurrent identical-fingerprint clock skew at `InMemoryFolderRepository:56-91`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)"), 2026-08-24
+location: InMemoryFolderRepository:56-91
+reason: Concurrent identical-fingerprint clock skew at `InMemoryFolderRepository:56-91` — current fingerprint composition is deterministic-per-inputs and does not include clock material. Deferred — only becomes live if a future fingerprint dimension adds time-based material.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: A clock-skew regression races equivalent archive decisions made at different instants. Each racer supplies its own event fingerprint. The winner alone determines the ledger entry and archive timestamp. See spec-five-deferred-in-memory-appends.md.
+
+### DW-67: `Resolve-Path (Join-Path $toolsParent '..')` resolves symlink targets in `tests/tools/run-governance-completeness-gates.ps1:16`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
+location: tests/tools/run-governance-completeness-gates.ps1:16
+reason: `Resolve-Path (Join-Path $toolsParent '..')` resolves symlink targets in `tests/tools/run-governance-completeness-gates.ps1:16` — deferred, sibling scripts use the same pattern; revisit when a sibling tool persists absolute paths.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: The runner derives the checkout root from the invoked script and uses literal filesystem paths. Runner tests cover a bracketed checkout and a directory alias. See spec-five-deferred-governance-prerequisites.md.
+
+### DW-68: `CloneRow` round-trips YAML through serialize/parse and drops anchors, tags, and comments
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:991-1000
+reason: `CloneRow` round-trips YAML through serialize/parse and drops anchors, tags, and comments [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:991-1000`] — deferred, only used by negative-control tests; revisit if production validators start caring about tag/anchor metadata.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Replaced serialize/parse cloning after a regression reproduced collection-tag loss. A reference-identity graph clone preserves scalar/collection tags, anchors, styles, shared and recursive aliases, distinct equal nodes and mutation isolation. Comments are unavailable after initial parsing. See spec-five-deferred-yaml-governance.md.
+
+### DW-69: `EvaluateExitCriteriaRows` can emit both `exit_criteria_duplicate` and `exit_criteria_malformed` for the same Cx when duplicates exist
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:742-790
+reason: `EvaluateExitCriteriaRows` can emit both `exit_criteria_duplicate` and `exit_criteria_malformed` for the same Cx when duplicates exist [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:742-790`] — deferred, noise rather than correctness.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Duplicate criteria emit one duplicate diagnostic before row metadata validation; malformed unique rows still fail. Covered by focused governance regressions. See spec-five-deferred-governance-inputs.md.
+
+### DW-70: `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115
+reason: `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")` — exception terminology hints at a categorized exit but the throw is uncaught and surfaces as a Shouldly/xUnit crash [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115`] — deferred, will be resolved by the decision on `prerequisite_drift` script semantics.
+status: done 2026-11-22
+archived: 2026-11-24
+decision: 2026-08-25 Preserve drift status — Emit structured prerequisite_drift report and exit semantics with focused runner tests.
+resolution: Root discovery, missing SDK or assembly, and zero executed tests publish `prerequisite_drift` with a nonzero exit. Runner tests distinguish these outcomes from ordinary test failures. See spec-five-deferred-governance-prerequisites.md.
+
+### DW-71: Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
+location: File.ReadAllText
+reason: Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests` — deferred, low likelihood any scanned file in the safety scope is non-UTF-8 today; revisit when scan inputs broaden beyond JSON/YAML/Markdown sources we author.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Verified the existing strict UTF-8 ReadRequiredFile/DecodeSafetyText path; File.ReadAllText no longer appears in the safety gate. Existing TextInputAcceptsStrictUtf8WithOptionalBom, TextInputRejectsUnsupportedEncodingsAndReplacementFallback and FileInputEnforcesSizeEncodingAndSafeReadFailures cover optional UTF-8 BOM, invalid/unsupported encoding, file size and safe read failures. See spec-five-deferred-yaml-shapes.md.
+
+### DW-72: JSON duplicate-keys detection in corpus / inventory / quarantine fixtures
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
+location: JsonDocument
+reason: JSON duplicate-keys detection in corpus / inventory / quarantine fixtures — deferred; relying on `JsonDocument` default behavior is acceptable for fixtures we own and write by hand. Revisit if multiple authors begin merging the corpus concurrently.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Reject duplicate decoded JSON properties recursively through the shared bounded parser. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
+
+### DW-73: `AssertMetadataOnly` blacklist missing Linux absolute-path roots
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)"), 2026-08-24
+location: AssertMetadataOnly
+reason: `AssertMetadataOnly` blacklist missing Linux absolute-path roots (`/var/`, `/tmp/`, `/home/`, `/Users/`) — deferred. The gate runs primarily on Windows today, and the inventory `structured_exclusions` does not yet target Linux runner paths. Revisit when CI matrix expands to Linux/macOS or when a contributor reports a Linux-specific leak class.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Reject temporary and variable-data absolute paths and the actual checkout path in metadata diagnostics. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
+
+### DW-74: Isolated regeneration does not copy repo-root `nuget.config`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227
+reason: Isolated regeneration does not copy repo-root `nuget.config` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227`]. CI runner happens to use the same `nuget.org`-only sources today; revisit if a private feed is added.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Isolated regeneration copies and verifies the repository NuGet configuration before using the public generation target. See spec-five-deferred-sdk-generation-boundaries.md.
+
+### DW-78: Case-sensitivity / symlink edge cases in `ValidateRepositoryRelativeApprovalSource`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
+location: tests/tools/parity-oracle-generator/Program.cs:783-801
+reason: Case-sensitivity / symlink edge cases in `ValidateRepositoryRelativeApprovalSource` [`tests/tools/parity-oracle-generator/Program.cs:783-801`]. `OrdinalIgnoreCase` prefix check accepts case-mismatched paths on Linux; not exploitable today (no symlinks in `docs/`).
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Approval sources use platform-appropriate containment and reject symlink/reparse-point traversal before collapsing parent segments; CLI regressions cover directory/file links, case-only sibling roots, and ordinary relative files. See spec-five-deferred-generator-inputs.md.
+
+### DW-81: `--initialize-baseline` silently overwrites without `--force`/backup
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
+location: tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch
+reason: `--initialize-baseline` silently overwrites without `--force`/backup [`tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch`] — UX concern, not correctness. Failing-CI path of least resistance is to nuke the baseline; mitigated socially by sprint review.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Baseline initialization requires --force-baseline-overwrite for an existing target and uses FileMode.CreateNew without force; linked baseline output paths are rejected; CLI tests cover create/refuse/replace, force without initialization, and invalid-candidate preservation. See spec-five-deferred-generator-inputs.md.
+decision: 2026-08-25 Require force — Add --force-baseline-overwrite or an atomic backup requirement, reject an existing target without it, and cover both paths with focused CLI tests.
+
+### DW-82: `AuditKey` regex does not check duplicate-after-normalization
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
+location: tests/tools/parity-oracle-generator/Program.cs ReadAuditMetadataKeys
+reason: `AuditKey` regex does not check duplicate-after-normalization [`tests/tools/parity-oracle-generator/Program.cs ReadAuditMetadataKeys`] — the lowercase requirement catches mixed-case duplicates today; reopen if the audit-key vocabulary loosens its case rule.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Duplicate audit-key names fail before sorting instead of being silently deduplicated; strict lowercase vocabulary uses absolute regex anchors, with duplicate, mixed-case, and forced-baseline newline regressions. See spec-five-deferred-generator-inputs.md.
+
+### DW-84: `NormalizeName` leading separator/digit silently produces invalid names
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
+location: tests/tools/parity-oracle-generator/Program.cs NormalizeName
+reason: `NormalizeName` leading separator/digit silently produces invalid names [`tests/tools/parity-oracle-generator/Program.cs NormalizeName`] — current OpenAPI does not declare parameters with these shapes.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Inline and referenced parameter names must start with an ASCII letter and contain only ASCII letters/digits/hyphens/underscores; malformed names fail before normalization or output, with empty, separator/digit, punctuation, Unicode, and newline regressions. See spec-five-deferred-generator-inputs.md.
+
+### DW-86: `ReadConsistencyClass` extra-keys / scalar-form produces opaque "value not in enum" rather than `prerequisite_drift:`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
+location: tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass
+reason: `ReadConsistencyClass` extra-keys / scalar-form produces opaque "value not in enum" rather than `prerequisite_drift:` [`tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass`] — diagnostic surface improvement only.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Read-consistency metadata validates the declared two-field mapping, nonempty/non-null scalar values, and known read classes, with prerequisite-drift diagnostics and output-preservation regressions. See spec-five-deferred-generator-inputs.md.
+
+### DW-93: Cross-type numeric zero encoding asymmetry (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260`)
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260
+reason: Cross-type numeric zero encoding asymmetry (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260`). Same logical zero produces different canonical bytes via `double`, `float`, `decimal`, integer. Spec does not require cross-type equivalence.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Golden hash vectors pin the existing integer, binary32, binary64 and decimal zero encodings. Signed zeros converge within each floating-point type, and decimal zeros retain their scale. See spec-five-deferred-sdk-hash-conformance.md.
+
+### DW-94: Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317
+reason: Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
+status: done 2026-11-23
+archived: 2026-11-24
+decision: 2026-08-25 Validate on call — Move drift validation into the file-mutation helper entry point and throw a direct, actionable InvalidOperationException.
+resolution: The named Remove enum member eliminated the static constructor in 76b96cf7edfdf8d3dc461341dda7c8cf9de6c1c4. A regression verifies that an unsupported kind raises InvalidOperationException directly from the mutation hash call. See spec-five-deferred-sdk-generation-boundaries.md.
+
+### DW-95: `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167
+reason: `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The shared loader and node extensions are internal to the non-packable generation assembly. The generator and client tests use the existing friend-assembly declarations. See spec-five-deferred-sdk-generation-boundaries.md.
+
+### DW-96: Test `GetRawText` doesn't distinguish JSON value types in corpus comparison helper (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`). Pre-existing Round 3 deferral.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+reason: Test `GetRawText` doesn't distinguish JSON value types in corpus comparison helper (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`). Pre-existing Round 3 deferral.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Corpus hash vectors now exercise null, boolean, numeric and string inputs through their SDK canonical representations, including UInt64.MaxValue. See spec-five-deferred-sdk-hash-conformance.md.
+
+### DW-98: `NormalizeName` acronym handling produces non-obvious fail-closed diagnostics
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:98-128
+reason: `NormalizeName` acronym handling produces non-obvious fail-closed diagnostics (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:98-128`). No current spine uses acronym-suffix parameters.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Parameter matching recognizes acronym word boundaries in inline and referenced names. Ambiguous wire names produce an operation-specific diagnostic. See spec-five-deferred-sdk-field-resolution.md.
+
+### DW-99: Subnormal `double`s from FMA-fused arithmetic may diverge across hardware classes
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-240
+reason: Subnormal `double`s from FMA-fused arithmetic may diverge across hardware classes (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-240`). No current arithmetic-derived idempotency field.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The SDK suite pins signed and adjacent binary64 subnormals by bit pattern. A fused multiply-add and its separately rounded equivalent produce distinct subnormal results, each with its expected hash. See spec-five-deferred-sdk-hash-conformance.md.
+
+### DW-101: `LocateRepositoryRoot` fallback if `AppContext.BaseDirectory` is also empty (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485`). Single-file-publish edge case.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485
+reason: `LocateRepositoryRoot` fallback if `AppContext.BaseDirectory` is also empty (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485`). Single-file-publish edge case.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: When both the assembly and application paths are empty, repository discovery walks upward from the working directory. See spec-five-deferred-sdk-generation-boundaries.md.
+
+### DW-102: `EnumerableExtensions.WhereNotNull<T>` constrained to reference types only (`tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5`).
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5
+reason: `EnumerableExtensions.WhereNotNull<T>` constrained to reference types only (`tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5`).
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: SDK conformance uses LINQ OfType<string> to select present request schemas. The one-use reference-only helper was removed. See spec-five-deferred-sdk-verification.md.
+
+### DW-105: `ParsedProblemDetailsCache` is a nested `private sealed class` visible to Newtonsoft reflection (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118`).
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118
+reason: `ParsedProblemDetailsCache` is a nested `private sealed class` visible to Newtonsoft reflection (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118`).
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Typed Problem Details uses a reference tuple and atomic publication without a nested SDK cache type. Concurrent reads verify a shared projection. See spec-five-deferred-sdk-verification.md.
+
+### DW-106: `--repository-root` argument not validated for absolute-path-ness inside the generator (`src/Hexalith.Folders.Client/Generation/Program.cs:9-13`).
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Program.cs:9-13
+reason: `--repository-root` argument not validated for absolute-path-ness inside the generator (`src/Hexalith.Folders.Client/Generation/Program.cs:9-13`).
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: `Generation/Program.cs` rejects blank or non-fully-qualified roots before input reads or output writes. `GeneratorRejectsNonAbsoluteRepositoryRootBeforeReadingInputs` covers blank, dot, relative and parent-relative inputs and unchanged existing artifacts.
+
+### DW-108: Test corpus classification polarity is forward-fragile (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322`). Flips when AC 6 normalization implemented.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322
+reason: Test corpus classification polarity is forward-fragile (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322`). Flips when AC 6 normalization implemented.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The SDK corpus test matches the exact classification vocabulary at the raw-field boundary. New rules with familiar prefixes fail with the case ID and classification. See spec-five-deferred-sdk-hash-conformance.md.
+
+### DW-109: `FileMutationRequestFileOperationKind` enum drift detection only checks ordinal collisions, not `EnumMember` wire-value drift
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317
+reason: `FileMutationRequestFileOperationKind` enum drift detection only checks ordinal collisions, not `EnumMember` wire-value drift (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`).
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The SDK tests compare the generated enum metadata to the base schema and verify each mutation hash against its operation-specific OpenAPI token. See spec-five-deferred-sdk-field-resolution.md.
+
+### DW-110: `IdempotencyField.ToCanonicalLine()` bypasses `RejectControlCharacters`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:308-312
+reason: `IdempotencyField.ToCanonicalLine()` bypasses `RejectControlCharacters` (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:308-312`). Direct callers (e.g. Story 1.13 oracle) skip validation.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: `Idempotency/IdempotencyField.cs` calls the existing identifier validator directly. Client generation regressions require identical direct/Compute rejection for controls, BOM, line separators and malformed surrogates, while preserving value escaping, valid Unicode paths and omitted/null encodings.
+
+### DW-112: Typed `ProblemDetails` companion folder placement
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:73-93
+reason: Typed `ProblemDetails` companion folder placement (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:73-93`) — conceptually neither idempotency nor NSwag-generated; could move under `Idempotency/` or split into its own generated file. Non-blocking ownership concern.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The typed API exception companion lives in the Serialization folder and keeps its generated namespace and public members. See spec-five-deferred-sdk-verification.md.
+
+### DW-113: Defensive validation for empty parameter `$ref` / empty `name` scalar (`src/Hexalith.Folders.Client/Generation/Program.cs:201-211`) — spine currently has neither; defensive only.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Program.cs:201-211
+reason: Defensive validation for empty parameter `$ref` / empty `name` scalar (`src/Hexalith.Folders.Client/Generation/Program.cs:201-211`) — spine currently has neither; defensive only.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: `EnumerateParameters` rejects blank/missing inline or referenced names, missing reference targets and malformed/nonlocal parameter references before publication. Client generation regressions verify both output artifacts remain unchanged on rejection, preserve legal non-helper punctuation names and pin canonical isolated regeneration to committed bytes.
+
+### DW-116: Multi-level nested-path NRE risk (`src/Hexalith.Folders.Client/Generation/Program.cs:130`) — `Root?.A.B.C` is null-safe only on the first hop; revisit if spine adds 3+ level equivalence paths.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Program.cs:130
+reason: Multi-level nested-path NRE risk (`src/Hexalith.Folders.Client/Generation/Program.cs:130`) — `Root?.A.B.C` is null-safe only on the first hop; revisit if spine adds 3+ level equivalence paths.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: `ResolveField` emits null propagation at every nested hop while retaining root-based presence. `GeneratedNestedHelperHandlesNullAtEveryDepthAndRetainsPresenceSemantics` compiles and executes the actual emitted helper for absent root, null intermediate, null leaf and a supplied leaf; hashes match canonical expected fields.
+
+### DW-149: P13: `FileContextContractGroupTests.ResolveRefs` only verifies that `$ref` targets exist; examples are not validated against their target schemas
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-9-author-file-mutation-and-context-query-contract-groups (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs:ResolveRefs
+reason: P13: `FileContextContractGroupTests.ResolveRefs` only verifies that `$ref` targets exist; examples are not validated against their target schemas. Adding examples-must-be-valid coverage requires a JSON-Schema validator (e.g., `JsonSchema.Net` or `NJsonSchema`) in the contract test project. Belongs to a wider contract-test-harness story alongside Story 1.13/1.14 gates. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs:ResolveRefs`, `tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The candidate generator validates bound file-context JSON request and response examples against Draft 2020-12 schemas, including referenced and inline values. Historical v1 fixtures retain their targeted checks. See spec-five-deferred-contract-fixture-verification.md.
+
+### DW-153: `ResolveRefs` in the contract validator only verifies that JSON-pointer targets exist; it does not check that a `$ref` under `schema:` actually points to a schema component (or that a `$ref` under…
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:300-352
+reason: `ResolveRefs` in the contract validator only verifies that JSON-pointer targets exist; it does not check that a `$ref` under `schema:` actually points to a schema component (or that a `$ref` under `parameters:` points to a parameter). Easy to enhance once a wider validator pass is undertaken. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:300-352`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The workspace-lock contract suite checks that schema and parameter references resolve to the expected kinds, and reports the location and target of a mismatch. See spec-five-deferred-contract-fixture-verification.md.
+
+### DW-154: `EnumerateNamedFields` does not descend into inline example map keys when checking for forbidden token-shaped names
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:250-288
+reason: `EnumerateNamedFields` does not descend into inline example map keys when checking for forbidden token-shaped names — only walks `properties:` keys and `name:` scalars. A property name accidentally introduced inline in an example would slip past. Revisit when example-introspection coverage is broadened. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:250-288`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The workspace-lock field guard walks the payload keys of inline, named, component, and schema examples, including map keys in arrays. See spec-five-deferred-contract-fixture-verification.md.
+
+### DW-160: Contract test uses `FindRepositoryRoot()` keyed on `Hexalith.Folders.slnx` filename
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:402-418
+reason: Contract test uses `FindRepositoryRoot()` keyed on `Hexalith.Folders.slnx` filename. Brittle if solution renamed or test run outside the working copy. Revisit when contract tests adopt embedded-resource pattern. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:402-418`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The workspace-lock tests embed the canonical spine and notes at build time. Their six tests passed from a copy of the assembly outside the checkout. See spec-five-deferred-artifact-verification-inputs.md.
+
+### DW-165: `openapi` guard prefix too narrow — `ShouldNotContainKey("openapi")` catches only the exact key; `openapi_version` or `openapi:` nested under another key would bypass it
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-3-seed-minimally-valid-normative-fixtures (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata
+reason: `openapi` guard prefix too narrow — `ShouldNotContainKey("openapi")` catches only the exact key; `openapi_version` or `openapi:` nested under another key would bypass it. Low risk: `source_marker` and `mutation_rules` already document the intent; revisit if the guard needs hardening. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The previous-spine fixture test parses YAML and rejects OpenAPI version keys in nested maps and sequences while allowing mentions in scalar values. See spec-five-deferred-contract-fixture-verification.md.
+
+### DW-174: `ProductionUrl` regex in `ExitCriteriaDecisionArtifactTests` would reject legitimate documentation citations such as `https://learn.microsoft.com/...` if any are added later
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:222-224
+reason: `ProductionUrl` regex in `ExitCriteriaDecisionArtifactTests` would reject legitimate documentation citations such as `https://learn.microsoft.com/...` if any are added later. No current usage; revisit if a citation outside the `.invalid` TLD becomes necessary. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:222-224`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Decision checks accept HTTPS Microsoft Learn citations resolved from Markdown links. The S2 issuer and discovery examples still require synthetic .invalid endpoints. See spec-five-deferred-artifact-verification-inputs.md.
+
+### DW-176: `File.ReadAllText` in the doc-verification test makes no encoding assertion
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
+location: File.ReadAllText
+reason: `File.ReadAllText` in the doc-verification test makes no encoding assertion — BOM / UTF-16 edge cases would silently misread the artifact. Low risk: project standardizes on UTF-8. Revisit if an editor introduces non-UTF-8 content.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Decision checks read strict UTF-8 with an optional UTF-8 BOM. Invalid sequences and NUL-containing text fail with the document path. See spec-five-deferred-artifact-checks.md.
+
+### DW-186: Simultaneous-cancellation TOCTOU in `Eventually.UntilAsync`: when both `timeoutSource.Token` and the caller's `cancellationToken` fire in the same quantum, the `when` filter evaluates `false` and…
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: src/Hexalith.Folders.Testing/Polling/Eventually.cs
+reason: Simultaneous-cancellation TOCTOU in `Eventually.UntilAsync`: when both `timeoutSource.Token` and the caller's `cancellationToken` fire in the same quantum, the `when` filter evaluates `false` and raw `OperationCanceledException` propagates instead of `TimeoutException`. Low probability for a testing utility; acceptable trade-off. (`src/Hexalith.Folders.Testing/Polling/Eventually.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Poller cancellation reports a timeout when the deadline and caller cancellation have both fired at classification. An already-canceled caller prevents probe invocation. See spec-five-deferred-test-harness.md.
+
+### DW-187: `TaskId`, `CorrelationId`, `IdempotencyKey` not validated at `TestFolderContext` construction
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs
+reason: `TaskId`, `CorrelationId`, `IdempotencyKey` not validated at `TestFolderContext` construction — intentional asymmetric design: stream-segment fields validated early; header fields validated at header-build time by `ValidateHeaderValue`. (`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Construction now applies the populated and control-character checks to the task ID, correlation ID, and idempotency key. Tests cover each constructor parameter. See spec-five-deferred-test-harness.md.
+
+### DW-188: `"diff --git"` in `CredentialMaterialMarkers` is overly broad; would false-positive on any fixture legitimately containing a diff snippet
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs
+reason: `"diff --git"` in `CredentialMaterialMarkers` is overly broad; would false-positive on any fixture legitimately containing a diff snippet. Pre-existing marker moved from old `ShouldNotContain` calls; no current fixture affected. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Synthetic fixture patches are accepted. The fixture scanner still detects embedded credentials and reports the matched marker without printing the fixture. See spec-five-deferred-artifact-checks.md.
+
+### DW-189: `TestFolderContext` changed from positional record to custom-constructor record
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs
+reason: `TestFolderContext` changed from positional record to custom-constructor record — loses compiler-synthesised positional deconstruction and `System.Text.Json` deserialisation support without a custom converter. Testing helper; neither usage pattern expected. (`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The validated record supports deconstruction in its original positional order. A round-trip test verifies the existing System.Text.Json constructor binding. See spec-five-deferred-test-harness.md.
+
+### DW-191: A probe's own `OperationCanceledException` (from an unrelated internal token) may be misattributed as a timeout when `timeoutSource.IsCancellationRequested` is simultaneously true
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: src/Hexalith.Folders.Testing/Polling/Eventually.cs
+reason: A probe's own `OperationCanceledException` (from an unrelated internal token) may be misattributed as a timeout when `timeoutSource.IsCancellationRequested` is simultaneously true. Very low probability for a test utility. (`src/Hexalith.Folders.Testing/Polling/Eventually.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Timeout translation applies to cancellation carrying the polling token. Tests verify that a different probe token propagates, including a child linked to the polling token. See spec-five-deferred-test-harness.md.
+
+### DW-192: `CollectPrecedingProseContext` early-break limits exemption window to the immediately preceding prose line
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+reason: `CollectPrecedingProseContext` early-break limits exemption window to the immediately preceding prose line — intentional per 2026-05-12 review finding ("immediate preceding prose must carry the warning"); a warning comment separated from the recursive command by one non-warning line will not be seen. (`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The scaffold check uses the nearest prose line and requires the warning to address the command. Backtick and tilde fences both support an adjacent warning. See spec-five-deferred-artifact-verification-inputs.md.
+
+### DW-193: `C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally` checks backtick-wrapped event names in architecture.md
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+reason: `C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally` checks backtick-wrapped event names in architecture.md — tests pass because events appear backtick-wrapped in prose, but the canonical transition table uses bare cell names; design nuance, not a failure. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The C6 check compares states, positive-edge event names and reserved names against their respective mapping declarations. Tests cover changes hidden by incidental prose. See spec-five-deferred-artifact-checks.md.
+
+### DW-194: Dynamic `last reviewed` date in row-date assertions changes failure semantics from hard-coded `"2026-05-11"` to front-matter-derived date
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+reason: Dynamic `last reviewed` date in row-date assertions changes failure semantics from hard-coded `"2026-05-11"` to front-matter-derived date — intentional improvement; undocumented scope change. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The C3 and C4 checks validate ISO calendar dates and require a row under the Decision heading to match the header date. Historical rows remain valid. See spec-five-deferred-artifact-verification-inputs.md.
+
+### DW-195: `"diff --git"` in `SecretSubstringDenylist` alongside credential patterns produces confusing diagnostic; intent is correct (no patch content in docs) but classification is misleading
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+reason: `"diff --git"` in `SecretSubstringDenylist` alongside credential patterns produces confusing diagnostic; intent is correct (no patch content in docs) but classification is misleading. (`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`)
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Decision documents report Git patches separately from credentials. Tests distinguish discussion of the command from patch headers, including Git output without path prefixes. See spec-five-deferred-artifact-checks.md.
+
+### DW-196: `RepositoryRoot` `MaxAncestors = 12` magic number; could throw `InvalidOperationException` on deeply nested CI paths. 12 is sufficient for known repo layouts; pre-existing design.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
+location: RepositoryRoot
+reason: `RepositoryRoot` `MaxAncestors = 12` magic number; could throw `InvalidOperationException` on deeply nested CI paths. 12 is sufficient for known repo layouts; pre-existing design.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The fixture, decision and wireflow checks walk to the nearest Folders solution. Regressions cover 24 nested directories, nested solutions and a missing marker. See spec-five-deferred-artifact-checks.md.
+
+### DW-208: F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or…
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
+location: docs/contract/idempotency-and-parity-rules.md
+reason: F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The artifact suite compares the verification table with the acceptance criteria in Story 1.5 and the executable tests named in code. See spec-five-deferred-contract-fixture-verification.md.
+
+### DW-210: F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf`…
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
+location: tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+reason: F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Contract-rule artifact tests use the shared strict UTF-8 reader for Markdown, YAML, and JSON inputs. It accepts an optional UTF-8 BOM and identifies invalid files by path. See spec-five-deferred-artifact-verification-inputs.md.
+
+### DW-212: Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368
+reason: Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — cosmetic refactor; two switches will drift only if a new enum value lands without updating both.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The shared helper hashes the effective typed enum using the SDK wire encoder. The concrete add, change and remove requests use the same kind for hashing and serialization. See spec-five-deferred-sdk-field-resolution.md.
+
+### DW-213: `EnsureDeclaredOrder` duplicate-after-sort message wording
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394
+reason: `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — cosmetic; order check fires before duplicate check for differently-cased equal names.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: `EnsureDeclaredOrder` checks exact duplicates before ordering. `DuplicateFieldDiagnosticPrecedesOrderDiagnosticWithoutChangingCaseSensitivity` pins duplicate-first diagnostics and ordinal case-sensitive identity: differently cased paths are distinct and remain subject to ordinal ordering.
+
+### DW-214: `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Program.cs:616-638
+reason: `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Each operation builds a single normalized parameter index with declaration order for lookup and helper argument ordering. See spec-five-deferred-sdk-field-resolution.md.
+
+### DW-217: MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199
+reason: MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — works as written; revisit when the file layout changes.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: MSBuild excludes Generation from SDK default items and explicitly includes the two non-packable project items. Evaluation verifies that generator code and resources stay out of the client build. See spec-five-deferred-sdk-generation-boundaries.md.
+
+### DW-220: `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790
+reason: `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The corpus reader passes structured arrays and objects to the hasher. Golden cases verify nested property sorting, array order and preservation of date-shaped text. See spec-five-deferred-sdk-hash-conformance.md.
+
+### DW-223: `ReadProperties` does not follow `allOf` / `$ref` composition
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generation/Program.cs:709-722
+reason: `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — no current spine schema requires it; revisit when composed schemas with idempotency fields arrive.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The generator resolves properties across local component references and allOf, checks nested paths, and rejects invalid compositions before NSwag replaces the client. See spec-five-deferred-sdk-field-resolution.md.
+
+### DW-226: `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`]
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
+location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73
+reason: `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — filesystem-boundary concern; build-time and CI consume canonicalized paths today.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Verification reports the failing input by its fixed repository-relative path and exception type. Tests cover alternate absolute root spellings and missing files and directories. See spec-five-deferred-sdk-verification.md.
+
+### DW-232: File encoding fallback (UTF-16/Latin-1/no-BOM) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText` via `File.ReadAllText`] — overlaps prior BOM defer.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: File encoding fallback (UTF-16/Latin-1/no-BOM) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText` via `File.ReadAllText`] — overlaps prior BOM defer.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Read every gate input using bounded strict UTF-8 decoding with optional BOM; reject invalid bytes and embedded NUL without exposing file details. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
+
+### DW-237: Case-collision normalization across OS in `EnumerateSourceFiles`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: Case-collision normalization across OS in `EnumerateSourceFiles` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `EnumerateSourceFiles`] — cross-OS naming collision is rare in generated SDK and contract directories.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: The safety scan detects case-insensitive collisions in file paths and parent directories across all scanned sources. Exact repeat paths remain valid. See spec-five-deferred-contract-gate-diagnostics.md.
+
+### DW-241: `MissingChannelDiagnostics` uses a single canned `Remediation` string for all prerequisite-drift channels
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: `MissingChannelDiagnostics` uses a single canned `Remediation` string for all prerequisite-drift channels [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `BuildMissingChannelDiagnostics`] — add a per-channel `remediation_hint` field in inventory; not gating.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: Pending safety channels accept a bounded channel-specific remediation_hint. Missing hints retain the existing default and invalid hints produce bounded diagnostics. See spec-five-deferred-contract-gate-diagnostics.md.
+
+### DW-242: `-SkipRestoreBuild` probes only the test assembly, not direct dependencies like `Hexalith.Folders.Contracts.dll`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/tools/run-safety-invariant-gates.ps1
+reason: `-SkipRestoreBuild` probes only the test assembly, not direct dependencies like `Hexalith.Folders.Contracts.dll` [`tests/tools/run-safety-invariant-gates.ps1`] — `dotnet test --no-build` raises a clear error on missing deps; double-guarding adds complexity.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: The safety runner probes the test assembly, entry-point manifests, and two direct Folders project dependencies before launch. Missing prerequisites produce a prerequisite_drift report. See spec-five-deferred-contract-gate-diagnostics.md.
+
+### DW-243: `AssertContainsText` emits `SAFETY-PREREQUISITE-DRIFT` for both "required marker absent" and "context-query missing" cases
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: `AssertContainsText` emits `SAFETY-PREREQUISITE-DRIFT` for both "required marker absent" and "context-query missing" cases [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertContainsText`] — vocabulary refinement (e.g., dedicated `SAFETY-REQUIRED-MARKER-ABSENT`); current message is non-leaking.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: A missing marker emits SAFETY-REQUIRED-MARKER-ABSENT. Missing context-query operations emit bounded prerequisite drift. See spec-five-deferred-contract-gate-diagnostics.md.
+
+### DW-244: `LoadYamlMapping` / `JsonDocument.Parse` calls lack bounded options (max depth, size cap) [multiple call sites in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: `LoadYamlMapping` / `JsonDocument.Parse` calls lack bounded options (max depth, size cap) [multiple call sites in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`] — defense-in-depth against malformed/oversized fixtures; current fixtures are reviewer-curated.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Enforce 8 MiB inputs, depth 64, a 100,000-event YAML limit, and alias rejection before representation loading. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
+
+### DW-245: `BoundedDiagnosticException` does not validate `ruleId` against an allowed set nor assert `remediation` through `AssertMetadataOnly`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: `BoundedDiagnosticException` does not validate `ruleId` against an allowed set nor assert `remediation` through `AssertMetadataOnly` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `BoundedDiagnosticException`] — tighten if a third caller is added with non-constant inputs.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Validate approved rule IDs, bounded channel/remediation fields, and metadata-only content; use fixed safe fallback diagnostics. Verified by SafetyInvariantGateTests; see spec-five-deferred-safety-inputs.md.
+
+### DW-247: `SerializeYaml` constructs `StringWriter` without `CultureInfo.InvariantCulture`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+reason: `SerializeYaml` constructs `StringWriter` without `CultureInfo.InvariantCulture` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SerializeYaml`] — YamlDotNet writes strings literally for the fields the gate scans; revisit if numeric YAML enters the corpus.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Safety YAML serialization explicitly uses CultureInfo.InvariantCulture. French, Arabic and Turkish culture regressions pin stable output and numeric/tagged scalar round trips. See spec-five-deferred-yaml-governance.md.
+
+### DW-248: `LoadOpenApiOperationIds` crashes on `$ref`-only method operations and on a method-mapping missing `operationId`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+reason: `LoadOpenApiOperationIds` crashes on `$ref`-only method operations and on a method-mapping missing `operationId` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `LoadOpenApiOperationIds`] — current OpenAPI spec has no `$ref` operations and every operation carries an `operationId`; overlaps Round 2 prerequisite-drift work (Decision #5).
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: OpenAPI path and operation shapes are validated explicitly, including YAML nulls and unsupported references; malformed inputs fail with bounded prerequisite-drift diagnostics. See spec-five-deferred-governance-inputs.md.
+
+### DW-249: `ParseRequiredBoolean` rejects YAML 1.1 numeric booleans
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+reason: `ParseRequiredBoolean` rejects YAML 1.1 numeric booleans (`1` / `0`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ParseRequiredBoolean`] — corpus fixtures only use lowercase literals; tighten when an authored fixture introduces numeric truth values.
+status: done 2026-11-22
+archived: 2026-11-24
+resolution: The pattern manifest requires a YAML 1.2 core boolean. Numeric `1` and `0` are integers, so the parser rejects them with `boolean-invalid` and omits the source value. Regressions cover boolean spellings, tags, and rejected types. See spec-five-deferred-governance-prerequisites.md.
+
+### DW-250: `Write-GovernanceReport` lacks `try/catch` around the JSON write
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
+location: tests/tools/run-governance-completeness-gates.ps1
+reason: `Write-GovernanceReport` lacks `try/catch` around the JSON write — a partial write leaves `latest.json` stale while the shell exit code still reflects the original failure [`tests/tools/run-governance-completeness-gates.ps1` `Write-GovernanceReport`] — rare race; harden when a CI consumer reports stale-report incidents.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Reports are staged and atomically replaced; publication failures return exit 1 with bounded diagnostics, remove stale reports when possible and clean staged files. Real runner tests cover success, test failure, initial/final/failed writes, replacement and directory creation failures. See spec-five-deferred-governance-inputs.md.
+
+### DW-251: `ReadRootTargetFramework` regex matches the first uncommented `<TargetFramework>` and does not strip XML comments or handle conditioned elements
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+reason: `ReadRootTargetFramework` regex matches the first uncommented `<TargetFramework>` and does not strip XML comments or handle conditioned elements [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ReadRootTargetFramework`] — current `Directory.Build.props` is clean; revisit when conditional TFM authoring lands.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Root target framework is parsed as XML from exactly one unconditional literal declaration; comments and conditional definitions are ignored, with bounded drift for missing, malformed or ambiguous declarations. See spec-five-deferred-governance-inputs.md.
+
+### DW-252: `IsGeneratedOrBuildOutput` path-segment check is case-sensitive
+
+origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)"), 2026-08-24
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+reason: `IsGeneratedOrBuildOutput` path-segment check is case-sensitive (`/Generated/`, `/bin/`, `/obj/`, `/quarantine/`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `IsGeneratedOrBuildOutput`] — switch to `OrdinalIgnoreCase` if a generator with non-standard casing is introduced.
+status: done 2026-10-28
+archived: 2026-11-24
+resolution: Generated, bin, obj and quarantine directory segments match case-insensitively with POSIX or Windows separators, including leading relative segments; similar source names remain scanned. See spec-five-deferred-governance-inputs.md.
+
+### DW-261: Future-dated evidence has no inline test row in `OrganizationAclTenantEvidenceGateTests.RejectedTenantEvidenceShouldPreventAllStreamSideEffects`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implement-organization-aggregate-acl-baseline (2026-05-18)"), 2026-08-24
+location: tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs:11-37
+reason: Future-dated evidence has no inline test row in `OrganizationAclTenantEvidenceGateTests.RejectedTenantEvidenceShouldPreventAllStreamSideEffects` [`tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs:11-37`] — covered transitively because Story 2.1's authorizer routes future timestamps through `TenantAccessOutcome.MalformedEvidence`, which is in the theory. Adding a direct integration row pinned to a future `LastEventTimestamp` would belt-and-brace this assumption.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The ACL gate receives a real future-dated tenant authorization result and rejects it before any idempotency, stream or append operation. See spec-five-deferred-authorization-evidence.md.
+
+### DW-264: `EventStoreClaimTransformEvidence.Allowed` exposes its internal `HashSet<string>` via `IReadOnlySet<string>`
+
+origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
+location: src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~17-23
+reason: `EventStoreClaimTransformEvidence.Allowed` exposes its internal `HashSet<string>` via `IReadOnlySet<string>` (`src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~17-23`) — not exploitable from current call sites; revisit if the evidence is shared across threads or returned to untrusted callers.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Allowed evidence snapshots normalized permission tokens in an ordinal frozen set. Direct construction and record copies also snapshot assigned sets. Tests exercise source mutation and mutation through a set interface. See spec-five-deferred-authorization-evidence.md.
+
+### DW-265: Authorization unit tests pin to a single UTC instant
+
+origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
+location: tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs:~11
+reason: Authorization unit tests pin to a single UTC instant — no DST/timezone-offset or `>` vs `>=` boundary coverage on `ObservedAt > clock.UtcNow` (`tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs:~11`) — fixed-clock pattern is consistent with sibling modules.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The permission evidence provider is tested one tick before, at and one tick after a fixed UTC clock, with explicit offsets across the repeated autumn hour. See spec-five-deferred-authorization-evidence.md.
+
+### DW-273: W3: `FolderAccessTenantGate.HasCompetingClientTenant` does not guard whitespace-only keys in `ClientControlledTenantIds`
+
+origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
+location: FolderAccessTenantGate.HasCompetingClientTenant
+reason: W3: `FolderAccessTenantGate.HasCompetingClientTenant` does not guard whitespace-only keys in `ClientControlledTenantIds` — a whitespace key bypasses the mismatch check entirely while the archive gate explicitly rejects whitespace keys. Pre-existing; not introduced by this change.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The tenant gate and layered mutation service reject empty or whitespace-only tenant-source keys before reading protected folder data. Tests cover both valid and invalid source names with matching or absent values. See spec-five-deferred-authorization-evidence.md.
+
+### DW-305: ArchiveFolderProcessWiringTests is not selected by a blocking CI lane.
+origin: spec-deferred 22f7160f19de
+location: tests/tools/run-contract-parity-ci-gates.ps1
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: The integration class was already excluded before this bundle: the blocking parity script selects GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests, while the baseline allow-list omits the IntegrationTests project. The four new archive-process rows therefore run locally but inherit the pre-existing CI selection gap.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The blocking baseline gate runs the full integration assembly, including ArchiveFolderProcessWiringTests. See spec-five-deferred-archive-integration-checks.md.
+
+### DW-306: The shared gateway double's new `/process` result-payload propagation is asserted by no gate-selected test.
+origin: spec-deferred 2143e3ee7943
+location: tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `InProcessRejectionPropagatingGatewayClient` now forwards `ResultPayload`, which is the sole input to the REST `idempotentReplay` field. The only assertion on it lives in `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted`, in the class no blocking lane selects. `MixedSurfaceHandoffTests` is gate-selected and drives the same double through a four-surface replay, but asserts 202 / no conflict / no second append without ever reading `idempotentReplay`. Reverting the propagation would leave every gate green while every replay silently reported `idempotentReplay: false`. Closing this means adding an assertion to `MixedSurfaceHandoffTests`, which is outside this intent's "add four archive tests" approach.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The mixed-surface replay checks the REST first-write marker and the SDK replay marker. See spec-five-deferred-archive-integration-checks.md.
+
+### DW-307: Only the `Denied` archive-policy outcome has an integration row; the retryable outcomes have none at the `/process` boundary.
+origin: spec-deferred 3563da68a6d4
+location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `FolderArchivePolicyOutcome` also carries `ScopeMismatch`, `Unavailable`, `Malformed`, and `Stale`, and `EvaluatePolicy` additionally returns `PolicyEvidenceMalformed` when an *Allowed* evidence's tenant/organization/folder do not match the command or its `PolicyVersion` is blank -- the load-bearing anti-forgery check. Those codes are asserted only in `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs`, never across REST -> gateway -> `/process`. `Unavailable`/`Stale` map to a retryable 503, a materially different caller contract than the non-retryable 403 this bundle pins, so a regression that collapsed one into the other would keep every row green. Adding those rows is outside this intent's four-scenario matrix.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The archive integration matrix verifies the wire rejection, safe REST status and code, retryability, and absence of appends. See spec-five-deferred-archive-integration-checks.md.
+
+### DW-308: `HasScopedMetadataProperty` rejects any property name containing `policy`, which production's own richer safe-denial body carries.
+origin: spec-deferred 2aadb3b7b785
+location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `FolderAuthorizationDenialMapper.ToHttpResult` emits `details.policyClass` (alongside `reasonCategory`, `layer`, `freshnessClass`, `timingBucket`) on every layered-authorization denial. The helper passes today only because the gateway double flattens the `/process` 403 into an `EventStoreGatewayException`, so the caller sees `ToArchiveGatewayProblem`'s leaner `SafeProblem` body instead. Any future change that propagates the richer -- and still metadata-only -- denial body to the caller would red these rows on a body that discloses nothing. Closing this means matching exact field names, or exempting the known-safe classifier fields, rather than substring-matching property names.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The metadata scan permits the exact archive mutation classifier under details.policyClass and rejects misplaced or malformed classifiers. See spec-five-deferred-archive-integration-checks.md.
+
+### DW-310: The pre-existing Int32 EventsAppended test affordance can wrap after more than Int32.MaxValue appended events.
+origin: spec-deferred eacd388efd79
+location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:152
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: low
+reason: Before this change the int auto-property used unchecked +=, and the refactor preserves that behavior in the gate-protected backing field. This is not caused by the synchronization cleanup and is not observable through IFolderRepository, but an extreme-lifetime test repository could report a negative diagnostic count.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The folder diagnostic uses a 64-bit count. A real append across the Int32 boundary and a subsequent reset are covered. See spec-five-deferred-in-memory-appends.md.
+
+### DW-311: A single per-folder `_lastObservedAt` watermark is shared by all six read-model snapshot writers, so one projection's newer timestamp can advance another projection's reported freshness.
+origin: spec-deferred 94fcd8bf7ae7
+location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:255
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: medium
+reason: Every `Save*Snapshot` clamps against the same `LifecycleKey(managedTenantId, folderId)` entry while sourcing a different candidate time (`state.ArchivedAt`, `policy.ConfiguredAt`, `state.WorkspaceLifecycleUpdatedAt`, or the append's `observedAt`). The clamp is a max, so whichever writer runs with the newest candidate pins `ObservedAt` for every other projection of the same folder. This predates the change -- the same key and the same max semantics were previously expressed through `ConcurrentDictionary.AddOrUpdate` -- and this story only relocated the operation under the gate. It is invisible in the current suite because the new coverage constructs the repository with no read models and `BranchRefPolicyReadModelTests` registers only the branch-policy read model; registering a second read model would surface the interference.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: All six snapshot writers clamp observation time by tenant, folder and projection. A lifecycle and branch-policy test checks independent watermarks through a clock rollback. See spec-five-deferred-in-memory-appends.md.
+
+### DW-312: The sibling `InMemoryOrganizationProviderBindingRepository` still mixes `ConcurrentDictionary` with `lock (_gate)` and publishes state before its idempotency ledger entry where readers can observe the
+origin: spec-deferred 49c81b636fb6
+location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProviderBindingRepository.cs:61
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: medium
+reason: Its file comment states it "mirrors the folder repository policy", yet `Load` (line 25) and `TryGetIdempotencyFingerprint` (line 69) never take `_gate`, while `AppendIfFingerprintAbsent` writes `_states[...]` at line 61 and `_idempotencyFingerprints[ledgerKey]` at line 62. A concurrent reader can therefore see appended organization state whose fingerprint is not yet visible, and a caller retrying the same idempotent command would treat it as new work. The only tests touching the type run single-threaded, so nothing observes the window. This story's intent scopes sibling `ConcurrentDictionary` users out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), so it is recorded here rather than fixed.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: State, fingerprint and count readers share the organization append lock. Coordinated readers, equivalent retries and conflicting retries exercise publication. See spec-five-deferred-in-memory-appends.md.
+
+### DW-313: The sibling `InMemoryOrganizationProviderBindingRepository` file comment claims it "mirrors the folder repository policy", a claim this change made false.
+origin: spec-deferred c9d27f6533b9
+location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProviderBindingRepository.cs:6
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: low
+reason: Lines 6-7 of that file describe it as mirroring the folder repository's synchronization policy. After this story, `InMemoryFolderRepository` owns all mutable state under one gate with plain `Dictionary` stores, while the sibling still mixes `ConcurrentDictionary` with `lock (_gate)`, leaves `Load` and `TryGetIdempotencyFingerprint` un-gated, keeps `EventsAppended` as an un-gated auto-property, and calls its own public `Load` from inside the gate. The comment now points a reader at a policy the file does not implement. It cannot be corrected here: this story's intent scopes that file out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), which covers a comment edit in it as much as a code edit. Distinct from the synchronization gap already recorded for the same file: that entry is about the publication window, this one is about the documentation now misdescribing the type.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The organization repository now documents its synchronization boundary, the atomic state it publishes, and the guarantee for individual reads. See spec-five-deferred-in-memory-appends.md.
+
+### DW-314: FolderCommandRejected.Create accepts noncanonical numeric and whitespace-padded FolderResultCode strings because its whitelist uses permissive Enum.TryParse semantics.
+origin: spec-deferred ad076c3a4bd1
+location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:97
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: The production factory calls Enum.TryParse<FolderResultCode>(code, out _) without an exact ordinal round-trip or Enum.IsDefined check, despite its strict-whitelist comment. The parity gateway now defends its own wire boundary, but changing the production event factory is outside DW-15.
+status: done 2026-10-23
+archived: 2026-11-24
+resolution: spec-five-deferred-rejection-metadata.md — FolderCommandRejected.Create now requires a defined enum value and an exact ordinal name round-trip. FolderRejectionEventTests rejects numeric, padded, case-mismatched and composite spellings and preserves every declared name; invalid-code exceptions contain no caller value.
+
+### DW-315: Rejection conversion assumes DomainServiceWireResult contains exactly one event and throws when a rejected result contains zero or multiple events.
+origin: spec-deferred 3d92cf7432ed
+location: tests/shared/Parity/InProcessRejectionPropagatingGatewayClient.cs:134
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: ToGatewayException still selects result.Events.Single(), while the wire result contract represents Events as a collection. Defining multi-event rejection semantics is broader than replacing the duplicated canonical mapping requested by DW-15.
+status: done 2026-10-23
+archived: 2026-11-24
+resolution: spec-five-deferred-rejection-metadata.md — The shared parity gateway validates rejection event count explicitly. Zero and multiple events use canonical MalformedEvidence (400 validation_error); HTTP integration tests prove bounded messages, correlation preservation and observed wire counts for 0/2/3 events, alongside existing single-event mappings.
+decision: 2026-09-02 Fail closed — Validate exactly one rejection event and convert zero or multiple events into a bounded MalformedEvidence gateway failure, with focused tests.
+
+### DW-316: The Hexalith.Folders.IntegrationTests project has no unfiltered CI lane, so most of its classes -- including this story's gateway-boundary suite and the pre-existing ArchiveFolderProcessWiringTests --
+origin: spec-deferred 0135b9f76686
+location: tests/tools/run-contract-parity-ci-gates.ps1:71-94
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: tests/tools/run-contract-parity-ci-gates.ps1 reaches this project only through two `--filter` expressions naming GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests; run-baseline-ci-gates.ps1 enumerates nine test projects and does not list this one. Reverting the canonical mapping fails 33 assertions locally while every CI lane stays green. Registering classes changes a CI contract that ContractParityCiWorkflowConformanceTests pins, which is broader than DW-15.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The blocking baseline gate runs the unfiltered integration assembly, including the archive process and canonical gateway mapping suites. See spec-five-deferred-archive-integration-checks.md.
+
+### DW-321: Corpus loading (`RepositoryRoot()` + parse of `tests/fixtures/audit-leakage-corpus.json`) is copy-pasted across at least nine test classes instead of one shared labelled reader.
+origin: spec-deferred a56b1f5a32a1
+location: tests/ (nine call sites); candidate home: src/Hexalith.Folders.Testing or tests/shared
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: The same discovery-and-parse block appears in FolderArchiveMetadataLeakageTests, FolderWorkspaceFileMutationAggregateTests, FolderWorkspaceCommitAggregateTests, WorkspaceLifecycleProjectionDeterminismTests, FolderAuditObservationTests, AuditEndpointsTests, AuditEndpointsSentinelTests, WorkspaceStatusEndpointTests and MemoriesFolderSearchSourceTests. Each copy is free to drift in labelling and in blank-value filtering, so "every sentinel is covered" cannot be checked centrally. Pre-existing; this story adds another consumer.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The core, server, integration, and contract checks load labelled samples through the shared test fixture reader. The safety gate passes its strictly parsed corpus into the same sample reader. See spec-five-deferred-audit-corpus-checks.md.
+
+### DW-323: The per-sample `forbidden_output_surfaces` scoping in the corpus is ignored; every sentinel is asserted against every surface, encoding a stricter contract than the fixture's own policy.
+origin: spec-deferred 7c040f72a129
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: low
+reason: `correlation-metadata` deliberately omits `events`/`projections` from its forbidden list (with the note that production policies decide where correlation may remain visible), and `safe-provenance-operation-id` forbids only `provider-diagnostics`. The tests also ignore `participates_in` and `classification`. The suite passes only because the archive surfaces are built from safe defaults. Pre-existing.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The accepted archive scan uses the corpus channel names and each sample's declared surfaces and positive participation. Controls verify correlation and safe-provenance scoping. See spec-five-deferred-audit-corpus-checks.md.
+
+### DW-324: `AcceptedArchiveEventShouldCarryOnlyMetadataEvidence` hand-joins 8 of the 10 `FolderArchived` members, so a newly added property escapes that assertion silently.
+origin: spec-deferred dde60fc80c0f
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: low
+reason: The [Fact] builds its subject with an explicit '|'-join that omits `IdempotencyFingerprint` and `OccurredAt`, unlike the corpus theories which serialize the whole record. Pre-existing and untouched by this story.
+status: done 2026-10-23
+archived: 2026-11-24
+resolution: spec-five-deferred-rejection-metadata.md — AcceptedArchiveEventShouldCarryOnlyMetadataEvidence now scans the complete JSON-serialized FolderArchived event, including fingerprint, timestamp and future properties. Boolean-only assertions report a fixed rule without rendering event values.
+
+### DW-325: A trailing bare LF defeats every canonical-identifier gate in the repository, because .NET's `$` matches before a final newline unless `RegexOptions.Multiline` is set.
+origin: spec-deferred 97e78371a3e9
+location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:30 and src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:952
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: high
+reason: Verified: `^[a-z0-9._-]+$` accepts "safe-identifier\n" (it rejects "safe-identifier\r\n" and "safe\nidentifier"). So `FolderCommandRejected.CanonicalIdentifierOrNull("safe-identifier\n")` returns the value with the newline intact, and `FolderCommandValidator.IsSafeEvidenceIdentifier` / `FolderStreamName.IsValidSegment` accept a trailing newline too. That is a live log-injection vector on exactly the surfaces these canonical gates exist to protect. Pre-existing and out of scope here: the Intent's Block-If forbids changing production canonicalization. Fix shape: anchor with `\A...\z` instead of `^...$`.
+status: done 2026-10-23
+archived: 2026-11-24
+resolution: spec-five-deferred-rejection-metadata.md — All 51 whole-value regex gates across 24 Folders domain, Server and Client files use absolute start/end anchors. Prefix/search patterns, charsets, bounds and explicit trimming policies are preserved. Behavioral regressions cover LF/CRLF on stream identities, evidence, archive commands, path policy, indexing keys, server identifiers, process envelopes, gateway correlations and client request/wire values.
+
+### DW-326: Sibling corpus sweeps still assert leakage with value-printing `ShouldNotContain`, the exact idiom these two files ban, and they are the sites that drive sentinels through production.
+origin: spec-deferred 3be07b46afe5
+location: tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs:84
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `MemoriesFolderSearchSourceTests.ShouldDropEveryLeakageCorpusSnippetFromResults:84` and `WorkspaceStatusEndpointTests:271` use bare `ShouldNotContain(sentinel)`, which renders both the sentinel and the actual payload into the assertion-messages channel that audit-leakage-corpus.json declares forbidden. They also use a raw substring scan, so a future corpus sample containing any character `JavaScriptEncoder.Default` escapes would serialize as `\uXXXX` and read as clean. Today's corpus is entirely plain ASCII, so the gap is latent rather than live. `AuditEndpointsSentinelTests:76` already truncates for this reason; the repo is inconsistent.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The Memories and workspace endpoint sweeps use sample IDs and boolean assertions. Each response body is scanned independently so JSON escaping is decoded. See spec-five-deferred-audit-corpus-checks.md.
+
+### DW-327: Two semantically incompatible leakage detectors now exist in the repository, and nothing pins which one is authoritative.
+origin: spec-deferred 45155f26ae3f
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` scans `OrdinalIgnoreCase` with a token-boundary rule, driven by each sample's declared `forbidden_output_surfaces` plus safety-channel-inventory.json. The detector added by this story is `Ordinal` with no token boundary but adds a JSON-decoded walk -- weaker against case mutation, stronger against `\uXXXX` escaping. Neither subsumes the other and no test records the divergence.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: A single matcher checks case-insensitive text and decoded JSON. Repository artifacts retain token-boundary matching and runtime payloads detect embedded values. Tests exercise both modes. See spec-five-deferred-audit-corpus-checks.md.
+
+### DW-331: Two of the three rejection events emitted by `/process` have zero test coverage anywhere, and the argument mapping that feeds all three is untested.
+origin: spec-deferred 13fa8eedbbe5
+location: src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1292-1330
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `grep -rn "DuplicateWorkspaceLockRejected\|WorkspaceTransitionInvalidRejected" tests/` returns nothing, as does `grep -rn "IRejectionEvent" tests/`. Both records re-invoke `FolderCommandRejected.CanonicalIdentifierOrNull` / `NormalizeCommandTypeForRejection` inline (src/Hexalith.Folders.Server/DuplicateWorkspaceLockRejected.cs:22-46 and WorkspaceTransitionInvalidRejected.cs:22-46) and are emitted from FolderDomainProcessor.CreateRejectionEvent:1301,1325. Separately, that method sources its arguments from `result?.ActorPrincipalId`, `envelope.CorrelationId`, `envelope.MessageId` and `TryReadCanonicalExtension(...)`, none of which any test drives -- so a regression that echoed an envelope-supplied raw actor instead of the aggregate-nulled one leaves every new row green. Pre-existing; this story's rows call the factory directly, as the Intent's matrix specifies.
+status: done 2026-10-23
+archived: 2026-11-24
+resolution: spec-five-deferred-rejection-metadata.md — New FolderRejectionEventTests cover canonical and unsafe evidence, fixed codes and null command types for both specialized factories. FolderDomainProcessorRejectionTests drives public processing for duplicate locks, invalid lock/release transitions, unowned/expired release, aggregate-sanitized actors and envelope fallback, requiring one correct rejection and unchanged repository state. Existing replay/classification tests predated this resolution; the historical zero-coverage wording is retained above.
+
+### DW-332: The leakage detector and its fixture readers are now duplicated verbatim across the story's two test files, so a hardening applied to one copy silently does not apply to the other.
+origin: spec-deferred bf02dc3614f3
+location: tests/Hexalith.Folders.Server.Tests/FolderCommandRejectedLeakageTests.cs and tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `ContainsSentinel`, `JsonElementContainsSentinel`, `EscapeEveryCharacter`, `RequireWellFormedJson`, `SentinelById`, both fixture loaders, `RepositoryRoot` and both records (~150 lines) exist twice, as do three detector self-tests. Introduced by this story rather than pre-existing, but not fixable within it: the spec pins `Hexalith.Folders.Tests.csproj` to baseline, so the sanctioned `tests/shared` + `<Compile Include>` route is closed, and the alternative -- a shared helper in `src/Hexalith.Folders.Testing` -- is a public API addition to a packable library. Belongs with the nine-call-site corpus-reader consolidation already on the ledger.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Archive and rejection coverage share the reader and matcher. The safety gate runs the raw and escaped negative controls once for both consumers. See spec-five-deferred-audit-corpus-checks.md.
+
+### DW-340: Four local lifecycle-area query fixtures still synthesize allowed claim evidence from nullable authority values.
+origin: spec-deferred f11951ef4e1b
+location: tests/Hexalith.Folders.Tests/Queries/Folders
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: This predates the bundle and is outside DW-54's named FolderLifecycleStatusTestSupport surface. TaskStatusQueryHandlerTests.cs, WorkspaceCleanupStatusQueryHandlerTests.cs, WorkspaceLockStatusProjectionTests.cs, and WorkspaceStatusQueryHandlerTests.cs each pass nullable tenant/principal values to EventStoreClaimTransformEvidence.Allowed.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: Task status, workspace status, lock status and cleanup status fixtures validate default tenant and principal authority through the shared query helper and retain explicit claim overrides. See spec-five-deferred-authorization-evidence.md.
+
+### DW-341: Project-level dotnet test is incompatible with the pinned Microsoft.Testing.Platform invocation on .NET 10.
+origin: spec-deferred a2da41ed4f8d
+location: tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj and tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: Both focused project commands fail before test execution because Microsoft.Testing.Platform 2.3.3 rejects the VSTest target under the .NET 10 SDK; direct xUnit v3 assembly execution remains green for the in-scope lanes.
+status: done 2026-11-23
+archived: 2026-11-24
+resolution: The .NET 11 test runner and test guides use Microsoft.Testing.Platform project invocations, including per-project coverage and native xUnit class selection. The core and server projects reached test execution through `dotnet test --project`. See spec-five-deferred-test-harness.md.
+
