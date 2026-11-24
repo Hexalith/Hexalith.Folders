@@ -211,6 +211,34 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
         reloaded.Freshness.Watermark.ShouldBe(2);
     }
 
+    [Theory]
+    [InlineData("tenant-b", "folder-a")]
+    [InlineData("tenant-a", "folder-b")]
+    public async Task FolderScopedArchiveShouldIgnoreIndexedRowsOutsideItsFolder(string managedTenantId, string folderId)
+    {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        WorkspaceFileMutationAccepted mutation = Mutation();
+        string key = SemanticIndexingFileVersionIdentity.From(mutation).ReadModelKey;
+        await bridgeStore.ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 1, mutation)], cancellationToken)
+            .ConfigureAwait(true);
+        await readModelStore.SaveAsync(StoreName, key, SwappedIdentityEntry(managedTenantId, folderId), cancellationToken)
+            .ConfigureAwait(true);
+        ReadModelEntry<SemanticIndexingBridgeEntry> before = await readModelStore
+            .GetAsync<SemanticIndexingBridgeEntry>(StoreName, key, cancellationToken).ConfigureAwait(true);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> updated = await bridgeStore
+            .ApplyFolderEventsAsync([new FolderProjectionEnvelope("tenant-a", 2, Archived())], cancellationToken)
+            .ConfigureAwait(true);
+
+        updated.ShouldBeEmpty();
+        ReadModelEntry<SemanticIndexingBridgeEntry> after = await readModelStore
+            .GetAsync<SemanticIndexingBridgeEntry>(StoreName, key, cancellationToken).ConfigureAwait(true);
+        after.Value.ShouldBe(before.Value);
+        after.ETag.ShouldBe(before.ETag);
+    }
+
     [Fact]
     public async Task ApplyFolderEventsAsyncShouldTombstoneKnownFileVersionWhenRemoveHasNoContentHash()
     {
@@ -343,18 +371,18 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
             "sha256:a",
             "folders://tenant-a/organizations/organization-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-lookup");
 
-    private static SemanticIndexingBridgeEntry SwappedIdentityEntry()
+    private static SemanticIndexingBridgeEntry SwappedIdentityEntry(string managedTenantId = "tenant-b", string folderId = "folder-b")
         => new(
             new SemanticIndexingFileVersionIdentity(
-                "tenant-b",
+                managedTenantId,
                 "organization-b",
-                "folder-b",
+                folderId,
                 "workspace-b",
                 "operation-b",
                 "path-digest-b",
                 "fv-foreign",
                 "sha256:b",
-                "folders://tenant-b/organizations/organization-b/folders/folder-b/workspaces/workspace-b/file-versions/fv-foreign"),
+                $"folders://{managedTenantId}/organizations/organization-b/folders/{folderId}/workspaces/workspace-b/file-versions/fv-foreign"),
             SemanticIndexingBridgeStatus.Indexed,
             "poisoned_identity",
             retryable: false,

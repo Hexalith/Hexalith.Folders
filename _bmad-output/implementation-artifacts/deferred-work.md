@@ -2530,9 +2530,14 @@ resolution: Only idempotency conflicts and expiry use idempotency titles. Other 
   summary: Story 12.6 message-ID tests do not prove a new execution identity is generated for every submission independently of the idempotency key.
   evidence: Existing assertions validate identifier shape but not per-submission uniqueness, so reusing an execution ID could remain green; this belongs to the separate durable-admission implementation.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
-  summary: Folder-scoped archive/commit apply updates every loaded folder-index key without the ListFolderAsync tenant/folder identity filter.
-  evidence: Pre-existing write path in EventStoreSemanticIndexingBridgeStore.ApplyFolderScopedEventAsync; this story only registered the store as a Server read model and does not expose the writer on Server.
+### DW-352: Folder-scoped archive/commit apply updates every loaded folder-index key without the ListFolderAsync tenant/folder identity filter.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+reason: Pre-existing write path in EventStoreSemanticIndexingBridgeStore.ApplyFolderScopedEventAsync; this story only registered the store as a Server read model and does not expose the writer on Server.
+status: done 2026-11-24
+resolution: Folder-scoped archive and commit apply use the existing read scope check. Tests prove foreign-tenant and foreign-folder rows keep their value and ETag and are omitted from the result.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
   summary: Tombstoned and removed file-version keys remain in the folder index, so ListFolderAsync keeps doing N+1 loads over a monotonically growing key set.

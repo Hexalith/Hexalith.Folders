@@ -121,9 +121,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             ReadModelEntry<SemanticIndexingBridgeEntry> current = await _store
                 .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, key, cancellationToken)
                 .ConfigureAwait(false);
-            if (current.Value is { } entry
-                && string.Equals(entry.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
-                && string.Equals(entry.Identity.FolderId, folderId, StringComparison.Ordinal))
+            if (current.Value is { } entry && IsSameFolder(entry.Identity, managedTenantId, folderId))
             {
                 entries.Add(entry);
             }
@@ -324,7 +322,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             ReadModelEntry<SemanticIndexingBridgeEntry> current = await _store
                 .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, key, cancellationToken)
                 .ConfigureAwait(false);
-            if (current.Value is null)
+            if (current.Value is null || !IsSameFolder(current.Value.Identity, managedTenantId, folderId))
             {
                 continue;
             }
@@ -380,6 +378,10 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
 
     private static bool IsRemove(WorkspaceFileMutationAccepted accepted)
         => string.Equals(accepted.FileOperationKind, "remove", StringComparison.Ordinal);
+
+    private static bool IsSameFolder(SemanticIndexingFileVersionIdentity identity, string managedTenantId, string folderId)
+        => string.Equals(identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+            && string.Equals(identity.FolderId, folderId, StringComparison.Ordinal);
 
     private static bool IsSamePath(
         SemanticIndexingFileVersionIdentity current,
