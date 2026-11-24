@@ -3311,3 +3311,11 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: The console's `App.razor` links `_content/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.styles.css`, which does not exist, so FrontComposer Shell scoped styles may never load.
   evidence: With static web assets served, the E2E host answers that link with 404. The library publishes its scoped bundle as `_content/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.bundle.scp.css`, and `App.razor` links neither that file nor the app bundle `Hexalith.Folders.UI.styles.css` that would import it. Unverified in a deployed console: check the browser network log of the running app, then link the app bundle.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
+  summary: Decide whether the Audit, Domain, provider-readiness and OpsConsole endpoints should flag every client-supplied identity value, as the mutation paths do.
+  evidence: `FolderClientIdentityValues` keeps the old endpoint behavior: one value per source, the first safe one, and header-only principals. A second `X-Tenant-Id` line carrying a foreign tenant, a foreign value with a control character, or `?principalId=` is therefore never compared with the authenticated identity. `HistoricalMutationAuthorization.ClientControlledValues` records every value under an indexed key, so those requests are flagged there. Neither path takes authority from these values, so the difference only affects mismatch detection. Unverified medium; settle it by deciding the detection rule and checking the endpoint tests against both.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
+  summary: `Pd10V2CandidateCompatibilitySeam` keeps a private `ClientControlledValues` that appears to duplicate `HistoricalMutationAuthorization.ClientControlledValues`.
+  evidence: Both build `{source}[{index}]` keys over every header or query value for the same source tuples. `WorkspaceOperationEvidence` already calls the `HistoricalMutationAuthorization` copy. The seam could do the same once a diff confirms the bodies match.
