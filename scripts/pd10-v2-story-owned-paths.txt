@@ -1024,6 +1024,7 @@ src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs
 src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs
 src/Hexalith.Folders/Queries/Folders/IBranchRefPolicyReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs
+src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusSeed.cs
 src/Hexalith.Folders/Queries/Folders/ITaskStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IWorkspaceCleanupStatusReadModel.cs
 src/Hexalith.Folders/Queries/Folders/IWorkspaceLockStatusReadModel.cs
@@ -1219,6 +1220,7 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2ContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs
+tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.AuditLeakageMatcher.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.InputTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.RunnerTests.cs
@@ -1621,6 +1623,9 @@ tests/fixtures/parity-contract.yaml
 tests/fixtures/pattern-example-manifest.yaml
 tests/fixtures/previous-spine.yaml
 tests/load/Hexalith.Folders.LoadTests.csproj
+tests/shared/AuditLeakage/AuditLeakageCorpus.cs
+tests/shared/AuditLeakage/AuditLeakageMatcher.cs
+tests/shared/AuditLeakage/AuditLeakageSample.cs
 tests/shared/EventStore/RecordingDaprClient.cs
 tests/shared/NativeContent/NativeContentAuthority.cs
 tests/shared/NativeContent/NativeContentClock.cs
