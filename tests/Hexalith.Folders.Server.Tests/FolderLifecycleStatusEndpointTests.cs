@@ -48,12 +48,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldReturnContractShapedActiveUnboundResponse()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -80,12 +81,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldUseSafeDenialEnvelopeForTenantMismatch()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -107,12 +109,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldEmit401ForUnauthenticatedCaller()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor(authoritativeTenantId: null, principalId: null),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -133,12 +136,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldEmit404ForBlankFolderId()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -158,12 +162,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldEmit400ForUnsupportedFreshnessClass()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -182,12 +187,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldIgnorePrincipalQueryStringValue()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             LifecycleReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -212,12 +218,13 @@ public sealed class FolderLifecycleStatusEndpointTests
     [Fact]
     public async Task LifecycleStatusRouteShouldEmit503ForUnavailableReadModel()
     {
-        await using WebApplication app = BuildApp(
+        WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
             PermissionReadModel(),
             new ThrowingLifecycleStatusReadModel(),
             new StaticTenantContextAccessor("tenant-a", "user-a"),
-            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a")).ConfigureAwait(true);
+        await using var appLifetime = app.ConfigureAwait(true);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
@@ -234,7 +241,7 @@ public sealed class FolderLifecycleStatusEndpointTests
         json.ShouldContain("\"correlationId\":\"corr-unavailable\"");
     }
 
-    private static WebApplication BuildApp(
+    private static async Task<WebApplication> BuildAppAsync(
         IFolderTenantAccessProjectionStore tenantStore,
         IEffectivePermissionsReadModel permissionsReadModel,
         IFolderLifecycleStatusReadModel lifecycleReadModel,
@@ -256,8 +263,16 @@ public sealed class FolderLifecycleStatusEndpointTests
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
-        app.MapFoldersServerEndpoints();
-        return app;
+        try
+        {
+            app.MapFoldersServerEndpoints();
+            return app;
+        }
+        catch
+        {
+            await app.DisposeAsync().ConfigureAwait(true);
+            throw;
+        }
     }
 
     private static InMemoryFolderTenantAccessProjectionStore TenantStore(string tenantId, string principalId)

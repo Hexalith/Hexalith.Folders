@@ -2393,7 +2393,8 @@ location: tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests
 source_spec: `spec-lifecycle-test-hygiene.md`
 severity: low
 reason: All seven callers bind the returned application with `await using`, but `BuildApp` itself calls `builder.Build()` and then `app.MapFoldersServerEndpoints()` before returning, so a mapping failure escapes with the built host undisposed. This is the same leak class the bundle fixed at line 34 and predates the bundle.
-status: open
+status: done 2026-11-24
+resolution: BuildAppAsync disposes its WebApplication before rethrowing an endpoint mapping failure. All lifecycle endpoint tests pass with the returned host disposed by the caller.
 
 ### DW-346: Align project-context default submodule init list with the eight-root inventory (add PolymorphicSerializations).
 
