@@ -462,7 +462,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-4-grant-and-revoke-folder-access (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessCommandValidationTests.cs:~1508
 reason: Rename test `AlreadyGrantedAccessShouldReturnAlreadyAppliedWithoutDuplicateEvent` to reflect its `HasFolderAccess` short-circuit (not idempotency-fingerprint) coverage [`tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessCommandValidationTests.cs:~1508`] — deferred, cosmetic; test asserts the right outcome via the right code path, only the name is misleading.
-status: open
+status: done 2026-11-24
+resolution: Renamed the test to identify the existing grant under a different idempotency key. It asserts the keys differ, the result is AlreadyApplied, and no event is emitted.
 
 ### DW-64: `InvalidFolderMetadata` collapses length / control-char / forbidden-term failures into a single code
 

@@ -110,7 +110,7 @@ public sealed class FolderAccessCommandValidationTests
     }
 
     [Fact]
-    public void AlreadyGrantedAccessShouldReturnAlreadyAppliedWithoutDuplicateEvent()
+    public void ExistingGrantWithDifferentIdempotencyKeyShouldReturnAlreadyAppliedWithoutEvent()
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderState state = CreatedState();
@@ -121,6 +121,7 @@ public sealed class FolderAccessCommandValidationTests
             grantedState,
             FolderCommandFactory.GrantAccess(idempotencyKey: "idempotency-access-other"));
 
+        duplicate.IdempotencyKey.ShouldNotBe(grant.IdempotencyKey);
         duplicate.Code.ShouldBe(FolderResultCode.AlreadyApplied);
         duplicate.Events.ShouldBeEmpty();
     }
