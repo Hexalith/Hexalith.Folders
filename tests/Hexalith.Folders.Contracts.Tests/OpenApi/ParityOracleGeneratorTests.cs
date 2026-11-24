@@ -998,7 +998,11 @@ operations:
         YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         RequiredMapping(root, "paths").Add(
             new YamlScalarNode($"/{sentinel}"),
-            new YamlMappingNode { { "head", new YamlMappingNode() } });
+            new YamlMappingNode
+            {
+                { "head", new YamlMappingNode() },
+                { "parameters", new YamlSequenceNode(new YamlMappingNode { { "$ref", "#/components/parameters/Unused" } }) },
+            });
         using (StreamWriter writer = new(contract, false, new UTF8Encoding(false)))
         {
             new YamlStream(new YamlDocument(root)).Save(writer, false);

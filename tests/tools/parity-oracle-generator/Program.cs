@@ -331,7 +331,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
 
         string path = rawPath;
         YamlMappingNode pathItem = pathEntry.Value.AsMapping($"path item '{path}'");
-        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem, root, $"paths.{path}.parameters").ToArray();
+        IReadOnlyList<ParameterModel>? pathParameters = null;
 
         foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
         {
@@ -375,6 +375,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
             ValidateOperationIdShape(operationId);
 
+            pathParameters ??= EnumerateParameters(pathItem, root, $"paths.{path}.parameters").ToArray();
             IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation, root, $"operation {operationId} parameters")];
             string[] tags = ReadStringSequence(operation, "tags").ToArray();
             string[] idempotencyFields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence").ToArray();
