@@ -2256,7 +2256,8 @@ location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLe
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: `AcceptedArchiveSurfaces()` builds all eight channel strings from `FolderCommandFactory.Archive()` safe defaults, and every corpus sentinel is rejected by `IsSafeEvidenceIdentifier`, so no corpus value can reach an accepted archive surface. Demonstrated: replacing all eight surface values with `string.Empty` still passes 18/18. Pre-existing (the original [Fact] had the same property) and intent-mandated -- the Intent's matrix row 3 and its "preserve existing accepted-surface checks" clause specify exactly this shape, so it was not in scope to change. Real coverage on this path would need a hostile-but-accepted caller value threaded into the archive command.
-status: open
+status: done 2026-11-24
+resolution: Drives each corpus value through accepted archive evidence, proves the value affects the persisted fingerprint, and exercises negative controls for each declared output channel.
 
 ### DW-329: The entire `tests/Hexalith.Folders.Server.Tests` project runs in no CI gate lane, so this story's rejection-event regression trap gates nothing in CI.
 origin: spec-deferred da328fd3ef5d

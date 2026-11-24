@@ -16,10 +16,8 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 // (tests/fixtures/audit-leakage-corpus.json) is driven through the archive actor-evidence
 // seam, one xUnit theory row per corpus sample. That theory is the injection test.
 //
-// The accepted-surface theory does NOT inject sentinels: its surfaces are built from
-// FolderCommandFactory.Archive() safe defaults, so it asserts that those constant accepted
-// payloads carry no corpus value. It is a drift guard on the safe defaults, not proof that
-// an injected sentinel would be filtered out of those channels.
+// The accepted-surface theory supplies each sample as client tenant evidence at the aggregate
+// boundary. The event fingerprint binds that input without copying its value into the output.
 //
 // Rows are labelled by the corpus's stable `id` so no sentinel text ever reaches an xUnit
 // display name and so inserting a corpus sample cannot silently reassign every downstream
@@ -150,8 +148,28 @@ public sealed class FolderArchiveMetadataLeakageTests
     public void ArchiveSafetySurfacesShouldNotEchoForbiddenSentinelCorpusValues(string sampleId)
     {
         AuditLeakageSample sample = AuditLeakageCorpus.Get(sampleId);
-        foreach ((string channel, string payload) in AcceptedArchiveSurfaces())
+        const string evidenceField = "client-tenant-evidence";
+        FolderArchived baseline = AcceptArchive(FolderCommandFactory.Archive(clientTenantIds: new Dictionary<string, string?>
         {
+            [evidenceField] = null,
+        }));
+        FolderArchived accepted = AcceptArchive(FolderCommandFactory.Archive(clientTenantIds: new Dictionary<string, string?>
+        {
+            [evidenceField] = sample.Value,
+        }));
+        accepted.IdempotencyFingerprint.ShouldNotBe(baseline.IdempotencyFingerprint,
+            $"Archive fingerprint failed to bind sample '{sample.Id}'.");
+
+        string control = JsonSerializer.Serialize(new { Evidence = sample.Value });
+        IReadOnlyDictionary<string, string> surfaces = AcceptedArchiveSurfaces(accepted);
+        AuditLeakageMatcher.Contains(surfaces["events"], accepted.IdempotencyFingerprint)
+            .ShouldBeTrue("The event channel must contain the event produced with the supplied evidence.");
+        foreach ((string channel, string payload) in surfaces)
+        {
+            string.IsNullOrWhiteSpace(payload).ShouldBeFalse($"Archive channel '{channel}' has no payload.");
+            bool forbidden = sample.ForbiddenOutputSurfaces.Contains(channel, StringComparer.Ordinal);
+            AuditLeakageMatcher.LeaksOn(sample, channel, control).ShouldBe(forbidden,
+                $"Archive channel '{channel}' did not apply the corpus policy for '{sample.Id}'.");
             AuditLeakageMatcher.LeaksOn(sample, channel, payload).ShouldBeFalse(
                 $"Archive channel '{channel}' leaked sample '{sample.Id}'.");
         }
@@ -166,7 +184,7 @@ public sealed class FolderArchiveMetadataLeakageTests
         // parsing, so deleting the declared list changes no scan. What must be pinned is that
         // each declared JSON surface still PARSES, because an unparsable payload silently
         // downgrades that channel to a raw-text-only scan and hides \uXXXX-escaped leakage.
-        IReadOnlyDictionary<string, string> surfaces = AcceptedArchiveSurfaces();
+        IReadOnlyDictionary<string, string> surfaces = AcceptedArchiveSurfaces(AcceptArchive(FolderCommandFactory.Archive()));
         string[] expectedChannels =
         [
             "audit-records",
@@ -232,12 +250,15 @@ public sealed class FolderArchiveMetadataLeakageTests
         }
     }
 
-    private static IReadOnlyDictionary<string, string> AcceptedArchiveSurfaces()
+    private static FolderArchived AcceptArchive(ArchiveFolder command)
     {
-        FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
-        FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
+        FolderResult result = FolderAggregate.Handle(CreatedState(), command);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        return result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+    }
 
-        return new Dictionary<string, string>(StringComparer.Ordinal)
+    private static IReadOnlyDictionary<string, string> AcceptedArchiveSurfaces(FolderArchived archived)
+        => new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["events"] = JsonSerializer.Serialize(archived),
             ["audit-records"] = string.Join('|', "ArchiveFolder", "accepted", archived.FolderId, archived.CorrelationId, archived.TaskId),
@@ -256,12 +277,11 @@ public sealed class FolderArchiveMetadataLeakageTests
                 correlationId = archived.CorrelationId,
                 taskId = archived.TaskId,
             }),
-            ["logs"] = "ArchiveFolder completed: Result=accepted, CorrelationId=correlation-a",
+            ["logs"] = $"ArchiveFolder completed: Result=accepted, CorrelationId={archived.CorrelationId}",
             ["traces"] = "operation=ArchiveFolder result=accepted tenant_scope=present",
             ["metric-labels"] = "operation=ArchiveFolder,result=accepted",
             ["exception-metadata"] = "idempotency_conflict",
         };
-    }
 
     private static bool IsParseableJson(string payload)
     {
