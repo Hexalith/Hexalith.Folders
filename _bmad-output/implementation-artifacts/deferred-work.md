@@ -1261,7 +1261,8 @@ resolution: Decision checks accept HTTPS Microsoft Learn citations resolved from
 origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
 location: RawJwt
 reason: Opaque / provider-token detection (PASETO, Macaroon, GitHub PATs as non-JWTs) — `RawJwt` only catches `eyJ`-prefixed JWTs. Tracked as part of the broader hygiene-scan vocabulary owned by story 1-6 follow-ups; not a story 1.4 concern.
-status: open
+status: done 2026-11-24
+resolution: Expanded decision-artifact scanning to include fine-grained GitHub tokens, PASETO, and common serialized Macaroon credential forms. Added synthetic detection and placeholder controls.
 
 ### DW-176: `File.ReadAllText` in the doc-verification test makes no encoding assertion
 

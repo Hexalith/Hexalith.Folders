@@ -84,6 +84,10 @@ public sealed class ExitCriteriaDecisionArtifactTests
         new(@"\bsk_(?:live|test)_[A-Za-z0-9]{20,}", RegexOptions.CultureInvariant),
         new(@"\bghp_[A-Za-z0-9]{20,}", RegexOptions.CultureInvariant),
         new(@"\bgho_[A-Za-z0-9]{20,}", RegexOptions.CultureInvariant),
+        new(@"\bgithub_pat_[A-Za-z0-9_]{30,}", RegexOptions.CultureInvariant),
+        new(@"\bv[1-4]\.(?:local|public)\.[A-Za-z0-9_-]{32,}", RegexOptions.CultureInvariant),
+        new(@"\b(?:Macaroon\s+|macaroon[""']?\s*[:=]\s*[""']?|L402\s+)[A-Za-z0-9+/_-]{32,}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase),
+        new(@"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", RegexOptions.CultureInvariant),
         new(@"\bxox[abprs]-[A-Za-z0-9-]{20,}", RegexOptions.CultureInvariant)
     ];
 
@@ -190,15 +194,9 @@ public sealed class ExitCriteriaDecisionArtifactTests
                     $"{relativePath} must not contain credential material '{token}'.");
             }
 
-            foreach (Regex secret in SecretRegexDenylist)
-            {
-                secret.IsMatch(content).ShouldBeFalse(
-                    $"{relativePath} must not contain credential material matching /{secret}/.");
-            }
-
+            ContainsCredentialToken(content).ShouldBeFalse($"{relativePath} must not contain serialized credentials.");
             ContainsDisallowedUrl(content).ShouldBeFalse(
                 $"{relativePath} should use synthetic .invalid URLs for examples. Microsoft Learn citations should use HTTPS Markdown links.");
-            RawJwt().IsMatch(content).ShouldBeFalse($"{relativePath} must not contain raw JWT examples.");
         }
 
         string spinePath = Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
@@ -215,6 +213,18 @@ public sealed class ExitCriteriaDecisionArtifactTests
             Case.Sensitive,
             "The C6 mapping document must keep pointing implementers to the aggregate transition matrix source.");
     }
+
+    [Theory]
+    [InlineData("github_pat_012345678901234567890123456789_000", true)]
+    [InlineData("v4.local.01234567890123456789012345678900", true)]
+    [InlineData("v2.public.01234567890123456789012345678900.fake", true)]
+    [InlineData("Authorization: Macaroon 01234567890123456789012345678900", true)]
+    [InlineData("\"macaroon\":\"01234567890123456789012345678900\"", true)]
+    [InlineData("Authorization: L402 01234567890123456789012345678900:example", true)]
+    [InlineData("Use github_pat_<redacted> or v4.public.<redacted>.", false)]
+    [InlineData("The Macaroon authorization scheme uses caveats.", false)]
+    public void CredentialScannerRecognizesSerializedTokensAndAllowsPlaceholders(string text, bool containsCredential)
+        => ContainsCredentialToken(text).ShouldBe(containsCredential);
 
     [Fact]
     public void C3AndC4RowsDeclareProvenanceApprovalConsumerAndReviewDate()
@@ -775,13 +785,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
         && uri.UserInfo.Length == 0
         && uri.Host.EndsWith(".invalid", StringComparison.OrdinalIgnoreCase);
 
-    // Matches three base64url segments after the literal "eyJ" header prefix. To document a
-    // forbidden JWT shape inside an artifact without tripping this assertion, write the example
-    // as `eyJ<redacted>.<redacted>.<redacted>` — the `<` character is outside the alphabet so
-    // the regex will not match.
-    private static Regex RawJwt() => new(
-        @"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
-        RegexOptions.CultureInvariant);
+    private static bool ContainsCredentialToken(string content) =>
+        SecretRegexDenylist.Any(pattern => pattern.IsMatch(content));
 
     private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);
 }
