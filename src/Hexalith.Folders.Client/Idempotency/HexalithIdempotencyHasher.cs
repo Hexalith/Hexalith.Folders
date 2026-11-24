@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -58,6 +59,14 @@ public static class HexalithIdempotencyHasher
             double number => CanonicalizeFloatingPoint(number),
             float number => CanonicalizeFloatingPoint(number),
             byte or sbyte or short or ushort or int or uint or long or ulong => "n:" + Convert.ToString(value, CultureInfo.InvariantCulture),
+            // Preserve the existing JSON canonical forms for these scalar types.
+            Half number => "j:\"" + number.ToString("G", CultureInfo.InvariantCulture) + "\"",
+            BigInteger number => "j:" + number.ToString(CultureInfo.InvariantCulture),
+            Int128 number => "j:\"" + number.ToString(CultureInfo.InvariantCulture) + "\"",
+            UInt128 number => "j:\"" + number.ToString(CultureInfo.InvariantCulture) + "\"",
+            nint number => "j:{\"value\":" + number.ToInt64().ToString(CultureInfo.InvariantCulture) + "}",
+            nuint number => "j:{\"value\":" + number.ToUInt64().ToString(CultureInfo.InvariantCulture) + "}",
+            Version version => "j:\"" + version + "\"",
             _ => "j:" + NormalizeJson(value),
         };
     }

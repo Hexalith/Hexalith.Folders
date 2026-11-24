@@ -658,7 +658,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:37-56
 reason: `Half`, `BigInteger`, `Int128`, `UInt128`, `Version`, `nint`, `nuint` fall through to `NormalizeJson` (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:37-56`). No current spine field has these types; Newtonsoft serialization is version-dependent.
-status: open
+status: done 2026-11-24
+resolution: Explicit invariant scalar formatting preserves canonical bytes for Half, BigInteger, Int128, UInt128, native integers, and Version.
 
 ### DW-93: Cross-type numeric zero encoding asymmetry (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260`)
 

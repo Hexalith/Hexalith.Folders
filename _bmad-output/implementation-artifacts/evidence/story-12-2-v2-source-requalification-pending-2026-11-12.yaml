@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 44b488a70cdb69c8a55f5ac18a069340a51340299bc9ab20eff09755fbd1f1a6
-artifact_count: 1677
+candidate_set_sha256: ea77fe6466bb4a7be126e22d04ca180d05faa798dc4ac918155fb4415d13305b
+artifact_count: 1678
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120098
-    sha256: 91509e25a472de625abe71d9abe812e34e05e049ba230c208e5177d4848f52d3
+    bytes: 120166
+    sha256: e3de90b787563e6340b23c3ccff2312ce597772ae779605e2aeda1e43a4d64f4
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -350,8 +350,8 @@ artifacts:
     sha256: 942d1f3e0b0a4e34b59ed4e1273e5c17655939b6002857cb76a90718385fde73
   - path: "src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs"
     kind: file
-    bytes: 12860
-    sha256: e977236abd111f797c3fd2e05283374fdb6cc58a10046442bf9612bd5fda5210
+    bytes: 13606
+    sha256: ddd3c10ab4f13009bed78787a6ef84873dbbe2c2f2da562095366a323652fd03
   - path: "src/Hexalith.Folders.Client/Idempotency/IdempotencyField.cs"
     kind: file
     bytes: 1031
@@ -4724,6 +4724,10 @@ artifacts:
     kind: file
     bytes: 38433
     sha256: 8960ec7451d104a966c5e78b4b6bb755838b585c56c7cd0aaf371d27adbac7db
+  - path: "tests/Hexalith.Folders.Client.Tests/IdempotencyHasherScalarTests.cs"
+    kind: file
+    bytes: 1075
+    sha256: 0235220c915edea6de0a1747fce798ff86db20851e17c7dda1345e5b2d5d38c7
   - path: "tests/Hexalith.Folders.Contracts.Tests/ContractsSmokeTests.cs"
     kind: file
     bytes: 290

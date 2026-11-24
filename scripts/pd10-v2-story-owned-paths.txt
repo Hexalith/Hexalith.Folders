@@ -1174,6 +1174,7 @@ tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
 tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.InputValidation.cs
 tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
 tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs
+tests/Hexalith.Folders.Client.Tests/IdempotencyHasherScalarTests.cs
 tests/Hexalith.Folders.Contracts.Tests/ContractsSmokeTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/AccessibilityCiWorkflowConformanceTests.cs
 tests/Hexalith.Folders.Contracts.Tests/Deployment/AdrRunbookDocsConformanceTests.cs
