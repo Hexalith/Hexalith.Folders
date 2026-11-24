@@ -1961,7 +1961,8 @@ resolution: The tenant gate and layered mutation service reject empty or whitesp
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: FolderAccessTenantGate
 reason: W4: `FolderAccessTenantGate` evaluates ACL evidence before schema validation (inverse of archive gate order) — creates a differential side-channel on malformed access commands. Pre-existing; separate story scope.
-status: open
+status: done 2026-11-24
+resolution: Kept tenant authorization first and made malformed access requests independent of ACL evidence, with no repository access.
 
 ### DW-275: W5: `FolderArchiveTenantGate.Map(TenantAccessOutcome.Allowed)` returns `MalformedEvidence` without an OTel trace tag; `FolderAccessTenantGate` stamps `Activity.Current?.SetTag(...)` for the same…
 

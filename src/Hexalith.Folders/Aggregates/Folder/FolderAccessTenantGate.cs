@@ -63,16 +63,16 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
 
         IFolderAccessCommand authoritativeCommand = command.WithAuthoritativeTenant(tenantAccess.TenantId);
 
-        FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
-        if (aclRejection is not null)
-        {
-            return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
-        }
-
         FolderCommandValidationResult validation = FolderCommandValidator.Validate(authoritativeCommand);
         if (!validation.IsAccepted)
         {
             return FolderResult.Rejected(authoritativeCommand, validation.Code);
+        }
+
+        FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
+        if (aclRejection is not null)
+        {
+            return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
         }
 
         FolderStreamName streamName = _repository.CreateStreamName(
