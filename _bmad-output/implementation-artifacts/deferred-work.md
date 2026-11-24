@@ -2207,7 +2207,8 @@ location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLe
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: medium
 reason: FolderArchiveMetadataLeakageTests keys its surfaces `event`, `audit-record`, `projection`, `problem-details`, `log-template`, `trace-tags`, `generated-client-exception`, while tests/fixtures/audit-leakage-corpus.json (`forbidden_output_surfaces`) and tests/fixtures/safety-channel-inventory.json (`channels`) declare `events`, `audit-records`, `projections`, `problem-details-examples`, `logs`, `traces`, `generated-sdk` and ~18 more. Only 8 of 25 declared channels are swept on the archive path and nothing pins the shortfall. Pre-existing shape of the original [Fact]; not introduced by this story.
-status: open
+status: done 2026-11-24
+resolution: Checks that each archive channel is scannable in the shared safety inventory and recognized by the corpus. Pins the covered channels and the corpus channels outside this sweep.
 
 ### DW-323: The per-sample `forbidden_output_surfaces` scoping in the corpus is ignored; every sentinel is asserted against every surface, encoding a stricter contract than the fixture's own policy.
 

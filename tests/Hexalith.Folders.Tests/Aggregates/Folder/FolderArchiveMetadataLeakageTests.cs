@@ -180,6 +180,36 @@ public sealed class FolderArchiveMetadataLeakageTests
         ];
         surfaces.Keys.Order(StringComparer.Ordinal).ShouldBe(expectedChannels);
 
+        using JsonDocument inventory = JsonDocument.Parse(File.ReadAllText(
+            AuditLeakageCorpus.FixturePath("safety-channel-inventory.json")));
+        HashSet<string?> scannableChannels = inventory.RootElement.GetProperty("channels").EnumerateArray()
+            .Where(channel => channel.GetProperty("scan_forbidden_values").GetBoolean())
+            .Select(channel => channel.GetProperty("channel").GetString())
+            .ToHashSet(StringComparer.Ordinal);
+        expectedChannels.ShouldAllBe(channel => scannableChannels.Contains(channel));
+        expectedChannels.ShouldAllBe(channel => AuditLeakageCorpus.OutputSurfaces.Contains(channel));
+
+        // These corpus channels are exercised by separate artifact or runtime gates.
+        string[] outsideArchiveSweep =
+        [
+            "assertion-messages",
+            "baggage",
+            "ci-logs",
+            "console-payloads",
+            "counters",
+            "developer-diagnostics",
+            "event-names",
+            "generated-sdk",
+            "metric-names",
+            "openapi-examples",
+            "parity-artifacts",
+            "provider-diagnostics",
+            "span-names",
+            "telemetry-attributes",
+        ];
+        AuditLeakageCorpus.OutputSurfaces.Except(surfaces.Keys, StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal).ShouldBe(outsideArchiveSweep);
+
         foreach (string jsonSurface in JsonArchiveSurfaceNames)
         {
             surfaces.TryGetValue(jsonSurface, out string? payload).ShouldBeTrue(
