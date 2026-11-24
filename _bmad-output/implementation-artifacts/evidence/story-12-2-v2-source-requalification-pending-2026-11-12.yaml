@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 3810942308c95ace7875cb8111a6fcdc710c5b0753bc6d2c9235928b2420d087
-artifact_count: 1679
+candidate_set_sha256: 0771de75714ac43bd0537e04df56b5efec1a5d232c2a80fc355eaa9404ca9d67
+artifact_count: 1680
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120240
-    sha256: 12ac42a6f6e76c8ae6b534238f266e4b294c83ee56014d8686ffb7a14243c257
+    bytes: 120313
+    sha256: e3a4f56b74886fb3c7fb9045d9e3204662a5cafa9ee096ecf9e0dc2dcea84d8e
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -2412,6 +2412,10 @@ artifacts:
     kind: file
     bytes: 454
     sha256: 60dc3acc6d6d1e4a397fadeb85da2825131e41843f0cffe3b2cff57f961e5b01
+  - path: "src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptionsValidator.cs"
+    kind: file
+    bytes: 943
+    sha256: 8b874f29ab2fa4218707e2ee497485ddb885300c8fa7489d46fc210aeb71a13c
   - path: "src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs"
     kind: file
     bytes: 231
@@ -2686,8 +2690,8 @@ artifacts:
     sha256: be7afaa3792be02bff2350bd3743333e1ccf32b0a62fe27a618f1fbd145351e1
   - path: "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs"
     kind: file
-    bytes: 22879
-    sha256: 8b4bdce2815e98096ab910436c1f488fbacd87b54b96b3092f577b5a7443a0a5
+    bytes: 23857
+    sha256: 1b37bb4572eb6ec959f8bd03ca0bfce356709478149e264bbcf6e9165d10d7a6
   - path: "src/Hexalith.Folders/Hashing/LengthPrefixedHash.cs"
     kind: file
     bytes: 1180
@@ -5998,8 +6002,8 @@ artifacts:
     sha256: 07ed613cb0e90111f5b40dda231021cb4f6fddcf42da35c76658593bd20a2fe8
   - path: "tests/Hexalith.Folders.Tests/Authorization/ConfigurationDaprPolicyEvidenceProviderTests.cs"
     kind: file
-    bytes: 3823
-    sha256: bf3ac53fdcfde2943582e97458982e741e528f06dff8293a8ee52739581665ff
+    bytes: 7398
+    sha256: 9271469d4d7b373f7911c28579c4b8748f68a4e3d433deb214a9518c964be9c9
   - path: "tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsActionCatalogTests.cs"
     kind: file
     bytes: 1910

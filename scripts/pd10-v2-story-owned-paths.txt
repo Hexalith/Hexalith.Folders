@@ -596,6 +596,7 @@ src/Hexalith.Folders/Authorization/ClientTenantValues.cs
 src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs
 src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs
+src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptionsValidator.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs
 src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs

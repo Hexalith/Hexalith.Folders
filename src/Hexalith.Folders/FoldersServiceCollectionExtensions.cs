@@ -401,7 +401,21 @@ public static class FoldersServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddFoldersTenantAccess();
-        services.AddOptions<DaprPolicyEvidenceOptions>().BindConfiguration(DaprPolicyEvidenceOptions.SectionName);
+        services.AddOptions<DaprPolicyEvidenceOptions>()
+            .Configure<IConfiguration>(static (options, configuration) =>
+            {
+                if (configuration.GetSection(DaprPolicyEvidenceOptions.SectionName).GetChildren().Any(static setting =>
+                        string.Equals(setting.Key, nameof(DaprPolicyEvidenceOptions.AllowedTargetAppIds), StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(setting.Key, nameof(DaprPolicyEvidenceOptions.AllowedServiceInvocationClasses), StringComparison.OrdinalIgnoreCase)))
+                {
+                    // The binder appends to initialized arrays. An explicit policy owns both allow-lists.
+                    options.AllowedTargetAppIds = [];
+                    options.AllowedServiceInvocationClasses = [];
+                }
+            })
+            .BindConfiguration(DaprPolicyEvidenceOptions.SectionName)
+            .ValidateOnStart();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DaprPolicyEvidenceOptions>, DaprPolicyEvidenceOptionsValidator>());
         services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
         services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();

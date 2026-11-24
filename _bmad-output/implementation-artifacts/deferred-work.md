@@ -1770,7 +1770,8 @@ archived: 2026-11-24
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs:~28-29
 reason: `ConfigurationDaprPolicyEvidenceProvider` does not validate empty/missing allow-lists at registration time (`src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs:~28-29`) — deferred to the production Dapr deployment story; configuration validation belongs with policy-deployment work.
-status: open
+status: done 2026-11-24
+resolution: Enabled explicit allow-lists must supply targets and invocation classes. Explicit lists replace defaults and policy-only switches retain the built-in lists.
 
 ### DW-267: Bounded-diagnostic-read tests don't assert max count/size or non-touch of provider/repository/file/workspace
 
