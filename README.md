@@ -53,6 +53,9 @@ Nested submodules must only be initialized when a user explicitly requests neste
 
 Recursive initialization can pull nested dependencies unexpectedly, so default setup is intentionally limited to the `references/` submodule inventory.
 
+GitHub repository and branch requests made through Octokit have a 30-second deadline per request. Set
+`Folders__Providers__GitHub__RequestTimeout` to a TimeSpan between `00:00:01` and `00:02:00` to override it.
+
 ## Legacy compatibility surfaces
 
 These are versioned compatibility binaries. They are not retired and stay outside every Hexalith.Platform composition.

@@ -2049,7 +2049,8 @@ origin: code review of 3-10-github-repository-provisioning-binding-and-branch-re
 location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClientFactory.cs
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: `GitHubApiVersionHttpClient.SetRequestTimeout` delegates to the inner client, but the factory never calls it, so no story-owned deadline is established and Octokit's default applies. Combined with Octokit 14's high-level repository/branch methods accepting no `CancellationToken`, a hung GitHub response blocks the calling worker for that default. The `TimeoutDuringMutation` / `TimeoutDuringObservation` conditions were added specifically to model timeouts, so the taxonomy is ready but the bound is not chosen. Picking the value is a policy decision, not a mechanical fix.
-status: open
+status: done 2026-11-24
+resolution: Applies a configurable 30-second default to each Octokit request. Tests verify the permitted bounds, overrides, and real cancellation of a stalled observation.
 decision: 2026-08-28 Configurable default — Add validated timeout options with a 30-second default and safe bounds, apply them in the factory, and test overrides.
 decision: 2026-08-28 Configurable default — Add validated timeout options with a 30-second default and safe bounds, apply them in the factory, and test overrides.
 

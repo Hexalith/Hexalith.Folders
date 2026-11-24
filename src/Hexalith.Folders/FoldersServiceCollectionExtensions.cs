@@ -19,6 +19,7 @@ using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Queries.ProviderReadiness;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -218,6 +219,12 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersObservability();
         services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
+        services.AddOptions<GitHubTransportOptions>()
+            .Configure<IServiceProvider>(static (options, provider) => provider.GetService<IConfiguration>()?
+                .GetSection(GitHubTransportOptions.SectionName).Bind(options))
+            .Validate(static options => options.RequestTimeout >= TimeSpan.FromSeconds(1)
+                && options.RequestTimeout <= TimeSpan.FromMinutes(2),
+                "GitHub RequestTimeout must be between 1 and 120 seconds.");
         services.TryAddSingleton<IGitHubApiClientFactory, OctokitGitHubApiClientFactory>();
         services.AddHttpClient(ForgejoHttpApiClientFactory.HttpClientName, static client =>
         {
