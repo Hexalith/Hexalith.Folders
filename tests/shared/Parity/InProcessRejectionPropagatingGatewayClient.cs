@@ -80,6 +80,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     {
         string envelopeTenant = envelopeTenantTransform?.Invoke(request.Tenant) ?? request.Tenant;
         ProcessCalls++;
+        LastWireEvents = [];
         LastWireRejectionCode = null;
         LastProcessReturnedMarkedDenial = false;
         using HttpClient client = clientFactory();

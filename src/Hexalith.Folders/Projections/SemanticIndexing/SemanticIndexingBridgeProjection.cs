@@ -342,7 +342,7 @@ public sealed record SemanticIndexingBridgeProjection
         if (current.Freshness.Watermark == envelope.Sequence)
         {
             throw new InvalidOperationException(
-                $"SemanticIndexingBridgeProjection received conflicting event evidence for key '{current.Identity.ReadModelKey}' at sequence {envelope.Sequence}.");
+                $"Semantic indexing bridge received conflicting event evidence at sequence {envelope.Sequence}.");
         }
 
         return false;
