@@ -95,7 +95,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
             principalIdAccessor() ?? "actor-present",
             request.Extensions);
 
-        HttpResponseMessage response = await client
+        using HttpResponseMessage response = await client
             .PostAsJsonAsync("/process", new DomainServiceRequest(envelope, CurrentState: null), cancellationToken)
             .ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
@@ -106,16 +106,16 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
             throw new EventStoreGatewayException((int)response.StatusCode, response.ReasonPhrase ?? "Process failed", correlationId: request.CorrelationId);
         }
 
-        DomainServiceWireResult result = (await response.Content
+        DomainServiceWireResult? result = await response.Content
             .ReadFromJsonAsync<DomainServiceWireResult>(cancellationToken)
-            .ConfigureAwait(false))!;
-        LastWireEvents = result.Events;
+            .ConfigureAwait(false);
+        LastWireEvents = result?.Events ?? [];
 
-        if (result.IsRejection)
+        if (result is null || result.IsRejection)
         {
-            // Zero or multiple events cannot unambiguously identify the rejection evidence.
-            FolderResultCode code = result.Events.Count == 1
-                ? ParseRejectionCode(result.Events[0].Payload)
+            // A rejection must carry a single usable event.
+            FolderResultCode code = LastWireEvents is [{ } rejection]
+                ? ParseRejectionCode(rejection.Payload)
                 : FolderResultCode.MalformedEvidence;
             LastWireRejectionCode = code;
             throw ToGatewayException(code, request.CorrelationId ?? request.MessageId);

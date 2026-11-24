@@ -2192,7 +2192,8 @@ location: n/a
 source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
-status: open
+status: done 2026-11-24
+resolution: Follow-up review found that a null event array or element could throw instead of mapping to malformed evidence. The parity transport now preserves the bounded category and correlation for both shapes.
 
 ### DW-321: Corpus loading (`RepositoryRoot()` + parse of `tests/fixtures/audit-leakage-corpus.json`) is copy-pasted across at least nine test classes instead of one shared labelled reader.
 
