@@ -462,7 +462,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
     }
 
     [Fact]
-    public void S2OidcArtifactPinsFrozenJwtBearerSettings()
+    public void S2OidcArtifactPinsValidationSettingsAndAuthoritativeClaimSources()
     {
         string root = RepositoryArtifacts.FindRoot();
         string path = Path.Combine(root, "docs", "exit-criteria", "s2-oidc-validation.md");
@@ -487,16 +487,6 @@ public sealed class ExitCriteriaDecisionArtifactTests
             content.ShouldContain(setting, Case.Sensitive,
                 $"s2-oidc-validation.md must pin JwtBearer setting '{setting}'.");
         }
-    }
-
-    [Fact]
-    public void S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders()
-    {
-        string root = RepositoryArtifacts.FindRoot();
-        string path = Path.Combine(root, "docs", "exit-criteria", "s2-oidc-validation.md");
-        File.Exists(path).ShouldBeTrue("docs/exit-criteria/s2-oidc-validation.md must exist.");
-        string content = RepositoryArtifacts.ReadText(path);
-
         string[] authoritativeClaims =
         [
             "eventstore:tenant",

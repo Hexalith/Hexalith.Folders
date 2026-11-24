@@ -1421,7 +1421,8 @@ resolution: The fixture, decision and wireflow checks walk to the nearest Folder
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold round 2 (2026-05-12)"), 2026-08-24
 location: S2OidcArtifactPinsFrozenJwtBearerSettings
 reason: S2 OIDC test split into `S2OidcArtifactPinsFrozenJwtBearerSettings` and `S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders` — full OIDC contract only visible across both tests; structural coupling concern, both pass.
-status: open
+status: done 2026-11-24
+resolution: Combined pinned JWT settings, claim provenance, and synthetic endpoint assertions under one artifact check. Preserved both negative endpoint controls.
 
 ### DW-198: `<InternalsVisibleTo>` entries in `src/Hexalith.Folders.*/*.csproj` point to test assemblies
 
