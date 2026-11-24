@@ -106,6 +106,8 @@ public sealed class WorkspaceLockStatusProjectionTests
         result.LockState.ShouldBe("denied_safe");
         result.Freshness.Stale.ShouldBeTrue();
         result.Freshness.ReasonCode.ShouldBe("projection_stale");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.RetryEligibility.Freshness.ShouldBe(result.Freshness);
     }
 
     private static async Task<WorkspaceLockStatusQueryResult> ExecuteAsync(WorkspaceLockStatusReadModelResult readModelResult)

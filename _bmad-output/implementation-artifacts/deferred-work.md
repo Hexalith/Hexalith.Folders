@@ -2337,7 +2337,8 @@ location: src/Hexalith.Folders/Queries/Folders/WorkspaceLockStatusQueryHandler.c
 source_spec: `spec-lifecycle-result-normalization.md`
 severity: medium
 reason: `WorkspaceStatusQueryHandler`, `WorkspaceLockStatusQueryHandler`, `WorkspaceCleanupStatusQueryHandler`, `BranchRefPolicyQueryHandler`, and `TaskStatusQueryHandler` each declare their own `allowed`/`denied_safe` constants and repeat `Freshness with { Stale = true, ReasonCode = ... ?? ... }` over the same `FolderLifecycleFreshness` record, and they still return a `ProjectionWatermark` on unavailable results. The canonical helpers introduced here are `internal` to the same assembly, so those sites could adopt them, but this spec's intent is scoped to the lifecycle handler.
-status: open
+status: done 2026-11-24
+resolution: Reuses shared authorization tokens and unavailable-freshness helpers in the five sibling handlers. Removes the watermark from both the lock result and its retry evidence.
 
 ### DW-339: Follow-up review still recommended for dw-lifecycle-result-normalization after the damping cap was spent
 origin: review-budget-followup

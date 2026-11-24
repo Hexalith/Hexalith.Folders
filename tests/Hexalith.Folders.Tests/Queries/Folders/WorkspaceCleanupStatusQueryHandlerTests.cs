@@ -229,6 +229,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
         result.WorkspaceId.ShouldBeNull();
         result.Freshness.Stale.ShouldBeTrue();
         result.Freshness.ReasonCode.ShouldBe(expectedReason);
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
     }
 
     private static async Task<WorkspaceCleanupStatusQueryResult> ExecuteAsync(WorkspaceCleanupStatusReadModelResult readModelResult)

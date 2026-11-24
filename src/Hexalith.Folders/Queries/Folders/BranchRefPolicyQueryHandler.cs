@@ -14,8 +14,6 @@ public sealed class BranchRefPolicyQueryHandler(
 {
     private const string ActionToken = "read_branch_ref_policy";
     private const string ActorPresentIdentifier = "actor_present";
-    private const string AllowedOutcome = "allowed";
-    private const string DeniedSafeOutcome = "denied_safe";
     private const string EventuallyConsistent = "eventually_consistent";
 
     private readonly ILogger<BranchRefPolicyQueryHandler> _logger = logger ?? NullLogger<BranchRefPolicyQueryHandler>.Instance;
@@ -93,16 +91,16 @@ public sealed class BranchRefPolicyQueryHandler(
             BranchRefPolicyReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, allowed, readModelResult.Snapshot),
             BranchRefPolicyReadModelStatus.Available =>
-                SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             BranchRefPolicyReadModelStatus.Stale =>
-                SafeResult(BranchRefPolicyQueryResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
+                SafeResult(BranchRefPolicyQueryResultCode.ProjectionStale, readModelResult.Freshness.ToUnavailableWithFallback("projection_stale"), query, null),
             BranchRefPolicyReadModelStatus.Unavailable =>
-                SafeResult(BranchRefPolicyQueryResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(BranchRefPolicyQueryResultCode.ProjectionUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_unavailable"), query, null),
             BranchRefPolicyReadModelStatus.Malformed =>
-                SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
+                SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_malformed"), query, null),
             BranchRefPolicyReadModelStatus.NotFound =>
                 SafeResult(BranchRefPolicyQueryResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
-            _ => SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
+            _ => SafeResult(BranchRefPolicyQueryResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailable(), query, null),
         };
     }
 
@@ -125,7 +123,7 @@ public sealed class BranchRefPolicyQueryHandler(
             snapshot.DefaultRef,
             snapshot.AllowedRefPatterns,
             snapshot.ProtectedRefPatterns,
-            AllowedOutcome,
+            FolderLifecycleAuthorizationOutcome.Allowed.ToToken(),
             snapshot.Freshness,
             query.CorrelationId,
             query.TaskId,
@@ -191,7 +189,7 @@ public sealed class BranchRefPolicyQueryHandler(
         string reasonCode)
         => SafeResult(
             BranchRefPolicyQueryResultCode.ReadModelUnavailable,
-            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? reasonCode },
+            freshness.ToUnavailableWithFallback(reasonCode),
             query,
             null);
 
@@ -208,8 +206,8 @@ public sealed class BranchRefPolicyQueryHandler(
             DefaultRef: null,
             AllowedRefPatterns: [],
             ProtectedRefPatterns: [],
-            DeniedSafeOutcome,
-            freshness,
+            FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken(),
+            freshness.ToUnavailable(),
             query.CorrelationId,
             query.TaskId,
             authorizationDenial);
