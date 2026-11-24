@@ -1416,6 +1416,7 @@ tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.Corrections.
 tests/Hexalith.Folders.Server.Tests/WorkspaceOperationEvidenceTests.cs
 tests/Hexalith.Folders.Server.Tests/WorkspaceStatusEndpointTests.cs
 tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/ArchiveCancellationClock.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingDapr.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingValidator.cs

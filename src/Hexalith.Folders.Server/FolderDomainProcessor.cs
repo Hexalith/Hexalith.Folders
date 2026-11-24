@@ -773,15 +773,13 @@ public sealed partial class FolderDomainProcessor(
         FolderResult result;
         try
         {
-            result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
+            result = _archiveGate.HandleCancellable(command, tenantAccess, aclEvidence, policyEvidence, cancellationToken);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Any unexpected exception from the gate (e.g. an evidence constructor invariant
             // violation) must fail closed without leaking type/stack metadata through the
-            // gateway response or framework 500 path. OperationCanceledException is allowed
-            // to propagate so cancellation semantics are preserved if a future async
-            // dependency adds them.
+            // gateway response or framework 500 path. Cancellation propagates to EventStore.
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 

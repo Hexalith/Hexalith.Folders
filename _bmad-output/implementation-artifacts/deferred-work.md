@@ -245,7 +245,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderArchiveTenantGate.Handle
 reason: No `CancellationToken` propagation through `FolderArchiveTenantGate.Handle` or `IFolderRepository` methods. Deferred — moot until the gate is wired; add async port at the same time.
-status: open
+status: done 2026-11-24
+resolution: The processor forwards request cancellation through the archive gate and repository. Cancellation before publication leaves state and replay evidence unchanged.
 
 ### DW-35: `EffectivePermissionsActionCatalog` insertion order untested — cosmetic until a positional consumer appears. Deferred.
 

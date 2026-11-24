@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 88b2de9082473f4bce12b92bf060924eee1a6c624c6862e4a205e2e39b841ff4
-artifact_count: 1675
+candidate_set_sha256: d3df2829153919c72dc10bb6ead609a06a6c9365c78c1f81bc13a01a6da91b7e
+artifact_count: 1676
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 119958
-    sha256: a739523f7aa36f2540b8643d8365c2fdfcd3616ef91c29da3b3dca8c77069637
+    bytes: 120033
+    sha256: de368b30a6af6a6c7a6f7862348617e2b74e2824d9dfb2a36bc0791643fae9c2
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -950,8 +950,8 @@ artifacts:
     sha256: 4d4809c08363b69c825626fcc1523ea09a7e0a8f9671731e13b48244405e506a
   - path: "src/Hexalith.Folders.Server/ActorFoldedFolderRepository.cs"
     kind: file
-    bytes: 3426
-    sha256: 2252537bf023045579118159f27165d1a775dd1f6375a23f5a2d237f548899fa
+    bytes: 4163
+    sha256: 3b4a0e0656027db115e148ee82ea0390e38553b5578230a9d9712671968c4f7d
   - path: "src/Hexalith.Folders.Server/ActorFoldedOrganizationProviderBindingRepository.cs"
     kind: file
     bytes: 6593
@@ -1242,8 +1242,8 @@ artifacts:
     sha256: 50a196458ab1f091148ddac8194c8b5f4856c306582147be6e223ea6d7bc40e3
   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
     kind: file
-    bytes: 88357
-    sha256: bd2467954dcdfae93e58d163ef3313f1aa627b16e561e60115c140c4e03d4448
+    bytes: 88265
+    sha256: 62f6e90b2cf7e93b194763c47f4bb820366f940cc8e8d7e11a0af468c79a53d0
   - path: "src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs"
     kind: file
     bytes: 3370
@@ -1802,8 +1802,8 @@ artifacts:
     sha256: daefffdadadd7f72a894de29af06d8f6858156233b7d8076ffa21fc7b39aed82
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs"
     kind: file
-    bytes: 11313
-    sha256: e04ac88a9c120ba1e097bf0c246c9ebcdf1db060688641121a0aef7f8b1926c9
+    bytes: 12097
+    sha256: 64fd192149ae0b715a38e85f3ed86affd45e8b70327f3ef621ef696d97127ee7
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs"
     kind: file
     bytes: 1230
@@ -1946,8 +1946,8 @@ artifacts:
     sha256: 83161a1ed7e44be61555e10f90f69f50d5815db8314a37d232c2e5075d8d1381
   - path: "src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs"
     kind: file
-    bytes: 928
-    sha256: ed4bd75eef78838110bae505a9f19c2c1e1fade264b96a0696a87672348d7635
+    bytes: 1782
+    sha256: cda27ed796805c47be40b5cbadad2e242a2e38e71891afdbe36251048a0aac08
   - path: "src/Hexalith.Folders/Aggregates/Folder/IRepositoryBindingReadinessValidator.cs"
     kind: file
     bytes: 323
@@ -1982,8 +1982,8 @@ artifacts:
     sha256: 6014092dcc100381f7b3eaaee3c878d74bab1ff963020a3ede45a39f986494fc
   - path: "src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs"
     kind: file
-    bytes: 31677
-    sha256: 1beef93fe3a70876371991aeeeac04c2a68aea5c99e6444033904608eb1c19f0
+    bytes: 32519
+    sha256: 89cde02d807ad5eb6c5a3a64e3c7e8a9ac8aae9c23595cf5ec2bb81cde5258d8
   - path: "src/Hexalith.Folders/Aggregates/Folder/LockWorkspace.cs"
     kind: file
     bytes: 608
@@ -4978,8 +4978,8 @@ artifacts:
     sha256: 6be862d0207edcfedb7270f9a058bde232e631f4dbc30b786574b46631f184df
   - path: "tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs"
     kind: file
-    bytes: 79036
-    sha256: f57f0a9939303b958a74ed6a6d250d90dbe651201dda9dfc2e6a6ab76907b8a4
+    bytes: 81187
+    sha256: 14c0cd71d211a53f7b090eb99aba30bdd01f36681875d5c75de2de4b37226025
   - path: "tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs"
     kind: file
     bytes: 39310
@@ -5692,6 +5692,10 @@ artifacts:
     kind: file
     bytes: 27014
     sha256: de724014f936d27db09f3cd40bdb54cbdf5bb668366635b6495df0e35892d8f7
+  - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/ArchiveCancellationClock.cs"
+    kind: file
+    bytes: 285
+    sha256: e0885761917b6c0aaef2fdf43bf2018c99357fe588ba8afcf76c9415c6980fcf
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/DispositionLabelParityTests.cs"
     kind: file
     bytes: 4983
@@ -5742,8 +5746,8 @@ artifacts:
     sha256: ebc198a8c6fddeeeae2fa9d2d0733e1bb53d89771d1733f5d4e45e6d34102e93
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs"
     kind: file
-    bytes: 16898
-    sha256: b77495bd059b63f06bb835f488a353c38a0b4732d686e77c1091783d27d2968d
+    bytes: 19314
+    sha256: e654f04f1033291721da292b1f37fb4a61654aa14d787d81302ca7958eaeec3a
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs"
     kind: file
     bytes: 5490

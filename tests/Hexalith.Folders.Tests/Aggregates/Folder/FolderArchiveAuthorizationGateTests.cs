@@ -7,6 +7,51 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderArchiveAuthorizationGateTests
 {
+    [Fact]
+    public void CancellationBeforeArchiveShouldLeaveTheRepositoryUntouched()
+    {
+        RecordingFolderRepository repository = new();
+        FolderArchiveTenantGate gate = new(repository);
+
+        Should.Throw<OperationCanceledException>(() => gate.HandleCancellable(
+            FolderCommandFactory.Archive(),
+            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"),
+            new CancellationToken(canceled: true)));
+
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
+    public void CancellationDuringAnArchiveAppendShouldLeaveStateAndFingerprintUntouched()
+    {
+        using CancellationTokenSource cancellation = new();
+        ArchiveCancellationClock repositoryClock = new();
+
+        InMemoryFolderRepository repository = new(timeProvider: repositoryClock);
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        repository.Seed(stream, FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create()).Events);
+        repositoryClock.OnRead = cancellation.Cancel;
+
+        FolderArchiveTenantGate gate = new(repository);
+        ArchiveFolder command = FolderCommandFactory.Archive();
+        TenantAccessAuthorizationResult tenant = Evidence(TenantAccessOutcome.Allowed, "tenant-a");
+        FolderArchiveAclEvidence acl = FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a");
+        FolderArchivePolicyEvidence policy = FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1");
+        long appendedBefore = repository.EventsAppended;
+
+        Should.Throw<OperationCanceledException>(() => gate.HandleCancellable(command, tenant, acl, policy, cancellation.Token));
+
+        repository.Load(stream).LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        repository.TryGetIdempotencyFingerprint(stream, command.IdempotencyKey, out _)
+            .ShouldBe(FolderIdempotencyLookupResult.Missing);
+        repository.EventsAppended.ShouldBe(appendedBefore);
+        gate.Handle(command, tenant, acl, policy).Code.ShouldBe(FolderResultCode.Accepted);
+    }
+
     [Theory]
     [InlineData(TenantAccessOutcome.Denied, FolderResultCode.TenantAccessDenied)]
     [InlineData(TenantAccessOutcome.StaleProjection, FolderResultCode.StaleProjection)]

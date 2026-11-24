@@ -133,11 +133,28 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         string idempotencyKey,
         string fingerprint,
         IReadOnlyList<IFolderEvent> events)
+        => Append(streamName, idempotencyKey, fingerprint, events, CancellationToken.None);
+
+    FolderAppendOutcome IFolderRepository.AppendIfFingerprintAbsent(
+        FolderStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IFolderEvent> events,
+        CancellationToken cancellationToken)
+        => Append(streamName, idempotencyKey, fingerprint, events, cancellationToken);
+
+    private FolderAppendOutcome Append(
+        FolderStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IFolderEvent> events,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(streamName);
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
         ArgumentNullException.ThrowIfNull(events);
+        cancellationToken.ThrowIfCancellationRequested();
 
         // Capture the observation time before taking the lock so it reflects the request's
         // arrival ordering rather than the lock-acquisition ordering. Combined with the
@@ -147,6 +164,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         lock (_gate)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             string ledgerKey = LedgerKey(streamName, idempotencyKey);
             // A replay needs only the non-empty check. For a new key, take a stable batch before
             // the final ledger lookup because caller-controlled enumeration can reenter append.
@@ -166,6 +184,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
             FolderState current = LoadUnderGate(streamName);
             FolderState next = current.Apply(batch, streamName);
+            cancellationToken.ThrowIfCancellationRequested();
             _states[streamName.Value] = next;
             _idempotencyFingerprints[ledgerKey] = fingerprint;
             _eventsAppended += eventCount;

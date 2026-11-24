@@ -436,6 +436,30 @@ public sealed class ArchiveFolderProcessWiringTests
     }
 
     [Fact]
+    public async Task ArchiveProcessCancellationReachedDuringAppendShouldPreventPublication()
+    {
+        using CancellationTokenSource cancellation = new();
+        FixedTimeProvider repositoryClock = new(Now);
+        TestHost host = await StartHostAsync(
+            repositoryTimeProvider: repositoryClock, processCancellation: cancellation.Token).ConfigureAwait(true);
+        await using var hostScope = host.ConfigureAwait(true);
+        SeedTenant(host.TenantStore, "tenant-a", "user-a");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
+        repositoryClock.OnRead = cancellation.Cancel;
+
+        using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+        await Should.ThrowAsync<OperationCanceledException>(() => host.Client.SendAsync(request, cancellation.Token));
+
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        host.Gateway.ProcessCalls.ShouldBe(1);
+        host.Repository.Load(stream).LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        host.Repository.TryGetIdempotencyFingerprint(stream, "archive-key-a", out _)
+            .ShouldBe(FolderIdempotencyLookupResult.Missing);
+        host.Repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted()
     {
         TestHost host = await StartHostAsync().ConfigureAwait(true);
@@ -1280,14 +1304,16 @@ public sealed class ArchiveFolderProcessWiringTests
         IFolderArchivePolicyEvidenceProvider? archivePolicyEvidenceProvider = null,
         Func<string, string>? envelopeTenantTransform = null,
         ILayeredFolderAuthorizationResultAccessor? authorizationAccessor = null,
-        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null,
+        TimeProvider? repositoryTimeProvider = null,
+        CancellationToken? processCancellation = null)
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         InMemoryEffectivePermissionsReadModel permissions = new();
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
         TimeProvider timeProvider = new FixedTimeProvider(Now);
-        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
+        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: repositoryTimeProvider ?? timeProvider);
         InMemoryOrganizationProviderBindingRepository organizationRepository = new();
         Uri? hostUri = null;
         InProcessRejectionPropagatingGatewayClient gateway = new(
@@ -1358,6 +1384,20 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton(timeProvider);
 
         WebApplication app = builder.Build();
+        if (processCancellation is { CanBeCanceled: true } processToken)
+        {
+            app.Use((context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/process", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Share the test token so cancellation is observable inside the synchronous append.
+                    context.RequestAborted = processToken;
+                }
+
+                return next(context);
+            });
+        }
+
         if (archivePolicyEvidenceProvider is CancelMidFlightFolderArchivePolicyEvidenceProvider cancellationProvider)
         {
             app.Use(async (context, next) =>
@@ -1627,6 +1667,12 @@ public sealed class ArchiveFolderProcessWiringTests
 
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
     {
-        public override DateTimeOffset GetUtcNow() => now;
+        internal Action? OnRead { get; set; }
+
+        public override DateTimeOffset GetUtcNow()
+        {
+            OnRead?.Invoke();
+            return now;
+        }
     }
 }
