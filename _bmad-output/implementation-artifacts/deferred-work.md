@@ -2404,7 +2404,8 @@ origin: migrated from legacy ledger (""), 2026-09-05
 location: _bmad-output/project-context.md:39,122
 source_spec: `spec-update-submodules-and-hexalith-package-versions.md`
 reason: The Technology Stack lists all eight root submodules, including `references/Hexalith.PolymorphicSerializations`, but the Development Workflow Rules default initialization list omits it; this pre-existing documentation drift was outside the Memories gitlink bump.
-status: open
+status: done 2026-11-24
+resolution: The project context points to .gitmodules and the canonical README command, including PolymorphicSerializations and all current root declarations.
 
 ### DW-347: Reconcile EventStore nested FrontComposer/Memories gitlink objects with independently selected root gitlinks when EventStore advances.
 
