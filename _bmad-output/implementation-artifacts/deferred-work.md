@@ -456,7 +456,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-4-grant-and-revoke-folder-access (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:874-907
 reason: Idempotency key collision risk when new significant fields are added to `FolderAccessOperation` [`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:874-907`] — deferred, theoretical; current fingerprint covers all existing fields. Revisit when extending `FolderAccessOperation`.
-status: open
+status: done 2026-11-24
+resolution: A field inventory test requires a replay decision when the access operation changes, and verifies that principal kind, principal ID, and action affect the fingerprint.
 
 ### DW-63: Rename test `AlreadyGrantedAccessShouldReturnAlreadyAppliedWithoutDuplicateEvent` to reflect its `HasFolderAccess` short-circuit (not idempotency-fingerprint) coverage
 

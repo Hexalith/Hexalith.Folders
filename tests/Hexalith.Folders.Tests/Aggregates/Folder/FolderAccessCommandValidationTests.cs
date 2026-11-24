@@ -6,6 +6,35 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderAccessCommandValidationTests
 {
+    [Fact]
+    public void EveryAccessOperationFieldRequiresAFingerprintDecision()
+    {
+        // Adding an operation field requires deciding how it affects replay before updating this inventory.
+        typeof(FolderAccessOperation).GetProperties().Select(property => property.Name)
+            .ShouldBe(
+                [nameof(FolderAccessOperation.Intent), nameof(FolderAccessOperation.PrincipalKind),
+                 nameof(FolderAccessOperation.PrincipalId), nameof(FolderAccessOperation.Action)],
+                ignoreOrder: true);
+
+        GrantFolderAccess baseline = FolderCommandFactory.GrantAccess();
+        string? fingerprint = FolderCommandValidator.Validate(baseline).IdempotencyFingerprint;
+        fingerprint.ShouldNotBeNull();
+        FolderAccessOperation operation = baseline.Operations.Single();
+        FolderAccessOperation[] changes =
+        [
+            operation with { PrincipalKind = FolderAccessPrincipalKind.Group },
+            operation with { PrincipalId = "another-principal" },
+            operation with { Action = "query_status" },
+        ];
+        foreach (FolderAccessOperation changed in changes)
+        {
+            FolderCommandValidationResult validation =
+                FolderCommandValidator.Validate(FolderCommandFactory.GrantAccess(operations: [changed]));
+            validation.IsAccepted.ShouldBeTrue();
+            validation.IdempotencyFingerprint.ShouldNotBe(fingerprint);
+        }
+    }
+
     [Theory]
     [InlineData("safe-identifier\n")]
     [InlineData("safe-identifier\r\n")]
