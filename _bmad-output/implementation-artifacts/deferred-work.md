@@ -2477,9 +2477,14 @@ archived: 2026-09-18
   summary: Unrelated dirty tree mixed into the Story 12.6 review diff, including `.bmad-loop/policy.toml` flipping `scm.isolation` from `worktree` to `none`.
   evidence: Working tree also rewrites `epic-3-context.md` and adds untracked `bmad-build-auto-result-3-13-forgejo-file-mutation-commit-status-and-failure-behavior-2.md`. Isolation `none` would make later loop runs mutate the checked-out branch. None of this implements expired-key mapping.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
-  summary: `SafeProblem` still titles every non-expired HTTP 409 as "Idempotency conflict.", including lock, duplicate-binding, repository-conflict, and reconciliation outcomes.
-  evidence: Pre-existing: the 409 title was already that string; this slice only added an expired ternary. Callers that read `title` instead of `category` still see a conflict label for those other 409s.
+### DW-351: `SafeProblem` still titles every non-expired HTTP 409 as "Idempotency conflict.", including lock, duplicate-binding, repository-conflict, and reconciliation outcomes.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+reason: Pre-existing: the 409 title was already that string; this slice only added an expired ternary. Callers that read `title` instead of `category` still see a conflict label for those other 409s.
+status: done 2026-11-24
+resolution: Only idempotency conflicts and expiry use idempotency titles. Other HTTP 409 responses use a generic conflict title and retain their specific category and code.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
   summary: Expand `docs/contract/idempotency-and-parity-rules.md` from its stale mutation subset to the complete generated inventory, including `UpdateFolderAclEntry`, `ConfigureProviderBinding`, and `ConfigureBranchRefPolicy`.
