@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 9751b477c05841415df6fc07c80ebf8d2ecd42c1496b3887ad15c09ba4290cd7
-artifact_count: 1682
+candidate_set_sha256: 07e2651158030f64543b685d1accfa235225599bdfa294e4caae45bb88362d58
+artifact_count: 1683
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120438
-    sha256: 2620dcbdc878fdfcc3e0bd8a01349284157b2a82c232e97bd5ecde8e1ecda92e
+    bytes: 120502
+    sha256: 33dfbbbf759535e53f704a41979f4597cdb442444869eec7d41f167523e9a781
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -5362,8 +5362,8 @@ artifacts:
     sha256: c96c6324333c88d691bedab0ee120cd0a9997550ebf777b7213b84c62fe24779
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs"
     kind: file
-    bytes: 37418
-    sha256: 85ad92126c791836dae2d90368be901c7768dd872756ed921952517b6b4c1fdf
+    bytes: 39219
+    sha256: 07a8d25edf3771a652f26d49ce023f935f32632ae488d6371c2380fe1d92c54b
   - path: "tests/Hexalith.Folders.Server.Tests/FoldersServerJsonOptionsTests.cs"
     kind: file
     bytes: 1061
@@ -5504,6 +5504,10 @@ artifacts:
     kind: file
     bytes: 667
     sha256: 2ed76b22e0fa71a147b214e50eca04d7eb595233b865e843c73ad5639190f814
+  - path: "tests/Hexalith.Folders.Server.Tests/OtlpExporterClientMarker.cs"
+    kind: file
+    bytes: 972
+    sha256: 6f031496c20f4259b06cdea9d662207e3b772974a91042b9d3c23896212a8079
   - path: "tests/Hexalith.Folders.Server.Tests/OwnerSourceCompositionAssertionIssuer.cs"
     kind: file
     bytes: 804
