@@ -2663,6 +2663,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: FolderCanonicalIdentifierTests omit IsSafeDiagnosticId and SanitizeCorrelationId.
   evidence: 11.4 added the helpers; unit tests never call them except indirectly in a few OpsConsole HTTP cases.
+  status: done 2026-11-25
+  resolution: `FolderCanonicalIdentifierTests` now calls both `FolderCanonicalPathIdentifier` helpers directly. `IsSafeDiagnosticId` accepts non-sensitive path identifiers and rejects null, blank, malformed, over-long and secret-looking values. `SanitizeCorrelationId` echoes safe values. Null, blank, padded, malformed, header-injection, over-long and secret-looking values each get a fresh `correlation_{32 hex}` stand-in, and the stand-in itself is echoed unchanged.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
   summary: ClientTenantIds and ClientPrincipalIds remain copy-pasted across Audit, Domain, Provider, and OpsConsole endpoint files.

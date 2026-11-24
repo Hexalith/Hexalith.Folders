@@ -91,4 +91,87 @@ public sealed class FolderCanonicalIdentifierTests
     [Fact]
     public void PathIdentifierShouldRejectValuesLongerThan256()
         => FolderCanonicalPathIdentifier.IsValid(new string('A', 257)).ShouldBeFalse();
+
+    [Theory]
+    [InlineData("folder_1")]
+    [InlineData("Workspace-A")]
+    [InlineData("01ARZ3NDEKTSV4RRFFQ69G5FAV")]
+    public void SafeDiagnosticIdShouldAcceptNonSensitivePathIdentifiers(string value)
+        => FolderCanonicalPathIdentifier.IsSafeDiagnosticId(value).ShouldBeTrue();
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("folder.1")]
+    [InlineData("Folder_A\n")]
+    public void SafeDiagnosticIdShouldRejectInvalidPathIdentifiers(string? value)
+        => FolderCanonicalPathIdentifier.IsSafeDiagnosticId(value).ShouldBeFalse();
+
+    [Fact]
+    public void SafeDiagnosticIdShouldAcceptMaximumLength()
+        => FolderCanonicalPathIdentifier.IsSafeDiagnosticId(new string('A', 256)).ShouldBeTrue();
+
+    [Fact]
+    public void SafeDiagnosticIdShouldRejectValuesLongerThan256()
+        => FolderCanonicalPathIdentifier.IsSafeDiagnosticId(new string('A', 257)).ShouldBeFalse();
+
+    [Theory]
+    [InlineData("access_token_1")]
+    [InlineData("client-Secret")]
+    [InlineData("repo_folders")]
+    [InlineData("Installation-42")]
+    [InlineData("ghp_abcdefghijklmnopqrstuvwxyz")]
+    public void SafeDiagnosticIdShouldRejectSecretLookingPathIdentifiers(string value)
+    {
+        FolderCanonicalPathIdentifier.IsValid(value).ShouldBeTrue();
+        FolderCanonicalPathIdentifier.IsSafeDiagnosticId(value).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("corr_01HZY7Z6N7J4Q2X8Y9V0A1B2C3")]
+    [InlineData("Correlation-A")]
+    [InlineData("1")]
+    public void SanitizeCorrelationIdShouldEchoSafeValues(string value)
+        => FolderCanonicalPathIdentifier.SanitizeCorrelationId(value).ShouldBe(value);
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(" corr_1")]
+    [InlineData("corr/1")]
+    [InlineData("corr_1\r\nX-Injected: 1")]
+    [InlineData("refresh_token_1")]
+    [InlineData("Repository-1")]
+    public void SanitizeCorrelationIdShouldReplaceUnsafeValuesWithAGeneratedStandIn(string? value)
+    {
+        string sanitized = FolderCanonicalPathIdentifier.SanitizeCorrelationId(value);
+
+        sanitized.ShouldNotBe(value);
+        sanitized.ShouldMatch("^correlation_[0-9a-f]{32}$");
+    }
+
+    [Fact]
+    public void SanitizeCorrelationIdShouldEchoMaximumLengthValues()
+    {
+        string value = new('A', 256);
+
+        FolderCanonicalPathIdentifier.SanitizeCorrelationId(value).ShouldBe(value);
+    }
+
+    [Fact]
+    public void SanitizeCorrelationIdShouldReplaceValuesLongerThan256()
+        => FolderCanonicalPathIdentifier.SanitizeCorrelationId(new string('A', 257))
+            .ShouldMatch("^correlation_[0-9a-f]{32}$");
+
+    [Fact]
+    public void SanitizeCorrelationIdShouldGenerateAFreshEchoableStandInPerCall()
+    {
+        string first = FolderCanonicalPathIdentifier.SanitizeCorrelationId(null);
+        string second = FolderCanonicalPathIdentifier.SanitizeCorrelationId(null);
+
+        first.ShouldNotBe(second);
+        FolderCanonicalPathIdentifier.SanitizeCorrelationId(first).ShouldBe(first);
+    }
 }
