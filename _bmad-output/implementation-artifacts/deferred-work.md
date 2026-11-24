@@ -2427,7 +2427,8 @@ origin: bmad-build review of Story 3.11 live-evidence path C waiver, 2026-09-06
 location: _bmad-output/implementation-artifacts/epic-3-context.md
 source_spec: `_bmad-output/implementation-artifacts/spec-3-11-live-github-evidence-operator-action.md`
 reason: Step-01 regenerated epic-3-context because planning artifacts were newer. Relative to the prior cache, Technical Decisions / Requirements / Cross-Story / UX sections lost previously pinned rate-limit bucket, EventStore idempotency tier, OpenAPI Contract Spine parity, and some readiness vocabulary detail. Not caused by the path C waiver docs; refresh epic context separately if those constraints must remain in the cache.
-status: open
+status: done 2026-11-24
+resolution: Restored the idempotency tiers, rate-limit bucket scopes, Contract Spine duties and readiness vocabulary from the current planning sources.
 
 ### DW-350: ForgejoProvider has an extra closing brace that blocks Release rebuild of Hexalith.Folders
 
