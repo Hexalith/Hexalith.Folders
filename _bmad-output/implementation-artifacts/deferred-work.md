@@ -2459,6 +2459,8 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
   summary: DW-298 uppercase Git SHA operation tests that called CommitSha.ToUpperInvariant() and asserted no ref movement are still missing from this tree.
   evidence: ExplicitCommitRejectsMalformedCreatedCommitBeforeRefMovement(uppercase-sha) and MutationStatusRejectsEqualOrNonCanonicalExpectedShasWithoutObservation are absent. This story covers ToUpperInvariant vacuity via fingerprint rejection and constant-difference tests only.
+  status: done 2026-11-24
+  resolution: The GitHub client accepts only lowercase object ids, as the Story 3.11 acceptance criteria require. Uppercase request SHAs, including the target expected head, fail validation before any GitHub request, and an uppercase created-commit SHA is never recorded or used for a ref update. `OctokitGitHubApiClientTests` restores the uppercase status and commit rows.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
   summary: Octokit may wrap SerializationException as InnerException, which IsMalformedJsonException would miss.

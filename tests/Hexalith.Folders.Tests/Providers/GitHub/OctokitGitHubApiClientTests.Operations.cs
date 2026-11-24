@@ -791,6 +791,7 @@ public sealed partial class OctokitGitHubApiClientTests
     [Theory]
     [InlineData("refs/heads/other", CommitSha)]
     [InlineData("refs/heads/main", TreeSha)]
+    [InlineData("refs/heads/main", "333333333333333333333333333333333333333C")]
     public async Task CommitRejectsMismatchedUpdatedRefIdentityOrSha(string refIdentity, string updatedSha)
     {
         int calls = 0;
@@ -1494,6 +1495,89 @@ public sealed partial class OctokitGitHubApiClientTests
 
         result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
         handler.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("intended-commit")]
+    [InlineData("expected-head")]
+    public async Task StatusRejectsUppercaseShasBeforeTransport(string field)
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+        GitHubOperationStatusRequest request = field == "intended-commit"
+            ? StatusTransportRequest() with { IntendedCommitSha = CommitSha.ToUpperInvariant() }
+            : StatusTransportRequest() with { Target = TransportTarget() with { ExpectedHeadSha = TreeSha.ToUpperInvariant() } };
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(request, TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("tree")]
+    [InlineData("expected-head")]
+    public async Task CommitRejectsUppercaseInputShasBeforeTransport(string field)
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+        GitHubCommitRequest request = field == "tree"
+            ? CommitTransportRequest() with { TreeSha = TreeSha.ToUpperInvariant() }
+            : CommitTransportRequest() with { Target = TransportTarget() with { ExpectedHeadSha = CommitSha.ToUpperInvariant() } };
+
+        GitHubCommitResult result = await client.CommitAsync(request, TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task StageRejectsAnUppercaseExpectedHeadBeforeTransport()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            new GitHubFileMutationRequest(
+                TransportTarget() with { ExpectedHeadSha = TreeSha.ToUpperInvariant() },
+                [new ProviderResolvedFileChange(0, ProviderFileChangeKind.Add, "docs/readme.txt", "one"u8.ToArray(), ProviderFileContentType.RegularFile)],
+                static _ => ValueTask.FromResult(true)),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task StatusTreatsAnUppercaseObservedRefShaAsConflictingRatherThanConfirmed()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, ReferenceJson(CommitSha.ToUpperInvariant()));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(ProviderOperationStatusKind.Conflicting);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+    }
+
+    [Fact]
+    public async Task CommitRejectsAnUppercaseCreatedCommitShaBeforeRefMovement()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            _ => JsonResponse(HttpStatusCode.Created, CommitJson(CommitSha.ToUpperInvariant(), TreeSha)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(CommitTransportRequest(), TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        result.CreatedCommitSha.ShouldBeNull();
+        handler.Requests.Select(static request => request.Method.Method).ShouldBe(["GET", "POST"]);
     }
 
     [Fact]

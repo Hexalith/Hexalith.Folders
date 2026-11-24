@@ -308,7 +308,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
-        if (request.Target is null || !request.Target.TryValidate(out _))
+        if (!IsCanonicalTarget(request.Target))
         {
             return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ValidationFailure);
         }
@@ -352,7 +352,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.MalformedResponse);
             }
 
-            if (!string.Equals(currentHeadSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(currentHeadSha, request.Target.ExpectedHeadSha, StringComparison.Ordinal))
             {
                 return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.RefHeadConflict);
             }
@@ -453,7 +453,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
                     using JsonDocument? blobDocument = await ReadJsonDocumentAsync(blobResponse, cancellationToken).ConfigureAwait(false);
                     blobSha = TryReadString(blobDocument, "sha");
-                    if (!ProviderGitOperationResolvedTarget.IsGitObjectId(blobSha))
+                    if (!IsCanonicalObjectId(blobSha))
                     {
                         return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
                     }
@@ -498,7 +498,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             using JsonDocument? treeDocument = await ReadJsonDocumentAsync(treeResponse, cancellationToken).ConfigureAwait(false);
             string? treeSha = TryReadString(treeDocument, "sha");
-            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(treeSha))
+            if (!IsCanonicalObjectId(treeSha))
             {
                 return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
             }
@@ -545,9 +545,8 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubCommitResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
-        if (request.Target is null
-            || !request.Target.TryValidate(out _)
-            || !ProviderGitOperationResolvedTarget.IsGitObjectId(request.TreeSha)
+        if (!IsCanonicalTarget(request.Target)
+            || !IsCanonicalObjectId(request.TreeSha)
             || string.IsNullOrWhiteSpace(request.CommitMessage)
             || request.CommitMessage.Length > 65536
             || !ProviderGitOperationResolvedTarget.IsCanonicalUnicode(request.CommitMessage)
@@ -587,7 +586,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 return GitHubCommitResult.Failure(GitHubApiFailureCondition.MalformedResponse);
             }
 
-            if (!string.Equals(currentHeadSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(currentHeadSha, request.Target.ExpectedHeadSha, StringComparison.Ordinal))
             {
                 return GitHubCommitResult.Failure(GitHubApiFailureCondition.RefHeadConflict);
             }
@@ -625,13 +624,13 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             using JsonDocument? commitDocument = await ReadJsonDocumentAsync(commitResponse, cancellationToken).ConfigureAwait(false);
             createdCommitSha = TryReadString(commitDocument, "sha");
-            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha)
-                || string.Equals(createdCommitSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase))
+            if (!IsCanonicalObjectId(createdCommitSha)
+                || string.Equals(createdCommitSha, request.Target.ExpectedHeadSha, StringComparison.Ordinal))
             {
                 return GitHubCommitResult.Failure(
                     GitHubApiFailureCondition.AmbiguousMutationResponse,
-                    createdCommitSha: ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha)
-                        && !string.Equals(createdCommitSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase)
+                    createdCommitSha: IsCanonicalObjectId(createdCommitSha)
+                        && !string.Equals(createdCommitSha, request.Target.ExpectedHeadSha, StringComparison.Ordinal)
                             ? createdCommitSha
                             : null);
             }
@@ -708,7 +707,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             using JsonDocument? confirmationDocument = await ReadJsonDocumentAsync(confirmationResponse, cancellationToken).ConfigureAwait(false);
             return TryReadReference(confirmationDocument, request.Target, out string? updatedSha)
-                && string.Equals(updatedSha, createdCommitSha, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(updatedSha, createdCommitSha, StringComparison.Ordinal)
                     ? GitHubCommitResult.Success(createdCommitSha!)
                     : GitHubCommitResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse, createdCommitSha: createdCommitSha);
         }
@@ -735,10 +734,9 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
-        if (request.Target is null
-            || !request.Target.TryValidate(out _)
-            || !ProviderGitOperationResolvedTarget.IsGitObjectId(request.IntendedCommitSha)
-            || string.Equals(request.IntendedCommitSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase))
+        if (!IsCanonicalTarget(request.Target)
+            || !IsCanonicalObjectId(request.IntendedCommitSha)
+            || string.Equals(request.IntendedCommitSha, request.Target.ExpectedHeadSha, StringComparison.Ordinal))
         {
             return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.ValidationFailure);
         }
@@ -778,7 +776,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             if (!string.Equals(observedFullRef, request.Target.FullRef, StringComparison.Ordinal)
                 || !string.Equals(observedObjectType, "commit", StringComparison.Ordinal)
-                || !ProviderGitOperationResolvedTarget.IsGitObjectId(observedSha))
+                || !IsCanonicalObjectId(observedSha))
             {
                 return GitHubOperationStatusResult.Conflicting(observedSha, observedFullRef, observedObjectType);
             }
@@ -786,12 +784,12 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             ProviderOperationStatusKind status = string.Equals(
                 observedSha,
                 request.IntendedCommitSha,
-                StringComparison.OrdinalIgnoreCase)
+                StringComparison.Ordinal)
                     ? ProviderOperationStatusKind.Confirmed
                     : string.Equals(
                         observedSha,
                         request.Target.ExpectedHeadSha,
-                        StringComparison.OrdinalIgnoreCase)
+                        StringComparison.Ordinal)
                             ? ProviderOperationStatusKind.NotApplied
                             : ProviderOperationStatusKind.Conflicting;
             return GitHubOperationStatusResult.Observed(status, observedSha!, observedFullRef!, observedObjectType!);
@@ -1074,7 +1072,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         }
 
         sha = shaElement.GetString();
-        return ProviderGitOperationResolvedTarget.IsGitObjectId(sha);
+        return IsCanonicalObjectId(sha);
     }
 
     private static bool TryReadReferenceEvidence(
@@ -1117,9 +1115,9 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
     {
         commitSha = TryReadString(document, "sha");
         treeSha = null;
-        if (!ProviderGitOperationResolvedTarget.IsGitObjectId(commitSha)
+        if (!IsCanonicalObjectId(commitSha)
             || (expectedCommitSha is not null
-                && !string.Equals(commitSha, expectedCommitSha, StringComparison.OrdinalIgnoreCase))
+                && !string.Equals(commitSha, expectedCommitSha, StringComparison.Ordinal))
             || document is null
             || !document.RootElement.TryGetProperty("tree", out JsonElement treeElement)
             || !treeElement.TryGetProperty("sha", out JsonElement treeShaElement)
@@ -1129,9 +1127,9 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         }
 
         treeSha = treeShaElement.GetString();
-        if (!ProviderGitOperationResolvedTarget.IsGitObjectId(treeSha)
+        if (!IsCanonicalObjectId(treeSha)
             || (expectedTreeSha is not null
-                && !string.Equals(treeSha, expectedTreeSha, StringComparison.OrdinalIgnoreCase)))
+                && !string.Equals(treeSha, expectedTreeSha, StringComparison.Ordinal)))
         {
             return false;
         }
@@ -1147,7 +1145,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             && parents.GetArrayLength() == 1
             && parents[0].TryGetProperty("sha", out JsonElement parentSha)
             && parentSha.ValueKind == JsonValueKind.String
-            && string.Equals(parentSha.GetString(), expectedParentSha, StringComparison.OrdinalIgnoreCase);
+            && string.Equals(parentSha.GetString(), expectedParentSha, StringComparison.Ordinal);
     }
 
     private static bool HasExpectedMessage(JsonDocument document, string expectedMessage)
@@ -1303,7 +1301,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         entries = new Dictionary<string, GitHubTreeEntry>(StringComparer.Ordinal);
         truncated = false;
         if (document is null
-            || !string.Equals(TryReadString(document, "sha"), expectedTreeSha, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(TryReadString(document, "sha"), expectedTreeSha, StringComparison.Ordinal)
             || !document.RootElement.TryGetProperty("truncated", out JsonElement truncatedElement)
             || truncatedElement.ValueKind is not (JsonValueKind.True or JsonValueKind.False)
             || !document.RootElement.TryGetProperty("tree", out JsonElement tree)
@@ -1349,7 +1347,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         if (!IsSafeProviderTreePath(path)
             || mode is not { Length: > 0 and <= 8 }
             || type is not ("blob" or "tree" or "commit")
-            || !ProviderGitOperationResolvedTarget.IsGitObjectId(sha))
+            || !IsCanonicalObjectId(sha))
         {
             return false;
         }
@@ -1411,11 +1409,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             }
 
             string? expectedBlobSha = intendedEntries[index]["sha"] as string;
-            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(expectedBlobSha)
+            if (!IsCanonicalObjectId(expectedBlobSha)
                 || !resultingEntries.TryGetValue(change.Path, out GitHubTreeEntry? entry)
                 || !string.Equals(entry.Type, "blob", StringComparison.Ordinal)
                 || !string.Equals(entry.Mode, "100644", StringComparison.Ordinal)
-                || !string.Equals(entry.Sha, expectedBlobSha, StringComparison.OrdinalIgnoreCase))
+                || !string.Equals(entry.Sha, expectedBlobSha, StringComparison.Ordinal))
             {
                 return false;
             }
@@ -1647,12 +1645,6 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         => exception.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests
             ? RetryAfter(exception.HttpResponse)
             : null;
-
-    private static bool TryReferenceSha(Reference reference, out string? sha)
-    {
-        sha = reference.Object?.Sha;
-        return ProviderGitOperationResolvedTarget.IsGitObjectId(sha);
-    }
 
     private static bool TrySnapshotFileChanges(
         IReadOnlyList<ProviderResolvedFileChange>? changes,
@@ -2033,4 +2025,21 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
     /// </summary>
     private static bool IsMalformedJsonException(Exception exception)
         => exception is System.Runtime.Serialization.SerializationException;
+
+    /// <summary>
+    /// Returns whether a Git object id has the canonical lowercase hexadecimal form that GitHub returns.
+    /// An uppercase id is rejected before transport and never recorded from a response.
+    /// </summary>
+    /// <param name="value">The candidate object id.</param>
+    /// <returns><see langword="true"/> when the value is a 40- or 64-character lowercase hexadecimal id.</returns>
+    private static bool IsCanonicalObjectId(string? value)
+        => ProviderGitOperationResolvedTarget.IsGitObjectId(value) && !value!.Any(char.IsAsciiLetterUpper);
+
+    /// <summary>
+    /// Returns whether a resolved target is well formed and names its expected head with a canonical object id.
+    /// </summary>
+    /// <param name="target">The resolved operation target.</param>
+    /// <returns><see langword="true"/> when the target can be sent to GitHub.</returns>
+    private static bool IsCanonicalTarget(ProviderGitOperationResolvedTarget? target)
+        => target is not null && target.TryValidate(out _) && IsCanonicalObjectId(target.ExpectedHeadSha);
 }
