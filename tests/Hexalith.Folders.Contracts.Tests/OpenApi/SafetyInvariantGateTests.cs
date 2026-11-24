@@ -524,11 +524,6 @@ public sealed partial class SafetyInvariantGateTests
     {
         foreach (AuditLeakageSample sample in samples)
         {
-            if (sample.Classification == "safe-provenance")
-            {
-                continue;
-            }
-
             if (!sample.ForbiddenOutputSurfaces.Contains(channel, StringComparer.Ordinal))
             {
                 continue;

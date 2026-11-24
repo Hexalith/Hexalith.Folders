@@ -1708,7 +1708,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: tests/fixtures/audit-leakage-corpus.json
 reason: `safe-provenance` classification global allowlist behavior [`tests/fixtures/audit-leakage-corpus.json`, `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText`] — only one safe-provenance sample (`safe-provenance-operation-id`) exists today; per-sample `allowed_in_channels` design can wait until a second safe-provenance entry is needed.
-status: open
+status: done 2026-11-24
+resolution: Applied the same per-sample channel restrictions to safe-provenance values and verified allowed and forbidden channels.
 
 ### DW-240: `HashSet<SafetyScanDiagnostic>` dedup may hide multi-route findings when a file is reached via multiple channels
 
