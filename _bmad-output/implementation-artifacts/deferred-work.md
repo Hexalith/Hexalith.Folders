@@ -1637,7 +1637,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
 reason: NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — AC 6 reads "Unicode normalization where declared" and no current spine field declares normalization-eligibility. Revisit when a field declares it.
-status: open
+status: done 2026-11-24
+resolution: Validated NFC at hash and wire boundaries, regenerated SDK helpers, and added fixed composed digest vectors and decomposed rejection checks.
 decision: 2026-08-28 Reject non-NFC — Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.
 decision: 2026-08-28 Reject non-NFC — Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.
 

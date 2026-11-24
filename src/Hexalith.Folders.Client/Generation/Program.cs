@@ -1003,6 +1003,7 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
         code.AppendLine("    {");
         code.AppendLine("        var kind = EffectiveFileOperationKind;");
         code.AppendLine("        string operationId = ResolveFileMutationOperationId(kind);");
+        code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePathNormalization(PathMetadata);");
         code.AppendLine("        return operationId switch");
         code.AppendLine("        {");
         foreach (HelperVariantModel variant in helper.Variants)

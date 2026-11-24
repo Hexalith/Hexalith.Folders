@@ -177,6 +177,8 @@ public sealed class Oq2WireObjectConverter : JsonConverter
             throw Invalid("displayName does not satisfy the metadata-safe profile.");
         }
 
+        Oq2RequestValidation.ValidatePathNormalization(path, displayName);
+
         string[] allowed = typeName switch
         {
             "ContentAllowedPathMetadata" => ["content_allowed"],

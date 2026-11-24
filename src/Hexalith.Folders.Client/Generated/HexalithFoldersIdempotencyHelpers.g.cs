@@ -13,7 +13,7 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7";
     public const string GenerationConfigurationSha256 = "16973966e48c29f9bb046eda08be9b06bca5bc3e32ad407bff301041f4ddb2cd";
-    public const string GeneratedHelpersSha256 = "028597804983b85de68311a5b15f78e12e35a37bf2c471db66ebde9d4e529e8d";
+    public const string GeneratedHelpersSha256 = "8793ead1ba862c974abe199c47f84a7a9121e80ac9d8d393be823e1e6df270d8";
     private const string GeneratedClientSha256 = "cbb73939e4731804cd53f5b58f8a29f49ffeb272e34cb62d71fc3c7a479cabc2";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
@@ -1141,6 +1141,7 @@ public partial class FileMutationRequest
     {
         var kind = EffectiveFileOperationKind;
         string operationId = ResolveFileMutationOperationId(kind);
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePathNormalization(PathMetadata);
         return operationId switch
         {
             "AddFile" =>
