@@ -1970,7 +1970,8 @@ origin: code review of spec-3-10-github-repository-provisioning-binding-and-bran
 location: src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs (MapProvider)
 source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: `RepositoryBindingService.MapProvider` folds `ProviderFailureCategory.ProviderConflict` into `FolderResultCode.RepositoryConflict`, so a real `idempotency_conflict` / `idempotency_key_expired` from the new gate would surface as a repository conflict even though `FolderResultCode.IdempotencyConflict` and the canonical `idempotency_conflict` string already exist. Likewise `ProviderValidationFailed` falls into the default arm and reports `ProviderReadinessFailed`. Unreachable today because the only production caller hard-codes `Fresh`; must be resolved with Story 12.6.
-status: open
+status: done 2026-11-24
+resolution: Preserves the distinct idempotency conflict and expiry results and maps provider validation failures to ValidationFailed. The binding gate verifies all four outcomes.
 
 ### DW-297: An equivalent-replay bind is indistinguishable from a fresh bind in the event stream.
 

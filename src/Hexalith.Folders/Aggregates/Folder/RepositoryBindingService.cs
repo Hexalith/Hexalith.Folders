@@ -493,6 +493,7 @@ public sealed class RepositoryBindingService(
             ProviderFailureCategory.ProviderAuthenticationRequired
                 or ProviderFailureCategory.ProviderPermissionInsufficient => FolderResultCode.ProviderPermissionInsufficient,
             ProviderFailureCategory.ProviderConflict => MapProviderConflict(result.ReasonCode),
+            ProviderFailureCategory.ProviderValidationFailed => FolderResultCode.ValidationFailed,
             _ => FolderResultCode.ProviderReadinessFailed,
         };
 
