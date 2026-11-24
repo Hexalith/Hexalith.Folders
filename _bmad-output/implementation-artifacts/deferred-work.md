@@ -2686,6 +2686,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
   summary: `_bmad-output/project-context.md:99` still instructs agents to keep skipped E2E placeholders until Epic 6 story 6-2.
   evidence: That bullet now contradicts both READMEs this story rewrote, so agents reading project-context may re-add the placeholders just retired. Frozen Decisions explicitly keep that surface, and it is an agent-context file. Settle by sweeping the E2E bullet when Story 11.13 synchronizes planning/maintenance documents.
+  status: done 2026-11-25
+  resolution: The project-context bullet now describes the live, blocking E2E lane (`e2e-gates` and `accessibility-gates`), points to the E2E README and `docs/operations/e2e-ci-gates.md`, and forbids skipped placeholders as well as brittle CSS, text and sleep-based tests. It names no test counts, so it cannot drift with them. Story 6.2 is done.
 
 - source_spec: none
   summary: Complete OQ2 by publishing and approving the canonical file-policy contract and cross-surface tests.

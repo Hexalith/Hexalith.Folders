@@ -96,7 +96,7 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Layered authorization tests must assert short-circuit order and no protected resource touch before the relevant authorization layer passes.
 - Tests for safe denial must prove unauthorized and nonexistent resources stay indistinguishable at the caller-visible boundary.
 - Idempotency tests must cover replay, conflict, ordinal field ordering, duplicate JSON property rejection, Unicode/control-character handling, UTC date handling, and tenant-scoped keys.
-- UI E2E is a deferred Playwright-on-.NET lane; keep skipped placeholders until Epic 6 story 6-2 provides stable read-only console routes and selectors. Do not add brittle CSS/text/sleep-based tests.
+- UI E2E is a live, blocking Playwright-on-.NET lane (`e2e-gates`, plus `accessibility-gates` for its Accessibility subset); see `tests/Hexalith.Folders.UI.E2E.Tests/README.md` and `docs/operations/e2e-ci-gates.md`. Follow its route and selector contract: `data-testid` selectors, route constants in `Routes/ConsoleRoutes.cs`, the host fixtures, and Playwright auto-waiting. Do not add skipped placeholders or brittle CSS/text/sleep-based tests.
 - Use `src/Hexalith.Folders.Testing` factories and HTTP helpers for tenant, folder, task, correlation, idempotency, and authorization contexts; prefer explicit overrides over hidden static fixture state.
 - Focused gate scripts under `tests/tools/*.ps1` are CI contracts. Do not add recursive submodule initialization, artifact upload, publish, semantic-release, production endpoints, secrets, or broad network assumptions to them.
 
