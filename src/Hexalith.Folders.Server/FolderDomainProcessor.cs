@@ -106,10 +106,15 @@ public sealed partial class FolderDomainProcessor(
     private readonly IOrganizationAclRepository? _actorOrganizationAclRepository = actorOrganizationAclRepository;
 
     public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
-        => ProcessAsync(command, currentState, CancellationToken.None);
+        => ProcessWithObservationAsync(command, currentState, CancellationToken.None);
 
-    /// <inheritdoc/>
-    public async Task<DomainResult> ProcessAsync(
+    Task<DomainResult> IAsyncDomainProcessor.ProcessAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
+        => ProcessWithObservationAsync(command, currentState, cancellationToken);
+
+    private async Task<DomainResult> ProcessWithObservationAsync(
         CommandEnvelope command,
         object? currentState,
         CancellationToken cancellationToken)
