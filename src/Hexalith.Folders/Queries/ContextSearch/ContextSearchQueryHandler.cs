@@ -163,6 +163,9 @@ public sealed class ContextSearchQueryHandler(
         }
 
         List<ContextSearchItem> items = [];
+        HashSet<string> emittedFileVersions = new(StringComparer.Ordinal);
+        HashSet<string> rejectedFileVersions = new(StringComparer.Ordinal);
+        int duplicateRows = 0;
         int observedSourceRows = 0;
         foreach (FolderSearchSourceHit hit in sourceResult.Hits)
         {
@@ -179,6 +182,21 @@ public sealed class ContextSearchQueryHandler(
                 || !string.Equals(hit.FolderId, query.FolderId, StringComparison.Ordinal)
                 || !string.Equals(hit.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal)
                 || !string.Equals(hit.OrganizationId, organizationId, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            // The index can return several rows for one file version. Within a page, the first row that passes every
+            // check represents it, and later rows advance the source offset without adding an item. The cursor is a
+            // raw source offset, so a later page can return the same file version again.
+            if (emittedFileVersions.Contains(hit.FileVersionId))
+            {
+                duplicateRows++;
+                continue;
+            }
+
+            // Hydration depends only on the file version within this query, so a rejected version is not read again.
+            if (rejectedFileVersions.Contains(hit.FileVersionId))
             {
                 continue;
             }
@@ -206,11 +224,13 @@ public sealed class ContextSearchQueryHandler(
                 || !string.Equals(entry.Identity.OrganizationId, organizationId, StringComparison.Ordinal)
                 || !string.Equals(entry.Identity.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal))
             {
+                rejectedFileVersions.Add(hit.FileVersionId);
                 continue;
             }
 
             ContextSearchItem item = MapItem(hit, entry);
             items.Add(item);
+            emittedFileVersions.Add(hit.FileVersionId);
         }
 
         stopwatch.Stop();
@@ -221,7 +241,9 @@ public sealed class ContextSearchQueryHandler(
         int nextOffset = offset > int.MaxValue - rawRowsAdvanced
             ? int.MaxValue
             : offset + rawRowsAdvanced;
-        bool hasMore = items.Count >= limit
+        // A duplicate of an emitted item hides nothing from the caller, so it counts toward a full page. Rows dropped
+        // by trimming or hydration do not, which keeps their existence out of the pagination metadata.
+        bool hasMore = items.Count + duplicateRows >= limit
             && rawRowsAdvanced > 0
             && nextOffset > offset
             && sourceResult.TotalCount > nextOffset;

@@ -318,6 +318,83 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task DuplicateHitsForOneFileVersionShouldYieldOneItemWithTheFirstScore()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-1", score: 2.0), Hit("fv-1", score: 1.5), Hit("fv-2", score: 1.0), Hit("fv-1", score: 0.5)],
+            RawCount = 4,
+            TotalCount = 4,
+        };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1"), Entry("fv-2")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        result.Items.Select(item => item.FileVersionReference).ShouldBe(["fv-1", "fv-2"]);
+        result.Items[0].Score.ShouldBe(2.0);
+        result.Items[1].Score.ShouldBe(1.0);
+        result.Limits.IsTruncated.ShouldBeFalse();
+        result.NextCursor.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task DuplicateRowsShouldCountTowardAFullPageSoLaterRowsStayReachable()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-1", score: 2.0), Hit("fv-1", score: 1.5)],
+            RawCount = 2,
+            TotalCount = 3,
+        };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1"), Entry("fv-2")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(limit: 2), TestContext.Current.CancellationToken);
+
+        result.Items.ShouldHaveSingleItem().FileVersionReference.ShouldBe("fv-1");
+        result.Limits.IsTruncated.ShouldBeTrue();
+        result.NextCursor.ShouldBe("memories-search:2");
+    }
+
+    [Fact]
+    public async Task RejectedFileVersionShouldBeHydratedOnceAndNotCountTowardAFullPage()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-ghost", score: 2.0), Hit("fv-ghost", score: 1.5)],
+            RawCount = 2,
+            TotalCount = 3,
+        };
+        StubBridgeReadModel bridge = new([]);
+        ContextSearchQueryHandler handler = Handler(source, bridge);
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(limit: 2), TestContext.Current.CancellationToken);
+
+        result.Items.ShouldBeEmpty();
+        bridge.ByIdReads.ShouldBe(1);
+        result.Limits.IsTruncated.ShouldBeFalse();
+        result.NextCursor.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task DroppedDuplicateShouldNotSuppressALaterValidRowForTheSameFileVersion()
+    {
+        // The first row carries a foreign workspace and is trimmed before hydration, so it must not mark the file
+        // version as emitted. The later in-scope row still represents it.
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-1", workspaceId: "workspace-b", score: 2.0), Hit("fv-1", score: 1.0)],
+        };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
+        item.FileVersionReference.ShouldBe("fv-1");
+        item.Score.ShouldBe(1.0);
+    }
+
+    [Fact]
     public async Task HitWithoutAuthoritativeBridgeEntryShouldBeDropped()
     {
         // The index is non-authoritative: a hit with no current bridge entry must not be returned.
@@ -662,6 +739,8 @@ public sealed class ContextSearchQueryHandlerTests
     {
         public bool IsAvailable => isAvailable;
 
+        public int ByIdReads { get; private set; }
+
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,
             CancellationToken cancellationToken = default)
@@ -672,10 +751,13 @@ public sealed class ContextSearchQueryHandlerTests
             string folderId,
             string fileVersionId,
             CancellationToken cancellationToken = default)
-            => Task.FromResult(entries.FirstOrDefault(e =>
+        {
+            ByIdReads++;
+            return Task.FromResult(entries.FirstOrDefault(e =>
                 string.Equals(e.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
                 && string.Equals(e.Identity.FolderId, folderId, StringComparison.Ordinal)
                 && string.Equals(e.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)));
+        }
 
         public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
             string managedTenantId,

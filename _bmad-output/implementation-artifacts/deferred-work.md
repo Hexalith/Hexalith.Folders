@@ -2583,6 +2583,8 @@ resolution: Missing and null entry arrays fail with a bounded diagnostic before 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: Context search still returns one item per duplicate source hit for the same file-version identity.
   evidence: Pre-existing handler loop; this story only changed Indexed-only IsVisible and the post-auth IsAvailable gate. DuplicateSourceHitsForOneIdentityShouldNotDiscloseRawCandidateCounts asserts no raw counts, not a single item.
+  status: done 2026-11-24
+  resolution: Within a page, the context-search handler returns one item per file version. The first row that passes trimming and hydration supplies the score. Later rows for that version advance the source offset without adding an item and count toward a full page, so later rows stay reachable. A rejected version is hydrated once. The cursor is a raw source offset, so a later page can repeat a version. `ContextSearchQueryHandlerTests` and `ContextSearchFacadeWiringTests` pin the behavior.
 
 ### DW-356: CLI RequiredId options accept whitespace identifiers and forward them to the SDK.
 
@@ -2610,6 +2612,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 ## Deferred from: code review of spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md (2026-09-08)
 
 - Duplicate source hits still emit one search item per Memories row (`ContextSearchQueryHandler.cs:212`). Pre-existing handler loop; this story only changed Indexed-only `IsVisible` and the post-auth `IsAvailable` gate. The new duplicate test asserts no raw counts, not a single item.
+  status: done 2026-11-24
+  resolution: Within a page, the context-search handler returns one item per file version. The first row that passes trimming and hydration supplies the score. Later rows for that version advance the source offset without adding an item and count toward a full page, so later rows stay reachable. A rejected version is hydrated once. The cursor is a raw source offset, so a later page can repeat a version. `ContextSearchQueryHandlerTests` and `ContextSearchFacadeWiringTests` pin the behavior.
 - CLI reference still omits `context index-search` (`docs/sdk/cli-reference.md` context table). Pre-existing Story 10.5 gap; this slice documented `context indexing-status` and added an index-search parse test without adding the index-search row.
 - DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand. Pre-existing ledger row; runtime OpenAPI `cli` parity and the indexing-status command already landed.
 

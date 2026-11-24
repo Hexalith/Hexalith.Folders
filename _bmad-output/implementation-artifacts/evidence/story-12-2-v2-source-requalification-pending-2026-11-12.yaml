@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: e136f7194c771729f6b15a43939a5ef27605445e9f70274683bbf0cbb3789d11
+candidate_set_sha256: 292f9966d9b838edfea475369bda48d46d5bc9a55a205f748f3cd490f80ba094
 artifact_count: 1680
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -3878,8 +3878,8 @@ artifacts:
     sha256: a4c15001f0be83568b785c83ed8748b7e8782c4d32da5cf02c36a99a5bf95109
   - path: "src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryHandler.cs"
     kind: file
-    bytes: 17432
-    sha256: 4e3849010a3868a77deb2735cf13701be381749434a0013627a9bb1b2447751d
+    bytes: 18687
+    sha256: 88452f41995abe8e14cf013c481d008161ecf73206860a5d09d3fa32163eefdf
   - path: "src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryResult.cs"
     kind: file
     bytes: 1356
@@ -5010,8 +5010,8 @@ artifacts:
     sha256: 720261211ac436be798529630cee3dae1d264406f15ee69d6cf9e541755a1784
   - path: "tests/Hexalith.Folders.IntegrationTests/ContextSearch/ContextSearchFacadeWiringTests.cs"
     kind: file
-    bytes: 30983
-    sha256: 35fad3b8c903ae80b65900ec82b6ac8076f9832f6b7cabceff7faa92ee69c8bf
+    bytes: 31162
+    sha256: 63fd81023f0bf71759c9f7fe8cccfadfa312690f9df9da74f17484c77ec445a9
   - path: "tests/Hexalith.Folders.IntegrationTests/DenyingFolderArchivePolicyEvidenceProvider.cs"
     kind: file
     bytes: 1972
@@ -6406,8 +6406,8 @@ artifacts:
     sha256: 7c66414eb582660d5c73fa957e45f969d323b921d32be5ba546902c41a978fd2
   - path: "tests/Hexalith.Folders.Tests/Queries/ContextSearch/ContextSearchQueryHandlerTests.cs"
     kind: file
-    bytes: 28603
-    sha256: ceb88d75927bca657dc1419707cee3a850323b5ce38cac49abd97ddcd3932bac
+    bytes: 31969
+    sha256: b6d163082fdad4c0855471ea2e0b57a440aaf6c76af79d11b141ab3302c54088
   - path: "tests/Hexalith.Folders.Tests/Queries/ContextSearch/FolderIndexingStatusQueryHandlerTests.cs"
     kind: file
     bytes: 11851

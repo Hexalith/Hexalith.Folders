@@ -275,6 +275,8 @@ public sealed class ContextSearchFacadeWiringTests
 
             using JsonDocument firstDocument = JsonDocument.Parse(firstJson);
             using JsonDocument secondDocument = JsonDocument.Parse(secondJson);
+            firstDocument.RootElement.GetProperty("items").GetArrayLength().ShouldBe(1);
+            secondDocument.RootElement.GetProperty("items").GetArrayLength().ShouldBe(1);
             firstDocument.RootElement.GetProperty("items")[0].GetProperty("fileVersionReference").GetString()
                 .ShouldBe(secondDocument.RootElement.GetProperty("items")[0].GetProperty("fileVersionReference").GetString());
         }
