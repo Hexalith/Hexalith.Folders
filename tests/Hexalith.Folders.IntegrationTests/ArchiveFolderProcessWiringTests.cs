@@ -449,10 +449,14 @@ public sealed class ArchiveFolderProcessWiringTests
             using HttpResponseMessage first = await host.Client
                 .SendAsync(firstRequest, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            DomainServiceWireEvent archivedEvent = host.Gateway.LastWireEvents.ShouldHaveSingleItem();
+            archivedEvent.EventTypeName.ShouldBe(typeof(FolderArchived).FullName);
+
             using HttpRequestMessage replayRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage replay = await host.Client
                 .SendAsync(replayRequest, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            host.Gateway.LastWireEvents.ShouldBeEmpty();
 
             string firstJson = await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             string replayJson = await replay.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -507,6 +511,7 @@ public sealed class ArchiveFolderProcessWiringTests
             using JsonDocument document = JsonDocument.Parse(responseJson);
             AssertMetadataOnlySafeDenial(document.RootElement);
             host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Gateway.LastProcessReturnedMarkedDenial.ShouldBeTrue();
             policyProvider.Calls.ShouldBe(0);
 
             // This denial returns before BeginScope, so a null accessor is a leak guard on the

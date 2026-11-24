@@ -2101,7 +2101,8 @@ location: n/a
 source_spec: `spec-archive-process-integration.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-001531-d5cf; this entry preserves the lingering recommendation for a deliberate later review.
-status: open
+status: done 2026-11-24
+resolution: Follow-up review added process-boundary coverage for a single archive event on fresh execution, zero events on replay, and the EventStore transport marker on foreign-tenant denial.
 
 ### DW-310: The pre-existing Int32 EventsAppended test affordance can wrap after more than Int32.MaxValue appended events.
 

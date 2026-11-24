@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -69,6 +70,9 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
     /// <summary>Gets the rejection code returned by the last <c>/process</c> round-trip.</summary>
     public FolderResultCode? LastWireRejectionCode { get; private set; }
 
+    /// <summary>Gets whether the last process response carried a marked transport denial.</summary>
+    public bool LastProcessReturnedMarkedDenial { get; private set; }
+
     /// <inheritdoc/>
     public async Task<SubmitCommandResponse> SubmitCommandAsync(
         SubmitCommandRequest request,
@@ -77,6 +81,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
         string envelopeTenant = envelopeTenantTransform?.Invoke(request.Tenant) ?? request.Tenant;
         ProcessCalls++;
         LastWireRejectionCode = null;
+        LastProcessReturnedMarkedDenial = false;
         using HttpClient client = clientFactory();
         CommandEnvelope envelope = new(
             request.IdempotencyKey ?? request.MessageId,
@@ -95,6 +100,9 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
             .ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
+            LastProcessReturnedMarkedDenial = response.StatusCode == HttpStatusCode.Forbidden
+                && response.Headers.TryGetValues("X-Hexalith-Authorization-Denial", out var denialMarkers)
+                && denialMarkers.SequenceEqual(["v1"], StringComparer.Ordinal);
             throw new EventStoreGatewayException((int)response.StatusCode, response.ReasonPhrase ?? "Process failed", correlationId: request.CorrelationId);
         }
 
