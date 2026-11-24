@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Results;
@@ -23,9 +21,6 @@ public sealed class FoldersDomainServiceRequestHandler(
     HumanAuthorityReceiptVerifier? humanReceiptVerifier = null)
 {
     private const string OrganizationBaselineScope = FolderStreamName.ReservedOrganizationPermissionScope;
-
-    private static readonly Regex CanonicalIdentifierRegex =
-        new("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled);
 
     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
     {
@@ -243,19 +238,19 @@ public sealed class FoldersDomainServiceRequestHandler(
         };
 
     private static string? ValidateFolderAggregateId(string? aggregateId)
-        => IsCanonicalIdentifier(aggregateId) ? aggregateId : null;
+        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(aggregateId) ? aggregateId : null;
 
     private static bool TryValidateProcessEnvelope(CommandEnvelope command, out string? taskId)
     {
         taskId = null;
-        if (!IsCanonicalIdentifier(command.MessageId)
-            || !IsCanonicalIdentifier(command.CorrelationId)
-            || !IsCanonicalIdentifier(command.TenantId)
-            || !IsCanonicalIdentifier(command.AggregateId)
-            || !IsCanonicalIdentifier(command.UserId)
+        if (!FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.MessageId)
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.CorrelationId)
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.TenantId)
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.AggregateId)
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.UserId)
             || command.Extensions is null
             || !command.Extensions.TryGetValue("taskId", out string? extensionTaskId)
-            || !IsCanonicalIdentifier(extensionTaskId))
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(extensionTaskId))
         {
             return false;
         }
@@ -263,11 +258,6 @@ public sealed class FoldersDomainServiceRequestHandler(
         taskId = extensionTaskId;
         return true;
     }
-
-    private static bool IsCanonicalIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && CanonicalIdentifierRegex.IsMatch(value);
 
     private static LayeredFolderAuthorizationResult BuildUnsupportedCommandDenial(CommandEnvelope command)
         => LayeredFolderAuthorizationResult.Denied(
@@ -304,7 +294,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     private static string? TryReadCanonicalTaskId(CommandEnvelope command)
         => command.Extensions is not null
         && command.Extensions.TryGetValue("taskId", out string? taskId)
-        && IsCanonicalIdentifier(taskId)
+        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(taskId)
             ? taskId
             : null;
 }

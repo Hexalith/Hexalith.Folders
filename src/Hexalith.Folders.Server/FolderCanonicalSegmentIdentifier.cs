@@ -5,19 +5,36 @@ using Hexalith.Folders.Authorization;
 namespace Hexalith.Folders.Server;
 
 /// <summary>
-/// Validates Domain and Audit REST segment identifiers against the lowercase 128-character grammar.
+/// Validates lowercase 128-character segment identifiers for the Domain and Audit REST endpoints and the
+/// <c>/process</c> boundary.
 /// </summary>
 internal static partial class FolderCanonicalSegmentIdentifier
 {
     /// <summary>
-    /// Returns whether <paramref name="value"/> is a lowercase canonical segment identifier.
+    /// Returns whether <paramref name="value"/> is a lowercase segment identifier or a candidate opaque identifier.
+    /// </summary>
+    /// <param name="value">The candidate identifier.</param>
+    /// <returns>
+    /// <see langword="true"/> when the value matches <c>^[a-z0-9._-]+$</c>, or is a mixed-case opaque identifier of
+    /// 16 to 128 letters, digits, underscores and hyphens, and is at most 128 characters.
+    /// </returns>
+    public static bool IsValid(string? value)
+        => IsLowercaseSegment(value)
+        || (value is not null
+            && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
+            && PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
+
+    /// <summary>
+    /// Returns whether <paramref name="value"/> matches the lowercase segment grammar without the opaque-identifier
+    /// allowance that <see cref="IsValid"/> grants. The <c>/process</c> boundary uses this stricter form for envelope
+    /// identifiers and the task extension, and rejection events use it for the identifiers they echo.
     /// </summary>
     /// <param name="value">The candidate identifier.</param>
     /// <returns><see langword="true"/> when the value matches <c>^[a-z0-9._-]+$</c> and is at most 128 characters.</returns>
-    public static bool IsValid(string? value)
+    public static bool IsLowercaseSegment(string? value)
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && (Pattern().IsMatch(value) || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
+        && Pattern().IsMatch(value);
 
     [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();

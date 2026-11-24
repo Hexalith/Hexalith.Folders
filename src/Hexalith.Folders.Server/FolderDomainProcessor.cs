@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
@@ -61,12 +60,6 @@ public sealed partial class FolderDomainProcessor(
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
     };
-
-    // Mirrors FoldersDomainServiceEndpoints.CanonicalSegmentRegex. Extension values
-    // arriving on the /process boundary are not validated by the REST endpoint, so the
-    // processor re-validates before propagating them into command/event metadata.
-    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled)]
-    private static partial Regex CanonicalSegmentRegex();
 
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
     private readonly FolderCreationService _folderCreationService =
@@ -622,9 +615,9 @@ public sealed partial class FolderDomainProcessor(
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == OrganizationProviderBindingResultCode.AlreadyApplied,
-            CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
-            TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
+            CorrelationId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.IdempotencyKey) ? result.IdempotencyKey : null);
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);
@@ -1459,31 +1452,26 @@ public sealed partial class FolderDomainProcessor(
         => TryReadCanonicalExtension(envelope.Extensions, "taskId")!;
 
     private static bool IsValidProcessEnvelope(CommandEnvelope envelope)
-        => IsCanonicalIdentifier(envelope.MessageId)
-        && IsCanonicalIdentifier(envelope.CorrelationId)
-        && IsCanonicalIdentifier(envelope.TenantId)
-        && IsCanonicalIdentifier(envelope.AggregateId)
-        && IsCanonicalIdentifier(envelope.UserId)
+        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.MessageId)
+        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.CorrelationId)
+        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.TenantId)
+        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.AggregateId)
+        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.UserId)
         && TryReadCanonicalExtension(envelope.Extensions, "taskId") is not null;
 
+    // Extension values arriving on the /process boundary are not validated by the REST endpoint, so the
+    // processor re-validates them before propagating them into command and event metadata.
     private static string? TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
             || !extensions.TryGetValue(key, out string? value)
-            || string.IsNullOrWhiteSpace(value)
-            || value.Length > FoldersServerModule.MaxCanonicalIdentifierLength
-            || !CanonicalSegmentRegex().IsMatch(value))
+            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value))
         {
             return null;
         }
 
         return value;
     }
-
-    private static bool IsCanonicalIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && CanonicalSegmentRegex().IsMatch(value);
 
     private async ValueTask EmitProcessObservationAsync(CommandEnvelope command, DomainResult result, TimeSpan duration)
     {
@@ -1615,9 +1603,9 @@ public sealed partial class FolderDomainProcessor(
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == FolderResultCode.IdempotentReplay,
-            CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
-            TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null,
+            CorrelationId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.IdempotencyKey) ? result.IdempotencyKey : null,
             FailureCode: result.IsAccepted ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),

@@ -2631,6 +2631,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Consolidate `/process` canonical-identifier copies in FolderDomainProcessor and FoldersDomainServiceRequestHandler.
   evidence: Split from Story 11.4 to keep the spec under the token budget. Those copies use the same 128-char segment grammar as the REST endpoints but are not Server endpoint files; the story AC targets endpoint-file helpers.
+  status: done 2026-11-24
+  resolution: `FolderCanonicalSegmentIdentifier.IsLowercaseSegment` now holds the strict lowercase 128-character grammar. `FolderDomainProcessor` and `FoldersDomainServiceRequestHandler` call it instead of their own regex copies, and `IsValid` builds on it. The `/process` boundary keeps its stricter rule without the opaque-identifier allowance. `FolderCanonicalIdentifierTests` pins the difference.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Extract shared Server request/response JsonSerializerOptions.

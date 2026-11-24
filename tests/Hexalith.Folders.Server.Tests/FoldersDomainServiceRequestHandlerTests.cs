@@ -181,6 +181,29 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     }
 
     [Fact]
+    public async Task ProcessShouldRejectAnOpaqueTaskIdThatOnlyTheRestGrammarAcceptsBeforeDomainProcessor()
+    {
+        // The REST segment grammar also admits mixed-case opaque identifiers; the /process task extension does not.
+        const string opaqueTaskId = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
+        FolderCanonicalSegmentIdentifier.IsValid(opaqueTaskId).ShouldBeTrue();
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingDomainProcessor processor = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([processor], authorizer, tenantContext);
+
+        IResult result = await handler.ProcessAsync(
+            CreateRequest("tenant-a", "user-a", taskIdOverride: opaqueTaskId),
+            TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("validation_error");
+        processor.ProcessCalls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ProcessShouldRejectMissingTaskExtensionBeforeDomainProcessor()
     {
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
@@ -372,14 +395,15 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         string commandTenantId,
         string userId,
         bool includeTaskExtension = true,
-        string? malformedField = null)
+        string? malformedField = null,
+        string? taskIdOverride = null)
     {
         string messageId = malformedField == "messageId" ? "bad message" : "01j00000000000000000000001";
         string tenantId = commandTenantId;
         string aggregateId = malformedField == "aggregateId" ? "Agg-1" : "agg-1";
         string correlationId = malformedField == "correlationId" ? "corr secret" : "corr-1";
         string envelopeUserId = malformedField == "userId" ? "user secret" : userId;
-        string taskId = malformedField == "taskId" ? "task secret" : "task-a";
+        string taskId = taskIdOverride ?? (malformedField == "taskId" ? "task secret" : "task-a");
         Dictionary<string, string>? extensions = includeTaskExtension
             ? new Dictionary<string, string>(StringComparer.Ordinal)
             {

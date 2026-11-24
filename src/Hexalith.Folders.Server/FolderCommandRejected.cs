@@ -17,18 +17,8 @@ namespace Hexalith.Folders.Server;
 // point for constructing a canonicalized rejection event.
 public sealed partial record FolderCommandRejected : IRejectionEvent
 {
-    // Shared with TryReadCanonicalExtension and IsCanonicalIdentifier — keep the three
-    // sites in lock-step so a length bump cannot drift.
+    // The same limit FolderCanonicalSegmentIdentifier enforces for /process identifiers.
     public const int MaxCanonicalIdentifierLength = FoldersServerModule.MaxCanonicalIdentifierLength;
-
-    private const int MaxIdentifierLength = MaxCanonicalIdentifierLength;
-
-    // Lowercase canonical form, mirroring CanonicalSegmentRegex in FolderDomainProcessor
-    // and FoldersDomainServiceEndpoints. The gateway-corrected echo at the REST surface is
-    // allowed to be uppercase (ULID-friendly) via IsSafeGatewayCorrelationId, but rejection
-    // event payloads must not weaken the canonical contract.
-    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.Compiled)]
-    private static partial Regex SafeIdentifierRegex();
 
     private FolderCommandRejected(
         string code,
@@ -164,7 +154,7 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
         // matches actual command-type names (Hexalith.Folders.Commands.Foo) before allowing
         // it on the wire. Otherwise collapse to a fixed sentinel.
         if (!string.IsNullOrWhiteSpace(commandType)
-            && commandType.Length <= MaxIdentifierLength
+            && commandType.Length <= MaxCanonicalIdentifierLength
             && CommandTypeRegex().IsMatch(commandType))
         {
             return commandType;
@@ -177,15 +167,9 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     [GeneratedRegex("\\A[A-Za-z0-9._-]+\\z", RegexOptions.Compiled)]
     private static partial Regex CommandTypeRegex();
 
+    // Lowercase canonical form, shared with the /process boundary. The gateway-corrected echo at the REST surface
+    // may be uppercase (ULID-friendly) via IsSafeGatewayCorrelationId, but rejection event payloads must not weaken
+    // the canonical contract.
     internal static string? CanonicalIdentifierOrNull(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value)
-            || value.Length > MaxIdentifierLength
-            || !SafeIdentifierRegex().IsMatch(value))
-        {
-            return null;
-        }
-
-        return value;
-    }
+        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value) ? value : null;
 }
