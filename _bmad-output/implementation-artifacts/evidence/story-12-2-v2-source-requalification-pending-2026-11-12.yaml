@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 292f9966d9b838edfea475369bda48d46d5bc9a55a205f748f3cd490f80ba094
+candidate_set_sha256: a959d257c222be804cdfbf9f2115ce3ec5cb4a06c831e80d18a8aa36bdb51a39
 artifact_count: 1680
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -78,8 +78,8 @@ artifacts:
     sha256: 25c4b7e00a9a15fec94afed32678dc8192605a8956804c4073b74f628650d33f
   - path: "docs/sdk/cli-reference.md"
     kind: file
-    bytes: 12240
-    sha256: aae50b9e92cb27398345d28d79ba56a00f60b3d617f3dbc712dec6ca657a270b
+    bytes: 12320
+    sha256: ccf8994c07f1c0febd3529a4b83f820ca42fca7ddb43d2695842070a435353aa
   - path: "docs/sdk/mcp-reference.md"
     kind: file
     bytes: 11010
@@ -4767,7 +4767,7 @@ artifacts:
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ConsumerDocsConformanceTests.cs"
     kind: file
     bytes: 50626
-    sha256: bc6d8b5f9d24dfd381eeee1c9c57142f230a63bada580d5624392d81441d1c57
+    sha256: 7be93eb88c2dcfb7e85ba86b3f1708c8dd987a6c1cfb4ad1211aa823269a0c94
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ContainerImageConformanceTests.cs"
     kind: file
     bytes: 17495

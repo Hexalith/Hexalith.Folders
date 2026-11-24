@@ -2615,6 +2615,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
   status: done 2026-11-24
   resolution: Within a page, the context-search handler returns one item per file version. The first row that passes trimming and hydration supplies the score. Later rows for that version advance the source offset without adding an item and count toward a full page, so later rows stay reachable. A rejected version is hydrated once. The cursor is a raw source offset, so a later page can repeat a version. `ContextSearchQueryHandlerTests` and `ContextSearchFacadeWiringTests` pin the behavior.
 - CLI reference still omits `context index-search` (`docs/sdk/cli-reference.md` context table). Pre-existing Story 10.5 gap; this slice documented `context indexing-status` and added an index-search parse test without adding the index-search row.
+  status: done 2026-11-24
+  resolution: The CLI reference lists `context index-search` with `SearchFolderIndexedFiles`. `CliReferenceDocumentationTests` compares the documented rows with the leaf commands that `CliApplication` builds, so a missing or extra row fails.
 - DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand. Pre-existing ledger row; runtime OpenAPI `cli` parity and the indexing-status command already landed.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
