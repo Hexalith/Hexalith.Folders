@@ -331,7 +331,7 @@ Workspace_preparation_failed=50
             new("task_id", true, taskId),
             new("workspace_id", true, workspaceId),
         ]);
-        request.ComputeIdempotencyHash(workspaceId, taskId).ShouldBe(HexalithIdempotencyHasher.Compute(operationId, fields));
+        request.ComputeIdempotencyHash(workspaceId, taskId).ShouldBe(HexalithIdempotencyHasher.Compute(operationId, fields, TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -644,12 +644,12 @@ Workspace_preparation_failed=50
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Test", [
             new IdempotencyField("z_field", true, "last"),
             new IdempotencyField("a_field", true, "first"),
-        ]));
+        ], TestContext.Current.CancellationToken));
 
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Test", [
             new IdempotencyField("a_field", true, "first"),
             new IdempotencyField("a_field", true, "duplicate"),
-        ]));
+        ], TestContext.Current.CancellationToken));
 
         Should.Throw<Newtonsoft.Json.JsonReaderException>(() => HexalithIdempotencyHasher.NormalizeJsonText("{\"operation_id\":\"a\",\"operation_id\":\"b\"}"));
     }
@@ -1695,13 +1695,13 @@ Workspace_preparation_failed=50
     [Fact]
     public void CanonicalHasherPinsPrimitiveEdgeFormatting()
     {
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, int.MinValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-2147483648"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, ulong.MaxValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:18446744073709551615"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 0)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:0"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, -1)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-1"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.0m)])
-            .ShouldNotBe(HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.00m)]));
-        Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))]));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, int.MinValue)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-2147483648"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, ulong.MaxValue)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:18446744073709551615"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 0)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:0"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, -1)], TestContext.Current.CancellationToken).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-1"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.0m)], TestContext.Current.CancellationToken)
+            .ShouldNotBe(HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.00m)], TestContext.Current.CancellationToken));
+        Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))], TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -1722,7 +1722,7 @@ Workspace_preparation_failed=50
 
         foreach ((object value, string canonical) in vectors)
         {
-            HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+            HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)], TestContext.Current.CancellationToken)
                 .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=" + canonical));
         }
     }
@@ -1735,7 +1735,7 @@ Workspace_preparation_failed=50
     public void CanonicalHasherPreservesBinary64SubnormalBits(ulong bits, string canonicalBits)
     {
         double value = BitConverter.UInt64BitsToDouble(bits);
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, value)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:" + canonicalBits));
     }
 
@@ -1750,9 +1750,9 @@ Workspace_preparation_failed=50
         double separate = roundedProduct - offset;
         double fused = Math.FusedMultiplyAdd(3d, operand, -offset);
 
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, separate)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, separate)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000004"));
-        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, fused)])
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, fused)], TestContext.Current.CancellationToken)
             .ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:double:0000000000000003"));
     }
 
@@ -2045,7 +2045,7 @@ Workspace_preparation_failed=50
             _ => token,
         };
 
-        return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)]);
+        return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)], TestContext.Current.CancellationToken);
     }
 
     private static IReadOnlyList<OpenApiOperation> LoadOperations()

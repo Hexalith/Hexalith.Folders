@@ -1502,7 +1502,8 @@ resolution: Moved the optional parent presence rule to the schema-and-field regi
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27
 reason: `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — hash work is in-process and short; revisit when invoked from request-scoped network paths.
-status: open
+status: done 2026-11-24
+resolution: The new Compute overload observes cancellation during field enumeration, validation, and encoding while returning the same hash for completed operations.
 
 ### DW-226: `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`]
 

@@ -168,12 +168,12 @@ public sealed partial class ClientGenerationTests
             new("z_field", true, 1),
             new("a_field", true, 2),
             new("z_field", true, 3),
-        ]));
+        ], TestContext.Current.CancellationToken));
         duplicate.Message.ShouldBe("Duplicate idempotency field 'z_field'.");
 
-        Should.NotThrow(() => HexalithIdempotencyHasher.Compute("Probe", [new("A", true, 1), new("a", true, 2)]));
+        Should.NotThrow(() => HexalithIdempotencyHasher.Compute("Probe", [new("A", true, 1), new("a", true, 2)], TestContext.Current.CancellationToken));
         InvalidOperationException order = Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Probe",
-            [new("a", true, 1), new("A", true, 2)]));
+            [new("a", true, 1), new("A", true, 2)], TestContext.Current.CancellationToken));
         order.Message.ShouldContain("ordinal-ascending order");
     }
 
@@ -416,8 +416,9 @@ public sealed partial class ClientGenerationTests
         string clientProject = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
         ProcessResult tool = RunProcess("dotnet", $"msbuild \"{clientProject}\" -getProperty:NSwagExe_Net110 -verbosity:quiet", RepositoryRoot, 120_000);
         tool.ExitCode.ShouldBe(0, RedactDiagnosticOutput(tool.Output, temp));
-        string command = tool.Output.Trim();
-        command.StartsWith("dotnet ", StringComparison.Ordinal).ShouldBeTrue(RedactDiagnosticOutput(command, temp));
+        string command = tool.Output.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Where(line => line.StartsWith("dotnet ", StringComparison.Ordinal))
+            .ShouldHaveSingleItem(RedactDiagnosticOutput(tool.Output, temp));
         ProcessResult generation = RunProcess("dotnet", command["dotnet ".Length..] + $" run \"{configurationPath}\"", temp, 120_000);
         generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, temp));
     }
@@ -428,7 +429,7 @@ public sealed partial class ClientGenerationTests
         {
             IdempotencyField field = new(path, present, null);
             InvalidOperationException direct = Should.Throw<InvalidOperationException>(() => field.ToCanonicalLine());
-            InvalidOperationException compute = Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Probe", [field]));
+            InvalidOperationException compute = Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Probe", [field], TestContext.Current.CancellationToken));
             direct.Message.ShouldBe(compute.Message);
         }
     }
