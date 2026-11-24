@@ -1161,7 +1161,8 @@ resolution: The workspace-lock tests embed the canonical spine and notes at buil
 origin: migrated from legacy ledger ("Deferred from: code review of 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups (2026-05-13)"), 2026-08-24
 location: _bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json
 reason: `_bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json` ships with `result: fail` (11 dirty paths) inside the same diff being reviewed. Process artifact captured during dev; not a contract bug. Deferred as a process anomaly worth noting on the next dev-record housekeeping pass.
-status: open
+status: done 2026-11-24
+resolution: Reconciled all eleven dirty paths against the Story 1.7 file list and implementation commit. The story completion notes explain the historical cleanliness failure and identify the four checks that passed.
 
 ### DW-162: `CanonicalErrorCategory` retains `provider_failure_known` without any operation referencing it
 
