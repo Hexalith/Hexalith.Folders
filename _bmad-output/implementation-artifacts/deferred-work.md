@@ -203,7 +203,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderArchived.IdempotencyFingerprint
 reason: `FolderArchived.IdempotencyFingerprint` non-empty invariant undocumented at event level — not currently reachable from `FolderAggregate.Handle`. Deferred — promote to an event-level invariant if a non-aggregate writer appears.
-status: open
+status: done 2026-11-24
+resolution: Documented the archive event invariant and rejected blank decision overrides before event creation. Added rejection and replay coverage.
 
 ### DW-29: `ArchiveFolder.PayloadTenantId` with malformed segment matching the authoritative tenant — narrow edge case. Deferred — revisit if payload-tenant smuggling becomes a verified threat.
 
