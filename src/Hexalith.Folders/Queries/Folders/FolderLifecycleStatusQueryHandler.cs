@@ -106,6 +106,18 @@ public sealed class FolderLifecycleStatusQueryHandler(
                 authorizationDenial: null);
         }
 
+        DateTimeOffset now = clock.UtcNow;
+        if (readModelResult.Freshness.ObservedAt > now
+            || (readModelResult.Status == FolderLifecycleStatusReadModelStatus.Available
+                && readModelResult.Snapshot?.Freshness.ObservedAt > now))
+        {
+            return SafeResult(
+                FolderLifecycleStatusResultCode.ReadModelUnavailable,
+                FolderLifecycleFreshness.SafeUnavailable(now, "freshness_observed_in_future"),
+                query,
+                authorizationDenial: null);
+        }
+
         return readModelResult.Status switch
         {
             FolderLifecycleStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
@@ -124,7 +136,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
         };
     }
 
-    private FolderLifecycleStatusQueryResult Compute(
+    private static FolderLifecycleStatusQueryResult Compute(
         FolderLifecycleStatusQuery query,
         LayeredFolderAuthorizationAllowedContext allowed,
         FolderLifecycleStatusReadModelSnapshot snapshot)
@@ -155,16 +167,11 @@ public sealed class FolderLifecycleStatusQueryHandler(
         };
     }
 
-    private FolderLifecycleStatusQueryResult? ValidateSnapshotCompatibility(
+    private static FolderLifecycleStatusQueryResult? ValidateSnapshotCompatibility(
         FolderLifecycleStatusQuery query,
         LayeredFolderAuthorizationAllowedContext allowed,
         FolderLifecycleStatusReadModelSnapshot snapshot)
     {
-        if (snapshot.Freshness.ObservedAt > clock.UtcNow)
-        {
-            return Unavailable(query, snapshot.Freshness, "freshness_observed_in_future");
-        }
-
         if (!Matches(snapshot.ManagedTenantId, allowed.AuthoritativeTenantId))
         {
             return Unavailable(query, snapshot.Freshness, "tenant_mismatch");

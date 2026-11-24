@@ -2326,7 +2326,8 @@ location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler
 source_spec: `spec-lifecycle-result-normalization.md`
 severity: medium
 reason: ValidateSnapshotCompatibility rejects future ObservedAt values only for an Available result with a snapshot. Stale, Unavailable, Malformed, and NotFound outer statuses return their freshness without the same temporal check; this behavior predates the normalization change and requires a separate contract decision.
-status: open
+status: done 2026-11-24
+resolution: Validates timestamps for every outer status and the available snapshot. A future observation returns clock-based safe freshness. Tests cover all statuses and inconsistent snapshot freshness.
 decision: 2026-09-05 Normalize future times — Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.
 decision: 2026-09-05 Normalize future times — Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.
 
