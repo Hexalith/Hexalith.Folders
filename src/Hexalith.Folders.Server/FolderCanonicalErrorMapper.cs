@@ -22,7 +22,7 @@ internal static class FolderCanonicalErrorMapper
     public static string CategoryFor(FolderResultCode code)
         => code switch
         {
-            FolderResultCode.Accepted or FolderResultCode.Created or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied => "success",
+            _ when FolderResult.IsAcceptedCode(code) => "success",
             FolderResultCode.AlreadyArchived => "already_archived",
             FolderResultCode.ArchivePolicyDenied => "policy_denied",
             FolderResultCode.MissingEntry or FolderResultCode.FolderNotFound => "not_found",

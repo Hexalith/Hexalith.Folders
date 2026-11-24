@@ -4017,8 +4017,7 @@ public static partial class FoldersDomainServiceEndpoints
             || failure.ValueKind != JsonValueKind.String
             || !Enum.TryParse(failure.GetString(), out FolderResultCode code)
             || !Enum.IsDefined(code)
-            || code is FolderResultCode.Accepted or FolderResultCode.Created
-                or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied)
+            || FolderResult.IsAcceptedCode(code))
         {
             return null;
         }

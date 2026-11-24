@@ -16,7 +16,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -113,7 +113,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, idempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -162,7 +162,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -209,7 +209,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -268,7 +268,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -323,7 +323,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -393,7 +393,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -475,7 +475,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -589,7 +589,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
@@ -701,7 +701,7 @@ public static class FolderAggregate
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                ? FolderResult.Replayed(command)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 

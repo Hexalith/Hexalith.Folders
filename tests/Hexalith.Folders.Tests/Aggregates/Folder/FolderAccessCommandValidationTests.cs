@@ -123,6 +123,7 @@ public sealed class FolderAccessCommandValidationTests
 
         duplicate.IdempotencyKey.ShouldNotBe(grant.IdempotencyKey);
         duplicate.Code.ShouldBe(FolderResultCode.AlreadyApplied);
+        duplicate.IsAccepted.ShouldBeTrue();
         duplicate.Events.ShouldBeEmpty();
     }
 

@@ -100,7 +100,7 @@ public sealed class FolderCreateTenantGate
         {
             FolderAppendOutcome.Appended => result,
             FolderAppendOutcome.FingerprintMatched =>
-                FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay),
+                FolderResult.Replayed(authoritativeCommand),
             FolderAppendOutcome.FingerprintConflict =>
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict =>

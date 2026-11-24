@@ -1568,8 +1568,7 @@ public sealed partial class FolderDomainProcessor(
                 && Enum.TryParse(failure.GetString(), out FolderResultCode code)
                 && Enum.IsDefined(code)
                 && string.Equals(code.ToString(), failure.GetString(), StringComparison.Ordinal)
-                && code is not (FolderResultCode.Accepted or FolderResultCode.Created
-                    or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied))
+                && !FolderResult.IsAcceptedCode(code))
             {
                 return code;
             }
@@ -1604,14 +1603,9 @@ public sealed partial class FolderDomainProcessor(
             : TenantProjectionFreshnessStatus.Fresh;
 
     private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result)
-        => result.Events.Count > 0 ? AcceptedResult(result) : result.Code switch
-        {
-            FolderResultCode.Accepted
-                or FolderResultCode.Created
-                or FolderResultCode.IdempotentReplay
-                or FolderResultCode.AlreadyApplied => AcceptedResult(result),
-            _ => Rejection(envelope, result.Code, result),
-        };
+        => result.Events.Count > 0 || result.IsAccepted
+            ? AcceptedResult(result)
+            : Rejection(envelope, result.Code, result);
 
     private static DomainResult AcceptedResult(FolderResult result)
     {
@@ -1621,8 +1615,7 @@ public sealed partial class FolderDomainProcessor(
             CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
             TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
             IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null,
-            FailureCode: result.Code is FolderResultCode.Accepted or FolderResultCode.Created
-                or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied ? null : result.Code.ToString());
+            FailureCode: result.IsAccepted ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);

@@ -111,7 +111,7 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         {
             FolderAppendOutcome.Appended => result,
             FolderAppendOutcome.FingerprintMatched =>
-                FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay),
+                FolderResult.Replayed(authoritativeCommand),
             FolderAppendOutcome.FingerprintConflict =>
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict =>

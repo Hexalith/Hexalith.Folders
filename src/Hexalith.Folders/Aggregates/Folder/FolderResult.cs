@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Hexalith.Folders.Aggregates.Folder;
 
 public sealed record FolderResult(
@@ -14,6 +16,23 @@ public sealed record FolderResult(
     string? IdempotencyKey,
     IReadOnlyList<IFolderEvent> Events)
 {
+    /// <summary>Gets whether the command achieved its requested outcome, including an equivalent replay.</summary>
+    [JsonIgnore]
+    public bool IsAccepted => IsAcceptedCode(Code);
+
+    /// <summary>Creates an accepted replay result with safe metadata and no new events.</summary>
+    /// <param name="command">The equivalent command submitted again.</param>
+    /// <returns>The replay result.</returns>
+    public static FolderResult Replayed(IFolderCommand command)
+        => WithoutEvents(command, FolderResultCode.IdempotentReplay);
+
+    /// <summary>Identifies result codes that represent a successful command outcome.</summary>
+    /// <param name="code">The folder result code.</param>
+    /// <returns>Whether the code represents a successful outcome.</returns>
+    internal static bool IsAcceptedCode(FolderResultCode code)
+        => code is FolderResultCode.Accepted or FolderResultCode.Created
+            or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied;
+
     public static FolderResult Accepted(CreateFolder command, IReadOnlyList<IFolderEvent> events)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -241,14 +260,14 @@ public sealed record FolderResult(
             events);
     }
 
-    // Validation-rejection paths can carry malformed bytes (the validator may itself
-    // be rejecting because an identifier is malformed). Funnel command fields through
-    // `SafePassthrough` so a result for `MalformedEvidence` cannot echo the unsafe value.
     public static FolderResult Rejected(IFolderCommand command, FolderResultCode code)
+        => WithoutEvents(command, code);
+
+    private static FolderResult WithoutEvents(IFolderCommand command, FolderResultCode code)
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        return Rejected(
+        return WithoutEvents(
             code,
             command.ManagedTenantId,
             command.OrganizationId,
@@ -285,6 +304,21 @@ public sealed record FolderResult(
             idempotencyKey);
 
     public static FolderResult Rejected(
+        FolderResultCode code,
+        string? managedTenantId,
+        string? organizationId,
+        string? folderId,
+        FolderAccessPrincipalKind? principalKind,
+        string? principalId,
+        string? action,
+        string? actorPrincipalId,
+        string? correlationId,
+        string? taskId,
+        string? idempotencyKey)
+        => WithoutEvents(code, managedTenantId, organizationId, folderId, principalKind, principalId, action,
+            actorPrincipalId, correlationId, taskId, idempotencyKey);
+
+    private static FolderResult WithoutEvents(
         FolderResultCode code,
         string? managedTenantId,
         string? organizationId,

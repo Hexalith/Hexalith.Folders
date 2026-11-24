@@ -476,7 +476,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-3-create-folders-within-a-tenant (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs
 reason: `IdempotentReplay` outcome is returned via `FolderResult.Rejected(...)` even though it is a successful equivalence; `FolderResult` has no `IsAccepted` helper [`src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`] — deferred, behavior is correct, cosmetic API clarity only; revisit when CLI/MCP/SDK adapters need to dispatch on accepted-vs-rejected.
-status: open
+status: done 2026-11-24
+resolution: FolderResult.IsAccepted classifies the four success outcomes and Replayed creates a metadata-safe success without events. Existing result codes and process responses are preserved. Creation and access regressions assert the classification.
 decision: 2026-08-25 Add acceptance semantics — Add an IsAccepted property or semantic factory and migrate internals while preserving result codes.
 
 ### DW-66: `FolderCreateAclEvidence.Action` is declared non-nullable but no compile-time guarantee prevents deserializer-produced `null`

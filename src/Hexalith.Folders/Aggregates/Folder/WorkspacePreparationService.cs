@@ -165,7 +165,7 @@ public sealed class WorkspacePreparationService(
         return outcome switch
         {
             FolderAppendOutcome.Appended => aggregateResult with { Events = preparedEvents },
-            FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
+            FolderAppendOutcome.FingerprintMatched => FolderResult.Replayed(command),
             FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),
             _ => FolderResult.Rejected(command, FolderResultCode.MalformedEvidence),
@@ -211,7 +211,7 @@ public sealed class WorkspacePreparationService(
         return outcome switch
         {
             FolderAppendOutcome.Appended => FolderResult.Rejected(command, resultCode) with { Events = [unknownOutcome] },
-            FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
+            FolderAppendOutcome.FingerprintMatched => FolderResult.Replayed(command),
             FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),
             _ => FolderResult.Rejected(command, FolderResultCode.MalformedEvidence),

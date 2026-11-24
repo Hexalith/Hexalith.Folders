@@ -68,8 +68,7 @@ public static class FoldersRejectionSource
 
     /// <summary>Excludes every successful command outcome from retained rejection evidence.</summary>
     internal static bool IsRejectionCode(FolderResultCode code)
-        => Enum.IsDefined(code) && code is not (FolderResultCode.Accepted or FolderResultCode.Created
-            or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied);
+        => Enum.IsDefined(code) && !FolderResult.IsAcceptedCode(code);
 
     private static string? Text(JsonElement root, string name, string camelName)
         => root.ValueKind == JsonValueKind.Object && (root.TryGetProperty(name, out JsonElement value)
