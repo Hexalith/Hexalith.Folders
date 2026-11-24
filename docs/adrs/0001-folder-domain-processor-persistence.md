@@ -28,14 +28,9 @@ Because EventStore currently drops `ResultPayload` for no-op domain results, acc
 
 ## Cancellation Boundary
 
-`IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` has no `CancellationToken`. IO-bearing work remains in the endpoint/gateway/request-handler path where cancellation is available. The processor and evidence providers used inside it are intentionally bounded, in-memory/scoped operations:
+The Folders `/process` request handler uses EventStore's `IAsyncDomainProcessor` contract to pass the request token to the processor. Archive ACL and policy evidence providers and final mutation reauthorization receive that token. The processor checks it before invoking the synchronous archive gate. Cancellation during an evidence check unwinds the scoped authorization handoff.
 
-- layered authorization has already run with the request `CancellationToken`;
-- archive ACL evidence reads the current scoped layered authorization result;
-- baseline archive policy evidence is a deterministic in-memory policy stub;
-- gate persistence uses `IFolderRepository`, whose current contract is synchronous.
-
-Extending `IDomainProcessor` with cancellation would require EventStore contract work and is deferred.
+The original two-argument `IDomainProcessor` entry point remains available for callers of that contract.
 
 ## Layered Authorization Evidence Handoff
 

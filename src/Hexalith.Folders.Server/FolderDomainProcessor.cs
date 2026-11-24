@@ -39,7 +39,7 @@ public sealed partial class FolderDomainProcessor(
     IOrganizationAclRepository? actorOrganizationAclRepository = null,
     Microsoft.AspNetCore.Http.IHttpContextAccessor? httpContextAccessor = null,
     Content.WorkspaceContentBatch? contentBatch = null,
-    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor, Hexalith.EventStore.DomainService.IDomainCommandPayloadInventory
+    Hexalith.EventStore.DomainService.Content.IAuthoritativeContentStore? authoritativeContent = null) : IDomainProcessor, IAsyncDomainProcessor, Hexalith.EventStore.DomainService.IDomainCommandPayloadInventory
 {
     /// <inheritdoc/>
     public IReadOnlyList<Type> CommandPayloadTypes => CatalogPayloadTypes;
@@ -105,10 +105,18 @@ public sealed partial class FolderDomainProcessor(
     private readonly IOrganizationProviderBindingRepository? _actorOrganizationRepository = actorOrganizationRepository;
     private readonly IOrganizationAclRepository? _actorOrganizationAclRepository = actorOrganizationAclRepository;
 
-    public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+    public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+        => ProcessAsync(command, currentState, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<DomainResult> ProcessAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Stopwatch stopwatch = Stopwatch.StartNew();
-        DomainResult result = await ProcessCoreAsync(command, currentState).ConfigureAwait(false);
+        DomainResult result = await ProcessCoreAsync(command, currentState, cancellationToken).ConfigureAwait(false);
         stopwatch.Stop();
 
         await EmitProcessObservationAsync(command, result, stopwatch.Elapsed).ConfigureAwait(false);
@@ -116,7 +124,10 @@ public sealed partial class FolderDomainProcessor(
         return result;
     }
 
-    private async Task<DomainResult> ProcessCoreAsync(CommandEnvelope command, object? currentState)
+    private async Task<DomainResult> ProcessCoreAsync(
+        CommandEnvelope command,
+        object? currentState,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -174,7 +185,7 @@ public sealed partial class FolderDomainProcessor(
 
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
         {
-            return await ProcessArchiveAsync(command).ConfigureAwait(false);
+            return await ProcessArchiveAsync(command, cancellationToken).ConfigureAwait(false);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
@@ -658,7 +669,9 @@ public sealed partial class FolderDomainProcessor(
         return value is "user" or "group" or "role" or "delegated_service_agent";
     }
 
-    private async Task<DomainResult> ProcessArchiveAsync(CommandEnvelope envelope)
+    private async Task<DomainResult> ProcessArchiveAsync(
+        CommandEnvelope envelope,
+        CancellationToken cancellationToken)
     {
         ArchiveFolderPayload? payload;
         try
@@ -718,10 +731,10 @@ public sealed partial class FolderDomainProcessor(
 
         TenantAccessAuthorizationResult tenantAccess = BuildTenantAccess(allowed);
         FolderArchiveAclEvidence aclEvidence = await _archiveAclEvidenceProvider
-            .GetEvidenceAsync(command, CancellationToken.None)
+            .GetEvidenceAsync(command, cancellationToken)
             .ConfigureAwait(false);
         FolderArchivePolicyEvidence policyEvidence = await _archivePolicyEvidenceProvider
-            .GetEvidenceAsync(command, CancellationToken.None)
+            .GetEvidenceAsync(command, cancellationToken)
             .ConfigureAwait(false);
 
         LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
@@ -742,7 +755,7 @@ public sealed partial class FolderDomainProcessor(
                     command.ClientTenantIds,
                     ClientControlledPrincipalValues: null),
                 includeFolderAcl: true,
-                CancellationToken.None)
+                cancellationToken)
             .ConfigureAwait(false);
         if (!finalAuthorization.IsAllowed)
         {
@@ -751,6 +764,7 @@ public sealed partial class FolderDomainProcessor(
                 FolderResult.Rejected(command, MapLayeredAuthorization(finalAuthorization.Decision.OutcomeCode)));
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         FolderResult result;
         try
         {

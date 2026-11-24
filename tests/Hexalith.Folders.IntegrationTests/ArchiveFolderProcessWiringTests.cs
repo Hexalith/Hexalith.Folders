@@ -313,7 +313,7 @@ public sealed class ArchiveFolderProcessWiringTests
     public async Task ArchiveRequestCancelledMidProcessorShouldUnwindAuthorizationWithoutAppending()
     {
         using CancellationTokenSource requestCancellation = new();
-        CancelMidFlightFolderArchivePolicyEvidenceProvider policyProvider = new(requestCancellation);
+        CancelMidFlightFolderArchivePolicyEvidenceProvider policyProvider = new();
         ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
         TestHost host = await StartHostAsync(
             policyProvider,
@@ -333,6 +333,7 @@ public sealed class ArchiveFolderProcessWiringTests
             await policyProvider.Entered
                 .WaitAsync(SignalTimeout, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
+            await requestCancellation.CancelAsync().ConfigureAwait(true);
             await Should.ThrowAsync<OperationCanceledException>(
                 async () => await responseTask.ConfigureAwait(true));
             await policyProvider.ServerCancellationObserved
@@ -371,6 +372,7 @@ public sealed class ArchiveFolderProcessWiringTests
         }
         finally
         {
+            await requestCancellation.CancelAsync().ConfigureAwait(true);
             await host.DisposeAsync().ConfigureAwait(true);
         }
     }

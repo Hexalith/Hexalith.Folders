@@ -62,7 +62,8 @@ resolution: A clock-skew regression races equivalent archive decisions made at d
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)"), 2026-08-24
 location: IDomainProcessor.ProcessAsync
 reason: **(Round-3 echo)** `IDomainProcessor.ProcessAsync` lacks `CancellationToken`, so `FolderDomainProcessor` passes `CancellationToken.None` into evidence providers. ADR 0001 explicitly accepts this tradeoff. Deferred — the round-4 catch-block patch (`when (ex is not OperationCanceledException)`) is the right scope-level mitigation; revisit when the EventStore framework's `IDomainProcessor` contract gains a CT.
-status: open
+status: done 2026-11-24
+resolution: Both processor entry points expose the EventStore async capability. The archive evidence and final authorization checks observe the request token. ArchiveFolderProcessWiringTests verifies cancellation, cleanup, and same-key retry.
 
 ### DW-10: (Round-3 echo) `InMemoryFolderRepository` mixes `lock (_gate)` with an internal `ConcurrentDictionary`
 
