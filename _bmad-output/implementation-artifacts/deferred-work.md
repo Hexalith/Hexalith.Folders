@@ -2526,9 +2526,14 @@ resolution: Only idempotency conflicts and expiry use idempotency titles. Other 
   summary: Story 12.6's EventStore host duplicates admission bootstrap composition instead of consuming one shared registration source.
   evidence: The copied registration paths can drift as adapter construction changes; the host and admission composition were introduced by Story 12.6 and are outside the Forgejo transport intent.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
-  summary: Story 12.6 message-ID tests do not prove a new execution identity is generated for every submission independently of the idempotency key.
-  evidence: Existing assertions validate identifier shape but not per-submission uniqueness, so reusing an execution ID could remain green; this belongs to the separate durable-admission implementation.
+### DW-354: Story 12.6 message-ID tests do not prove a new execution identity is generated for every submission independently of the idempotency key.
+
+origin: attended bmad-build deferred work
+location: n/a
+source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
+reason: Existing assertions validate identifier shape but not per-submission uniqueness, so reusing an execution ID could remain green; this belongs to the separate durable-admission implementation.
+status: done 2026-11-24
+resolution: Every route in the mutation inventory is submitted twice with the same idempotency key. Each request must carry its own canonical ULID.
 
 ### DW-352: Folder-scoped archive/commit apply updates every loaded folder-index key without the ListFolderAsync tenant/folder identity filter.
 
