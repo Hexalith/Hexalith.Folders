@@ -24,7 +24,8 @@ if (options.InitializeBaseline)
             "prerequisite-drift: --initialize-baseline requires the v2 candidate contract and a distinct previous-spine output.");
     }
 
-    YamlMappingNode rootForBaseline = LoadYaml(options.ContractPath);
+    byte[] baselineContractBytes = ReadRequiredBytes(options.ContractPath);
+    YamlMappingNode rootForBaseline = ParseYaml(options.ContractPath, baselineContractBytes);
     if (!rootForBaseline.Children.ContainsKey(new YamlScalarNode("x-hexalith-pd10-candidate")))
     {
         throw new InvalidOperationException(
@@ -43,7 +44,7 @@ if (options.InitializeBaseline)
     string baselineRoot = Path.GetPathRoot(options.PreviousSpinePath)!;
     ValidateNoSymbolicLinks(baselineRoot, Path.GetRelativePath(baselineRoot, options.PreviousSpinePath),
         "prerequisite-drift: baseline output must not traverse symbolic links or reparse points.");
-    string baselineYaml = RenderBaseline(baselineOps, options.ContractPath);
+    string baselineYaml = RenderBaseline(baselineOps, options.ContractPath, baselineContractBytes);
     Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
     using (FileStream baselineStream = new(options.PreviousSpinePath,
         options.ForceBaselineOverwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write, FileShare.None))
@@ -56,22 +57,25 @@ if (options.InitializeBaseline)
 }
 
 List<Diagnostic> diagnostics = [];
-YamlMappingNode root = LoadYaml(options.ContractPath);
+byte[] contractBytes = ReadRequiredBytes(options.ContractPath);
+byte[] schemaBytes = ReadRequiredBytes(options.SchemaPath);
+YamlMappingNode root = ParseYaml(options.ContractPath, contractBytes);
 IReadOnlyList<OperationModel> operations = EnumerateOperations(root, diagnostics)
     .OrderBy(o => o.OperationId, StringComparer.Ordinal)
     .ToArray();
 ValidateOperationInventory(operations, diagnostics);
 ValidatePreviousSpine(options.PreviousSpinePath, operations, diagnostics, options.AllowEmptyBaseline, options.RepositoryRoot);
 
-string output = RenderOracle(operations, diagnostics, options);
-ValidateOracleAgainstSchema(output, options.SchemaPath);
+string output = RenderOracle(operations, diagnostics, contractBytes, schemaBytes);
+ValidateOracleAgainstSchema(output, schemaBytes);
 Directory.CreateDirectory(Path.GetDirectoryName(options.OutputPath) ?? ".");
 File.WriteAllText(options.OutputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 return 0;
 
-static void ValidateOracleAgainstSchema(string oracle, string schemaPath)
+static void ValidateOracleAgainstSchema(string oracle, byte[] schemaBytes)
 {
-    using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(schemaPath));
+    using StreamReader schemaReader = new(new MemoryStream(schemaBytes), Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+    using JsonDocument schema = JsonDocument.Parse(schemaReader.ReadToEnd());
     using StringReader reader = new(oracle);
     YamlStream yaml = new();
     yaml.Load(reader);
@@ -798,12 +802,18 @@ static HashSet<string> ReadApprovedAdditions(YamlMappingNode previous)
     return approved;
 }
 
-static string RenderOracle(IReadOnlyList<OperationModel> operations, IReadOnlyList<Diagnostic> diagnostics, GeneratorOptions options)
+static string RenderOracle(
+    IReadOnlyList<OperationModel> operations,
+    IReadOnlyList<Diagnostic> diagnostics,
+    byte[] contractBytes,
+    byte[] schemaBytes)
 {
     StringBuilder builder = new();
     builder.Append("# generated_by: tests/tools/parity-oracle-generator\n");
-    builder.Append("# contract_spine_sha256: ").Append(Sha256OfFile(options.ContractPath)).Append('\n');
-    builder.Append("# parity_schema_sha256: ").Append(Sha256OfFile(options.SchemaPath)).Append('\n');
+    builder.Append("# contract_spine_sha256: ").Append(NormalizedSha256(contractBytes)).Append('\n');
+    builder.Append("# parity_schema_sha256: ").Append(NormalizedSha256(schemaBytes)).Append('\n');
+    builder.Append("# contract_spine_raw_sha256: ").Append(Convert.ToHexStringLower(SHA256.HashData(contractBytes))).Append('\n');
+    builder.Append("# parity_schema_raw_sha256: ").Append(Convert.ToHexStringLower(SHA256.HashData(schemaBytes))).Append('\n');
     builder.Append("# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract\n");
     builder.Append("# diagnostics_count: ").Append(diagnostics.Count.ToString(CultureInfo.InvariantCulture)).Append('\n');
 
@@ -915,18 +925,19 @@ static string HistoricalV1Path(string directory)
     return File.Exists(retained) ? retained : Path.Combine(directory, "hexalith.folders.v1.yaml");
 }
 
-static string RenderBaseline(IReadOnlyList<OperationModel> operations, string contractPath)
+static string RenderBaseline(IReadOnlyList<OperationModel> operations, string contractPath, byte[] contractBytes)
 {
     StringBuilder builder = new();
     builder.Append("version: pd10-v2-candidate-baseline\n");
     builder.Append("source_marker: generated-from-pd10-v2-openapi\n");
-    builder.Append("contract_sha256: ").Append(Sha256OfFile(contractPath)).Append('\n');
+    builder.Append("contract_sha256: ").Append(NormalizedSha256(contractBytes)).Append('\n');
     string historicalV1Path = HistoricalV1Path(Path.GetDirectoryName(contractPath)!);
     Dictionary<string, OperationModel> historicalByOperationId = [];
     if (File.Exists(historicalV1Path))
     {
-        builder.Append("historical_v1_sha256: ").Append(Sha256OfFile(historicalV1Path)).Append('\n');
-        historicalByOperationId = EnumerateOperations(LoadYaml(historicalV1Path), [])
+        byte[] historicalBytes = ReadRequiredBytes(historicalV1Path);
+        builder.Append("historical_v1_sha256: ").Append(NormalizedSha256(historicalBytes)).Append('\n');
+        historicalByOperationId = EnumerateOperations(ParseYaml(historicalV1Path, historicalBytes), [])
             .ToDictionary(o => o.OperationId, StringComparer.Ordinal);
     }
     builder.Append("intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.\n");
@@ -1512,19 +1523,32 @@ static string SafeCommentText(string value) =>
         .Replace('\n', ' ')
         .Replace('#', ' ');
 
-static YamlMappingNode LoadYaml(string path)
+static YamlMappingNode LoadYaml(string path) => ParseYaml(path, ReadRequiredBytes(path));
+
+static byte[] ReadRequiredBytes(string path)
 {
     if (!File.Exists(path))
     {
         throw new InvalidOperationException($"prerequisite-drift: required input file is missing: {path}");
     }
 
-    // Read bytes once, then strip an optional UTF-8 BOM before handing the text to YamlDotNet.
-    // YamlDotNet does not normalize BOM and a BOM-prefixed root node sometimes loads as an
-    // unexpected scalar — failing closed early is cleaner than producing a malformed tree.
-    byte[] bytes = File.ReadAllBytes(path);
-    int offset = (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) ? 3 : 0;
-    string text = Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset);
+    return File.ReadAllBytes(path);
+}
+
+static string DecodeUtf8(byte[] bytes)
+{
+    ReadOnlySpan<byte> input = bytes;
+    if (input.StartsWith(Encoding.UTF8.Preamble))
+    {
+        input = input[Encoding.UTF8.Preamble.Length..];
+    }
+
+    return Encoding.UTF8.GetString(input);
+}
+
+static YamlMappingNode ParseYaml(string path, byte[] bytes)
+{
+    string text = DecodeUtf8(bytes);
 
     YamlStream yaml = new();
     using (StringReader reader = new(text))
@@ -1571,16 +1595,8 @@ static string Sha256(string value) =>
 
 static string Fingerprint(IEnumerable<string> values) => Sha256(string.Join("\n", values));
 
-// Read the file's UTF-8 bytes (BOM-stripped) and normalize line endings to LF before hashing.
-// Using one read avoids TOCTOU between LoadYaml() and the provenance hash, and BOM stripping keeps
-// the hash stable across machines whose editors insert/preserve BOM differently.
-static string Sha256OfFile(string path)
-{
-    byte[] bytes = File.ReadAllBytes(path);
-    int offset = (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) ? 3 : 0;
-    string normalized = Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset).NormalizeLineEndings();
-    return Sha256(normalized);
-}
+// Keep the normalized digest stable across UTF-8 BOM and newline differences.
+static string NormalizedSha256(byte[] bytes) => Sha256(DecodeUtf8(bytes).NormalizeLineEndings());
 
 #pragma warning disable SA1402 // multiple types in file (single-file tool)
 internal sealed record GeneratorOptions(

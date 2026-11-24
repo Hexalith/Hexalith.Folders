@@ -1,6 +1,8 @@
 # generated_by: tests/tools/parity-oracle-generator
 # contract_spine_sha256: d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7
 # parity_schema_sha256: 6bbcbc6473d1387d5e814a3e2f5ca0f96ee9a8da5ba7e0c3e21a11760c88a36b
+# contract_spine_raw_sha256: d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7
+# parity_schema_raw_sha256: 6bbcbc6473d1387d5e814a3e2f5ca0f96ee9a8da5ba7e0c3e21a11760c88a36b
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
 - operation_id: 'AddFile'

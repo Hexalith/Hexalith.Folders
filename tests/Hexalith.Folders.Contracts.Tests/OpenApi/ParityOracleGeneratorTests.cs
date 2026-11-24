@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -191,6 +192,55 @@ public sealed class ParityOracleGeneratorTests
         string committed = NormalizeLineEndings(File.ReadAllText(_oracleFilePath));
         string generated = NormalizeLineEndings(File.ReadAllText(first));
         committed.ShouldBe(generated, "Committed parity-contract.yaml is out of sync with generator output. Regenerate the oracle via `dotnet run --project tests/tools/parity-oracle-generator`.");
+    }
+
+    [Fact]
+    public void ProvenanceReportsExactInputBytesAlongsideNormalizedHashes()
+    {
+        string temp = NewTempDirectory("hexalith-parity-provenance");
+        string contract = Path.Combine(temp, "contract.yaml");
+        string schema = Path.Combine(temp, "schema.json");
+        string output = Path.Combine(temp, "parity.yaml");
+
+        File.WriteAllText(contract, NormalizeLineEndings(File.ReadAllText(_openApiFilePath)), new UTF8Encoding(false));
+        File.WriteAllText(schema, NormalizeLineEndings(File.ReadAllText(_schemaFilePath)), new UTF8Encoding(false));
+        GeneratorResult plain = RunGeneratorDetailed(contract, output, schemaPath: schema);
+        plain.ExitCode.ShouldBe(0, customMessage: plain.Output + plain.Error);
+        string[] plainHeaders = File.ReadAllLines(output);
+        string plainContractHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(contract)));
+        string plainSchemaHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+
+        File.WriteAllText(contract, File.ReadAllText(contract).Replace("\n", "\r\n", StringComparison.Ordinal), new UTF8Encoding(false));
+        File.WriteAllText(schema, File.ReadAllText(schema), new UTF8Encoding(true));
+        GeneratorResult rewritten = RunGeneratorDetailed(contract, output, schemaPath: schema);
+        rewritten.ExitCode.ShouldBe(0, customMessage: rewritten.Output + rewritten.Error);
+        string[] rewrittenHeaders = File.ReadAllLines(output);
+        string rawContractHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(contract)));
+        string rawSchemaHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+
+        plainHeaders.ShouldContain($"# contract_spine_raw_sha256: {plainContractHash}");
+        plainHeaders.ShouldContain($"# parity_schema_raw_sha256: {plainSchemaHash}");
+        rewrittenHeaders.ShouldContain($"# contract_spine_sha256: {plainContractHash}");
+        rewrittenHeaders.ShouldContain($"# parity_schema_sha256: {plainSchemaHash}");
+        rewrittenHeaders.ShouldContain($"# contract_spine_raw_sha256: {rawContractHash}");
+        rewrittenHeaders.ShouldContain($"# parity_schema_raw_sha256: {rawSchemaHash}");
+        rawContractHash.ShouldNotBe(plainContractHash);
+        rawSchemaHash.ShouldNotBe(plainSchemaHash);
+    }
+
+    [Fact]
+    public void ProvenancePreservesBomAwareSchemaDecoding()
+    {
+        string temp = NewTempDirectory("hexalith-parity-encoded-schema");
+        string schema = Path.Combine(temp, "schema.json");
+        string output = Path.Combine(temp, "parity.yaml");
+        File.WriteAllText(schema, File.ReadAllText(_schemaFilePath), Encoding.Unicode);
+
+        GeneratorResult result = RunGeneratorDetailed(_openApiFilePath, output, schemaPath: schema);
+
+        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+        string rawHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(schema)));
+        File.ReadLines(output).ShouldContain($"# parity_schema_raw_sha256: {rawHash}");
     }
 
     [Fact]

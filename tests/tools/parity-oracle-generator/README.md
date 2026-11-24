@@ -47,7 +47,7 @@ The command creates the selected baseline with the captured operation inventory 
 
 ## Deterministic Output
 
-Rows are sorted by `operation_id`, arrays are sorted when source order is not normative, output is UTF-8 without BOM and LF-only, and timestamps are not emitted. Safe provenance appears only as comments containing content hashes and repository-relative source names.
+Rows are sorted by `operation_id`, arrays are sorted when source order is not normative, output is UTF-8 without BOM and LF-only, and timestamps are not emitted. The header comments `contract_spine_raw_sha256` and `parity_schema_raw_sha256` identify the exact bytes of the selected contract and schema. The existing `contract_spine_sha256` and `parity_schema_sha256` values ignore newline differences and the UTF-8 BOM. The previous spine is a separate input used for drift comparisons.
 
 ## Failure Behavior
 
