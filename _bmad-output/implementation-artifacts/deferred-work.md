@@ -1870,6 +1870,7 @@ decision: 2026-08-25 Generate nullable limits — Make non-required numeric requ
 origin: migrated from legacy ledger ("Deferred from: code review of story-10.5 (2026-06-24)"), 2026-08-24
 location: parity-oracle-generator/Program.cs
 reason: `GetFolderIndexingStatus`'s generated `parity-contract.yaml` row lists `adapter_expectations: [cli, mcp, rest, sdk]` while the op's `transportParity` is `[rest, sdk, mcp]` and the CLI deliberately ships no `indexing-status` subcommand. **Pre-existing generator behavior**: `parity-oracle-generator/Program.cs` `AdapterExpectations()` hardcodes `[rest,sdk,cli,mcp]` for every row (same artifact on the pre-existing rest/sdk-only `GetFolderLifecycleStatus`); non-load-bearing, no test fails. Fix = derive the adapter set from `transportParity` and regenerate spine-wide; do NOT hand-edit the generated row (mutation_rules forbid it).
+amended (2026-11-24): The cited symptom is obsolete. Both spines now declare `transportParity: [rest, sdk, mcp, cli]` for `GetFolderIndexingStatus` and `SearchFolderIndexedFiles`, and the CLI ships `context indexing-status`. The remaining defect is in the generator, `tests/tools/parity-oracle-generator/Program.cs`: `AdapterExpectations()` still emits `cli`, `mcp`, `rest` and `sdk` for every row (plus `ui` for `operations_console_projection` rows), while 47 of the 49 v2 operations declare only `[rest, sdk]`. Deriving the list from `transportParity` would remove CLI and MCP oracle expectations that those adapters still implement and test, so the fix needs a parity-contract decision first.
 status: open
 
 ### DW-282: Server context-search facade lacks an EventStore-backed bridge read model
@@ -2579,6 +2580,8 @@ resolution: Missing and null entry arrays fail with a bounded diagnostic before 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand after OpenAPI cli parity and the indexing-status command landed.
   evidence: Ledger text is stale relative to hexalith.folders.v1.yaml transportParity and ContextCommand indexing-status; runtime behavior is updated.
+  status: done 2026-11-24
+  resolution: DW-281 carries a 2026-11-24 amendment. It records that both spines and the CLI now cover indexing status and narrows the open defect to the hard-coded adapter list in the parity-oracle generator.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: Context search still returns one item per duplicate source hit for the same file-version identity.
@@ -2618,6 +2621,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
   status: done 2026-11-24
   resolution: The CLI reference lists `context index-search` with `SearchFolderIndexedFiles`. `CliReferenceDocumentationTests` compares the documented rows with the leaf commands that `CliApplication` builds, so a missing or extra row fails.
 - DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand. Pre-existing ledger row; runtime OpenAPI `cli` parity and the indexing-status command already landed.
+  status: done 2026-11-24
+  resolution: DW-281 carries a 2026-11-24 amendment. It records that both spines and the CLI now cover indexing status and narrows the open defect to the hard-coded adapter list in the parity-oracle generator.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Consolidate `/process` canonical-identifier copies in FolderDomainProcessor and FoldersDomainServiceRequestHandler.
