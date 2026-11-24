@@ -1,4 +1,11 @@
-<Project>
+<Project InitialTargets="ValidateFoldersDependencyMode">
+  <Target Name="ValidateFoldersDependencyMode"
+          Condition="('$(UseHexalithProjectReferences)' == 'true' and '$(UseNuGetDeps)' == 'true') or
+                     ('$(UseHexalithProjectReferences)' == 'false' and '$(UseNuGetDeps)' == 'false')">
+    <Error Code="FOLDERS001"
+           Text="UseHexalithProjectReferences and UseNuGetDeps must select opposite values. Set either property alone to select a dependency mode." />
+  </Target>
+
   <PropertyGroup>
     <!-- Detect repository reference modules without requiring nested submodule initialization. -->
     <HexalithCommonsRoot Condition="'$(HexalithCommonsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.Commons\src\libraries\Hexalith.Commons.UniqueIds')">$(MSBuildThisFileDirectory)references\Hexalith.Commons</HexalithCommonsRoot>

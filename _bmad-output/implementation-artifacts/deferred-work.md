@@ -2063,7 +2063,8 @@ origin: migrated from legacy ledger ("Deferred from: code review of 10-5-expose-
 location: Directory.Build.props
 source_spec: _bmad-output/implementation-artifacts/spec-run-tests-and-fix-failures.md
 reason: The pre-existing configuration permits `UseHexalithProjectReferences=true` and `UseNuGetDeps=true` simultaneously, allowing different dependency projects to select inconsistent graphs.
-status: open
+status: done 2026-11-24
+resolution: Added an MSBuild initial target with regression checks for contradictory and valid dependency option combinations.
 
 ### DW-290: Missing Tier-3 real-materializer proof (AC10).
 
