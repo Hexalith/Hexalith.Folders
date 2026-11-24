@@ -27,11 +27,6 @@ public static partial class ProviderReadinessEndpoints
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
     };
 
-    private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
-
     public static IEndpointRouteBuilder MapProviderReadinessEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
@@ -213,7 +208,7 @@ public static partial class ProviderReadinessEndpoints
                 result.CapabilityProfileRef!,
                 "credential_reference_redacted",
                 result.Freshness),
-            ResponseJsonOptions);
+            FoldersServerJsonOptions.Response);
     }
 
     private static async Task<IResult> GetProviderSupportEvidenceAsync(
@@ -446,7 +441,7 @@ public static partial class ProviderReadinessEndpoints
                 result.ProviderReference,
                 result.CorrelationId,
                 result.Freshness),
-            ResponseJsonOptions);
+            FoldersServerJsonOptions.Response);
     }
 
     private static IResult ToHttpResult(HttpContext httpContext, ProviderSupportEvidenceQueryResult result)
@@ -503,7 +498,7 @@ public static partial class ProviderReadinessEndpoints
                 result.Items,
                 result.Page,
                 result.Freshness),
-            ResponseJsonOptions);
+            FoldersServerJsonOptions.Response);
     }
 
     private static void AddSuccessHeaders(HttpContext httpContext, ProviderReadinessValidationResult result)

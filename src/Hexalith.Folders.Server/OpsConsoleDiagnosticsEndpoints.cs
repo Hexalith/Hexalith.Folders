@@ -1,6 +1,4 @@
 using Hexalith.EventStore.ServiceDefaults.Authentication;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Server.Authentication;
@@ -24,11 +22,6 @@ public static class OpsConsoleDiagnosticsEndpoints
     private const string TaskHeaderName = "X-Hexalith-Task-Id";
     private const string CorrelationHeaderName = "X-Correlation-Id";
     private const string EventuallyConsistent = "eventually_consistent";
-
-    private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
 
     /// <summary>Maps the seven ops-console diagnostics GET routes.</summary>
     /// <param name="endpoints">The endpoint route builder.</param>
@@ -405,7 +398,7 @@ public static class OpsConsoleDiagnosticsEndpoints
         }
 
         AddSuccessHeaders(httpContext, result.CorrelationId, EventuallyConsistent);
-        return Results.Json(result.Payload, ResponseJsonOptions);
+        return Results.Json(result.Payload, FoldersServerJsonOptions.Response);
     }
 
     private static void AddSuccessHeaders(HttpContext httpContext, string correlationId, string freshness)

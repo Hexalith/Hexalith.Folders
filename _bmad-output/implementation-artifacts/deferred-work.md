@@ -2637,6 +2637,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Extract shared Server request/response JsonSerializerOptions.
   evidence: Split from Story 11.4 to keep the spec under the token budget. The four endpoint files already use identical Web defaults; this is not in the story AC and is independently shippable.
+  status: done 2026-11-24
+  resolution: `FoldersServerJsonOptions.Response` replaces the identical response options in the Audit, Domain, OpsConsole and provider-readiness endpoint files. Request options stay with their endpoint groups because their strictness differs: only the Domain endpoints reject duplicate properties and normalize JSON elements. `FoldersServerJsonOptionsTests` pins the shared settings.
 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Unverified medium — gateway 403 plus commit_failed or provider_failure_known may now echo those codes instead of denied_safe.

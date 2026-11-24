@@ -38,12 +38,6 @@ public static partial class FoldersDomainServiceEndpoints
     private const int StreamContentMinimumBytes = 262145;
     private const int MaxBranchRefPatternCount = 16;
 
-    // Outbound: ignore-when-null is fine because we serialize records.
-    private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
-
     // Inbound: reject unknown fields so a client cannot smuggle additional properties into
     // the archive payload that would later be forwarded to the gateway/aggregate.
     private static readonly JsonSerializerOptions RequestJsonOptions = new(JsonSerializerDefaults.Web)
@@ -55,7 +49,7 @@ public static partial class FoldersDomainServiceEndpoints
     };
 
     // Gateway payload: outbound JSON forwarded to the EventStore gateway. Kept separate from
-    // ResponseJsonOptions so HTTP-response tweaks (e.g. WriteIndented) cannot accidentally
+    // FoldersServerJsonOptions.Response so HTTP-response tweaks (e.g. WriteIndented) cannot accidentally
     // change wire shape of the command payload.
     private static readonly JsonSerializerOptions GatewayPayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -1722,7 +1716,7 @@ public static partial class FoldersDomainServiceEndpoints
                     || (submitted.ResultPayload is not null
                         && !string.IsNullOrWhiteSpace(submitted.MessageId)
                         && !string.Equals(submitted.MessageId, submissionMessageId, StringComparison.Ordinal))),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -1880,7 +1874,7 @@ public static partial class FoldersDomainServiceEndpoints
                     || (submitted.ResultPayload is not null
                         && !string.IsNullOrWhiteSpace(submitted.MessageId)
                         && !string.Equals(submitted.MessageId, submissionMessageId, StringComparison.Ordinal))),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2060,7 +2054,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2223,7 +2217,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2290,7 +2284,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case ListFolderAclEntriesQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -2498,7 +2492,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2641,7 +2635,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2784,7 +2778,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -2936,7 +2930,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -3087,7 +3081,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -3239,7 +3233,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -3483,7 +3477,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -3615,7 +3609,7 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId,
                 "accepted",
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
-            ResponseJsonOptions,
+            FoldersServerJsonOptions.Response,
             statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -4244,7 +4238,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case FolderLifecycleStatusResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -4518,7 +4512,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.ContentBytes,
                             result.Limits,
                             ToFreshnessResponse(result.Freshness)),
-                        options: ResponseJsonOptions,
+                        options: FoldersServerJsonOptions.Response,
                         statusCode: result.Range.Partial ? StatusCodes.Status206PartialContent : StatusCodes.Status200OK);
                 }
 
@@ -4529,7 +4523,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Items,
                             result.Limits,
                             ToFreshnessResponse(result.Freshness)),
-                        ResponseJsonOptions);
+                        FoldersServerJsonOptions.Response);
                 }
 
                 return Results.Json(
@@ -4538,7 +4532,7 @@ public static partial class FoldersDomainServiceEndpoints
                         result.Page ?? new WorkspaceFileContextPage(null, result.Limits.ConfiguredLimit, false, null),
                         result.Limits,
                         ToFreshnessResponse(result.Freshness)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceFileContextResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -4688,7 +4682,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Limits.IsTruncated,
                             result.Limits.TruncatedReason),
                         ToFreshnessResponse(result.Freshness)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case ContextSearchResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -4814,7 +4808,7 @@ public static partial class FoldersDomainServiceEndpoints
                             item.Redaction))],
                         result.IsTruncated,
                         ToFreshnessResponse(result.Freshness)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case FolderIndexingStatusResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -4894,7 +4888,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case BranchRefPolicyQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5008,7 +5002,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceLockStatusQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5113,7 +5107,7 @@ public static partial class FoldersDomainServiceEndpoints
                             retry.Freshness.ObservedAt,
                             retry.Freshness.ProjectionWatermark,
                             retry.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceLockStatusQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5230,7 +5224,7 @@ public static partial class FoldersDomainServiceEndpoints
                             snapshot.Freshness.ObservedAt,
                             snapshot.Freshness.ProjectionWatermark,
                             snapshot.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceTransitionEvidenceQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5342,7 +5336,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.Stale),
                         result.ProjectionLag,
                         result.LastFailureCategory),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceStatusQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5488,7 +5482,7 @@ public static partial class FoldersDomainServiceEndpoints
                         "correlation_id",
                     ],
                     ToEventuallyConsistentFreshness(result.Freshness)),
-                ResponseJsonOptions),
+                FoldersServerJsonOptions.Response),
             WorkspaceEvidenceKind.ProviderOutcome => Results.Json(
                 new WorkspaceProviderOutcomeResponse(
                     result.ProviderOutcome.OperationId,
@@ -5498,7 +5492,7 @@ public static partial class FoldersDomainServiceEndpoints
                     result.ProviderOutcome.RetryEligibility,
                     result.ProviderOutcome.RetryAfter,
                     ToEventuallyConsistentFreshness(result.ProviderOutcome.Freshness)),
-                ResponseJsonOptions),
+                FoldersServerJsonOptions.Response),
             WorkspaceEvidenceKind.ReconciliationStatus => Results.Json(
                 new ReconciliationStatusResponse(
                     secondaryId ?? "reconciliation_status",
@@ -5509,7 +5503,7 @@ public static partial class FoldersDomainServiceEndpoints
                     result.RetryEligibility,
                     result.RetryAfter,
                     ToEventuallyConsistentFreshness(result.Freshness)),
-                ResponseJsonOptions),
+                FoldersServerJsonOptions.Response),
             _ => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "internal_error",
@@ -5570,7 +5564,7 @@ public static partial class FoldersDomainServiceEndpoints
                         result.RetryEligibility,
                         result.RetryAfter,
                         ToEventuallyConsistentFreshness(result.Freshness)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case TaskStatusQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5668,7 +5662,7 @@ public static partial class FoldersDomainServiceEndpoints
                         result.CorrelationId,
                         result.ObservedAt,
                         result.LastAttemptedAt),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case WorkspaceCleanupStatusQueryResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(
@@ -5743,7 +5737,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions),
+                    FoldersServerJsonOptions.Response),
             EffectivePermissionsResultCode.AuthenticationRequired => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
@@ -6019,7 +6013,7 @@ public static partial class FoldersDomainServiceEndpoints
                             result.Freshness.ObservedAt,
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
-                    ResponseJsonOptions);
+                    FoldersServerJsonOptions.Response);
 
             case FolderLifecycleStatusResultCode.AuthenticationRequired:
                 return FolderProblemDetailsFactory.ForDomain(

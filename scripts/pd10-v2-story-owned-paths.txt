@@ -324,6 +324,7 @@ src/Hexalith.Folders.Server/FoldersProjectionCatalogDeclarations.cs
 src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs
 src/Hexalith.Folders.Server/FoldersRuntimeCatalogDeclarations.cs
 src/Hexalith.Folders.Server/FoldersServerHostComposition.cs
+src/Hexalith.Folders.Server/FoldersServerJsonOptions.cs
 src/Hexalith.Folders.Server/FoldersServerModule.cs
 src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
 src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs
@@ -1333,6 +1334,7 @@ tests/Hexalith.Folders.Server.Tests/FoldersNativeGatewayBearerTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersProductionTestHost.cs
 tests/Hexalith.Folders.Server.Tests/FoldersProjectionCatalogFixture.cs
 tests/Hexalith.Folders.Server.Tests/FoldersServerHostCompositionTests.cs
+tests/Hexalith.Folders.Server.Tests/FoldersServerJsonOptionsTests.cs
 tests/Hexalith.Folders.Server.Tests/FoldersTenantEventHandlerTests.cs
 tests/Hexalith.Folders.Server.Tests/GetProviderBindingEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/GetRepositoryBindingEndpointTests.cs

@@ -1,6 +1,4 @@
 using Hexalith.EventStore.ServiceDefaults.Authentication;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Authorization;
@@ -22,11 +20,6 @@ public static partial class AuditEndpoints
 
     private const string AuditEvidenceSource = "audit";
     private const string TimelineEvidenceSource = "timeline";
-
-    private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
 
     public static IEndpointRouteBuilder MapAuditEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -528,7 +521,7 @@ public static partial class AuditEndpoints
     private static IResult Success<T>(HttpContext httpContext, T body, string? correlationId, string? taskId)
     {
         AddSuccessHeaders(httpContext, correlationId, taskId);
-        return Results.Json(body, ResponseJsonOptions);
+        return Results.Json(body, FoldersServerJsonOptions.Response);
     }
 
     private static void AddSuccessHeaders(HttpContext httpContext, string? correlationId, string? taskId)
