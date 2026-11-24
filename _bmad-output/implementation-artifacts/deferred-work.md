@@ -985,7 +985,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)"), 2026-08-24
 location: _bmad-output/process-notes/predev-preflight-latest.json
 reason: D1: Predev preflight result is `fail` but story advanced to `review`. `_bmad-output/process-notes/predev-preflight-latest.json` records `"result": "fail"` with seven dirty paths, and a new `predev-preflight-2026-05-14T100203Z.json` captures the same failure. Process/governance concern outside contract correctness; recommend a separate ticket to investigate the dirty paths. (`_bmad-output/process-notes/predev-preflight-latest.json`, `_bmad-output/process-notes/predev-preflight-2026-05-14T100203Z.json`)
-status: open
+status: done 2026-11-24
+resolution: Reconciled the seven dirty paths against the Story 1.11 file list and implementation commit. The story completion notes explain the historical cleanliness failure and identify the four checks that passed.
 
 ### DW-137: D2: `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs` was edited outside the spec's `Allowed Files And Forbidden Work` list (the helper sits under…
 

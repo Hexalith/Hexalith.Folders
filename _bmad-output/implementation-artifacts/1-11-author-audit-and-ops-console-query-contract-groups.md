@@ -472,6 +472,8 @@ GPT-5 Codex
 - Added focused OpenAPI validation for Story 1.11 and updated existing guardrails now that ops-console is an owned Contract Spine surface.
 - Resolved remaining review patch follow-ups with redaction-aware wrapper schemas, composed diagnostic strictness, required field-classification evidence, readiness summary references, cursor/audience/boundary examples, freshness consistency invariants, prefixed identifier normalization, and widened error-category propagation across earlier contract groups.
 
+- 2026-11-24 preflight follow-up. The [timestamped preflight](../process-notes/predev-preflight-2026-05-14T100203Z.json) recorded 7 dirty paths, all accounted for in this story’s file list. The sprint YAML, artifacts directory, lessons ledger, and status-to-artifact consistency checks passed. Git records the story changes in `c4a54a5b336e25d5024e36ec500a198872dc9fcd`. The failed cleanliness check records the in-progress working tree at capture time. The JSON evidence retains its original result.
+
 ### File List
 
 - `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
