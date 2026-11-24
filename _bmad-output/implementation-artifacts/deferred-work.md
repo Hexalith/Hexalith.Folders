@@ -487,7 +487,8 @@ decision: 2026-08-25 Add acceptance semantics — Add an IsAccepted property or 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-3-create-folders-within-a-tenant (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs
 reason: `FolderCreateAclEvidence.Action` is declared non-nullable but no compile-time guarantee prevents deserializer-produced `null` [`src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs`] — deferred, applies to every record in `Aggregates/Folder/`; revisit when contract-level deserialization hardening is introduced.
-status: open
+status: done 2026-11-24
+resolution: Create ACL evidence rejects a missing or null action on construction and deserialization. Valid evidence round-trips.
 
 ### DW-67: `Resolve-Path (Join-Path $toolsParent '..')` resolves symlink targets in `tests/tools/run-governance-completeness-gates.ps1:16`
 

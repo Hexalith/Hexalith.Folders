@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Shouldly;
@@ -7,6 +9,25 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderCreationAclGateTests
 {
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("""{"Action":null}""")]
+    public void DeserializationCannotConstructEvidenceWithoutAnAction(string json)
+    {
+        ArgumentNullException exception = Should.Throw<ArgumentNullException>(
+            () => JsonSerializer.Deserialize<FolderCreateAclEvidence>(json));
+        exception.ParamName.ShouldBe(nameof(FolderCreateAclEvidence.Action));
+    }
+
+    [Fact]
+    public void EvidenceCanRoundTripWithTheActionIntact()
+    {
+        FolderCreateAclEvidence evidence = FolderCreateAclEvidence.Allowed("tenant-a", "tenant-a", "principal-a");
+
+        JsonSerializer.Deserialize<FolderCreateAclEvidence>(JsonSerializer.Serialize(evidence))
+            .ShouldBe(evidence);
+    }
+
     [Theory]
     [InlineData(FolderCreateAclOutcome.Denied, FolderResultCode.FolderAclDenied)]
     [InlineData(FolderCreateAclOutcome.Unavailable, FolderResultCode.AclEvidenceUnavailable)]
