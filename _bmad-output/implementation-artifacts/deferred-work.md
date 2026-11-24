@@ -1601,7 +1601,8 @@ resolution: The generator resolves properties across local component references 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:1020
 reason: `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — only fires for `CreateFolderRequest` today.
-status: open
+status: done 2026-11-24
+resolution: Moved the optional parent presence rule to the schema-and-field registry and kept generic helper rendering. The current generated helper remains byte-identical.
 
 ### DW-225: `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`]
 

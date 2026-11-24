@@ -243,7 +243,8 @@ static FieldModel ResolveField(
         return new FieldModel(field, "true", parameter);
     }
 
-    if (SpecialFields.Registry.TryGetValue((schemaName, field), out FieldModel? specialField))
+    if (SpecialFields.Registry.TryGetValue((schemaName, field), out FieldModel? specialField)
+        && specialField.PresenceFlag is null)
     {
         return specialField;
     }
@@ -264,7 +265,7 @@ static FieldModel ResolveField(
     string expression = string.Join(".", bodyParts.Select(ToPropertyName));
     if (bodyParts.Length == 1)
     {
-        return new FieldModel(field, "true", expression);
+        return specialField ?? new FieldModel(field, "true", expression);
     }
 
     for (int i = 1; i < bodyParts.Length; i++)
@@ -977,10 +978,15 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
     code.AppendLine($"public partial class {helper.SchemaName}");
     code.AppendLine("{");
 
-    if (helper.SchemaName == "CreateFolderRequest")
+    IEnumerable<string> presenceFlags = helper.Variants
+        .SelectMany(variant => variant.Fields)
+        .Select(field => field.PresenceFlag)
+        .OfType<string>()
+        .Distinct(StringComparer.Ordinal);
+    foreach (string presenceFlag in presenceFlags)
     {
         code.AppendLine("    [JsonIgnore]");
-        code.AppendLine("    public bool ParentFolderIdSpecified { get; set; }");
+        code.AppendLine($"    public bool {presenceFlag} {{ get; set; }}");
         code.AppendLine();
     }
 
@@ -1046,8 +1052,7 @@ static void RenderComputeExpression(StringBuilder code, HelperVariantModel varia
     code.AppendLine(indent + "    {");
     foreach (FieldModel field in variant.Fields)
     {
-        string present = field.Path == "parent_folder_id" ? "ParentFolderIdSpecified || ParentFolderId is not null" : field.PresentExpression;
-        code.AppendLine(indent + $"        new IdempotencyField(\"{field.Path}\", {present}, {field.ValueExpression}),");
+        code.AppendLine(indent + $"        new IdempotencyField(\"{field.Path}\", {field.PresentExpression}, {field.ValueExpression}),");
     }
 
     code.AppendLine(indent + "    })");
@@ -1137,7 +1142,7 @@ internal sealed record OperationModel(
 
 internal sealed record ParameterModel(string Field, string Name, string? WireName = null);
 
-internal sealed record FieldModel(string Path, string PresentExpression, string ValueExpression);
+internal sealed record FieldModel(string Path, string PresentExpression, string ValueExpression, string? PresenceFlag = null);
 
 internal sealed record HelperVariantModel(
     string OperationId,
@@ -1163,6 +1168,10 @@ internal static class SpecialFields
 {
     public static readonly Dictionary<(string SchemaName, string Field), FieldModel> Registry = new()
     {
+        // CreateFolder distinguishes an explicit null parent from an omitted parent.
+        [("CreateFolderRequest", "parent_folder_id")] = new FieldModel(
+            "parent_folder_id", "ParentFolderIdSpecified || ParentFolderId is not null", "ParentFolderId", "ParentFolderIdSpecified"),
+
         // FileMutationRequest is the union schema for AddFile / ChangeFile / RemoveFile operations.
         // Each entry below appears under one or more of those operationId equivalence lists in
         // src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml.
