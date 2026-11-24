@@ -87,7 +87,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
         new(@"\bgithub_pat_[A-Za-z0-9_]{30,}", RegexOptions.CultureInvariant),
         new(@"\bv[1-4]\.(?:local|public)\.[A-Za-z0-9_-]{32,}", RegexOptions.CultureInvariant),
         new(@"\b(?:Macaroon\s+|macaroon[""']?\s*[:=]\s*[""']?|L402\s+)[A-Za-z0-9+/_-]{32,}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase),
-        new(@"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", RegexOptions.CultureInvariant),
+        new(@"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", RegexOptions.CultureInvariant),
         new(@"\bxox[abprs]-[A-Za-z0-9-]{20,}", RegexOptions.CultureInvariant)
     ];
 
@@ -221,6 +221,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
     [InlineData("Authorization: Macaroon 01234567890123456789012345678900", true)]
     [InlineData("\"macaroon\":\"01234567890123456789012345678900\"", true)]
     [InlineData("Authorization: L402 01234567890123456789012345678900:example", true)]
+    [InlineData("prefixeyJexample.fake.fake", true)]
     [InlineData("Use github_pat_<redacted> or v4.public.<redacted>.", false)]
     [InlineData("The Macaroon authorization scheme uses caveats.", false)]
     public void CredentialScannerRecognizesSerializedTokensAndAllowsPlaceholders(string text, bool containsCredential)
