@@ -1499,6 +1499,7 @@ tests/Hexalith.Folders.Tests/Aggregates/Organization/UnknownOrganizationEvent.cs
 tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs
 tests/Hexalith.Folders.Tests/Authorization/BranchRefPolicyActionCatalogTests.cs
 tests/Hexalith.Folders.Tests/Authorization/ConfigurationDaprPolicyEvidenceProviderTests.cs
+tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsActionCatalogMatrixGapTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsActionCatalogTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsAuthorizationGateTests.cs
 tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsCrossPrincipalTests.cs

@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 5ba54400b2336268cfc2b919c21ed1dfa2bae568ce6956ea8a0b362143d35530
-artifact_count: 1685
+candidate_set_sha256: 3dffe1129a7067534b3cadc5d0d483a27aae6d83bc273cd1e7e8a22f0741187f
+artifact_count: 1686
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120631
-    sha256: 1516b5fbef6b0c0e0aab68a41abe74608dc88e83a1a1631be772d67fd79a901a
+    bytes: 120725
+    sha256: 51d867b71a6baaad680d10631fbe0dec752d47fe950ec005d853b17c0ff34823
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -6024,6 +6024,10 @@ artifacts:
     kind: file
     bytes: 7398
     sha256: 9271469d4d7b373f7911c28579c4b8748f68a4e3d433deb214a9518c964be9c9
+  - path: "tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsActionCatalogMatrixGapTests.cs"
+    kind: file
+    bytes: 7500
+    sha256: b26dd456e76d0552d58c46fba94abd49d58981de68f99015ef36c88eec4fcd5c
   - path: "tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsActionCatalogTests.cs"
     kind: file
     bytes: 1910

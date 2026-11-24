@@ -2758,6 +2758,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-oq3-publish-canonical-authorization-matrix.md`
   summary: Pin the `G4` effective-permission action-catalog drift to a check that reads `EffectivePermissionsActionCatalog.cs`, so a fix or further drift produces a signal.
   evidence: `EvaluateGaps` only asserts that `G4`'s evidence path exists; no gate reads the catalog. The catalog's action-to-level mapping is pinned by its own tests under `tests/Hexalith.Folders.Tests/Authorization/`, so the recompute-from-source shape used for `G1`-`G3` does not extend cleanly here.
+  status: done 2026-11-25
+  resolution: `EffectivePermissionsActionCatalogMatrixGapTests` reads the G4 row and the catalog together. It checks the row cites the catalog, that every recorded level drift still holds (file-content read and context search at read, repository bind and repository-backed create at write, folder create and provider-binding configure at administer, provider readiness at read), and that no reviewer, operator or incident action exists. It also pins the exact action set and every action's level. Fixing a drift, adding an action or changing any level now fails the test, so the governed matrix must be revised with it. Neither later addition is classified by G4 yet: `manage_organization_acl` maps to `administer` like the tenant-level `create_folder`, and `read_task_status` reads through the `read_metadata` grant. The pin found that G4 still counts 22 actions while the catalog holds 24; that is a new ledger entry.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
   summary: NFR34 is recorded `covered` while the newly approved OQ4 catalog publishes gaps PG1 and PG2 stating that GitHub pins no adapter-level per-call REST timeout and that no retry-limit or backoff-cap ceiling has a referent.
@@ -3293,3 +3295,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Migrate specialized conformance scripts to native Microsoft.Testing.Platform project options.
   evidence: The docs and Dapr policy gates still pass the VSTest logger option. The pinned runner rejects it before execution, so these scripts depend on an extensionless xUnit apphost fallback. Use native result reporting and check the Windows path when migrating the gates.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
+  summary: Authorization matrix gap G4 still says the action catalog maps 22 actions; it now maps 24.
+  evidence: `manage_organization_acl` (administer, commit 47e51c13, 2026-10-12) and `read_task_status` (read, commit 0fa612f1, 2026-10-19) joined `EffectivePermissionsActionCatalog` after the matrix 2.0.0 approval of 2026-09-22. The G4 row in `docs/contract/authorization-matrix.md` is approval-bound, so correcting the count needs the next governed matrix revision. `EffectivePermissionsActionCatalogMatrixGapTests` lists the two additions in `ActionsAddedAfterG4`; fold them into the G4 list when the row changes.
