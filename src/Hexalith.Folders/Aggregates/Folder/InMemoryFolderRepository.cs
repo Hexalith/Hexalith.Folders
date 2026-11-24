@@ -33,7 +33,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly Dictionary<(string ManagedTenantId, string FolderId, string Projection), DateTimeOffset> _lastObservedAt = new();
     private readonly object _gate = new();
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
-    private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
+    private readonly IFolderLifecycleStatusSeed? _lifecycleSeed;
     private readonly InMemoryWorkspaceLockStatusReadModel? _workspaceLockStatusReadModel;
     private readonly InMemoryWorkspaceStatusReadModel? _workspaceStatusReadModel;
     private readonly InMemoryWorkspaceCleanupStatusReadModel? _workspaceCleanupStatusReadModel;
@@ -50,13 +50,11 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         IWorkspaceCleanupStatusReadModel? workspaceCleanupStatusReadModel = null,
         ITaskStatusReadModel? taskStatusReadModel = null)
     {
-        // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
-        // if a different IFolderLifecycleStatusReadModel implementation was injected so the
-        // wiring drift is visible at startup rather than silently dropping snapshots.
-        if (lifecycleReadModel is not null && lifecycleReadModel is not InMemoryFolderLifecycleStatusReadModel)
+        // Reject read-only stores here so the in-memory repository cannot silently drop snapshots.
+        if (lifecycleReadModel is not null && lifecycleReadModel is not IFolderLifecycleStatusSeed)
         {
             throw new ArgumentException(
-                $"InMemoryFolderRepository requires {nameof(InMemoryFolderLifecycleStatusReadModel)}; received {lifecycleReadModel.GetType().Name}.",
+                $"InMemoryFolderRepository requires an {nameof(IFolderLifecycleStatusSeed)}; received {lifecycleReadModel.GetType().Name}.",
                 nameof(lifecycleReadModel));
         }
 
@@ -96,7 +94,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         }
 
         _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
-        _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
+        _lifecycleSeed = (IFolderLifecycleStatusSeed?)lifecycleReadModel;
         _workspaceLockStatusReadModel = (InMemoryWorkspaceLockStatusReadModel?)workspaceLockStatusReadModel;
         _workspaceStatusReadModel = (InMemoryWorkspaceStatusReadModel?)workspaceStatusReadModel;
         _workspaceCleanupStatusReadModel = (InMemoryWorkspaceCleanupStatusReadModel?)workspaceCleanupStatusReadModel;
@@ -297,7 +295,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
     private void SaveLifecycleSnapshot(FolderState state, DateTimeOffset observedAt)
     {
-        if (_lifecycleReadModel is null
+        if (_lifecycleSeed is null
             || !state.IsCreated
             || string.IsNullOrWhiteSpace(state.ManagedTenantId)
             || string.IsNullOrWhiteSpace(state.FolderId))
@@ -325,7 +323,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             ? state.ArchiveCorrelationId
             : state.RepositoryBindingCorrelationId ?? state.ArchiveCorrelationId;
 
-        _lifecycleReadModel.Save(new FolderLifecycleStatusReadModelSnapshot(
+        _lifecycleSeed.Save(new FolderLifecycleStatusReadModelSnapshot(
             state.ManagedTenantId,
             state.FolderId,
             state.LifecycleState == FolderLifecycleState.Archived

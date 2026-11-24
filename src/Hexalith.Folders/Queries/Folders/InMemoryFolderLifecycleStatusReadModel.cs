@@ -4,7 +4,7 @@ using Hexalith.Folders.Projections.TenantAccess;
 
 namespace Hexalith.Folders.Queries.Folders;
 
-public sealed class InMemoryFolderLifecycleStatusReadModel(IUtcClock clock) : IFolderLifecycleStatusReadModel
+public sealed class InMemoryFolderLifecycleStatusReadModel(IUtcClock clock) : IFolderLifecycleStatusReadModel, IFolderLifecycleStatusSeed
 {
     private readonly ConcurrentDictionary<ScopedSnapshotKey, FolderLifecycleStatusReadModelSnapshot> _snapshots = new();
     private readonly IUtcClock _clock = clock ?? throw new ArgumentNullException(nameof(clock));

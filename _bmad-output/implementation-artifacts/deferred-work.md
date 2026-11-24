@@ -326,7 +326,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs:9
 reason: `Save` is not on `IFolderLifecycleStatusReadModel` interface — test-only seam [`src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs:9`] — deferred, intentional pattern; promote to `IFolderLifecycleStatusSeed` when a second backing store appears.
-status: open
+status: done 2026-11-24
+resolution: In-memory replay publishes through IFolderLifecycleStatusSeed. The EventStore lifecycle reader remains read-only. The tenant-scoped projection and production composition tests cover both paths.
 
 ### DW-46: `FolderLifecycleProjectionState.Unknown` is handled by the switch's `_` arm, never matched by name
 
