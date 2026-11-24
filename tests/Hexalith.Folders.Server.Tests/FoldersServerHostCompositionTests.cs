@@ -1,8 +1,12 @@
+using System.Collections.Concurrent;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
@@ -245,15 +249,24 @@ public sealed class FoldersServerHostCompositionTests
         }
     }
 
-    /// <summary>Starts configured SDK-owned OTLP providers and observes module subscriptions independently of OTLP delivery.</summary>
+    /// <summary>Proves the SDK providers deliver OTLP HTTP/protobuf through the registered route-catalog transport.</summary>
     [Fact]
-    public async Task ConfiguredOtlpStartsOneProviderPerSignalAndSubscribesFoldersSignals()
+    public async Task ConfiguredOtlpStartsOneProviderPerSignalAndExportsFoldersSignals()
     {
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        var deliveries = new ConcurrentQueue<(string? Path, string? ContentType, string ClientName, string Payload)>();
         WebApplicationBuilder collectorBuilder = WebApplication.CreateSlimBuilder();
         collectorBuilder.WebHost.UseUrls("http://127.0.0.1:0");
         await using WebApplication collector = collectorBuilder.Build();
-        collector.MapPost("/{**signal}", () => Microsoft.AspNetCore.Http.Results.Bytes([], "application/x-protobuf"));
-        await collector.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        collector.MapPost("/{**signal}", async (HttpRequest request) =>
+        {
+            using MemoryStream payload = new();
+            await request.Body.CopyToAsync(payload, request.HttpContext.RequestAborted).ConfigureAwait(true);
+            deliveries.Enqueue((request.Path.Value, request.ContentType,
+                request.Headers[OtlpExporterClientMarker.HeaderName].ToString(), Encoding.UTF8.GetString(payload.ToArray())));
+            return Results.Bytes([], "application/x-protobuf");
+        });
+        await collector.StartAsync(cancellationToken).ConfigureAwait(true);
         try
         {
             WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder(new Dictionary<string, string?>
@@ -261,40 +274,63 @@ public sealed class FoldersServerHostCompositionTests
                 ["OTEL_EXPORTER_OTLP_ENDPOINT"] = collector.Urls.Single(),
                 ["OTEL_EXPORTER_OTLP_PROTOCOL"] = "http/protobuf",
             });
-            builder.Services.ConfigureAll<OpenTelemetry.Exporter.OtlpExporterOptions>(options =>
+            builder.Services.ConfigureAll<OtlpExporterOptions>(options => options.TimeoutMilliseconds = 5000);
+            var expectedSignals = new[]
             {
-                options.Endpoint = new Uri(collector.Urls.Single());
-                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
-                options.TimeoutMilliseconds = 5000;
-            });
+                (Path: "/v1/traces", ClientName: "OtlpTraceExporter", Marker: "folders-source-export"),
+                (Path: "/v1/metrics", ClientName: "OtlpMetricExporter", Marker: "folders.source.export"),
+                (Path: "/v1/logs", ClientName: "OtlpLogExporter", Marker: "Source fixture exporter validation."),
+            };
+            foreach (var signal in expectedSignals)
+            {
+                builder.Services.AddHttpClient(signal.ClientName)
+                    .AddHttpMessageHandler(() => new OtlpExporterClientMarker(signal.ClientName));
+            }
             HostModuleMetricExporter observedMetrics = new();
             PeriodicExportingMetricReader moduleReader = new(observedMetrics);
             builder.Services.AddOpenTelemetry().WithMetrics(metrics => metrics.AddReader(moduleReader));
             await using (WebApplication app = builder.Build())
             {
                 app.UseFoldersServerPipeline();
-                await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
-                app.Services.GetServices<OpenTelemetry.Trace.TracerProvider>().ShouldHaveSingleItem();
-                app.Services.GetServices<OpenTelemetry.Metrics.MeterProvider>().ShouldHaveSingleItem();
-                app.Services.GetServices<Microsoft.Extensions.Logging.ILoggerProvider>()
-                    .OfType<OpenTelemetry.Logs.OpenTelemetryLoggerProvider>().ShouldHaveSingleItem();
+                await app.StartAsync(cancellationToken).ConfigureAwait(true);
+                TracerProvider traces = app.Services.GetServices<TracerProvider>().ShouldHaveSingleItem();
+                MeterProvider metrics = app.Services.GetServices<MeterProvider>().ShouldHaveSingleItem();
+                app.Services.GetServices<ILoggerProvider>().OfType<OpenTelemetryLoggerProvider>().ShouldHaveSingleItem();
+                IHttpMessageHandlerFactory clients = app.Services.GetRequiredService<IHttpMessageHandlerFactory>();
+                foreach (var signal in expectedSignals)
+                {
+                    HttpMessageHandler handler = clients.CreateHandler(signal.ClientName);
+                    while (handler is DelegatingHandler { InnerHandler: { } inner })
+                    {
+                        handler = inner;
+                    }
+                    handler.ShouldBeOfType<RouteCatalogInvocationHandler>();
+                }
+
                 using (System.Diagnostics.ActivitySource source = new(Hexalith.Folders.Observability.FolderTelemetryNames.ActivitySourceName))
                 using (System.Diagnostics.Activity? activity = source.StartActivity("folders-source-export"))
                     activity.ShouldNotBeNull();
                 using System.Diagnostics.Metrics.Meter meter = new(Hexalith.Folders.Observability.FolderTelemetryNames.MeterName);
                 meter.CreateCounter<long>("folders.source.export").Add(1);
-                app.Services.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>()
-                    .CreateLogger("Folders.Source.Export").LogInformation("Source fixture exporter validation.");
-                // This local reader checks subscription only. OTLP delivery has a separate SDK transport limitation.
-                moduleReader.Collect(5000).ShouldBeTrue();
+                app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Folders.Source.Export")
+                    .LogInformation("Source fixture exporter validation.");
+
+                traces.ForceFlush(5000).ShouldBeTrue();
+                metrics.ForceFlush(5000).ShouldBeTrue();
                 observedMetrics.Names.ShouldContain("folders.source.export");
-                await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+                await app.StopAsync(cancellationToken).ConfigureAwait(true);
             }
 
+            foreach (var signal in expectedSignals)
+            {
+                deliveries.ShouldContain(delivery =>
+                    delivery.Path == signal.Path && delivery.ContentType == "application/x-protobuf"
+                    && delivery.ClientName == signal.ClientName && delivery.Payload.Contains(signal.Marker, StringComparison.Ordinal));
+            }
         }
         finally
         {
-            await collector.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await collector.StopAsync(cancellationToken).ConfigureAwait(true);
         }
     }
 
