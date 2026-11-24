@@ -377,6 +377,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
 
             pathParameters ??= EnumerateParameters(pathItem, root, $"paths.{path}.parameters").ToArray();
             IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation, root, $"operation {operationId} parameters")];
+            OperationSchemaReferences.Validate(root, pathItem, operation, operationId);
             string[] tags = ReadStringSequence(operation, "tags").ToArray();
             string[] idempotencyFields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence").ToArray();
             string[] errorCategories = ReadStringSequence(operation, "x-hexalith-canonical-error-categories")

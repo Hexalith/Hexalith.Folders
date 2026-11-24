@@ -630,7 +630,8 @@ decision: 2026-08-25 Emit both — Retain normalized semantic hashes and add sep
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs:3137-3146
 reason: Generator does not resolve OpenAPI `$ref` for operation request/response schemas (`tests/tools/parity-oracle-generator/Program.cs:3137-3146`). Blocks AC 7 schema-drift detection but the simplified column set in this story does not need schema bodies. Reopen if/when schema-drift detection becomes scope.
-status: open
+status: done 2026-11-24
+resolution: The parity generator resolves the local OpenAPI reference graph before emission and rejects broken request and response references without publishing partial output.
 
 ### DW-89: `correlation_field_path` always emits `headers.X-Correlation-Id`
 

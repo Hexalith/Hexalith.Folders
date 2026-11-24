@@ -988,6 +988,40 @@ operations:
     private static int RunGenerator(string contractPath, string outputPath) =>
         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
 
+    [Theory]
+    [InlineData(true, "request body")]
+    [InlineData(false, "response")]
+    public void UnresolvedOperationSchemaReferencesPreventEmission(bool request, string location)
+    {
+        string directory = NewTempDirectory("hexalith-parity-schema-reference");
+        string contract = WriteMutatedContract(directory, operation =>
+        {
+            YamlStream yaml = new();
+            using StringReader reader = new("""
+                description: Synthetic body
+                content:
+                  application/json:
+                    schema:
+                      allOf:
+                      - !!str '$ref': '#/components/schemas/MissingSchema'
+                """);
+            yaml.Load(reader);
+            YamlNode container = yaml.Documents.Single().RootNode;
+
+            if (request)
+            {
+                operation.Children[new YamlScalarNode("requestBody")] = container;
+            }
+            else
+            {
+                YamlMappingNode responses = RequiredMapping(operation, "responses");
+                responses.Children[responses.Children.Keys.First()] = container;
+            }
+        });
+
+        AssertGeneratorRejectsWithoutWriting(contract, directory, $"unresolved OpenAPI {location} schema reference");
+    }
+
     [Fact]
     public void ExcludedMethodDiagnosticsOmitRawPaths()
     {

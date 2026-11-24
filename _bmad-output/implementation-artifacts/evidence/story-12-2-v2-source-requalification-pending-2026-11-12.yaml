@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 5274cb9ade3d760e9e89a94ddb941dec4fb56a2a55ec4f6642fa892f52ea1f32
-artifact_count: 1676
+candidate_set_sha256: 44b488a70cdb69c8a55f5ac18a069340a51340299bc9ab20eff09755fbd1f1a6
+artifact_count: 1677
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 120033
-    sha256: de368b30a6af6a6c7a6f7862348617e2b74e2824d9dfb2a36bc0791643fae9c2
+    bytes: 120098
+    sha256: 91509e25a472de625abe71d9abe812e34e05e049ba230c208e5177d4848f52d3
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -4894,8 +4894,8 @@ artifacts:
     sha256: bdd67a7e418ad3545f918d6d52aba1db12532484d52c9bb485f17b621fc3ba81
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs"
     kind: file
-    bytes: 63666
-    sha256: e840f8b24c0e9278fd6f11bb70ba87721374c71cb600eb237166f9292b5420fb
+    bytes: 64948
+    sha256: 340287d08bcccbaa344988c10762a78e24e4a6e9688e120379aef2eb41eaf358
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10CandidateCoverage.cs"
     kind: file
     bytes: 7936
@@ -6680,14 +6680,18 @@ artifacts:
     kind: file
     bytes: 2055
     sha256: 26a0d1e8bcca271c68c44b9e22512ef0a43cf83f01bfe54e193f19b92683fc08
+  - path: "tests/tools/parity-oracle-generator/OperationSchemaReferences.cs"
+    kind: file
+    bytes: 8094
+    sha256: e4f2de0f80b8de3807bf6e807c6b23bf38bcbe24c0e5ce75263257b61f00a6cd
   - path: "tests/tools/parity-oracle-generator/Program.cs"
     kind: file
-    bytes: 85776
-    sha256: 45e78228c54cd1dfa49a835dfa899d5e16d8808195a633a6eb39561bf16617b1
+    bytes: 85864
+    sha256: ad4319821f1aab82a264879cbbfd7f8e5ca86aa376fef40f616489ba72eb270c
   - path: "tests/tools/parity-oracle-generator/README.md"
     kind: file
-    bytes: 6388
-    sha256: 46961a44860650e72d80ebddbaa2bec14f2c04c4236c587b27c11840e80d6d6a
+    bytes: 6693
+    sha256: 29b66b3326598be83906c8b34afb85197170ab28ce73da1ca017629d7336cdbb
   - path: "tests/tools/run-adr-runbook-docs-gates.ps1"
     kind: file
     bytes: 10769

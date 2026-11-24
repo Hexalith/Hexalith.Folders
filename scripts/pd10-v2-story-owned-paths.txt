@@ -1663,6 +1663,7 @@ tests/tools/Task36FoldObserver/LifecycleRequestCorrelation.cs
 tests/tools/Task36FoldObserver/StartupHook.cs
 tests/tools/Task36FoldObserver/Task36FoldObserver.csproj
 tests/tools/Task36FoldObserver/Task36HostingStartup.cs
+tests/tools/parity-oracle-generator/OperationSchemaReferences.cs
 tests/tools/parity-oracle-generator/Program.cs
 tests/tools/parity-oracle-generator/README.md
 tests/tools/run-adr-runbook-docs-gates.ps1
