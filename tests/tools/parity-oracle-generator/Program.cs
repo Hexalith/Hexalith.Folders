@@ -360,7 +360,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                     Level: "warning",
                     Category: "non_inventory_method",
                     OperationId: null,
-                    SourcePointer: $"paths.{path}.{method}",
+                    SourcePointer: "paths",
                     Message: $"HTTP method '{method}' is not part of the parity inventory and was skipped."));
                 continue;
             }

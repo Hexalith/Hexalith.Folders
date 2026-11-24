@@ -592,7 +592,8 @@ archived: 2026-09-18
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs
 reason: `SafeCommentText` insufficient leak guard for diagnostic stream [`tests/tools/parity-oracle-generator/Program.cs` SafeCommentText helper] — hypothetical; no concrete leak path identified. Re-evaluate if diagnostic content sources expand beyond bounded code-constructed strings.
-status: open
+status: done 2026-11-24
+resolution: Kept the excluded-method warning and removed the raw route from its provenance. Added a generator regression for an excluded-only path.
 
 ### DW-81: `--initialize-baseline` silently overwrites without `--force`/backup
 

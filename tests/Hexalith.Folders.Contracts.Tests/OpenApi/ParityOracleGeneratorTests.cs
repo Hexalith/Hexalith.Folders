@@ -988,6 +988,31 @@ operations:
     private static int RunGenerator(string contractPath, string outputPath) =>
         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
 
+    [Fact]
+    public void ExcludedMethodDiagnosticsOmitRawPaths()
+    {
+        string directory = NewTempDirectory("hexalith-parity-excluded-method");
+        string contract = Path.Combine(directory, "candidate.yaml");
+        string output = Path.Combine(directory, "parity.yaml");
+        const string sentinel = "synthetic-diagnostic-path";
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        RequiredMapping(root, "paths").Add(
+            new YamlScalarNode($"/{sentinel}"),
+            new YamlMappingNode { { "head", new YamlMappingNode() } });
+        using (StreamWriter writer = new(contract, false, new UTF8Encoding(false)))
+        {
+            new YamlStream(new YamlDocument(root)).Save(writer, false);
+        }
+
+        GeneratorResult result = RunGeneratorDetailed(contract, output);
+
+        result.ExitCode.ShouldBe(0, result.Error);
+        string oracle = File.ReadAllText(output);
+        oracle.ShouldContain("category=non_inventory_method operation=- source=paths");
+        oracle.ShouldNotContain(sentinel);
+        (result.Output + result.Error).ShouldNotContain(sentinel);
+    }
+
     private static string WriteMutatedContract(string directory, Action<YamlMappingNode> mutate, bool readOperation = false)
     {
         YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
