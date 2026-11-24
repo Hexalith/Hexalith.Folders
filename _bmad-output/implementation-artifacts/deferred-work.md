@@ -2465,6 +2465,8 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
   summary: Octokit may wrap SerializationException as InnerException, which IsMalformedJsonException would miss.
   evidence: Unverified (maybe-false, would be medium). Settle by inspecting Octokit 14.0.0 SimpleJson throw sites; if the thrown exception is never a direct SerializationException, status mapping would report UnexpectedTransportFailure instead of MalformedResponse.
+  status: done 2026-11-24
+  resolution: Settled as false. Against the pinned Octokit, a malformed body raises `SerializationException` directly. The binding validation read and the existing-repository reconciliation read both report `MalformedResponse` in `OctokitGitHubApiClientTests`, which send the body through the real deserializer. The operation-status read parses with System.Text.Json instead and has its own malformed-body test.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
   summary: EventStore DomainService adapter seam and Folders trusted IIdempotencyIntentAdapter registrations for every mutation command type.

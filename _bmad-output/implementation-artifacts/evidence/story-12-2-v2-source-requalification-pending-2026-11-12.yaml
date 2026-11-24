@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 83217e5ff8b9cf42a38da3daaab88caeb0e953f94ad774d5d5ee0ac4489d6033
+candidate_set_sha256: a334bea81cdb234ab1571e2ce15651a11a0145f3656370ca9547e324bfd84939
 artifact_count: 1680
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -6338,8 +6338,8 @@ artifacts:
     sha256: 2cd3380ebfa00645a8c6026893995dc07f0a034ec1bd2b67e7f889c86af0dd5e
   - path: "tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs"
     kind: file
-    bytes: 33398
-    sha256: afae113f5ab81afc21c2a78350de2a1a6d164c21942f5be37dac208be4ec3de3
+    bytes: 36656
+    sha256: 5893819f749ffda8829f65c1ca66c95be472228442256ca21f9834cccc6e1d41
   - path: "tests/Hexalith.Folders.Tests/Providers/GitHub/ProviderCallCeilingConformanceTests.cs"
     kind: file
     bytes: 10674

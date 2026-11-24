@@ -333,6 +333,72 @@ public sealed partial class OctokitGitHubApiClientTests
         JsonSerializer.Serialize(result).ShouldNotContain("provider-body-sentinel", Case.Sensitive);
     }
 
+    /// <summary>
+    /// The operation-status read parses the ref with System.Text.Json rather than Octokit, so this pins the
+    /// status seam's own malformed-body mapping. The binding and reconciliation tests below cover Octokit.
+    /// </summary>
+    [Fact]
+    public async Task StatusMapsAMalformedRefBodyAsMalformedResponse()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, "{ provider-body-sentinel");
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+        JsonSerializer.Serialize(result).ShouldNotContain("provider-body-sentinel", Case.Sensitive);
+    }
+
+    /// <summary>
+    /// Sends a malformed body through the real Octokit deserializer rather than throwing a hand-built exception
+    /// from the handler. Octokit raises the serialization exception directly, so the binding read reports a
+    /// malformed response instead of an unexpected transport failure.
+    /// </summary>
+    [Fact]
+    public async Task ValidateBindingMapsARealOctokitMalformedBodyAsMalformedResponse()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, "{ provider-body-sentinel");
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+        JsonSerializer.Serialize(result).ShouldNotContain("provider-body-sentinel", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task ReconcilingAnExistingRepositoryMapsARealOctokitMalformedBodyAsMalformedResponse()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls == 1
+            ? JsonResponse(HttpStatusCode.UnprocessableEntity, RepositoryExistsJson())
+            : JsonResponse(HttpStatusCode.OK, "{ provider-body-sentinel")));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+        GitHubRepositoryCreationRequest request = CreationRequest() with
+        {
+            Target = CreationRequest().Target with
+            {
+                ExpectedCanonicalRepositoryId = "101",
+                EquivalentExistingAuthorized = true,
+            },
+        };
+
+        GitHubRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.Count.ShouldBe(2);
+        handler.Requests[1].Method.ShouldBe(HttpMethod.Get);
+        JsonSerializer.Serialize(result).ShouldNotContain("provider-body-sentinel", Case.Sensitive);
+    }
+
     [Fact]
     public async Task CreateRepositoryMapsDisconnectAfterDispatchAsUnknownWithoutRetry()
     {
