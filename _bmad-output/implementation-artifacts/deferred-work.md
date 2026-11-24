@@ -2038,7 +2038,8 @@ origin: code review of 3-10-github-repository-provisioning-binding-and-branch-re
 location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs:160-200
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: `ValidateRepositoryBindingAsync` checks access, canonical identity, permission posture, default branch, selected ref, and protection posture, but never inspects `Repository.Archived` or the disabled flag. A binding to an archived repository validates cleanly and then fails on every subsequent write. AC4 enumerates the checks it requires and does not name archival, so this is a gap in the acceptance criteria rather than a deviation from it — it needs a product decision before it becomes a required check.
-status: open
+status: done 2026-11-24
+resolution: Observes both flags on the existing repository lookup and returns a bounded repository conflict before any branch observation. Tests cover each inactive flag and verify that only the repository GET is sent.
 decision: 2026-08-28 Reject inactive repositories — Reject archived and disabled repositories before branch observation, map a bounded outcome, and add no-write binding tests.
 decision: 2026-08-28 Reject inactive repositories — Reject archived and disabled repositories before branch observation, map a bounded outcome, and add no-write binding tests.
 

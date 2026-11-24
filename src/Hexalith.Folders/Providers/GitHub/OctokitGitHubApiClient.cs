@@ -86,7 +86,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         try
         {
             Repository created = await _client.Repository.Create(request.Target.Owner, repository).ConfigureAwait(false);
-            return TryCanonicalRepositoryId(created, out string? canonicalRepositoryId)
+            return TryCanonicalRepositoryId(created?.Id ?? 0, out string? canonicalRepositoryId)
                 ? GitHubRepositoryCreationResult.Success(canonicalRepositoryId: canonicalRepositoryId)
                 : GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
         }
@@ -154,19 +154,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
-        Repository repository;
+        GitHubBindingRepository? repository;
         try
         {
-            repository = await _client.Repository.Get(
-                request.Target.Owner,
-                request.Target.RepositoryName).ConfigureAwait(false);
+            IApiResponse<GitHubBindingRepository> response = await _client.Connection.Get<GitHubBindingRepository>(
+                ApiUrls.Repository(request.Target.Owner, request.Target.RepositoryName),
+                parameters: null,
+                accepts: null,
+                cancellationToken).ConfigureAwait(false);
+            repository = response.Body;
         }
         catch (Exception exception)
         {
             return MapBindingObservationFailure(exception, GitHubApiFailureCondition.NotFoundOrHidden);
         }
 
-        if (!TryCanonicalRepositoryId(repository, out string? canonicalRepositoryId))
+        if (repository is null || !TryCanonicalRepositoryId(repository.Id, out string? canonicalRepositoryId))
         {
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.MalformedResponse);
         }
@@ -176,6 +179,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 request.Target.ExpectedCanonicalRepositoryId,
                 canonicalRepositoryId,
                 StringComparison.Ordinal))
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
+        }
+
+        if (repository.Archived || repository.Disabled)
         {
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
         }
@@ -800,7 +808,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             Repository existing = await _client.Repository.Get(
                 request.Target.Owner,
                 request.Target.RepositoryName).ConfigureAwait(false);
-            if (!TryCanonicalRepositoryId(existing, out string? canonicalRepositoryId))
+            if (!TryCanonicalRepositoryId(existing?.Id ?? 0, out string? canonicalRepositoryId))
             {
                 return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.MalformedResponse);
             }
@@ -1965,7 +1973,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
     /// Compares the observed repository visibility against the approved policy. Octokit exposes
     /// <c>Visibility</c> only on newer payloads, so <c>Private</c> is the authoritative fallback.
     /// </summary>
-    private static bool IsVisibilityCompatible(ProviderRepositoryVisibility expected, Repository repository)
+    private static bool IsVisibilityCompatible(ProviderRepositoryVisibility expected, GitHubBindingRepository repository)
         => repository.Visibility is { } observed
             ? TryMapVisibility(expected, out RepositoryVisibility mapped) && observed == mapped
             : expected switch
@@ -1975,10 +1983,10 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 _ => true,
             };
 
-    private static bool TryCanonicalRepositoryId(Repository repository, out string? canonicalRepositoryId)
+    private static bool TryCanonicalRepositoryId(long repositoryId, out string? canonicalRepositoryId)
     {
-        canonicalRepositoryId = repository.Id > 0
-            ? repository.Id.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        canonicalRepositoryId = repositoryId > 0
+            ? repositoryId.ToString(System.Globalization.CultureInfo.InvariantCulture)
             : null;
         return canonicalRepositoryId is not null;
     }

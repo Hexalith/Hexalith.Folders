@@ -417,6 +417,24 @@ public sealed partial class OctokitGitHubApiClientTests
         handler.Requests.Count.ShouldBe(1);
     }
 
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task ValidateBindingRejectsInactiveRepositoryBeforeObservingBranch(bool archived, bool disabled)
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(
+            HttpStatusCode.OK, RepositoryJson(101, archived: archived, disabled: disabled));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(), TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.RepositoryConflict);
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Get);
+    }
+
     [Fact]
     public async Task ValidateBindingUsesExactSelectedRefAndMapsMissingRefSafely()
     {
@@ -618,7 +636,9 @@ public sealed partial class OctokitGitHubApiClientTests
         string defaultBranch = "main",
         bool pull = true,
         bool admin = true,
-        bool isPrivate = true)
+        bool isPrivate = true,
+        bool archived = false,
+        bool disabled = false)
         => $$"""
         {
           "id": {{id}},
@@ -626,6 +646,8 @@ public sealed partial class OctokitGitHubApiClientTests
           "name": "octokit-repository-sentinel",
           "full_name": "octokit-owner-sentinel/octokit-repository-sentinel",
           "private": {{isPrivate.ToString().ToLowerInvariant()}},
+          "archived": {{archived.ToString().ToLowerInvariant()}},
+          "disabled": {{disabled.ToString().ToLowerInvariant()}},
           "owner": { "login": "octokit-owner-sentinel", "id": 7, "type": "Organization" },
           "html_url": "https://example.invalid/repository-sentinel",
           "url": "https://api.example.invalid/repos/owner/repository",
