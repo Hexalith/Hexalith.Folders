@@ -73,7 +73,7 @@ public sealed class HonestGreenGateBaselineConformanceTests
     [Fact]
     public void FullUiE2eLaneIsNeverNarrowedToASubset()
     {
-        // The no-filter invariant: the E2E gate runs the FULL Hexalith.Folders.UI.E2E.Tests project (all 63 cases),
+        // The no-filter invariant: the E2E gate runs the FULL Hexalith.Folders.UI.E2E.Tests project (every case),
         // never a namespace / FQN subset. The accessibility gate legitimately scopes to its own namespace, so this
         // narrowing check applies only to the full-lane script.
         string script = ReadText(E2eGateScriptPath);

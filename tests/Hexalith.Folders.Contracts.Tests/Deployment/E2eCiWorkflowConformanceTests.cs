@@ -13,7 +13,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 /// Story 8.5 (AC5, Option A) — conformance gate pinning the full UI end-to-end CI lane: the <c>e2e-gates</c> job
 /// in <c>ci.yml</c>, the focused gate script, and the operator doc. Mirrors
 /// <see cref="AccessibilityCiWorkflowConformanceTests"/>, but asserts the gate runs the <b>full</b>
-/// <c>Hexalith.Folders.UI.E2E.Tests</c> lane (all 63 tests) rather than a single namespace subset — that is the
+/// <c>Hexalith.Folders.UI.E2E.Tests</c> lane (every test) rather than a single namespace subset — that is the
 /// genuine environmental gap this lane closes. A change that drops the job, removes the browser provisioning,
 /// narrows the gate to a namespace subset, or reintroduces a forbidden CI substring (AD7) fails here.
 /// </summary>

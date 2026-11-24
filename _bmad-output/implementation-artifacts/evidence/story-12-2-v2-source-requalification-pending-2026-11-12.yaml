@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 3dffe1129a7067534b3cadc5d0d483a27aae6d83bc273cd1e7e8a22f0741187f
+candidate_set_sha256: 31515612b20c37a6a1c3c8a646e983eaeb25dd5960364d78ac90e833e77bc02f
 artifact_count: 1686
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4786,12 +4786,12 @@ artifacts:
     sha256: 7da45dac05be95b8edf98d5e2e8e2adf340e0d26c8634d78460ef25bd1d6eeac
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/E2eCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 13020
-    sha256: f4260e1e034f13ecba85ea02acfcb3826f535d559f4fcf402d1ba01c3e35ac89
+    bytes: 13018
+    sha256: 7f216661742161ed256f0c2240e68a18f305bee33e5e05e391f926180955b379
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/HonestGreenGateBaselineConformanceTests.cs"
     kind: file
-    bytes: 7963
-    sha256: a9d2ea01b7ed2b32a296b7fef3637d889bae5179515db49a0fcacf87c1b03a46
+    bytes: 7961
+    sha256: 5e874d6fff862a0a8a2e75f3985fd51fe4992e9cc470052215daf3e8822aec79
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/NfrTraceabilityConformanceTests.cs"
     kind: file
     bytes: 45190

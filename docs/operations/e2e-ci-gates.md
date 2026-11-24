@@ -21,15 +21,16 @@ jobs that provision a browser.
 
 ## What the gate verifies
 
-The gate runs the **full** `Hexalith.Folders.UI.E2E.Tests` lane — all 63 tests across the four namespaces — so
+The gate runs the **full** `Hexalith.Folders.UI.E2E.Tests` lane — all 64 tests across the four namespaces — so
 the full UI E2E surface is proven green in CI rather than assumed:
 
 1. **Accessibility** (23 tests) — the axe-core / WCAG 2.2 AA scan, keyboard / visible-focus, and zoom / reflow
    assertions (also covered by the focused `accessibility-gates` job; re-run here so the full lane is a single
    honest green).
 2. **Responsive** (28 cases) — viewport / responsive-layout smoke over the read-only console routes.
-3. **Smoke** (8 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes
-   load and render their page roots against the hermetic backend-less host.
+3. **Smoke** (9 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes
+   load and render their page roots against the hermetic backend-less host, plus one test that opens a folder
+   through a live Blazor Server circuit.
 4. **StateLabels** (4 tests) — operator disposition-label gallery rendering.
 
 Each test drives a real Playwright Chromium browser against an in-process console host bound to localhost; there

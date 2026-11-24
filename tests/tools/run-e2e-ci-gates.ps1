@@ -1,9 +1,9 @@
 #Requires -Version 7
 
 # Story 8.5 (AC5, Option A) — focused end-to-end CI gate. Provisions Playwright Chromium and runs the FULL
-# Hexalith.Folders.UI.E2E.Tests lane (all 63 tests: the Accessibility, Responsive, Smoke, and StateLabels
+# Hexalith.Folders.UI.E2E.Tests lane (every test in the Accessibility, Responsive, Smoke, and StateLabels
 # namespaces) over the read-only operations console. Story 8.4's run-accessibility-ci-gates.ps1 covers only the
-# Accessibility subset; this gate closes the genuine environmental gap by exercising the 40 non-accessibility
+# Accessibility subset; this gate closes the genuine environmental gap by exercising the non-accessibility
 # E2E tests in a Chromium-provisioned CI job so a full-solution test run no longer env-fails on UI.E2E. Mirrors
 # the focused-gate contract of run-accessibility-ci-gates.ps1: hermetic, metadata-only, no artifact upload /
 # publish / secrets / network beyond localhost / recursive submodule init. Writes a metadata-only report to

@@ -27,13 +27,19 @@ using Xunit;
 /// Honors AC #6's "hermetic-test branch is rejected at boot unless ASPNETCORE_ENVIRONMENT in
 /// {Development, Test}" gate by setting the environment to <c>Test</c> at boot.
 /// </remarks>
-public sealed class AspireConsoleHostFixture : IAsyncLifetime
+public class AspireConsoleHostFixture : IAsyncLifetime
 {
     private WebApplication? _app;
     private Uri? _baseAddress;
 
     public Uri BaseAddress => _baseAddress
         ?? throw new InvalidOperationException("AspireConsoleHostFixture has not completed InitializeAsync.");
+
+    /// <summary>
+    /// Gets a value indicating whether the host serves the static web assets, including <c>_framework/blazor.web.js</c>,
+    /// so pages start a Blazor Server circuit. The smoke host keeps the prerender-only default.
+    /// </summary>
+    protected virtual bool ServeStaticWebAssets => false;
 
     public async ValueTask InitializeAsync()
     {
@@ -64,6 +70,13 @@ public sealed class AspireConsoleHostFixture : IAsyncLifetime
 
         // Bind Kestrel to a random localhost port so Playwright can hit the running host.
         builder.WebHost.UseUrls("http://127.0.0.1:0");
+
+        if (ServeStaticWebAssets)
+        {
+            // The Test environment does not load the static web assets manifest, so without this call the host
+            // answers every stylesheet and _framework/blazor.web.js with an empty 200 and no circuit starts.
+            builder.WebHost.UseStaticWebAssets();
+        }
 
         CompositionRoot.ConfigureServices(builder.Services, builder.Configuration, builder.Environment);
 

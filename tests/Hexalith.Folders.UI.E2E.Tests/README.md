@@ -1,20 +1,20 @@
 # Hexalith.Folders UI End-to-End Tests
 
-This project hosts the **Playwright-on-.NET** lane for the read-only operations console. It is the live 63-test blocking lane documented in `docs/operations/e2e-ci-gates.md`.
+This project hosts the **Playwright-on-.NET** lane for the read-only operations console. It is the live 64-test blocking lane documented in `docs/operations/e2e-ci-gates.md`.
 
 ## Status
 
-- **Lane:** live and blocking. 63 Playwright tests across Accessibility (23), Responsive (28), Smoke (8), and StateLabels (4).
+- **Lane:** live and blocking. 64 Playwright tests across Accessibility (23), Responsive (28), Smoke (9), and StateLabels (4).
 - **CI:** required as `e2e-gates` (full lane) and `accessibility-gates` (the 23-test Accessibility subset). See `docs/operations/e2e-ci-gates.md`.
 - **Host:** in-process console host on localhost; provision Chromium with `tests/install-playwright.ps1`. There is no external network, provider, secret, or Dapr dependency.
 
 ## What the lane covers
 
-The full `Hexalith.Folders.UI.E2E.Tests` surface — all 63 tests across the four namespaces:
+The full `Hexalith.Folders.UI.E2E.Tests` surface — all 64 tests across the four namespaces:
 
 1. **Accessibility** (23 tests) — the axe-core / WCAG 2.2 AA scan, keyboard / visible-focus, and zoom / reflow assertions (also covered by the focused `accessibility-gates` job; re-run in `e2e-gates` so the full lane is a single honest green).
 2. **Responsive** (28 cases) — viewport / responsive-layout smoke over the read-only console routes.
-3. **Smoke** (8 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes load and render their page roots against the hermetic backend-less host.
+3. **Smoke** (9 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes load and render their page roots against the hermetic backend-less host, plus one test that opens a folder through a live Blazor Server circuit.
 4. **StateLabels** (4 tests) — operator disposition-label gallery rendering.
 
 Each test drives a real Playwright browser (Chromium by default) against an in-process console host bound to localhost.
@@ -38,6 +38,7 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 ### Hosting
 
 - A host fixture must stand the console up deterministically. No test may target a hand-started `dotnet run` process.
+- `AspireConsoleHostFixture` boots in the `Test` environment, which does not load the static web assets manifest, so stylesheets and `_framework/blazor.web.js` come back empty and no Blazor circuit starts. Tests that drive a server-handled interaction use `InteractiveConsoleHostFixture`, which serves the static web assets, and navigate with `BlazorCircuit.GotoAndWaitForFirstRenderAsync`.
 - Create browser contexts through `PlaywrightFixture.CreateAuthenticatedContextAsync` with the fixture's `BaseAddress`. It supplies the existing hermetic bearer token and blocks requests outside that loopback origin, so both prerender and the Blazor circuit carry the test tenant/user without weakening FrontComposer's tenant boundary. Redirects are rejected because these hermetic routes have no redirects and a redirect chain could escape the origin guard.
 
 ### Network discipline
@@ -50,6 +51,7 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 
 - Use Playwright's built-in auto-waiting through locators and `expect(...).ToBeVisibleAsync()` style assertions.
 - Never use `Task.Delay`, `Thread.Sleep`, or arbitrary timeouts.
+- Before a server-handled interaction, wait for the circuit with `BlazorCircuit.GotoAndWaitForFirstRenderAsync`. It waits for the browser's first `OnRenderCompleted` acknowledgement, sent over the circuit WebSocket or its long-polling fallback. Its 30-second bound only stops a broken circuit from hanging the run.
 - For eventual-consistency assertions across the backend, prefer the existing `Hexalith.Folders.Testing.Polling.Eventually` helper over Playwright-level waits.
 
 ### Accessibility
@@ -103,7 +105,7 @@ pwsh tests\tools\run-accessibility-ci-gates.ps1 -SkipBrowserInstall
 
 ## CI posture
 
-- This lane is **blocking**. `.github/workflows/ci.yml` runs `e2e-gates` (all 63 tests) and `accessibility-gates` (the 23-test Accessibility subset). Both jobs provision Playwright Chromium. See `docs/operations/e2e-ci-gates.md`.
+- This lane is **blocking**. `.github/workflows/ci.yml` runs `e2e-gates` (all 64 tests) and `accessibility-gates` (the 23-test Accessibility subset). Both jobs provision Playwright Chromium. See `docs/operations/e2e-ci-gates.md`.
 - Tests run against an in-process console host and headless Chromium, under the same hermetic posture as the Status section above.
 - A failing UI E2E test must never be silently retried more than the Playwright default (typically 2 in CI). Retries hide flake; flake is critical technical debt.
 
@@ -114,16 +116,18 @@ tests/Hexalith.Folders.UI.E2E.Tests/
 ├── Accessibility/                       # 23-test WCAG / keyboard / zoom subset
 ├── Fixtures/
 │   ├── AccessibilityConsoleHostFixture.cs
-│   ├── AspireConsoleHostFixture.cs
+│   ├── AspireConsoleHostFixture.cs      # prerender-only smoke host
+│   ├── BlazorCircuit.cs                 # waits for a circuit's first render
 │   ├── ConsoleStubFixtures.cs
 │   ├── DenseIdentifierConsoleHostFixture.cs
+│   ├── InteractiveConsoleHostFixture.cs # smoke host with static web assets and a live circuit
 │   ├── PlaywrightCollection.cs          # xUnit collection definition
 │   ├── PlaywrightFixture.cs             # IPlaywright + IBrowser lifecycle
 │   └── PopulatedConsoleHostFixture.cs
 ├── Responsive/                          # 28 viewport / layout cases
 ├── Routes/
 │   └── ConsoleRoutes.cs                 # path constants for the operations console
-├── Smoke/                               # 8 route-root smoke tests
+├── Smoke/                               # 8 route-root smoke tests and 1 circuit interaction test
 ├── StateLabels/                         # 4 disposition-label gallery tests
 └── README.md                            # this file
 ```
