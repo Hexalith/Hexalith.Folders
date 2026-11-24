@@ -1236,7 +1236,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establish-root-configuration-and-submodule-policy (2026-05-12)"), 2026-08-24
 location: .gitmodules
 reason: Story 1.2 spec File List (lines 240-247) omits `.gitmodules` from the touched files, even though `.gitmodules` was modified. Record-keeping inconsistency; sweep on next dev-record housekeeping pass.
-status: open
+status: done 2026-11-24
+resolution: Story 1.2 now lists .gitmodules and the test README. Historical implementation and review commits verify both paths were modified.
 
 ### DW-173: `ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection` now locks down the entire 24-project dependency graph
 

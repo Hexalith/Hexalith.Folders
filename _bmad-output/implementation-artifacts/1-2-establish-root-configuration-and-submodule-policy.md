@@ -239,6 +239,7 @@ Codex GPT-5
 ### File List
 
 - `.editorconfig`
+- `.gitmodules`
 - `AGENTS.md`
 - `CLAUDE.md`
 - `Directory.Build.props`
@@ -246,6 +247,7 @@ Codex GPT-5
 - `README.md`
 - `nuget.config`
 - `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/README.md`
 
 ### Review Findings
 
