@@ -2,6 +2,8 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 using Xunit;
@@ -19,6 +21,22 @@ namespace Hexalith.Folders.Tests.Queries.Folders;
 /// </summary>
 public sealed class FolderLifecycleStatusNoFallbackTests
 {
+    [Fact]
+    public void LifecycleStatusHandlerAcceptsARequestScopedReader()
+    {
+        ServiceCollection services = new();
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddScoped<IFolderLifecycleStatusReadModel, ThrowingLifecycleStatusReadModel>();
+        services.AddFoldersLifecycleStatus();
+        using ServiceProvider provider = services.BuildServiceProvider(validateScopes: true);
+        using IServiceScope first = provider.CreateScope();
+        using IServiceScope second = provider.CreateScope();
+
+        FolderLifecycleStatusQueryHandler handler = first.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>();
+        first.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>().ShouldBeSameAs(handler);
+        second.ServiceProvider.GetRequiredService<FolderLifecycleStatusQueryHandler>().ShouldNotBeSameAs(handler);
+    }
+
     [Theory]
     [InlineData(FolderLifecycleStatusReadModelStatus.Available, true)]
     [InlineData(FolderLifecycleStatusReadModelStatus.Available, false)]

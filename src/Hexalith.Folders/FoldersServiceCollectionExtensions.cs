@@ -79,7 +79,7 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddFoldersLayeredAuthorization();
         services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
-        services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
+        services.TryAddScoped<FolderLifecycleStatusQueryHandler>();
         services.TryAddSingleton<IBranchRefPolicyReadModel, InMemoryBranchRefPolicyReadModel>();
         services.TryAddSingleton<BranchRefPolicyQueryHandler>();
         services.TryAddSingleton<IWorkspaceLockStatusReadModel, InMemoryWorkspaceLockStatusReadModel>();

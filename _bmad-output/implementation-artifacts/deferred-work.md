@@ -305,7 +305,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:42-43
 reason: Singleton lifetime for query handler and read model risks captive dependency if any collaborator becomes scoped [`src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:42-43`] — deferred, all current dependencies are singletons; revisit when scoped seams are introduced.
-status: open
+status: done 2026-11-24
+resolution: The lifecycle query handler resolves per request and accepts a scoped reader. Shared built-in readers retain their existing lifetime.
 
 ### DW-43: `DiagnosticSentinels` on `FolderLifecycleStatusReadModelSnapshot` is never read by the handler
 
