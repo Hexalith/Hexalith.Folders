@@ -3122,6 +3122,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Domain ProblemDetails title 410 `lock_expired` and 429 `provider_rate_limited` as "Authorization denied.", and Provider titles 404 `not_found` the same way.
   evidence: Pre-existing. The titles were copied verbatim into `FolderProblemDetailsFactory.DomainTitleFor` (`src/Hexalith.Folders.Server/FolderProblemDetailsFactory.cs:235`) and the Provider title switch. Callers that read `title` instead of `category` see a denial label. Changing a title is a REST wire change. The sibling 409 "Idempotency conflict." row from the Story 12.6 review covers the conflict titles.
+  status: done 2026-11-25
+  resolution: Domain lock expiry and provider rate limiting and Provider safe absence now return accurate titles and messages. Factory and HTTP tests pin the affected response fields.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: The `idempotency_key_not_allowed` rejection on read endpoints echoes the raw correlation and task headers before canonical validation, and the factory writes `extensions.taskId` without validating it.

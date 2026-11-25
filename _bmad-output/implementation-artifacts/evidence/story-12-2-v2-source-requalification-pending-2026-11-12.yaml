@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 3081aecb1fc301d8c578c7af8b780908fcdd2b969c4d9f58b26d47ff0f9a105e
+candidate_set_sha256: e1fc7e87bdef7e921b75a4308bce5f3fa4fdd8d7658619f70d4607a3dbe66818
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1262,8 +1262,8 @@ artifacts:
     sha256: 16be88469949d47535d579672022e845319f34cd9635ca5e0796fbc95317828a
   - path: "src/Hexalith.Folders.Server/FolderProblemDetailsFactory.cs"
     kind: file
-    bytes: 16159
-    sha256: 174b7d4c3b6ace2b96c0a4257f032f4c8e0df2223fe75b40a8ac949baad8d6b3
+    bytes: 16541
+    sha256: dbce2f2dd0f591b04247f5bdf2886d1dc4f11ee10cc2c3dc53a698cf5f7b3390
   - path: "src/Hexalith.Folders.Server/FolderRepositoryStartupAssertion.cs"
     kind: file
     bytes: 1761
@@ -5290,8 +5290,8 @@ artifacts:
     sha256: 24d84b1ac7c26c3fcebbc7f94f39888bd494d82f16e72e3baac3fbbb49ed8370
   - path: "tests/Hexalith.Folders.Server.Tests/FolderProblemDetailsFactoryTests.cs"
     kind: file
-    bytes: 7799
-    sha256: e12b47a80e06214c45d88dd57f35f3a2be5654d89dcc707e4a2029513f0afc31
+    bytes: 9854
+    sha256: 222ce897b2dd92b2d9881c2397075db3939a6d3ede9ce3ea3eaaedc0029c1741
   - path: "tests/Hexalith.Folders.Server.Tests/FolderRejectionEventTests.cs"
     kind: file
     bytes: 4194
@@ -5382,8 +5382,8 @@ artifacts:
     sha256: f453909ae11697d8848b26dfb8417380e9d5549844531315f95b7c5485e899d4
   - path: "tests/Hexalith.Folders.Server.Tests/GetProviderBindingEndpointTests.cs"
     kind: file
-    bytes: 10378
-    sha256: be9e84818313dfc53816c5f7ba8e3608312703ff0b8c2982745de10b334d44ff
+    bytes: 10549
+    sha256: 10b2c5408317c2a79dbca8f383b4595be97f783c1c2c7e6d3a89b2376e33ed32
   - path: "tests/Hexalith.Folders.Server.Tests/GetRepositoryBindingEndpointTests.cs"
     kind: file
     bytes: 14005
@@ -5590,8 +5590,8 @@ artifacts:
     sha256: 17adeb9d92add69f20777c89a109c0c5f8cd372185457ade436c3f45d862ed4a
   - path: "tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs"
     kind: file
-    bytes: 72282
-    sha256: 272e9cdc6538c1c3f0461e5bccd897a2789f476a3cd4da6a3703f9dc842a26ba
+    bytes: 72611
+    sha256: c00b926281314940ac10ef5d7b7692f3d1123e485115f0c5a0bd52c4d7e8c08b
   - path: "tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs"
     kind: file
     bytes: 4373

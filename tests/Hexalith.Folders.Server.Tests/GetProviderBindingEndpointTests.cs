@@ -119,6 +119,8 @@ public sealed class GetProviderBindingEndpointTests
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         json.ShouldContain("\"category\":\"not_found\"");
+        json.ShouldContain("\"title\":\"Resource not available.\"");
+        json.ShouldContain("\"message\":\"The requested resource is not available to the caller.\"");
     }
 
     [Fact]

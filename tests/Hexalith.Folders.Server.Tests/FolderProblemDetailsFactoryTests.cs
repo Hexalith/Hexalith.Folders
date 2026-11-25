@@ -136,6 +136,46 @@ public sealed class FolderProblemDetailsFactoryTests
     }
 
     [Theory]
+    [InlineData(StatusCodes.Status410Gone, "lock_expired", "Lock expired.", "The workspace lock lease is no longer active.")]
+    [InlineData(StatusCodes.Status429TooManyRequests, "provider_rate_limited", "Provider rate limited.", "The provider is rate limited. Retry later.")]
+    public void DomainProblemShouldDescribeItsOutcome(int statusCode, string category, string expectedTitle, string expectedMessage)
+    {
+        ProblemHttpResult problem = FolderProblemDetailsFactory.ForDomain(
+            FolderCanonicalErrorMapper.StatusFor(category),
+            category,
+            category,
+            retryable: true,
+            correlationId: "corr-a",
+            taskId: null).ShouldBeOfType<ProblemHttpResult>();
+
+        problem.StatusCode.ShouldBe(statusCode);
+        problem.ProblemDetails.Title.ShouldBe(expectedTitle);
+        problem.ProblemDetails.Extensions["message"].ShouldBe(expectedMessage);
+        problem.ProblemDetails.Extensions["category"].ShouldBe(category);
+        problem.ProblemDetails.Extensions["code"].ShouldBe(category);
+        problem.ProblemDetails.Extensions["retryable"].ShouldBe(true);
+    }
+
+    [Fact]
+    public void ProviderNotFoundProblemShouldUseASafeUnavailableTitle()
+    {
+        ProblemHttpResult problem = FolderProblemDetailsFactory.ForProviderReadiness(
+            StatusCodes.Status404NotFound,
+            "not_found",
+            "not_found",
+            retryable: false,
+            correlationId: "corr-a").ShouldBeOfType<ProblemHttpResult>();
+
+        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        problem.ProblemDetails.Title.ShouldBe("Resource not available.");
+        problem.ProblemDetails.Extensions["message"].ShouldBe("The requested resource is not available to the caller.");
+        problem.ProblemDetails.Extensions["category"].ShouldBe("not_found");
+        problem.ProblemDetails.Extensions["code"].ShouldBe("not_found");
+        problem.ProblemDetails.Extensions["retryable"].ShouldBe(false);
+        AssertNoGatewayLeak(problem);
+    }
+
+    [Theory]
     [InlineData(StatusCodes.Status503ServiceUnavailable, "unknown_provider_outcome")]
     [InlineData(StatusCodes.Status409Conflict, "reconciliation_required")]
     public void DomainUnresolvedOutcomeShouldCarryFinalStateDetail(int statusCode, string category)

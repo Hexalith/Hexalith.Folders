@@ -158,6 +158,7 @@ internal static class FolderProblemDetailsFactory
             {
                 StatusCodes.Status400BadRequest => "Validation failure.",
                 StatusCodes.Status401Unauthorized => "Authentication required.",
+                StatusCodes.Status404NotFound => "Resource not available.",
                 StatusCodes.Status429TooManyRequests => "Provider rate limited.",
                 StatusCodes.Status503ServiceUnavailable => "Provider readiness unavailable.",
                 _ => "Authorization denied.",
@@ -245,9 +246,11 @@ internal static class FolderProblemDetailsFactory
                 "idempotency_conflict" => "Idempotency conflict.",
                 _ => "Conflict.",
             },
+            StatusCodes.Status410Gone => "Lock expired.",
             StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
             StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
             StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
+            StatusCodes.Status429TooManyRequests => "Provider rate limited.",
             StatusCodes.Status503ServiceUnavailable => category == "idempotency_admission_unavailable"
                 ? "Idempotency admission unavailable."
                 : "Read model unavailable.",
@@ -265,6 +268,7 @@ internal static class FolderProblemDetailsFactory
             "validation_error" => "Request validation failed.",
             "internal_error" => "The operation cannot be completed in this configuration.",
             "provider_readiness_failed" => "Provider readiness could not be established for this operation.",
+            "provider_rate_limited" => "The provider is rate limited. Retry later.",
             "unsupported_provider_capability" => "Provider capability is not available for this operation.",
             "workspace_preparation_failed" => "Workspace preparation could not be accepted.",
             "workspace_transition_invalid" => "Workspace lifecycle transition is not valid for this operation.",
@@ -311,6 +315,7 @@ internal static class FolderProblemDetailsFactory
         {
             "authentication_failure" => "Authentication is required to access this resource.",
             "validation_error" => "Request validation failed.",
+            "not_found" => "The requested resource is not available to the caller.",
             "provider_rate_limited" => "Provider readiness is rate limited. Retry later.",
             "provider_unavailable" or "provider_transient_failure" => "Provider readiness is temporarily unavailable. Retry later.",
             "projection_stale" or "projection_unavailable" => "Authorization evidence is not currently fresh enough for this operation.",

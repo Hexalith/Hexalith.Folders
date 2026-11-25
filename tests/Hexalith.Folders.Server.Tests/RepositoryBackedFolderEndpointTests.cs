@@ -992,6 +992,12 @@ public sealed class RepositoryBackedFolderEndpointTests
             using JsonDocument document = JsonDocument.Parse(json);
             document.RootElement.GetProperty("category").GetString().ShouldBe(expectedCategory);
             document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
+            if (expectedStatus == HttpStatusCode.TooManyRequests)
+            {
+                document.RootElement.GetProperty("title").GetString().ShouldBe("Provider rate limited.");
+                document.RootElement.GetProperty("message").GetString().ShouldBe("The provider is rate limited. Retry later.");
+            }
+
             json.ShouldNotContain("repository-secret", Case.Sensitive);
             json.ShouldNotContain("https://provider.example.test", Case.Sensitive);
         }
