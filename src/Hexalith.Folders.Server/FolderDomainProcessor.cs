@@ -759,7 +759,7 @@ public sealed partial class FolderDomainProcessor(
         {
             return ToDomainResult(
                 envelope,
-                FolderResult.Rejected(command, MapLayeredAuthorization(finalAuthorization.Decision.OutcomeCode)));
+                FolderResult.Rejected(command, FolderAuthorizationResultMapper.Map(finalAuthorization.Decision.OutcomeCode)));
         }
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -778,22 +778,6 @@ public sealed partial class FolderDomainProcessor(
 
         return ToDomainResult(envelope, result);
     }
-
-    private static FolderResultCode MapLayeredAuthorization(string outcomeCode)
-        => outcomeCode switch
-        {
-            LayeredAuthorizationOutcomeCodes.AuthenticationDenied => FolderResultCode.MissingAuthoritativeTenant,
-            LayeredAuthorizationOutcomeCodes.ClaimTransformDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclDenied or LayeredAuthorizationOutcomeCodes.SafeNotFound => FolderResultCode.FolderAclDenied,
-            LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderResultCode.StaleProjection,
-            LayeredAuthorizationOutcomeCodes.FolderAclUnavailable => FolderResultCode.UnavailableProjection,
-            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied => FolderResultCode.TenantAccessDenied,
-            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied => FolderResultCode.PolicyEvidenceUnavailable,
-            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed => FolderResultCode.MalformedEvidence,
-            _ => FolderResultCode.TenantAccessDenied,
-        };
 
     private async Task<DomainResult> ProcessCreateRepositoryBackedFolderAsync(CommandEnvelope envelope)
     {

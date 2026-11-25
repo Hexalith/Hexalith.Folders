@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 832fe4dc8b187c4d967f005c7388015138342a6b8dc35e894e7f2c57514df971
+candidate_set_sha256: f625de35e8e1bcc7f8c442e3c35efad567313c0c43b8279ffc0c3b8634a0d682
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1246,8 +1246,8 @@ artifacts:
     sha256: 50a196458ab1f091148ddac8194c8b5f4856c306582147be6e223ea6d7bc40e3
   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
     kind: file
-    bytes: 88032
-    sha256: 96b915143015963e9ce65cae3ce960d99c4d87f25b50ed50fe53862fe738437b
+    bytes: 86730
+    sha256: d192720d79df0bb2cec92852d1fa9de21044f727cc718e1ceb7d50a2acd0fd56
   - path: "src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs"
     kind: file
     bytes: 3370
@@ -4998,8 +4998,8 @@ artifacts:
     sha256: 6be862d0207edcfedb7270f9a058bde232e631f4dbc30b786574b46631f184df
   - path: "tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs"
     kind: file
-    bytes: 81187
-    sha256: 14c0cd71d211a53f7b090eb99aba30bdd01f36681875d5c75de2de4b37226025
+    bytes: 81989
+    sha256: 1d6046649723320c60639817eb1ce84e068d798832fe82b83eef54a716637612
   - path: "tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs"
     kind: file
     bytes: 39310
@@ -5054,8 +5054,8 @@ artifacts:
     sha256: 5f18ec6c11923f62ac83e8a954121619aaf1c56e6d3879bf71b4b2bfe5e8305d
   - path: "tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs"
     kind: file
-    bytes: 590
-    sha256: 08946358f1e07de86deb64a0dcc7480378d408a1e86d1b018d3522047cf98c6e
+    bytes: 672
+    sha256: 16966d6ec7d100873cccfa072400363e485b1a14d80f8e4e58403fcfdbf06ca9
   - path: "tests/Hexalith.Folders.IntegrationTests/Routing/CountingFolderLifecycleStatusReadModel.cs"
     kind: file
     bytes: 887

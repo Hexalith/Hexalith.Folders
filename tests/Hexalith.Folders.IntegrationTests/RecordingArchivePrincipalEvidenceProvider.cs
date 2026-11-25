@@ -6,11 +6,14 @@ internal sealed class RecordingArchivePrincipalEvidenceProvider : IFolderPermiss
 {
     public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
 
+    public FolderPermissionEvidenceResult Result { get; set; } =
+        FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a");
+
     public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
         FolderPermissionEvidenceRequest request,
         CancellationToken cancellationToken = default)
     {
         Requests.Add(request);
-        return Task.FromResult(FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"));
+        return Task.FromResult(Result);
     }
 }

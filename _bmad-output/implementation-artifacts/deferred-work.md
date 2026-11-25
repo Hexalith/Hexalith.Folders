@@ -3148,6 +3148,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: Server `FolderDomainProcessor.MapLayeredAuthorization` is an identical copy of `FolderAuthorizationResultMapper.Map`, and no story owns it.
   evidence: Pre-existing. `src/Hexalith.Folders.Server/FolderDomainProcessor.cs:754` has the same 11 arms and the same `TenantAccessDenied` default, and the archive path calls it at line 733. Server can already reach the internal mapper through `InternalsVisibleTo`. Story 11.4 excluded the file ("Do not touch `FolderDomainProcessor`"), and 11.5's code map lists only `src/Hexalith.Folders`. The next edit to the Folder map would silently diverge the archive rejection codes. The fix is a one-line rewire plus deleting the copy. Candidate for Story 11.13. The file is hash-bound in the PD10 v2 candidate set, so coordinate with the v2 requalification.
+  status: done 2026-11-25
+  resolution: The archive callback uses FolderAuthorizationResultMapper for final authorization. Integration tests verify denied and stale final evidence yields the mapped code and no append.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: Both command validators keep their own copies of the stream-segment grammar instead of delegating to `StreamNameSegment.IsValid`.

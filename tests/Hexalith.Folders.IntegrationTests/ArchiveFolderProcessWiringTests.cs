@@ -109,13 +109,17 @@ public sealed class ArchiveFolderProcessWiringTests
     }
 
     [Theory]
-    [InlineData("user-a", false)]
-    [InlineData("actor-alias", false)]
-    [InlineData(null, false)]
-    [InlineData("actor-alias", true)]
-    public async Task ArchiveFinalReauthorizationEvaluatesTheAuthenticatedPrincipal(
+    [InlineData("user-a", false, FolderPermissionEvidenceStatus.Allowed, null)]
+    [InlineData("actor-alias", false, FolderPermissionEvidenceStatus.Allowed, FolderResultCode.MalformedEvidence)]
+    [InlineData(null, false, FolderPermissionEvidenceStatus.Allowed, FolderResultCode.MalformedEvidence)]
+    [InlineData("actor-alias", true, FolderPermissionEvidenceStatus.Allowed, FolderResultCode.MalformedEvidence)]
+    [InlineData("user-a", false, FolderPermissionEvidenceStatus.Denied, FolderResultCode.FolderAclDenied)]
+    [InlineData("user-a", false, FolderPermissionEvidenceStatus.Stale, FolderResultCode.StaleProjection)]
+    public async Task ArchiveFinalReauthorizationUsesTheAuthenticatedPrincipalAndCurrentPermissions(
         string? actorSafeIdentifier,
-        bool removePrincipal)
+        bool removePrincipal,
+        FolderPermissionEvidenceStatus finalPermissionStatus,
+        FolderResultCode? expectedRejection)
     {
         RecordingArchivePrincipalEvidenceProvider evidence = new();
         TestHost host = await StartHostAsync(folderPermissionEvidenceProvider: evidence).ConfigureAwait(true);
@@ -148,6 +152,11 @@ public sealed class ArchiveFolderProcessWiringTests
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
             upstream.IsAllowed.ShouldBeTrue();
             LayeredFolderAuthorizationAllowedContext allowed = upstream.AllowedContext.ShouldNotBeNull();
+            if (finalPermissionStatus != FolderPermissionEvidenceStatus.Allowed)
+            {
+                evidence.Result = FolderPermissionEvidenceResult.FromStatus(finalPermissionStatus, "folder-a:8");
+            }
+
             accessor.BeginScope(upstream with
             {
                 AllowedContext = allowed with { PrincipalId = removePrincipal ? null : allowed.PrincipalId },
@@ -169,13 +178,16 @@ public sealed class ArchiveFolderProcessWiringTests
                 accessor.EndScope();
             }
 
-            if (removePrincipal || !string.Equals(actorIdentifier, "user-a", StringComparison.Ordinal))
+            bool hasValidPrincipal = !removePrincipal && string.Equals(actorIdentifier, "user-a", StringComparison.Ordinal);
+            evidence.Requests.Count.ShouldBe(hasValidPrincipal ? 2 : 1);
+            evidence.Requests.ShouldAllBe(request => request.PrincipalId == "user-a");
+
+            if (expectedRejection is { } rejection)
             {
                 result.IsRejection.ShouldBeTrue();
                 result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderCommandRejected>()
-                    .Code.ShouldBe(nameof(FolderResultCode.MalformedEvidence));
+                    .Code.ShouldBe(rejection.ToString());
                 host.Repository.EventsAppended.ShouldBe(0);
-                evidence.Requests.Count.ShouldBe(1);
             }
             else
             {
@@ -184,9 +196,6 @@ public sealed class ArchiveFolderProcessWiringTests
                 archived.ActorPrincipalId.ShouldBe("user-a");
                 archived.FolderId.ShouldBe("folder-a");
                 host.Repository.EventsAppended.ShouldBe(1);
-                evidence.Requests.Count.ShouldBe(2);
-                evidence.Requests[0].PrincipalId.ShouldBe("user-a");
-                evidence.Requests[1].PrincipalId.ShouldBe("user-a");
             }
         }
         finally
