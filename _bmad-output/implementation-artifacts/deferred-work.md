@@ -2900,6 +2900,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Measure whether the persisted tenant-access projection's unbounded processed-message map can exceed deployed state-store limits.
   evidence: The pre-existing projection retains every message and the new store serializes the full row per update; backend value limits and realistic tenant-event volume have not been established.
+  status: done 2026-11-25
+  resolution: A disposable Dapr 1.19.1 sidecar with `statestore` backed by `state.in-memory` exercised the production `EventStoreFolderTenantAccessProjectionStore` through `DaprReadModelStore`. The synthetic row used tenant `example-capacity-tenant`, one `example-admin` principal, fixed UTC time `2026-11-25T00:00:00Z`, and `UserRoleChanged` evidence with sequential zero-padded 26-character message IDs and a 64-character fingerprint. Conditional saves and readbacks succeeded at 10,000 and 14,300 messages with 2,929,258 and 4,193,458 JSON bytes. The 15,000-message write sent a 4,399,382-byte request and failed with `ResourceExhausted` at the default 4,194,304-byte limit. Readback still held 14,300 messages at version 2. This establishes the default transport limit for the synthetic row. Deployment-specific ceilings and volumes have their own follow-up. [Dapr body-size configuration](https://docs.dapr.io/reference/arguments-annotations-overview/)
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-2.md`
   summary: Record copyable Worker build and direct xUnit verification commands in the Story 12.1 completion-reconciliation spec.
@@ -3321,3 +3323,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: `Pd10V2CandidateCompatibilitySeam` keeps a private `ClientControlledValues` that appears to duplicate `HistoricalMutationAuthorization.ClientControlledValues`.
   evidence: Both build `{source}[{index}]` keys over every header or query value for the same source tuples. `WorkspaceOperationEvidence` already calls the `HistoricalMutationAuthorization` copy. The seam could do the same once a diff confirms the bodies match.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Compare production tenant-access projection sizes and event growth with the deployed Dapr and state-store limits.
+  evidence: The disposable capacity probe confirmed that a 15,000-message synthetic row exceeds the default 4 MiB transport ceiling and preserves the previous state. Deployment-specific limits and aggregate tenant event volumes are needed to estimate operational headroom.
