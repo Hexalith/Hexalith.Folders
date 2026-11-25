@@ -8,8 +8,8 @@ Folders uses the shared Hexalith manual semantic-release path with NuGet trusted
 
 | Package | Project |
 | --- | --- |
-| `Hexalith.Folders.Contracts` | `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` |
 | `Hexalith.Folders.EventStoreExtensions` | `src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj` |
+| `Hexalith.Folders.Contracts` | `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` |
 | `Hexalith.Folders` | `src/Hexalith.Folders/Hexalith.Folders.csproj` |
 | `Hexalith.Folders.Client` | `src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj` |
 | `Hexalith.Folders.Aspire` | `src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj` |
@@ -53,9 +53,9 @@ The Folders workflow resolves `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` and passes
 | Workflow file | `release.yml` |
 | Environment | `production` |
 | Scope | `PackagePushVersion` (push new versions of existing packages) |
-| Glob Patterns and Packages | The six exact package IDs from the inventory table, one per line |
+| Glob Patterns and Packages | The six exact package IDs from the inventory table, one per line; no wildcard |
 
-The individual NuGet policy creator `jpiquot` differs from the package owner `Hexalith` and the GitHub actor. Repository variable `NUGET_USER` must equal `jpiquot`, whose account must register the policy through legitimate authenticated access. Before the first release that includes `Hexalith.Folders.EventStoreExtensions`, authorize that exact ID for initial publication in the protected workflow. Subsequent releases need only new-version publication for the six IDs. [NuGet trusted publishing scopes](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#select-scopes). Keep normal reviewer approval on the `production` environment and set `HEXALITH_RELEASE_PUBLISH_ENABLED` explicitly at repository scope when publication is authorized.
+The individual NuGet policy creator `jpiquot` differs from the package owner `Hexalith` and the GitHub actor. Repository variable `NUGET_USER` must equal `jpiquot`, whose account must register the policy through legitimate authenticated access. Before the first release that includes `Hexalith.Folders.EventStoreExtensions`, update the registered `folders-production` policy on NuGet.org: add that exact ID and allow it to push a new package, not only new versions, then confirm the policy is active. The inventory lists that ID first, so a missing authorization stops publication before NuGet accepts any other package. After that release, return the policy to new-version publication for the six IDs. See [NuGet trusted publishing scopes](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#select-scopes). Keep normal reviewer approval on the `production` environment and set `HEXALITH_RELEASE_PUBLISH_ENABLED` explicitly at repository scope when publication is authorized.
 
 When selecting `Hexalith` as a NuGet organization owner, `jpiquot` must be an active member of that organization. Removing the creator from the organization makes the policy inactive; restoring their membership reactivates it. Confirm active membership and policy status before dispatching an enabled release. See [NuGet policy ownership requirements](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#policy-ownership-warnings).
 

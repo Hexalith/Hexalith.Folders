@@ -34,7 +34,7 @@ jq -e --argjson count "$expected_package_count" '
       (startswith("/") | not) and (test("(^|/)\\.\\.?(/|$)") | not))) and
   ([.[].id | ascii_downcase] | unique | length) == $count and
   ([.[].project] | unique | length) == $count
-' "$manifest" >/dev/null || fail "The manifest must declare five unique valid package IDs and project paths."
+' "$manifest" >/dev/null || fail "The manifest must declare six unique valid package IDs and project paths."
 
 live_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
 [[ "$live_main_sha" =~ ^[0-9a-f]{40}$ && "$live_main_sha" = "$source_sha" ]] || fail "The release source is no longer the exact live main tip."

@@ -17,8 +17,9 @@ public sealed partial class ReleasePackageConformanceTests
 
     private static readonly string[] _expectedPackages =
     [
-        "Hexalith.Folders.Contracts",
+        // Publish the newest ID first: a missing new-package authorization then fails before NuGet accepts any package.
         "Hexalith.Folders.EventStoreExtensions",
+        "Hexalith.Folders.Contracts",
         "Hexalith.Folders",
         "Hexalith.Folders.Client",
         "Hexalith.Folders.Aspire",

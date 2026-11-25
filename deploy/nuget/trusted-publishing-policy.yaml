@@ -16,8 +16,8 @@ profile:
 # The initial release of a package ID also requires authorization to push a new package.
 scope: PackagePushVersion
 packages:
-  - Hexalith.Folders.Contracts
   - Hexalith.Folders.EventStoreExtensions
+  - Hexalith.Folders.Contracts
   - Hexalith.Folders
   - Hexalith.Folders.Client
   - Hexalith.Folders.Aspire

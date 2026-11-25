@@ -2,6 +2,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <!-- Routing/Payloads/FoldersCommandPayloads.cs compiles here as FoldersCommandPayloads; Server links it as nested FolderDomainProcessor types. -->
     <DefineConstants>$(DefineConstants);FOLDERS_CONTRACT_PAYLOADS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

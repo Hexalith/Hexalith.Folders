@@ -1525,6 +1525,7 @@ tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValid
 tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
 tests/Hexalith.Folders.Tests/Authorization/WorkspaceLockActionCatalogTests.cs
+tests/Hexalith.Folders.Tests/ContractTypeForwardingTests.cs
 tests/Hexalith.Folders.Tests/FoldersModuleSmokeTests.cs
 tests/Hexalith.Folders.Tests/Helpers/CoordinatedEventList.cs
 tests/Hexalith.Folders.Tests/Helpers/HelperCompatibilityTests.cs

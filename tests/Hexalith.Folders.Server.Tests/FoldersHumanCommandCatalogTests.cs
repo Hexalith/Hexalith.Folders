@@ -60,6 +60,15 @@ public sealed class FoldersHumanCommandCatalogTests
     }
 
     [Fact]
+    public void ProjectionDeclarationsNameTheInstalledHandlers()
+    {
+        FoldersRuntimeCatalogDeclarations.Routes.Single(route => route.RouteId == "folders-legacy-projection")
+            .Execution!.HandlerType.ShouldBe(typeof(FolderDomainProjectionHandler).FullName);
+        FoldersProjectionCatalogDeclarations.Routes.Single(route => route.RouteId == "folders-operational-status")
+            .Execution!.HandlerType.ShouldBe(typeof(OperationalStatusProjectionHandler).FullName);
+    }
+
+    [Fact]
     public void ContractsExportTheActualInstalledCommandPayloadSchemas()
     {
         var operations = FoldersRuntimeCatalogDeclarations.Operations.ToDictionary(operation => operation.RouteId);

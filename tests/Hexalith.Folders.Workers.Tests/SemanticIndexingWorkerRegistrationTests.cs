@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using Dapr;
@@ -160,8 +161,11 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         app.Services.GetRequiredService<DaprClient>().ShouldNotBeNull();
     }
 
-    [Fact]
-    public async Task WorkersUseTheConfiguredMemoriesPublisherComponent()
+    [Theory]
+    [InlineData("index")]
+    [InlineData("remove")]
+    [InlineData("soft-delete")]
+    public async Task WorkersUseTheConfiguredMemoriesPublisherComponent(string operation)
     {
         const string sharedComponent = "mapped-pubsub";
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
@@ -174,11 +178,57 @@ public sealed class SemanticIndexingWorkerRegistrationTests
 
         await using WebApplication app = builder.Build();
         var port = app.Services.GetRequiredService<ISemanticIndexingPort>();
-        await port.IndexFileVersionAsync(CreateRequest(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        const string indexedEventId = "folders://tenant-a/organizations/organization-a/folders/folder-a/versions/version-a";
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        SemanticIndexingResult result = operation switch
+        {
+            "index" => await port.IndexFileVersionAsync(CreateRequest(), cancellationToken).ConfigureAwait(true),
+            "remove" => await port.RemoveFileVersionAsync(
+                new SemanticIndexingRemovalRequest("tenant-a", "organization-a", "folder-a", "version-a", indexedEventId, "correlation-a", "task-a"),
+                cancellationToken).ConfigureAwait(true),
+            _ => await port.SoftDeleteFileVersionAsync(
+                new SemanticIndexingArchiveRequest("tenant-a", "organization-a", "folder-a", "version-a", indexedEventId,
+                    "authorized-file-version version-a text",
+                    new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["folders.managedTenantId"] = "tenant-a",
+                        ["folders.fileVersionId"] = "version-a",
+                        ["folders.contentDescriptor"] = "authorized-file-version",
+                        ["folders.status"] = "active",
+                    },
+                    "correlation-a", "task-a"),
+                cancellationToken).ConfigureAwait(true),
+        };
 
+        result.Status.ShouldBe(SemanticIndexingStatus.Accepted);
         object?[] arguments = dapr.ReceivedCalls().ShouldHaveSingleItem().GetArguments();
         arguments[0].ShouldBe(sharedComponent);
         arguments[1].ShouldBe(FoldersSemanticIndexingDefaults.EventsTopicName);
+    }
+
+    [Fact]
+    public async Task ManifestWorkerPubSubKeysAreTheKeysTheWorkersRead()
+    {
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(
+            Path.Combine(RepositoryRoot(), "module", "hexalith.module-manifest.v2.json")));
+        JsonElement[] bindings = manifest.RootElement.GetProperty("modules")[0].GetProperty("runtime").GetProperty("dapr")
+            .EnumerateArray()
+            .Where(static binding => binding.GetProperty("capability").GetString() == "pubsub"
+                && binding.GetProperty("servers").EnumerateArray().Any(static server => server.GetString() == "workers"))
+            .ToArray();
+        string Key(string role) => bindings.Single(binding => binding.GetProperty("role").GetString() == role)
+            .GetProperty("configurationKey").GetString()!;
+        IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            [Key("worker-inbound-events")] = "inbound-component",
+            [Key("events")] = "memories-component",
+        }).Build();
+
+        FoldersWorkersModule.SubscriptionPubSubName(configuration).ShouldBe("inbound-component");
+        DaprClient dapr = Substitute.For<DaprClient>();
+        await new MemoriesSemanticIndexingPort(dapr, configuration)
+            .IndexFileVersionAsync(CreateRequest(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        dapr.ReceivedCalls().ShouldHaveSingleItem().GetArguments()[0].ShouldBe("memories-component");
     }
 
     [Fact]

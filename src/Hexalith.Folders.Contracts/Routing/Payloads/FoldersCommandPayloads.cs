@@ -3,8 +3,9 @@ using System.Text.Json.Serialization;
 namespace Hexalith.Folders.Server;
 
 // The SDK compares each installed payload type's full name with the route's
-// handler identity. Keep the original nested identity in the server and use
-// these same wire shapes to export schemas independently from Contracts.
+// handler identity. Server links this file as nested FolderDomainProcessor
+// types to keep that identity. Contracts compiles it as FoldersCommandPayloads
+// (FOLDERS_CONTRACT_PAYLOADS) to export the same wire schemas without Server.
 #if FOLDERS_CONTRACT_PAYLOADS
 internal static class FoldersCommandPayloads
 #else
