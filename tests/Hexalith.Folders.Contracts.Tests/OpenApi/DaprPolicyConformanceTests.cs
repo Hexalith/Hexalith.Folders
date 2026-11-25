@@ -354,8 +354,20 @@ public sealed class DaprPolicyConformanceTests
         spec.GetScalar("version").ShouldBe("v1");
 
         IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(spec.GetSequence("metadata"));
+        string[] deadLetterTopics = [$"deadletter.{ExpectedFolderEventsTopic}", $"deadletter.{ExpectedTenantEventsTopic}"];
         componentMetadata["protectedTopics"].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .ShouldBe([ExpectedTenantEventsTopic, ExpectedMemoriesEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
+            .ShouldBe([ExpectedTenantEventsTopic, ExpectedMemoriesEventsTopic, ExpectedFolderEventsTopic, .. deadLetterTopics], ignoreOrder: true);
+        if (componentMetadata.TryGetValue("allowedTopics", out string? allowedTopics))
+        {
+            string[] allowed = allowedTopics.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            deadLetterTopics.ShouldAllBe(topic => allowed.Contains(topic, StringComparer.Ordinal));
+        }
+
+        if (component.Children.ContainsKey(new YamlScalarNode("scopes")))
+        {
+            component.GetSequence("scopes").Children.Cast<YamlScalarNode>().Select(scope => scope.Value)
+                .ShouldContain(FoldersAspireModule.EventStoreAppId);
+        }
 
         IReadOnlyDictionary<string, string[]> publishingScopes = ParseTopicScopes(componentMetadata["publishingScopes"]);
         IReadOnlyDictionary<string, string[]> subscriptionScopes = ParseTopicScopes(componentMetadata["subscriptionScopes"]);
@@ -371,7 +383,8 @@ public sealed class DaprPolicyConformanceTests
         // folders.events topic; folders-workers subscribes both the Tenants events and folders.events. eventstore
         // is the only folders.events publisher and folders-workers the only folders.events subscriber.
         publishingScopes[FoldersAspireModule.EventStoreAppId]
-            .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
+            .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic, .. deadLetterTopics], ignoreOrder: true);
+        subscriptionScopes.Values.SelectMany(static topics => topics).ShouldNotContain(topic => deadLetterTopics.Contains(topic, StringComparer.Ordinal));
         subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBeEmpty();
 
         // Story 10.3 (AC9): the worker-side producer publishes SearchIndexEntryChanged to memories-events, so
@@ -380,7 +393,7 @@ public sealed class DaprPolicyConformanceTests
         publishingScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
         subscriptionScopes[FoldersAspireModule.MemoriesAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
 
-        // Only EventStore (Tenants and Folders events) and folders-workers (memories-events)
+        // Only EventStore (Tenants and Folders events and their dead letters) and folders-workers (memories-events)
         // publish; every other app's publish scope stays empty.
         publishingScopes.Where(static scope =>
                 !string.Equals(scope.Key, FoldersAspireModule.EventStoreAppId, StringComparison.Ordinal) &&

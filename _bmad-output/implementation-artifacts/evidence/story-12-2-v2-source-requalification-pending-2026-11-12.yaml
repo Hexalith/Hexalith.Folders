@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 2b39f0c585da710e4e57e206cd611ce98df146b7a2e5aeb845a9b1627f45444b
+candidate_set_sha256: 70872356b5e756c6d7e886ed1182ca5d4dc74abfbacda4cf456f2433355aefae
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -70,8 +70,8 @@ artifacts:
     sha256: c2b8a54a88538041a67ebe905be0868f50290e52ec08a56e3ba4461fc2a86183
   - path: "docs/operations/dapr-policy-conformance.md"
     kind: file
-    bytes: 5482
-    sha256: bd63daa0b78a5107a539b161733ba20fc2495e1301b48bf59114e517d957b1b5
+    bytes: 5533
+    sha256: 1668bc8267368efc62b06319ac5e0a17b20a81b2e9e1e56e3e9dfdfa21a988da
   - path: "docs/sdk/api-reference.md"
     kind: file
     bytes: 18910
@@ -4882,8 +4882,8 @@ artifacts:
     sha256: debbb3f78f3f02e20465522bdb073032d4aebcadf6fd3d2fdbbb76e79b6189ff
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs"
     kind: file
-    bytes: 48167
-    sha256: eddd5635292044b0ba3c49333266d6459003b6c01abc705d156d0b98bdffe640
+    bytes: 49116
+    sha256: d39d3de2b5e2506533502219046f94a404d37895d752b3a22c932632c9b861db
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs"
     kind: file
     bytes: 69037
