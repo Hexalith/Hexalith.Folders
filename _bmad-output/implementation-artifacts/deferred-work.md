@@ -3057,6 +3057,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: `/process` and `/project` workload authorization and receipt check are skipped when `HumanAuthorityReceiptVerifier` is not registered (non-production composition only; `FoldersServerHostComposition` always registers it).
   evidence: FoldersDomainServiceEndpoints.cs:113,153; FoldersDomainServiceRequestHandler.cs:23,35. Making it mandatory breaks 5 handler unit-test constructions and all `AddFoldersServer()` test hosts; add a hosting startup assertion instead.
+  status: done 2026-11-25
+  resolution: The production Server pipeline requires its receipt verifier before mapping any callback. Missing and null verifier registrations abort pipeline composition.
 
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-18, chunk 1b)
 

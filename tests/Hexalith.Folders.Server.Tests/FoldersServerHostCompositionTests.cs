@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -62,6 +63,26 @@ public sealed class FoldersServerHostCompositionTests
             .Get(EventStoreWorkloadAuthenticationDefaults.WorkloadScheme);
         workload.Audience.ShouldBe("folders");
         workload.AllowedCallers.ShouldBe(["eventstore"]);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ProductionPipelineRefusesAnUnavailableReceiptVerifier(bool nullRegistration)
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        builder.Services.RemoveAll<HumanAuthorityReceiptVerifier>();
+        if (nullRegistration)
+        {
+            builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>(static _ => null!);
+        }
+
+        // Exercise production pipeline composition independently of build-time DI validation.
+        builder.Host.UseDefaultServiceProvider(static options => options.ValidateOnBuild = false);
+        using WebApplication app = builder.Build();
+        Should.Throw<InvalidOperationException>(() => app.UseFoldersServerPipeline())
+            .Message.ShouldContain(nameof(HumanAuthorityReceiptVerifier));
+        ((IEndpointRouteBuilder)app).DataSources.ShouldBeEmpty();
     }
 
     [Fact]

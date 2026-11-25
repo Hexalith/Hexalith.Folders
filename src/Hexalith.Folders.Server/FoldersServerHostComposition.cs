@@ -105,10 +105,13 @@ public static class FoldersServerHostComposition
     /// <summary>Composes the Folders server request pipeline for the configured API routing mode.</summary>
     /// <param name="app">The built web application.</param>
     /// <returns>The same application.</returns>
-    /// <exception cref="InvalidOperationException">The API routing mode setting is empty or unknown.</exception>
+    /// <exception cref="InvalidOperationException">The API routing mode is invalid or the receipt verifier is unavailable.</exception>
     public static WebApplication UseFoldersServerPipeline(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
+
+        // Production must never map callbacks using the receipt-optional test composition.
+        _ = app.Services.GetRequiredService<HumanAuthorityReceiptVerifier>();
 
         FoldersApiRoutingMode mode = FoldersApiRouting.ResolveMode(app.Configuration);
 
