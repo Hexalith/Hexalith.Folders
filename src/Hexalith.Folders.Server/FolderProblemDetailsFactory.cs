@@ -7,6 +7,8 @@ namespace Hexalith.Folders.Server;
 /// </summary>
 internal static class FolderProblemDetailsFactory
 {
+    private const string ReadKeyRejectionCode = "idempotency_key_not_allowed";
+
     /// <summary>
     /// Creates a Domain REST ProblemDetails result, including optional <c>taskId</c> extras.
     /// </summary>
@@ -27,8 +29,10 @@ internal static class FolderProblemDetailsFactory
         string? taskId,
         string? message = null)
     {
+        bool isReadKeyRejection = code == ReadKeyRejectionCode;
+        taskId = SafeSegmentId(taskId, redactSensitive: isReadKeyRejection);
         Dictionary<string, object?> details = CreateDetails(code, category, "http_boundary");
-        if (!string.IsNullOrWhiteSpace(taskId) && FolderCanonicalSegmentIdentifier.IsValid(taskId))
+        if (taskId is not null)
         {
             details["taskId"] = taskId;
         }
@@ -42,11 +46,11 @@ internal static class FolderProblemDetailsFactory
             category,
             code,
             message ?? DomainMessageFor(category),
-            correlationId,
+            isReadKeyRejection ? SafeSegmentId(correlationId, redactSensitive: true) : correlationId,
             retryable,
             FolderCanonicalErrorMapper.ClientActionFor(category, retryable),
             details);
-        if (!string.IsNullOrWhiteSpace(taskId))
+        if (taskId is not null)
         {
             extensions["taskId"] = taskId;
         }
@@ -82,13 +86,15 @@ internal static class FolderProblemDetailsFactory
         string? todoRef = null,
         string evidenceSource = "audit")
     {
+        bool isReadKeyRejection = code == ReadKeyRejectionCode;
+        taskId = SafeSegmentId(taskId, redactSensitive: isReadKeyRejection);
         Dictionary<string, object?> details = CreateDetails(code, category, evidenceSource);
         if (!string.IsNullOrWhiteSpace(todoRef))
         {
             details["todoRef"] = todoRef;
         }
 
-        if (!string.IsNullOrWhiteSpace(taskId) && FolderCanonicalSegmentIdentifier.IsValid(taskId))
+        if (taskId is not null)
         {
             details["taskId"] = taskId;
         }
@@ -97,11 +103,11 @@ internal static class FolderProblemDetailsFactory
             category,
             code,
             message ?? AuditMessageFor(category),
-            correlationId,
+            isReadKeyRejection ? SafeSegmentId(correlationId, redactSensitive: true) : correlationId,
             retryable,
             retryable ? "retry" : "no_action",
             details);
-        if (!string.IsNullOrWhiteSpace(taskId))
+        if (taskId is not null)
         {
             extensions["taskId"] = taskId;
         }
@@ -204,6 +210,17 @@ internal static class FolderProblemDetailsFactory
                 retryable ? "retry" : "no_action",
                 CreateDetails(code, category, "ops_console_diagnostics")));
     }
+
+    /// <summary>Returns a canonical segment identifier that may be echoed in a ProblemDetails result.</summary>
+    /// <param name="value">The identifier to validate.</param>
+    /// <param name="redactSensitive">Whether to omit identifiers that resemble sensitive diagnostics.</param>
+    /// <returns>The valid identifier, or <see langword="null"/> if it is unsafe to echo.</returns>
+    internal static string? SafeSegmentId(string? value, bool redactSensitive)
+        => value is not null
+            && FolderCanonicalSegmentIdentifier.IsValid(value)
+            && (!redactSensitive || !FolderSensitiveDiagnosticDetector.IsSensitive(value))
+                ? value
+                : null;
 
     private static Dictionary<string, object?> CreateDetails(string code, string category, string evidenceSource)
         => new()

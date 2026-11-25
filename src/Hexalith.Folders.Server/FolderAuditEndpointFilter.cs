@@ -27,13 +27,9 @@ public sealed class FolderAuditEndpointFilter(
         if (Pd10V2CandidateCompatibilitySeam.IsGeneratedReadOperation(endpointName)
             && context.HttpContext.Request.Headers.ContainsKey("Idempotency-Key"))
         {
-            string? correlationId = FolderHttpHeaderReader.ReadHeader(context.HttpContext, "X-Correlation-Id");
-            if (correlationId is null
-                || !FolderCanonicalSegmentIdentifier.IsValid(correlationId)
-                || FolderSensitiveDiagnosticDetector.IsSensitive(correlationId))
-            {
-                correlationId = null;
-            }
+            string? correlationId = FolderProblemDetailsFactory.SafeSegmentId(
+                FolderHttpHeaderReader.ReadHeader(context.HttpContext, "X-Correlation-Id"),
+                redactSensitive: true);
 
             return ReadKeyRejection(endpointName!, correlationId);
         }

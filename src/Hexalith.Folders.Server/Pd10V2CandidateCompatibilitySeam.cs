@@ -1487,6 +1487,13 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         string message,
         CancellationToken cancellationToken)
     {
+        string? correlationId = CorrelationId(context);
+        if (code == "idempotency_key_not_allowed" && correlationId is not null
+            && FolderSensitiveDiagnosticDetector.IsSensitive(correlationId))
+        {
+            correlationId = null;
+        }
+
         context.Response.Headers.Clear();
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
         context.Response.ContentType = "application/problem+json";
@@ -1498,7 +1505,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             category = "validation_error",
             code,
             message,
-            correlationId = CorrelationId(context) ?? "correlation_absent",
+            correlationId = correlationId ?? "correlation_absent",
             retryable = false,
             clientAction = "revise_request",
             details = new { visibility = "metadata_only" },

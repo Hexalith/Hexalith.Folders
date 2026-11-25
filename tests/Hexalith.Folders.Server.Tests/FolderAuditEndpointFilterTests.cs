@@ -238,8 +238,11 @@ public sealed class FolderAuditEndpointFilterTests
         telemetry.Count.ShouldBe(0);
     }
 
-    [Fact]
-    public async Task EveryGeneratedReadShouldRejectAKeyBeforeItsHandlerOrAuditRuns()
+    [Theory]
+    [InlineData("correlation-a", true)]
+    [InlineData("malformed correlation", false)]
+    [InlineData("installation-reference", false)]
+    public async Task EveryGeneratedReadShouldRejectAKeyBeforeItsHandlerOrAuditRuns(string correlationId, bool echoCorrelationId)
     {
         ParityRow[] reads = [.. ParityOracle.Rows.Where(static row => row.OperationFamily != "mutating_command")];
         reads.ShouldNotBeEmpty();
@@ -263,7 +266,8 @@ public sealed class FolderAuditEndpointFilterTests
         {
             using HttpRequestMessage request = new(HttpMethod.Get, $"/read/{read.OperationId}");
             request.Headers.Add("Idempotency-Key", "key-a");
-            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            request.Headers.Add("X-Correlation-Id", correlationId);
+            request.Headers.Add("X-Hexalith-Task-Id", "malformed task");
             using HttpResponseMessage response = await app.GetTestClient()
                 .SendAsync(request, TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
@@ -272,7 +276,15 @@ public sealed class FolderAuditEndpointFilterTests
             string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
             body.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
-            body.ShouldContain("\"correlationId\":\"correlation-a\"");
+            body.ShouldNotContain("\"taskId\"");
+            if (echoCorrelationId)
+            {
+                body.ShouldContain($"\"correlationId\":\"{correlationId}\"");
+            }
+            else
+            {
+                body.ShouldNotContain(correlationId, Case.Sensitive);
+            }
         }
 
         handlerCalls.ShouldBe(0);

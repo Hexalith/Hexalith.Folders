@@ -58,6 +58,43 @@ public sealed class FolderProblemDetailsFactoryTests
         AssertNoGatewayLeak(problem);
     }
 
+    [Theory]
+    [InlineData("idempotency_key_not_allowed", "corr-a", "task-a", "corr-a", "task-a")]
+    [InlineData("idempotency_key_not_allowed", "malformed correlation", "malformed task", null, null)]
+    [InlineData("idempotency_key_not_allowed", "installation-reference", "installation-task", null, null)]
+    [InlineData("validation_error", "corr-a", "malformed task", "corr-a", null)]
+    public void DomainAndAuditProblemsShouldFilterUnsafeRequestMetadata(
+        string code,
+        string correlationId,
+        string taskId,
+        string? expectedCorrelationId,
+        string? expectedTaskId)
+    {
+        IResult[] results =
+        [
+            FolderProblemDetailsFactory.ForDomain(StatusCodes.Status400BadRequest, "validation_error", code, false, correlationId, taskId),
+            FolderProblemDetailsFactory.ForAudit(StatusCodes.Status400BadRequest, "validation_error", code, false, correlationId, taskId),
+        ];
+
+        foreach (IResult result in results)
+        {
+            ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+            problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+            problem.ProblemDetails.Extensions["code"].ShouldBe(code);
+            problem.ProblemDetails.Extensions["correlationId"].ShouldBe(expectedCorrelationId);
+            if (expectedTaskId is null)
+            {
+                problem.ProblemDetails.Extensions.ShouldNotContainKey("taskId");
+                Details(problem).ShouldNotContainKey("taskId");
+            }
+            else
+            {
+                problem.ProblemDetails.Extensions["taskId"].ShouldBe(expectedTaskId);
+                Details(problem)["taskId"].ShouldBe(expectedTaskId);
+            }
+        }
+    }
+
     [Fact]
     public void ProviderProblemShouldSanitizeSensitiveCorrelationAndExposeRetryAfter()
     {

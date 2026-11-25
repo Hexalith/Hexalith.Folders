@@ -3128,6 +3128,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: The `idempotency_key_not_allowed` rejection on read endpoints echoes the raw correlation and task headers before canonical validation, and the factory writes `extensions.taskId` without validating it.
   evidence: Pre-existing. In `ValidateEvidenceQueryEnvelope` and the inline read handlers (`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:350`, `:421`, ...), the Idempotency-Key check runs before the canonical-ID check and passes `correlationId` / `taskId` unchanged. `FolderProblemDetailsFactory.ForDomain` validates `details.taskId` but not `extensions.taskId`. The values are free of control characters and go back only to the caller that sent them.
+  status: done 2026-11-25
+  resolution: Read-key rejections only echo safe correlation and task identifiers. Domain and Audit omit invalid task identifiers from both response locations. Generated v1 and v2 route tests verify early rejection and metadata handling.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: The shared detector misses fine-grained GitHub PATs (`github_pat_…`) and GitLab `glpat-…` tokens.

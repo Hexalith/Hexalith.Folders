@@ -18,8 +18,10 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class Pd10V2ReadKeyPrecedenceTests
 {
-    [Fact]
-    public async Task EveryGeneratedReadRejectsAKeyBeforeAuthorizationOrSourceAccess()
+    [Theory]
+    [InlineData("corr_safe_0123456789", "corr_safe_0123456789")]
+    [InlineData("installation-0123456789", "correlation_absent")]
+    public async Task EveryGeneratedReadRejectsAKeyBeforeAuthorizationOrSourceAccess(string correlation, string expectedCorrelation)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -51,6 +53,7 @@ public sealed class Pd10V2ReadKeyPrecedenceTests
             string path = Regex.Replace(descriptor.CandidateRoute, @"\{[^/{}]+\}", "scope_0000000001");
             using HttpRequestMessage request = new(new HttpMethod(descriptor.Method), path);
             request.Headers.Add("Idempotency-Key", "key_a");
+            request.Headers.Add("X-Correlation-Id", correlation);
             using HttpResponseMessage response = await app.GetTestClient()
                 .SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
@@ -59,6 +62,7 @@ public sealed class Pd10V2ReadKeyPrecedenceTests
                 await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
             problem.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
             problem.RootElement.GetProperty("code").GetString().ShouldBe("idempotency_key_not_allowed");
+            problem.RootElement.GetProperty("correlationId").GetString().ShouldBe(expectedCorrelation);
         }
 
         handlerCalls.ShouldBe(0);
