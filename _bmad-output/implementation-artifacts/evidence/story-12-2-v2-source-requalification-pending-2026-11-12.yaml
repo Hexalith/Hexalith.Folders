@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 9b1ea4a054714f6e71e2ba5f00f347abfd0aefe72357660d3156fd741495f71d
+candidate_set_sha256: 2b39f0c585da710e4e57e206cd611ce98df146b7a2e5aeb845a9b1627f45444b
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -3398,8 +3398,8 @@ artifacts:
     sha256: 21b06514a37d1b8cf126c6095cbd2be8423d220e0fe0ed62254ff02b44540d2d
   - path: "src/Hexalith.Folders/Providers/Forgejo/ForgejoHttpApiClient.Operations.cs"
     kind: file
-    bytes: 31657
-    sha256: 4bb1cc4233f5a1112ac5aa294ddc5ad07ad2a7b4041ac52c9cf9bdaa3b547430
+    bytes: 31703
+    sha256: 20ca588c4f99641a5de3e4884d6a38eb6877622c16580f68fb69921945a5bb59
   - path: "src/Hexalith.Folders/Providers/Forgejo/ForgejoHttpApiClient.cs"
     kind: file
     bytes: 41945
@@ -3498,8 +3498,8 @@ artifacts:
     sha256: 43020d53e9c2ba71217964126fe8ef6fe30287cca702769ca8e71e0bb4dc2cec
   - path: "src/Hexalith.Folders/Providers/Forgejo/ForgejoSmartHttpGitTransport.cs"
     kind: file
-    bytes: 42661
-    sha256: be705aff9519fb6c2b73969bf37278c69ac1b217345dbca4a78e046e57d44685
+    bytes: 42660
+    sha256: 365165a02d7374fc00ef0ab10befda04069521f487d71de2d1551627c019d329
   - path: "src/Hexalith.Folders/Providers/Forgejo/ForgejoSmartHttpGitTransportTestHooks.cs"
     kind: file
     bytes: 2957
@@ -6266,8 +6266,8 @@ artifacts:
     sha256: 54dac31e71b944109aaae4a390ef2f9a3d13a0b08eb5347c816a65c10403352e
   - path: "tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoHttpApiClientTests.cs"
     kind: file
-    bytes: 55290
-    sha256: 3bcf75318d9aa4e96f6363f333d7ff273796de57ad8156bccda8c23edc7d0bbf
+    bytes: 57005
+    sha256: 91a09c18fdcc8ca0b4fb458e4c85a77d004038c05f08b19ec15469ea66586370
   - path: "tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoLiveEvidenceTests.cs"
     kind: file
     bytes: 22449
@@ -6294,8 +6294,8 @@ artifacts:
     sha256: 394d327ffc69d076bee65fb985252f1c583c459b5271045bf398295af5d21bd6
   - path: "tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoSmartHttpGitTransportIntegrationTests.cs"
     kind: file
-    bytes: 38330
-    sha256: 5cc4e98aabd3ed50a82779096366f57fbb3d8f8570c46de52f1723f9df8d9ec1
+    bytes: 38390
+    sha256: 3c8115ba8f9c72d003b8ae6656de51fc7ed66b93e4febc5bef56d092c826c090
   - path: "tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoSmartHttpGitTransportTests.cs"
     kind: file
     bytes: 41724

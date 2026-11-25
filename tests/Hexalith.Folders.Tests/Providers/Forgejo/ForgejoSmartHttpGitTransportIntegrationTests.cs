@@ -117,7 +117,7 @@ public sealed class ForgejoSmartHttpGitTransportIntegrationTests
             string? recordedCommitSha = null;
             ForgejoCommitResult commit = await client.CommitAsync(
                 new ForgejoCommitRequest(
-                    target,
+                    target with { ExpectedHeadSha = parent.Id.Sha.ToUpperInvariant() },
                     changes,
                     stage.TreeSha!,
                     "smart HTTPS smoke",

@@ -411,14 +411,14 @@ internal sealed class ForgejoSmartHttpGitTransport(
                     negotiationStale = exactRef
                         && !string.Equals(
                             materialized[0].SourceObjectId?.Sha,
-                            request.Target.ExpectedHeadSha,
-                            StringComparison.OrdinalIgnoreCase);
+                            request.Target.ExpectedHeadSha.ToLowerInvariant(),
+                            StringComparison.Ordinal);
                     bool exactUpdate = exactRef
                         && !negotiationStale
                         && string.Equals(
                             materialized[0].DestinationObjectId?.Sha,
                             commit.Id.Sha,
-                            StringComparison.OrdinalIgnoreCase);
+                            StringComparison.Ordinal);
                     negotiationRejected = !exactUpdate;
                     if (!exactUpdate || !state.Check(0))
                     {

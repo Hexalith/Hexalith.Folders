@@ -2866,6 +2866,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md`
   summary: Forgejo commit confirmation compares object ids case-insensitively and does not rewrite them to one canonical hex form.
   evidence: Story 3.13 owns commit confirmation. `ForgejoSmartHttpGitTransport` uses `StringComparison.OrdinalIgnoreCase` for `ObjectSha` and `ExpectedHeadSha`.
+  status: done 2026-11-25
+  resolution: Validate and canonicalize object IDs on exact REST ref reads. Successful and reconciled commit confirmation compare lowercase IDs ordinally. Status returns lowercase evidence and recognizes legacy uppercase expected-head and intended-commit IDs. The Forgejo HTTP client tests cover both completion paths and both status outcomes.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: EventStore shared-source projection installation lacks a Production installation-coverage authority registration.

@@ -213,7 +213,7 @@ internal sealed partial class ForgejoHttpApiClient
             return confirmation.RefFailure is null
                 && string.Equals(confirmation.Observation!.FullRef, request.Target.FullRef, StringComparison.Ordinal)
                 && string.Equals(confirmation.Observation.ObjectType, "commit", StringComparison.Ordinal)
-                && string.Equals(confirmation.Observation.ObjectSha, result.CommitSha, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(confirmation.Observation.ObjectSha, result.CommitSha, StringComparison.Ordinal)
                     ? result
                     : ForgejoCommitResult.Failure(
                         ForgejoApiFailureCondition.AmbiguousMutationResponse,
@@ -294,16 +294,16 @@ internal sealed partial class ForgejoHttpApiClient
         if (rejectedResult.ObservedCommitSha is not null
             && string.Equals(
                 observedRef.Observation.ObjectSha,
-                rejectedResult.ObservedCommitSha,
-                StringComparison.OrdinalIgnoreCase))
+                rejectedResult.ObservedCommitSha.ToLowerInvariant(),
+                StringComparison.Ordinal))
         {
-            return ForgejoCommitResult.Success(rejectedResult.ObservedCommitSha);
+            return ForgejoCommitResult.Success(observedRef.Observation.ObjectSha);
         }
 
         return string.Equals(
             observedRef.Observation.ObjectSha,
-            target.ExpectedHeadSha,
-            StringComparison.OrdinalIgnoreCase)
+            target.ExpectedHeadSha.ToLowerInvariant(),
+            StringComparison.Ordinal)
                 ? rejectedResult
                 : ForgejoCommitResult.Failure(
                     ForgejoApiFailureCondition.RefHeadConflict,
@@ -371,7 +371,7 @@ internal sealed partial class ForgejoHttpApiClient
 
             ForgejoRefObservation observed = reference.Observation!;
             if (request.IntendedCommitSha is not null
-                && string.Equals(observed.ObjectSha, request.IntendedCommitSha, StringComparison.OrdinalIgnoreCase))
+                && string.Equals(observed.ObjectSha, request.IntendedCommitSha.ToLowerInvariant(), StringComparison.Ordinal))
             {
                 return ForgejoOperationStatusResult.Observed(
                     ProviderOperationStatusKind.Confirmed,
@@ -380,7 +380,7 @@ internal sealed partial class ForgejoHttpApiClient
                     observed.ObjectType);
             }
 
-            if (string.Equals(observed.ObjectSha, request.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(observed.ObjectSha, request.Target.ExpectedHeadSha.ToLowerInvariant(), StringComparison.Ordinal))
             {
                 return ForgejoOperationStatusResult.Observed(
                     ProviderOperationStatusKind.NotApplied,
@@ -609,7 +609,7 @@ internal sealed partial class ForgejoHttpApiClient
             return false;
         }
 
-        observation = new ForgejoRefObservation(fullRef!, objectType!, objectSha!);
+        observation = new ForgejoRefObservation(fullRef!, objectType!, objectSha!.ToLowerInvariant());
         return true;
     }
 

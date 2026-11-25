@@ -620,6 +620,35 @@ public sealed class ForgejoHttpApiClientTests
     }
 
     [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task OperationStatusReturnsCanonicalObjectIdForLegacyUppercaseEvidence(bool intendedCommitMatches)
+    {
+        string expectedHead = new('a', 40);
+        string intendedCommit = new('b', 40);
+        string observedSha = intendedCommitMatches ? intendedCommit : expectedHead;
+        ForgejoOperationStatusRequest existing = OperationStatusRequest();
+        ForgejoOperationStatusRequest request = existing with
+        {
+            Target = existing.Target with { ExpectedHeadSha = expectedHead.ToUpperInvariant() },
+            IntendedCommitSha = intendedCommit.ToUpperInvariant(),
+        };
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            JsonResponse(HttpStatusCode.OK, JsonSerializer.Serialize(new[]
+            {
+                new { @ref = request.Target.FullRef, @object = new { type = "commit", sha = observedSha.ToUpperInvariant() } },
+            })));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(request, TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
+        result.Status.ShouldBe(intendedCommitMatches ? ProviderOperationStatusKind.Confirmed : ProviderOperationStatusKind.NotApplied);
+        result.ObservedSha.ShouldBe(observedSha);
+    }
+
+    [Theory]
     [InlineData(HttpStatusCode.Unauthorized, "AuthenticationRequired")]
     [InlineData(HttpStatusCode.Forbidden, "PermissionInsufficient")]
     [InlineData(HttpStatusCode.TooManyRequests, "RateLimit")]
@@ -863,10 +892,12 @@ public sealed class ForgejoHttpApiClientTests
         handler.Requests.ShouldBeEmpty();
     }
 
-    [Fact]
-    public async Task CommitCallerReconcilesDispatchedRejectionAndConfirmsTheIntendedCommit()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CommitCallerConfirmsTheIntendedCommitFromCanonicalizedRef(bool transportRejected)
     {
-        const string intendedCommit = "2222222222222222222222222222222222222222";
+        const string intendedCommit = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
         ProviderGitOperationResolvedTarget target = OperationStatusRequest().Target;
         RecordingHttpMessageHandler handler = new(
             JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
@@ -874,7 +905,7 @@ public sealed class ForgejoHttpApiClientTests
                 HttpStatusCode.OK,
                 JsonSerializer.Serialize(new[]
                 {
-                    new { @ref = target.FullRef, @object = new { type = "commit", sha = intendedCommit } },
+                    new { @ref = target.FullRef, @object = new { type = "commit", sha = intendedCommit.ToUpperInvariant() } },
                 })));
         ForgejoSmartHttpGitTransportTestHooks hooks = new()
         {
@@ -883,10 +914,12 @@ public sealed class ForgejoHttpApiClientTests
                 (await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
                     .ShouldBe(ForgejoReservationValidationStatus.Valid);
                 (await request.RecordCreatedCommitAsync(intendedCommit).ConfigureAwait(false)).ShouldBeTrue();
-                return ForgejoCommitResult.Failure(
-                    ForgejoApiFailureCondition.RemoteRejected,
-                    observedCommitSha: intendedCommit,
-                    mutationDispatched: true);
+                return transportRejected
+                    ? ForgejoCommitResult.Failure(
+                        ForgejoApiFailureCondition.RemoteRejected,
+                        observedCommitSha: intendedCommit.ToUpperInvariant(),
+                        mutationDispatched: true)
+                    : ForgejoCommitResult.Success(intendedCommit);
             },
         };
         ForgejoHttpApiClient client = CreateOperationClient(handler, hooks);
