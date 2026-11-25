@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: c59b7312525ebb826f5028f40f4926839df1a2f54139a65e387e2e4c5099f825
+candidate_set_sha256: 50d4d7ed025c42f6f09c0c89dc1d0879203d15060e7d51576e7e6e616ac1ea21
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -6334,8 +6334,8 @@ artifacts:
     sha256: f3df05c64357b5667091f7038662e7728a6088318917e3cc01aab765507b7f4b
   - path: "tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubCanonicalEvidenceTests.cs"
     kind: file
-    bytes: 3310
-    sha256: 5555ff814f63c6379dd73bc1458d42123459df9a570a5ae27ef978dbdc0a2cf5
+    bytes: 3413
+    sha256: cf8905e032fba516145f26490463e0909f980dd6594330a61776831e4c04ba38
   - path: "tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubDependencyGuardTests.cs"
     kind: file
     bytes: 11580

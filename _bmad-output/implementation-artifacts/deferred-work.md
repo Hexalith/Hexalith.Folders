@@ -3182,6 +3182,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: The GitHub canonical domain vectors lack `hxf-github:v1:created-commit`, a domain GitHub uses in production.
   evidence: Pre-existing. `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubCanonicalEvidenceTests.cs:26-46` pins 19 purposes, while `src/Hexalith.Folders/Providers/GitHub` uses 20 distinct `hxf-github:v1:*` domains; `created-commit` is the only one missing. 11.5 left the suite untouched ("keep GitHub vectors"). The fix is one `InlineData` row whose digest is computed against the baseline encoder. The Forgejo suite copied this list, which is how it lost the domain too (an 11.5 chunk-3 patch item).
+  status: done 2026-11-25
+  resolution: Added a created-commit golden vector derived from the established ASCII domain and canonical field encoding.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: `Hexalith.Folders.Tests` never runs in CI, so the 11.5 golden vectors, boundary rows and dependency guards protect only local source-reference runs.

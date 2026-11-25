@@ -36,6 +36,7 @@ public sealed class GitHubCanonicalEvidenceTests
     [InlineData("full-ref", "75e2f09d15f74da771650d74c15294b381c36ebbd2af842841f057a8edfc9036")]
     [InlineData("status-expected-head", "577544458d77960a72a3d32a565c4ec9b5a3b7ce2ab6081e1ef396d3861121bd")]
     [InlineData("intended-commit", "68538781c3bcb41267e62c73313a1ba37df51011178abad2023ae333808f2b3d")]
+    [InlineData("created-commit", "15e6c5b34ea1f0e0362227e84dbf9d74d544698425fb1f5186add9d430d5d9e0")]
     [InlineData("status-window", "9cb2bf930826788ed65d2900c94ca9c98837aa13ceda12d8bd06579f410b8840")]
     [InlineData("operation-target", "2f53cd9b71a049ab7569da90d152d2de47a90864568b022c377a4df586c7df75")]
     [InlineData("mutation-outcome", "3c28cc13a9a5e4c3ead4880cf9c99947e8464ad89bcb78f5db22fb6ea3a54f42")]
