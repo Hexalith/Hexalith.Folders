@@ -233,6 +233,117 @@ public sealed class WorkersOrganizationAclRouteTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public async Task FailedPredecessorRequiresOrderedRedeliveryBeforePermissionProjectionAdvances(bool organization)
+    {
+        const string tenant = "tenant-a";
+        const string folder = "folder-a";
+        const string organizationKey = "projection:folders:organization-permissions:tenant-a";
+        const string folderKey = "projection:folders:folder-permissions:tenant-a:folder-a";
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        PermissionProjectionFailureLoggerProvider logs = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store, logs);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var organizationGrant = new OrganizationAclPrincipalGranted(tenant, tenant, OrganizationAclPrincipalKind.User,
+            "user-a", "create_folder", "correlation-a", "task-a", "grant-key", "grant-fingerprint");
+        var folderGrant = new FolderAccessGranted(tenant, tenant, folder, FolderAccessPrincipalKind.User,
+            "user-a", "read_metadata", "admin-a", "correlation-a", "task-a", "grant-key", "grant-fingerprint", 1, now);
+        var initial = organization
+            ? Envelope("baseline", 1, new OrganizationAclBaselineInitialized(tenant, tenant,
+                "correlation-a", "task-a", "baseline-key", "baseline-fingerprint"))
+            : Envelope("created", 1, OperationalStatusTestData.Created() with { OccurredAt = now }) with { AggregateId = folder };
+        var granted = organization
+            ? Envelope("grant-a", 2, organizationGrant)
+            : Envelope("grant-a", 2, folderGrant) with { AggregateId = folder };
+        var missing = organization
+            ? Envelope("revocation", 3, new OrganizationAclPrincipalRevoked(tenant, tenant, OrganizationAclPrincipalKind.User,
+                "user-a", "create_folder", "correlation-a", "task-a", "revoke-key", "revoke-fingerprint"))
+            : Envelope("revocation", 3, new FolderAccessRevoked(tenant, tenant, folder, FolderAccessPrincipalKind.User,
+                "user-a", "read_metadata", "admin-a", "correlation-a", "task-a", "revoke-key", "revoke-fingerprint", 2, now))
+                with { AggregateId = folder };
+        var later = organization
+            ? Envelope("grant-b", 4, organizationGrant with
+                { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint" })
+            : Envelope("grant-b", 4, folderGrant with
+                { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint", AccessSequence = 3 })
+                with { AggregateId = folder };
+
+        await DeliverAsync(initial, HttpStatusCode.OK);
+        await DeliverAsync(granted, HttpStatusCode.OK);
+        var before = await ReadPositionAsync();
+        before.Sequence.ShouldBe(2);
+        before.ETag.ShouldNotBeNullOrEmpty();
+        store.ForcedWriteConflicts = int.MaxValue;
+        await DeliverAsync(missing, HttpStatusCode.InternalServerError);
+        store.ForcedWriteConflicts = 0;
+        (await ReadPositionAsync()).ShouldBe(before);
+        await DeliverAsync(later, HttpStatusCode.InternalServerError);
+        (await ReadPositionAsync()).ShouldBe(before);
+        string failureCategory = organization ? "organization_acl_failed" : "folder_permission_failed";
+        logs.Entries.Select(entry => entry.Fields["Category"]).ShouldBe(new[] { failureCategory, failureCategory });
+
+        await DeliverAsync(missing, HttpStatusCode.OK);
+        var repaired = await ReadPositionAsync();
+        repaired.Sequence.ShouldBe(3);
+        repaired.ETag.ShouldNotBe(before.ETag);
+        await DeliverAsync(later, HttpStatusCode.OK);
+        var after = await ReadPositionAsync();
+        after.Sequence.ShouldBe(4);
+        after.ETag.ShouldNotBe(before.ETag);
+        IReadOnlyList<FolderProjectionMessage> messages;
+        if (organization)
+        {
+            var persisted = (await store.GetAsync<OrganizationPermissionProjection>("statestore", organizationKey, token))
+                .Value.ShouldNotBeNull();
+            persisted.TenantId.ShouldBe(tenant);
+            persisted.OrganizationId.ShouldBe(tenant);
+            persisted.Grants.ShouldHaveSingleItem().PrincipalId.ShouldBe("user-b");
+            messages = persisted.RecentMessages.ShouldNotBeNull();
+        }
+        else
+        {
+            var persisted = (await store.GetAsync<FolderPermissionProjection>("statestore", folderKey, token))
+                .Value.ShouldNotBeNull();
+            persisted.TenantId.ShouldBe(tenant);
+            persisted.OrganizationId.ShouldBe(tenant);
+            persisted.FolderId.ShouldBe(folder);
+            persisted.Overrides.Single(row => row.PrincipalId == "user-a").IsGranted.ShouldBeFalse();
+            persisted.Overrides.Single(row => row.PrincipalId == "user-b").IsGranted.ShouldBeTrue();
+            messages = persisted.RecentMessages;
+        }
+
+        foreach (var delivered in new[] { missing, later })
+        {
+            string digest = Convert.ToHexString(SHA256.HashData(
+                [.. Encoding.UTF8.GetBytes(delivered.EventTypeName + ":1:"), .. delivered.Payload]));
+            messages.ShouldContain(new FolderProjectionMessage(delivered.SequenceNumber, delivered.MessageId, digest));
+        }
+
+        async Task DeliverAsync(EventStoreDomainEventEnvelope envelope, HttpStatusCode expected)
+        {
+            using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", envelope, token).ConfigureAwait(false);
+            response.StatusCode.ShouldBe(expected);
+        }
+
+        async Task<(long Sequence, string? ETag)> ReadPositionAsync()
+        {
+            if (organization)
+            {
+                var entry = await store.GetAsync<OrganizationPermissionProjection>("statestore", organizationKey, token).ConfigureAwait(false);
+                return (entry.Value.ShouldNotBeNull().LastSequence, entry.ETag);
+            }
+
+            var folderEntry = await store.GetAsync<FolderPermissionProjection>("statestore", folderKey, token).ConfigureAwait(false);
+            return (folderEntry.Value.ShouldNotBeNull().LastSequence, folderEntry.ETag);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public async Task ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(bool writeConflict)
     {
         WorkerRouteReadModelStore store = new();

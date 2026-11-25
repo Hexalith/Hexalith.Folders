@@ -3070,6 +3070,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Permanent projection sequence gap after a dead-lettered event may wedge the derived permission row (unverified medium).
   evidence: EventStore{Folder,Organization}EffectivePermissionsReadModel.cs + Workers PermissionProjectionDelivery.cs; test dead-letter of sequence N then delivery of N+1.
+  status: done 2026-11-25
+  resolution: The authenticated Workers route refuses a later position after an exhausted predecessor write in both actor scopes. The position and ETag stay fixed until ordered replay of the exact retained envelopes restores the expected permission state and message evidence.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Rejection classifier command sets are literals not tied to the command inventory; unknown types throw on every delivery.
   evidence: FoldersFolderPermissionEventProcessor.cs, FoldersOrganizationAclEventProcessor.cs; add inventory-parity test.
