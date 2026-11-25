@@ -2946,6 +2946,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
   status: done 2026-11-25
   resolution: The shared production pubsub component now protects both existing dead-letter topics and permits EventStore to publish to them. The production policy test verifies the exact publisher list, topic protection, and the absence of new subscriptions. Workers retain their existing isolated component.
 - AppHost inline secret wiring in `src/Hexalith.Folders.AppHost/Program.cs` (receipt signing key shared by `eventstore` and `folders`, generated app-channel tokens for `folders` and `folders-workers`, the workload client secret shared by Keycloak and EventStore, idempotency-admission settings) has no hermetic assertion; only the opt-in DCP lane exercises it. Move the wiring into `FoldersAspireModule` helpers so `EnvironmentCallbackAnnotation` tests can pin it, or verify through the DCP lane once unblocked.
+  status: done 2026-11-25
+  resolution: Hermetic AppHost composition tests inspect the actual environment callbacks and pin the secret parameter bindings for receipt signing, admission, EventStore workload authentication and each app channel.
 - `DaprOrganizationStreamSequenceReader` (domain project) reads stream heads by posting raw Dapr HTTP to EventStore's internal `IAggregateActor.GetCurrentSequenceAsync` (`/v1.0/actors/AggregateActor/{tenant}:folders:{id}/method/GetCurrentSequenceAsync`), hard-coding the actor type, ID layout and token header, contrary to the platform rule that domain modules do not re-implement Dapr wiring. With reentrancy disabled, every out-of-actor tenant authorization also takes an organization-actor turn (3 s timeout). Owner decision 2026-10-14: deferred — platform-owned seam; open an EventStore head or stream-metadata client story per Model B and keep this reader as a documented interim. The gateway `ReadStreamAsync` metadata is the only current SDK alternative and is heavier.
 
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-14, patch-pass delta b6ce6ba5)
@@ -3047,6 +3049,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: AppHost receipt-key/idempotency-digest/app-channel wiring has no non-live test; only the skipped-by-default durability lane covers it.
   evidence: AppHost/Program.cs:34-76,108-109; add an `AspireTopologyTests` assertion.
+  status: done 2026-11-25
+  resolution: Duplicate of L2948 at fafdb951. The real AppHost model tests verify the shared receipt and workload credentials, digest admission, and project-to-sidecar app-channel secret bindings.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Permanent projection sequence gap after a dead-lettered event may wedge the derived permission row (unverified medium).
   evidence: EventStore{Folder,Organization}EffectivePermissionsReadModel.cs + Workers PermissionProjectionDelivery.cs; test dead-letter of sequence N then delivery of N+1.
