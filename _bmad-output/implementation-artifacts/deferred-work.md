@@ -2906,6 +2906,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-2.md`
   summary: Record copyable Worker build and direct xUnit verification commands in the Story 12.1 completion-reconciliation spec.
   evidence: Independent review found that the notes report the 59 Server and 3 Worker passes and name their selected classes, but omit the full Worker build and direct assembly invocation commands; the one-shot workflow routes spec-only improvements to deferred work.
+  status: done 2026-11-25
+  resolution: Added the historical Server and Workers build commands and both xUnit v3 assembly invocations with the original class selection and SDK context.
 
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-13)
 

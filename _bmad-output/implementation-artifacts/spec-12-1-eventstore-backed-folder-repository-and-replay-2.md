@@ -26,6 +26,26 @@ context:
 - The current EventStore gitlink is `851984f2362ba0b00972da4d03dab8be7e5ef4cb`, matching the consumer compatibility supplement. The original 6.6 acceptance and approval records remain historical evidence.
 - Regenerated `epic-12-context.md` from planning sources because the manifest was newer. Made its execution controls explicit: general hold removed, v2 exposure unauthorized, tracker regeneration unauthorized. The original completed spec and frozen authority are unchanged.
 - Fresh verification: `dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug -m:1 -v:q` and the corresponding Workers.Tests build both passed with zero warnings/errors. Direct xUnit v3 execution passed 59 Server tests across `FolderEventReplayTests`, `ServerEndpointRegistrationTests`, `ProductionProcessWireEventTests`, `EventStoreOrganizationEffectivePermissionsReadModelTests`, `VerifiedReceiptEventStoreAuthorizationValidatorTests`, and `FolderAclEndpointTests`; `WorkersOrganizationAclRouteTests` and `FoldersFolderPermissionEventProcessorTests` passed 3/3.
+
+  Run these commands from the repository root at the recorded revision with its .NET 10.0.401 SDK and source dependencies checked out.
+
+  ```bash
+  dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug -m:1 -v:q
+  dotnet build tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj -c Debug -m:1 -v:q
+
+  dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll \
+    -class Hexalith.Folders.Server.Tests.FolderEventReplayTests \
+    -class Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests \
+    -class Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests \
+    -class Hexalith.Folders.Server.Tests.EventStoreOrganizationEffectivePermissionsReadModelTests \
+    -class Hexalith.Folders.Server.Tests.VerifiedReceiptEventStoreAuthorizationValidatorTests \
+    -class Hexalith.Folders.Server.Tests.FolderAclEndpointTests
+
+  dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll \
+    -class Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests \
+    -class Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests
+  ```
+
 - These checks verify the current source; deployed restart, persisted state, revocation, denial, replica serialization, outage, and positive ACL GET evidence remains in the original spec. No new live ETag race, provider-binding probe, operator repair, or infrastructure-failure 503 response was observed. Previously deferred work remains separately owned.
 - The initial lifecycle sync to `in-progress` made no change because the story and parent epic already held that status. Finalization will update only the exact Story 12.1 key to `review` and the tracker `last_updated` scalar, preserving every comment and all other lifecycle keys.
 - Independent Blind Hunter review returned four documentation findings. Corrected three context omissions and recorded one spec-only reproducibility improvement in the deferred-work ledger, as the one-shot review routing requires. Finalization hands Story 12.1 to `review`; it does not change the completed original spec or assert release acceptance.
