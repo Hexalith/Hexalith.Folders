@@ -2957,6 +2957,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
   status: done 2026-11-25
   resolution: An authenticated Workers route test pins success for a known permission-neutral event and its exact redelivery, and retryable failure for an unknown type or conflicting redelivery. Both latest and older exact redeliveries preserve the sequence and ETag. The permission gate deliberately retains the configured retries for invalid deliveries. The later dead-letter sequence-gap item (L3051 at fafdb951) tracks recovery.
 - Mutation baseline read forced to `WaitForCatchUp=false` may skip the bounded wait when only the baseline row is stale. Unverified medium (fail-closed 503); settle with a stale-baseline/fresh-folder test.
+  status: done 2026-11-25
+  resolution: The folder mutation evidence path retries when only the organization baseline is stale. The regression projects a revocation after the first stale read and verifies the fresh denial and persisted revocation.
 
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`

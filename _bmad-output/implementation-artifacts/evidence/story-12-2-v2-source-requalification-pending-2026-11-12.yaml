@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 70872356b5e756c6d7e886ed1182ca5d4dc74abfbacda4cf456f2433355aefae
+candidate_set_sha256: ccc2bd1f56ec33b6c21cfc8c221d78a129c91b089bc209c90ea6e7f17fb06533
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -5206,8 +5206,8 @@ artifacts:
     sha256: c188e26d26d5e1f4f6a1d6a75d22fe5d5a420acf9614f4423ce49b237eea4e3b
   - path: "tests/Hexalith.Folders.Server.Tests/EventStoreOrganizationEffectivePermissionsReadModelTests.cs"
     kind: file
-    bytes: 69878
-    sha256: 32438bb21c387aafadfd02c42104df07367d1840f1680baeb919e468e9a9cb89
+    bytes: 73070
+    sha256: c7f070981b040021e7c277201c0beb72004115fb80e7601c8f4d83521988e707
   - path: "tests/Hexalith.Folders.Server.Tests/FileContextEndpointTests.cs"
     kind: file
     bytes: 27357
