@@ -47,7 +47,7 @@ public static class FoldersRejectionSource
             _ = FolderStreamName.Create(tenantId, aggregateId);
             owner = FoldersSourceOwnerKind.Folder;
         }
-        using JsonDocument json = JsonDocument.Parse(payload);
+        using JsonDocument json = JsonDocument.Parse(payload, new JsonDocumentOptions { AllowDuplicateProperties = false });
         JsonElement root = json.RootElement;
         string? command = Text(root, "CommandType", "commandType");
         string? code = Text(root, "Code", "code");
@@ -71,14 +71,29 @@ public static class FoldersRejectionSource
         => Enum.IsDefined(code) && !FolderResult.IsAcceptedCode(code);
 
     private static string? Text(JsonElement root, string name, string camelName)
-        => root.ValueKind == JsonValueKind.Object && (root.TryGetProperty(name, out JsonElement value)
-            || root.TryGetProperty(camelName, out value)) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+        => root.ValueKind == JsonValueKind.Object && TryReadProperty(root, name, camelName, out JsonElement value)
+            && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
     private static void RequireHint(JsonElement root, string name, string camelName, string? expected)
     {
-        if ((root.TryGetProperty(name, out JsonElement value) || root.TryGetProperty(camelName, out value))
+        if (TryReadProperty(root, name, camelName, out JsonElement value)
             && value.ValueKind != JsonValueKind.Null
             && (value.ValueKind != JsonValueKind.String || value.GetString() != expected))
             throw new InvalidOperationException("Folders rejection scope differs from its source.");
+    }
+
+    private static bool TryReadProperty(JsonElement root, string name, string camelName, out JsonElement value)
+    {
+        if (!root.TryGetProperty(name, out value))
+        {
+            return root.TryGetProperty(camelName, out value);
+        }
+
+        if (root.TryGetProperty(camelName, out _))
+        {
+            throw new InvalidOperationException("Ambiguous Folders rejection metadata.");
+        }
+
+        return true;
     }
 }

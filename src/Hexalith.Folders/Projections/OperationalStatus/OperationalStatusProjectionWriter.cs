@@ -65,7 +65,7 @@ public sealed class OperationalStatusProjectionWriter
             cancellationToken.ThrowIfCancellationRequested();
             ProjectionEventDto source = item.Source ?? throw new InvalidOperationException("Original operational source metadata is missing.");
             OperationalStatusEvent verified = OperationalStatusEventReader.ReadStored(source);
-            if (source.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
+            if (verified.Event is null
                 && FoldersRejectionSource.ReadOwner(source.Payload, tenantId, folderId, source.CorrelationId) != FoldersSourceOwnerKind.Folder)
                 throw new InvalidOperationException("Non-Folder rejection targets a folder operational stream.");
             if (verified.Digest != item.Digest || verified.MessageId != item.MessageId || verified.Sequence != item.Sequence)

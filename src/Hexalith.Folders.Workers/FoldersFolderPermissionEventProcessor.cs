@@ -104,8 +104,7 @@ public sealed class FoldersFolderPermissionEventProcessor(
                 return;
             }
 
-            if (envelope.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
-                && FoldersRejectedCommandClassifier.IsOrganization(envelope))
+            if (FoldersRejectedCommandClassifier.IsOrganization(envelope))
             {
                 throw new InvalidOperationException("Organization rejection is on a folder actor.");
             }

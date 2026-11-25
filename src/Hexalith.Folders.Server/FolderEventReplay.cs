@@ -48,13 +48,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             return typeof(IOrganizationEvent).IsAssignableFrom(type);
         }
 
-        if (item.EventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
-            || item.EventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName)
-        {
-            return false;
-        }
-
-        if (item.EventTypeName != typeof(FolderCommandRejected).FullName)
+        if (!IsKnownRejection(item.EventTypeName))
         {
             throw new InvalidOperationException("Unknown Folders projection event.");
         }
@@ -66,13 +60,13 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
 
     private static bool IsOrganizationRejection(string eventTypeName, byte[] bytes, string tenantId, string aggregateId, string correlationId)
     {
-        if (eventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
-            || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName)
+        FoldersSourceOwnerKind owner = FoldersRejectionSource.ReadOwner(bytes, tenantId, aggregateId, correlationId);
+        if (owner != FoldersSourceOwnerKind.Folder && eventTypeName != typeof(FolderCommandRejected).FullName)
         {
-            return false;
+            throw new InvalidOperationException("Folder rejection is outside a folder actor stream.");
         }
 
-        return FoldersRejectionSource.ReadOwner(bytes, tenantId, aggregateId, correlationId) != FoldersSourceOwnerKind.Folder;
+        return owner != FoldersSourceOwnerKind.Folder;
     }
 
     /// <summary>Folds the command's actor-owned folder stream without querying another store.</summary>

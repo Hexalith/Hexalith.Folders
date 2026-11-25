@@ -37,7 +37,7 @@ internal sealed class OperationalStatusNativeSourceFold(string tenantId, string 
             sourceEvent.UserId, sourceEvent.GlobalPosition)
         { MetadataVersion = sourceEvent.MetadataVersion, StoredPayloadVersion = sourceEvent.PayloadVersion };
         OperationalStatusEvent item = OperationalStatusEventReader.ReadStored(source);
-        if (source.EventTypeName == "Hexalith.Folders.Server.FolderCommandRejected"
+        if (item.Event is null
             && FoldersRejectionSource.ReadOwner(source.Payload, tenantId, folderId, source.CorrelationId) != FoldersSourceOwnerKind.Folder)
             return false;
         if (item.Sequence != _sequence + 1) return false;

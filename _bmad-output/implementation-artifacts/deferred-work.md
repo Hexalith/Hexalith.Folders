@@ -3049,6 +3049,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Projection folds skip rejection identity checks and unmapped legacy rejection types make streams unreadable (unverified).
   evidence: FolderEventReplay.cs:1522-1540,1620-1678.
+  status: done 2026-11-25
+  resolution: The three retained rejection types validate source scope in actor replay and both projection paths. Coverage checks ambiguous and mismatched hints, frozen v1 fixtures, and unmapped generic commands.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: ACL commands, /query and /admin/operational-index-metadata absent from OpenAPI v2 (unverified).
   evidence: confirm with Contract Spine owner whether DomainService-internal routes are in scope.

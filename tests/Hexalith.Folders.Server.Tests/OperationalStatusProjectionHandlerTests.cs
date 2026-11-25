@@ -170,6 +170,32 @@ public sealed class OperationalStatusProjectionHandlerTests
     }
 
     [Fact]
+    public async Task ForeignSpecializedRejectionCannotAdvanceOrRebuildOperationalState()
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        OperationalStatusTestStore store = new();
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store, scanner: OperationalStatusTestData.Scanner));
+        ProjectionRequest prefix = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
+        (await handler.ProjectAsync(prefix, "creation", token)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
+        ProjectionEventDto foreign = prefix.Events[0] with
+        {
+            SequenceNumber = 2,
+            GlobalPosition = 2,
+            MessageId = "foreign-rejection",
+            EventTypeName = typeof(DuplicateWorkspaceLockRejected).FullName!,
+            Payload = JsonSerializer.SerializeToUtf8Bytes(DuplicateWorkspaceLockRejected.Create(
+                FoldersServerModule.LockWorkspaceCommandType, "foreign-correlation", "task-a", "key-a")),
+        };
+        OperationalStatusTestData.NativeSource.Remember(prefix.TenantId, prefix.AggregateId, foreign);
+        (await handler.ProjectAsync(prefix with { Events = [foreign] }, "foreign", token)).Status
+            .ShouldBe(ProjectionDispatchStatus.Failed);
+        await Should.ThrowAsync<InvalidOperationException>(() =>
+            handler.PrepareRebuildAsync(prefix with { Events = [prefix.Events[0], foreign] }, "rebuild", token));
+        store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName,
+            OperationalStatusKeys.Checkpoint(prefix.TenantId, prefix.AggregateId)).ShouldNotBeNull().Sequence.ShouldBe(1);
+    }
+
+    [Fact]
     public void RetainedNameVersionAndClosedMissingVersionInventoryIsExhaustive()
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "event-evolution");

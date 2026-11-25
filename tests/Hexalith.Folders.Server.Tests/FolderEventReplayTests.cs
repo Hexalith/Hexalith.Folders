@@ -638,6 +638,77 @@ public sealed class FolderEventReplayTests
         }
     }
 
+    [Theory]
+    [InlineData(typeof(FolderCommandRejected), "folder-command-rejected-unstamped-v1.json")]
+    [InlineData(typeof(DuplicateWorkspaceLockRejected), "duplicate-workspace-lock-rejected-unstamped-v1.json")]
+    [InlineData(typeof(WorkspaceTransitionInvalidRejected), "workspace-transition-invalid-rejected-unstamped-v1.json")]
+    public void RetainedRejectionScopeMustMatchActorAndProjectionSource(Type rejectionType, string fixture)
+    {
+        ArgumentNullException.ThrowIfNull(rejectionType);
+        string eventName = rejectionType.FullName!;
+        byte[] bytes = File.ReadAllBytes(Fixture(fixture));
+        EventEnvelope envelope = Envelope(eventName, bytes, 1, null);
+        ProjectionEventDto item = new(eventName, bytes, "json", 1, OccurredAt, "different-correlation");
+        ProjectionRequest request = new("tenant-a", "folders", "folder-a", [item]);
+        DomainServiceCurrentState current = new(null,
+            [new EventEnvelope(envelope.Metadata with { CorrelationId = item.CorrelationId }, bytes, null)], 0, 1);
+
+        Should.Throw<InvalidOperationException>(() => Replay().FoldFolder(current, "tenant-a", "folder-a"))
+            .Message.ShouldBe("Folders rejection scope differs from its source.");
+        Should.Throw<InvalidOperationException>(() => FolderEventReplay.FoldFolder(request))
+            .Message.ShouldBe("Folders rejection scope differs from its source.");
+        Should.Throw<InvalidOperationException>(() => FolderEventReplay.IsOrganizationProjectionEvent(item, "tenant-a", "folder-a"))
+            .Message.ShouldBe("Folders rejection scope differs from its source.");
+    }
+
+    [Theory]
+    [InlineData("CorrelationId", "correlationId")]
+    [InlineData("correlationId", "correlationId")]
+    public void RejectionWithDuplicateScopeHintsIsUnreadable(string firstHint, string secondHint)
+    {
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes($$"""
+            {"code":"LockConflict","commandType":"Hexalith.Folders.Commands.LockWorkspace","{{firstHint}}":"foreign","{{secondHint}}":"correlation-a"}
+            """);
+        ProjectionEventDto item = new(typeof(DuplicateWorkspaceLockRejected).FullName!,
+            bytes, "json", 1, OccurredAt, "correlation-a");
+        ProjectionRequest request = new("tenant-a", "folders", "folder-a", [item]);
+
+        Exception? failure = Record.Exception(() => FolderEventReplay.FoldFolder(request));
+        (failure is InvalidOperationException or JsonException).ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("folder-a", false)]
+    [InlineData("tenant-a", true)]
+    public void RejectionForUnmappedCommandReplaysWithoutChangingState(string aggregateId, bool organization)
+    {
+        FolderCommandRejected rejection = FolderCommandRejected.Create(nameof(FolderResultCode.UnsupportedCommandType),
+            "retained_unknown_command", null, null, null, null, "correlation-a", null, null);
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(rejection);
+        string eventName = typeof(FolderCommandRejected).FullName!;
+        DomainServiceCurrentState current = new(null, [Envelope(eventName, bytes, 1, null, aggregateId)], 0, 1);
+        ProjectionEventDto item = new(eventName, bytes, "json", 1, OccurredAt, "correlation-a");
+        ProjectionRequest projected = new("tenant-a", "folders", aggregateId, [item]);
+
+        FolderEventReplay.IsOrganizationProjectionEvent(item, "tenant-a", aggregateId).ShouldBe(organization);
+        if (organization)
+        {
+            foreach (var state in new[] { Replay().FoldOrganization(current, "tenant-a", aggregateId),
+                FolderEventReplay.FoldOrganization(projected) })
+            {
+                state.IsInitialized.ShouldBeFalse();
+                state.Grants.ShouldBeEmpty();
+                state.ProviderBindings.ShouldBeEmpty();
+                state.IdempotencyFingerprints.ShouldBeEmpty();
+            }
+        }
+        else
+        {
+            Replay().FoldFolder(current, "tenant-a", aggregateId).ShouldBe(FolderState.Empty);
+            FolderEventReplay.FoldFolder(projected).ShouldBe(FolderState.Empty);
+        }
+    }
+
     [Fact]
     public void ProductionRegistryResolvesEveryFrozenDomainEventAndRejectsUnsupportedVersions()
     {

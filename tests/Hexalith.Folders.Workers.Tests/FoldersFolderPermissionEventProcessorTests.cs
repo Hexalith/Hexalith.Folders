@@ -59,6 +59,32 @@ public sealed class FoldersFolderPermissionEventProcessorTests
         }, TestContext.Current.CancellationToken));
     }
 
+    [Theory]
+    [InlineData("duplicate-workspace-lock-rejected-unstamped-v1.json", "DuplicateWorkspaceLockRejected")]
+    [InlineData("workspace-transition-invalid-rejected-unstamped-v1.json", "WorkspaceTransitionInvalidRejected")]
+    public async Task SpecializedRejectionMustMatchSourceCorrelationBeforeAdvancing(string fixture, string typeName)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        FixedUtcClock clock = new(DateTimeOffset.UtcNow);
+        CurrentHead heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel view = new(store, clock, heads, organization);
+        FoldersFolderPermissionEventProcessor processor = new(view);
+        EventStoreDomainEventEnvelope retained = new("rejected", "folder-a", "tenant-a",
+            "Hexalith.Folders.Server." + typeName, 1, clock.UtcNow, "correlation-a", "json",
+            File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution", fixture)))
+        { Domain = "folders", MetadataVersion = 1 };
+
+        await Should.ThrowAsync<InvalidOperationException>(() =>
+            processor.ProcessAsync(retained with { CorrelationId = "foreign-correlation" }, token));
+        const string key = "projection:folders:folder-permissions:tenant-a:folder-a";
+        (await store.GetAsync<FolderPermissionProjection>("statestore", key, token)).Value.ShouldBeNull();
+        await processor.ProcessAsync(retained, token);
+        (await store.GetAsync<FolderPermissionProjection>("statestore", key, token))
+            .Value.ShouldNotBeNull().LastSequence.ShouldBe(1);
+    }
+
     [Fact]
     public async Task RetainedFolderEventsAdvanceDurableAclAndConflictingReplayFailsClosed()
     {

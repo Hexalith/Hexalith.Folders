@@ -196,11 +196,12 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
         return request.Events.Select(item =>
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (item.EventTypeName == typeof(FolderCommandRejected).FullName
+            OperationalStatusEvent parsed = OperationalStatusEventReader.ReadEffective(item);
+            if (parsed.Event is null
                 && FoldersRejectionSource.ReadOwner(item.Payload, request.TenantId, request.AggregateId,
                     item.CorrelationId) != FoldersSourceOwnerKind.Folder)
                 throw new InvalidOperationException("Non-Folder rejection targets a folder operational source.");
-            return OperationalStatusEventReader.ReadEffective(item);
+            return parsed;
         }).ToArray();
     }
 }
