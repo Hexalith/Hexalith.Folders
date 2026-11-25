@@ -3206,6 +3206,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-1-17-restore-published-content-package-and-golden-lifecycle.md`
   summary: Restore explicit checked-in generation equality, canonical CLI/MCP error mappings and metadata-only evidence guidance in the compiled Epic 1 context.
   evidence: Review B1/B2/B3 verified these concrete constraints were omitted during cache regeneration while canonical contracts and gates remain intact; workflow routes agent-context changes to deferred work.
+  status: done 2026-11-25
+  resolution: The compiled Epic 1 context requires zero-diff SDK regeneration, records CLI exits 73 and 77 with their MCP failure kinds, and applies metadata-only exclusions to verification evidence.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md`
   summary: Measure production namespace-read latency after per-entry fresh authority checks (medium impact, unverified).
