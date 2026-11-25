@@ -46,7 +46,8 @@ public sealed class FolderEventReplayTests
         retained.Add(Envelope(typeof(BranchRefPolicyConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(withoutKey), retained.Count + 1));
         ProjectionRequest request = new("tenant-a", "folders", "folder-a", retained.Select(item =>
             new ProjectionEventDto(item.Metadata.EventTypeName, item.Payload, "json", item.Metadata.SequenceNumber,
-                OccurredAt, "correlation-a") { MetadataVersion = 1 }).ToArray());
+                OccurredAt, "correlation-a")
+            { MetadataVersion = 1 }).ToArray());
         var tail = new DomainServiceCurrentState(snapshot, retained.Skip(2).ToArray(), 2, retained.Count);
         FolderEventReplay replay = new(new([typeof(FolderCreated), typeof(BranchRefPolicyConfigured)], []));
 
