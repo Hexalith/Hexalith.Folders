@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -14,6 +15,22 @@ namespace Hexalith.Folders.Contracts.Tests.McpCli;
 
 public sealed class McpCliCatalogConformanceTests
 {
+    [Theory]
+    [InlineData("Q16")]
+    [InlineData("Q28")]
+    [InlineData("Q29")]
+    [InlineData("Q30")]
+    [InlineData("Q31")]
+    public void PagedQueryDescriptionsExposeTheDeclaredLimitRange(string id)
+    {
+        var operation = McpCliContractTestSupport.Operations.Single(item => item.Id == id);
+        PropertyInfo limit = operation.Type.GetProperty("Limit").ShouldNotBeNull();
+        RangeAttribute range = limit.GetCustomAttribute<RangeAttribute>().ShouldNotBeNull();
+        DescriptionAttribute description = limit.GetCustomAttribute<DescriptionAttribute>().ShouldNotBeNull();
+
+        description.Description.ShouldContain(FormattableString.Invariant($"from {range.Minimum} through {range.Maximum}"));
+    }
+
     [Fact]
     public void EligibleInventoryAndDecisionRecordEqualTheDecoratedSetExactly()
     {

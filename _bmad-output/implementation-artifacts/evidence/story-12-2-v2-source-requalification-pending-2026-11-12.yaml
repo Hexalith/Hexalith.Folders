@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 8544b564d7b63d463e56087c771ebe1a168c69b3944fb2689de1fc39dcc4d4a7
+candidate_set_sha256: b6a653a9bef430511cecc6ef5ba14e3d6a86b1007f4d7430ba1f5806a13b7a3f
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -662,8 +662,8 @@ artifacts:
     sha256: b85c4bf717fac8dec9dce5434145e37dd6452451cfd7d4c9844f566741d1e7bb
   - path: "src/Hexalith.Folders.Contracts/Queries/GetProviderSupportEvidence.cs"
     kind: file
-    bytes: 967
-    sha256: b9ce74a1f219d1875c2f2fd581e4c4ec699a490cc2a6fca647834d5bc51a9caa
+    bytes: 1107
+    sha256: d898eeccc07e42d67197e1491842146a94df9bb31c704834cc242254c9b829eb
   - path: "src/Hexalith.Folders.Contracts/Queries/GetReconciliationStatus.cs"
     kind: file
     bytes: 2747
@@ -702,20 +702,20 @@ artifacts:
     sha256: 26a60a088466d9a3c3e140dd4718418d5d9ad7743323097a42ff4621fbd545a7
   - path: "src/Hexalith.Folders.Contracts/Queries/ListAuditTrail.cs"
     kind: file
-    bytes: 1851
-    sha256: 349a0a80d1ff8a2c7bc962486389a545f84a1ec4c6a9a73a2e4e35a8bddac47c
+    bytes: 1951
+    sha256: 68e17f492c42424e709305faf8e034cea1696e01f22231e0fdca05b2ce18ab00
   - path: "src/Hexalith.Folders.Contracts/Queries/ListFolderAclEntries.cs"
     kind: file
-    bytes: 1873
-    sha256: 5c614d5978a47ef297fadc33e0d03b095049f0b518f283a1169e42da2e428be3
+    bytes: 1989
+    sha256: 51f6e81d861d627d895f63fbce95c7fec21d382a6ae3bc852ecd32bb6e02c272
   - path: "src/Hexalith.Folders.Contracts/Queries/ListFolderFiles.cs"
     kind: file
-    bytes: 3000
-    sha256: 0580cc5c259ded5fa1353889858d690d329c59d2666d7136d023bd54b5ecb293
+    bytes: 3098
+    sha256: b3ba5e068c06004bf6951146cbfa91ddbbae84db910c6cf223738ca1949b9f97
   - path: "src/Hexalith.Folders.Contracts/Queries/ListOperationTimeline.cs"
     kind: file
-    bytes: 1893
-    sha256: c1dda7193952b142424bb1da169eafbdd8fc9f510a5fc8847924b66a608e4465
+    bytes: 2019
+    sha256: b7b8db796c16546c235f8518189a87ffd65a926b08d1e54626dc307f6ea0247f
   - path: "src/Hexalith.Folders.Contracts/Queries/Models/GlobFolderFilesQueryFamily.cs"
     kind: file
     bytes: 527
@@ -4846,8 +4846,8 @@ artifacts:
     sha256: 2c9e207bd0e460b282df6f87c49aff15fe6329735a6b9fc3647ff1e6e52a2362
   - path: "tests/Hexalith.Folders.Contracts.Tests/McpCli/McpCliCatalogConformanceTests.cs"
     kind: file
-    bytes: 11094
-    sha256: b5cc5976245ff1fe915e64fe64a7b9803a27c57fc2353224980ccffcad05b56c
+    bytes: 11868
+    sha256: ff656c1cf4964d238a4fe79202f0456f12d475e58e0487e4db741130669fe322
   - path: "tests/Hexalith.Folders.Contracts.Tests/McpCli/McpCliContractTestSupport.cs"
     kind: file
     bytes: 19777

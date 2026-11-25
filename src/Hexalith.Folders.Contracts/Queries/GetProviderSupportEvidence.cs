@@ -7,7 +7,7 @@ namespace Hexalith.Folders.Contracts.Queries;
 
 /// <summary>Inspect provider-neutral support and capability evidence.</summary>
 /// <param name="Cursor">The cursor value.</param>
-/// <param name="Limit">The limit value.</param>
+/// <param name="Limit">Maximum number of provider support evidence entries to return, from 1 through 1000.</param>
 [Description("Inspect provider-neutral support and capability evidence.")]
 [HexalithQuery("Inspect provider-neutral support and capability evidence.", Domain = "folders",
     WireType = "Hexalith.Folders.Queries.GetProviderSupportEvidence",
@@ -15,5 +15,5 @@ namespace Hexalith.Folders.Contracts.Queries;
 public sealed record GetProviderSupportEvidence(
     [property: JsonPropertyName("cursor"), Description("The cursor."), StringLength(256, MinimumLength = 1)]
     string? Cursor = null,
-    [property: JsonPropertyName("limit"), Description("The limit."), Range(1, 1000)]
+    [property: JsonPropertyName("limit"), Description("Maximum number of provider support evidence entries to return, from 1 through 1000."), Range(1, 1000)]
     int? Limit = null);

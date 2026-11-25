@@ -8,7 +8,7 @@ namespace Hexalith.Folders.Contracts.Queries;
 /// <summary>List authorized audit trail metadata.</summary>
 /// <param name="FolderId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="Cursor">The cursor value.</param>
-/// <param name="Limit">The limit value.</param>
+/// <param name="Limit">Maximum number of audit entries to return, from 1 through 1000.</param>
 /// <param name="Filter">The filter value.</param>
 [Description("List authorized audit trail metadata.")]
 [HexalithQuery("List authorized audit trail metadata.", Domain = "folders",
@@ -19,7 +19,7 @@ public sealed record ListAuditTrail(
     string FolderId,
     [property: JsonPropertyName("cursor"), Description("The cursor."), StringLength(256, MinimumLength = 1)]
     string? Cursor = null,
-    [property: JsonPropertyName("limit"), Description("The limit."), Range(1, 1000)]
+    [property: JsonPropertyName("limit"), Description("Maximum number of audit entries to return, from 1 through 1000."), Range(1, 1000)]
     int? Limit = null,
     [property: JsonPropertyName("filter"), Description("The filter."), StringLength(256, MinimumLength = 1), RegularExpression("^[a-z][A-Za-z0-9_=.,*\\- ]{0,255}$")]
     string? Filter = null);

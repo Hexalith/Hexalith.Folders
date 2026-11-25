@@ -3328,6 +3328,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md`
   summary: Five decorated queries describe `limit` only as "The limit." while their `Range(1, 1000)` never reaches the McpCli-exported schema, so agents cannot see the maximum.
   evidence: `src/Hexalith.Folders.Contracts/Queries/GetProviderSupportEvidence.cs:18`, `ListAuditTrail.cs:22`, `ListFolderAclEntries.cs:22`, `ListFolderFiles.cs:27` and `ListOperationTimeline.cs:22` (Q16, Q28, Q29, Q30, Q31). McpCli `SchemaDeriver` ignores DataAnnotations; the same rationale drove the `SearchFolderIndexedFiles.Limit` fix in `b80c5c00`. Pre-existing since `b6338623`; a low, description-only correction for the next Contracts touch.
+  status: done 2026-11-25
+  resolution: The five Limit descriptions state the inclusive 1–1000 range. The catalog conformance test pairs each exported description with its existing Range attribute.
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-12-declare-folders-operations-in-decorated-mcpcli-contracts.md`
   summary: The "Run contract spine gates" step in `.github/workflows/contract-spine.yml:43` has no `timeout-minutes`, and the job has no job-level timeout, so a hung gate script runs to the 360-minute default.
   evidence: The step dates from `1efdb19c` (2026-05-17) and predates Story 5.12; every later gate step sets `timeout-minutes: 15`. The workflow is PD10 SHA-bound, so add the one-line timeout with the 12.2/1.17 reseal.
