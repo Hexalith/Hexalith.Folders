@@ -19,6 +19,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
         "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj",
+        "src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj",
         "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
         "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
         "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
@@ -74,6 +75,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
         "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj",
+        "src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj",
         "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
         "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
         "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
@@ -177,9 +179,9 @@ public sealed class ScaffoldContractTests
         string root = RepositoryRoot();
         Dictionary<string, string[]> references = BuildProjectReferenceMap(root);
 
-        AssertReferences(references, "Hexalith.Folders.Contracts", ["Hexalith.McpCli.Abstractions"]);
+        AssertReferences(references, "Hexalith.Folders.Contracts", ["Hexalith.EventStore.Contracts", "Hexalith.McpCli.Abstractions"]);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.EventStore.Client", "Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.EventStoreExtensions", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
@@ -192,8 +194,8 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Contracts"]);
-        // Trusted ACL admission reuses the domain validator and principal-kind parser.
-        AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.EventStore.Testing", "Hexalith.Folders"]);
+        AssertReferences(references, "Hexalith.Folders.EventStoreExtensions", ["Hexalith.EventStore.DomainService", "Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.EventStore.Testing", "Hexalith.Folders.EventStoreExtensions"]);
         // Raw XML includes the private source proof edge; keep it restricted to the exact Debug opt-in.
         XDocument eventStoreProject = XDocument.Load(Path.Combine(root, "src", "Hexalith.Folders.EventStore", "Hexalith.Folders.EventStore.csproj"));
         XElement privateTestingReference = DescendantsByLocalName(eventStoreProject, "ProjectReference")
