@@ -1,12 +1,8 @@
-using System.Text.RegularExpressions;
-
-using Hexalith.Folders.Authorization;
-
 namespace Hexalith.Folders.Aggregates.Organization;
 
-public static partial class OrganizationAclCommandValidator
+public static class OrganizationAclCommandValidator
 {
-    internal const int MaxIdentifierLength = 256;
+    internal const int MaxIdentifierLength = StreamNameSegment.MaxLength;
 
     public static OrganizationAclCommandValidationResult Validate(IOrganizationAclCommand command)
     {
@@ -111,12 +107,5 @@ public static partial class OrganizationAclCommandValidator
         => IsValidIdentifier(value)
             && !OrganizationProviderBindingSecretDetector.ContainsForbiddenValue(value);
 
-    internal static bool IsValidIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-            && value.Length <= MaxIdentifierLength
-            && (CanonicalIdentifierPattern().IsMatch(value)
-                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
-
-    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
-    private static partial Regex CanonicalIdentifierPattern();
+    internal static bool IsValidIdentifier(string? value) => StreamNameSegment.IsValid(value);
 }

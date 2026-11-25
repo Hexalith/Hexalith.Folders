@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: f625de35e8e1bcc7f8c442e3c35efad567313c0c43b8279ffc0c3b8634a0d682
+candidate_set_sha256: c59b7312525ebb826f5028f40f4926839df1a2f54139a65e387e2e4c5099f825
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1826,8 +1826,8 @@ artifacts:
     sha256: a0c9c4a8961b5c5e3255a9b9848ff7ce4aa4f86e0ef6d349cffae8200afb05ef
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs"
     kind: file
-    bytes: 44497
-    sha256: 35981aeb55f7fdfad28dc742565640fbfe1b82ba6a973616b4e7bf7f1f483906
+    bytes: 44112
+    sha256: 48b1f47caad47233b5ddbb0585a1a7da1cc35b6a8a2507ce66591f289f28b06d
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs"
     kind: file
     bytes: 761
@@ -2282,8 +2282,8 @@ artifacts:
     sha256: cf1a5ead704c31519afa610c59d6887e3d2f3dc518389095b619eb822dbdfbc7
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs"
     kind: file
-    bytes: 5344
-    sha256: 8dc5f3c91583552056d0d8176976bf2983a38d4feca0ad985a50da500578e198
+    bytes: 4941
+    sha256: b6a2b685162c4dffc34afb46668efda25045f15146fc368f1774350e9e0c008c
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs"
     kind: file
     bytes: 941
@@ -5870,8 +5870,8 @@ artifacts:
     sha256: 88f0e934dabc83e368dbeb5c8e141ce880a31b7c4c5d18dfef08f269b92e9a14
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs"
     kind: file
-    bytes: 5140
-    sha256: e409e621f8305712d3dd3c59584deef5315b103a836bd01ecb57502ca4751cd0
+    bytes: 6064
+    sha256: 883f7f77e03299bebad9f0fb8ff7594e22868d0d3b74ef1844af63857e47f748
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceCommitAggregateTests.cs"
     kind: file
     bytes: 14362

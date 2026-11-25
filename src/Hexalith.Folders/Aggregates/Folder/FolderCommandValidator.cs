@@ -4,14 +4,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Hashing;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
 public static partial class FolderCommandValidator
 {
-    internal const int MaxIdentifierLength = FolderStreamName.MaxSegmentLength;
+    internal const int MaxIdentifierLength = StreamNameSegment.MaxLength;
     internal const int MaxTagCount = 32;
     internal const int MaxBranchRefPatternCount = 16;
     private const int MaxDisplayNameLength = 128;
@@ -257,11 +256,7 @@ public static partial class FolderCommandValidator
         return FolderCommandValidationResult.Accepted(Fingerprint(create, tags), tags);
     }
 
-    internal static bool IsValidIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-            && value.Length <= MaxIdentifierLength
-            && (CanonicalIdentifierPattern().IsMatch(value)
-                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
+    internal static bool IsValidIdentifier(string? value) => StreamNameSegment.IsValid(value);
 
     internal static string CanonicalMetadata(string? value)
         => string.IsNullOrWhiteSpace(value)
@@ -966,9 +961,6 @@ public static partial class FolderCommandValidator
             || c == '‌' // zero-width non-joiner
             || c == '‍' // zero-width joiner
             || c == '﻿'; // BOM / zero-width no-break space
-
-    [GeneratedRegex("\\A[a-z0-9._-]+\\z", RegexOptions.CultureInvariant)]
-    private static partial Regex CanonicalIdentifierPattern();
 
     [GeneratedRegex("\\Abranch_ref_[a-z0-9_]{3,80}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex BranchRefTokenPattern();

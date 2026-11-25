@@ -10,6 +10,31 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderStreamShapeTests
 {
+    [Theory]
+    [InlineData(null, false)]
+    [InlineData("", false)]
+    [InlineData("scope.1_a-b", true)]
+    [InlineData("Scope-0000000001", true)]
+    [InlineData("Scope-1", false)]
+    [InlineData("scope:a", false)]
+    [InlineData("scope-a\n", false)]
+    public void CommandValidatorsShouldUseStreamSegmentGrammar(string? identifier, bool valid)
+    {
+        FolderCommandValidator.IsValidIdentifier(identifier).ShouldBe(valid);
+        OrganizationAclCommandValidator.IsValidIdentifier(identifier).ShouldBe(valid);
+    }
+
+    [Theory]
+    [InlineData(256, true)]
+    [InlineData(257, false)]
+    public void CommandValidatorsShouldEnforceTheSameStreamSegmentLength(int length, bool valid)
+    {
+        string identifier = new('a', length);
+
+        FolderCommandValidator.IsValidIdentifier(identifier).ShouldBe(valid);
+        OrganizationAclCommandValidator.IsValidIdentifier(identifier).ShouldBe(valid);
+    }
+
     [Fact]
     public void StreamNameShouldUseAuthoritativeTenantAndOpaqueFolderId()
     {

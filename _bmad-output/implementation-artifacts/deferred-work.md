@@ -3154,6 +3154,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: Both command validators keep their own copies of the stream-segment grammar instead of delegating to `StreamNameSegment.IsValid`.
   evidence: Pre-existing. Both `FolderCommandValidator.IsValidIdentifier` (`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:254`) and `OrganizationAclCommandValidator.IsValidIdentifier` (`src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs:104`) repeat the blank check, the length limit, `\A[a-z0-9._-]+\z` and the opaque fallback. The Organization `MaxIdentifierLength` is a bare `256`, not tied to `StreamNameSegment.MaxLength`. If either limit changes, the validator and the stream name stop agreeing. Story 11.5 deliberately shared only the two stream records.
+  status: done 2026-11-25
+  resolution: Folder and organization command validators use StreamNameSegment.IsValid and its length limit. Boundary tests cover canonical and opaque forms, invalid segments and maximum length.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-5-consolidate-domain-and-provider-helper-duplication.md`
   summary: Unverified (medium if real). Readiness mapping turns a provider rate limit into `ProviderUnavailable` for branch-ref-policy configuration and repository-backed creation, but into `ProviderRateLimited` for repository binding, commit and workspace preparation.
