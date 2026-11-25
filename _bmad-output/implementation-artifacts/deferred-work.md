@@ -2954,6 +2954,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 
 - Resolved 2026-10-15: Production Workers composition now asserts that `IReadModelConditionalEraser` resolves in `ActualWorkersHostUsesDurableTenantAndPermissionStores`; the complete Workers suite passed 134/134. This proves real-host DI composition, while route erasure still uses a test double and makes no live backend ETag claim.
 - `folders.events` permission gate may return 500 for unknown/benign event types and non-idempotent redeliveries, causing 10 retries on a `concurrency: 1` consumer. Unverified medium; settle by checking gate behaviour for an unknown type and for an envelope at `sequence <= LastSequence`.
+  status: done 2026-11-25
+  resolution: An authenticated Workers route test pins success for a known permission-neutral event and its exact redelivery, and retryable failure for an unknown type or conflicting redelivery. Both latest and older exact redeliveries preserve the sequence and ETag. The permission gate deliberately retains the configured retries for invalid deliveries. The later dead-letter sequence-gap item (L3051 at fafdb951) tracks recovery.
 - Mutation baseline read forced to `WaitForCatchUp=false` may skip the bounded wait when only the baseline row is stale. Unverified medium (fail-closed 503); settle with a stale-baseline/fresh-folder test.
 
 

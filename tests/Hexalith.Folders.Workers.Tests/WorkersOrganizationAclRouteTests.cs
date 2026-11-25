@@ -28,6 +28,56 @@ namespace Hexalith.Folders.Workers.Tests;
 
 public sealed class WorkersOrganizationAclRouteTests
 {
+    [Fact]
+    public async Task PermissionNeutralEventAndExactRedeliverySucceedWhileInvalidDeliveriesLeaveTheRowUnchanged()
+    {
+        const string key = "projection:folders:folder-permissions:tenant-a:folder-a";
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore store = new();
+        PermissionProjectionFailureLoggerProvider logs = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store, logs).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        FolderCreated created = OperationalStatusTestData.Created() with { OccurredAt = now };
+        EventStoreDomainEventEnvelope initial = Envelope("folder-created", 1, created) with { AggregateId = "folder-a" };
+        using (HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events",
+            initial, token))
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        BranchRefPolicyConfigured policy = new("tenant-a", "tenant-a", "folder-a", "binding-a", "policy-a", "main",
+            ["main"], [], "user-a", "correlation-a", "task-a", "policy-key", "policy-fingerprint", now);
+        EventStoreDomainEventEnvelope neutral = Envelope("policy-configured", 2, policy) with { AggregateId = "folder-a" };
+        using (HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", neutral, token))
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        ReadModelEntry<FolderPermissionProjection> applied = await store.GetAsync<FolderPermissionProjection>("statestore", key, token);
+        applied.Value.ShouldNotBeNull().LastSequence.ShouldBe(2);
+        applied.Value.IsCreated.ShouldBeTrue();
+        applied.Value.Overrides.ShouldBeEmpty();
+
+        var deliveries = new[]
+        {
+            (neutral, HttpStatusCode.OK),
+            (initial, HttpStatusCode.OK),
+            (neutral with { MessageId = "conflicting-policy" }, HttpStatusCode.InternalServerError),
+            (Envelope("unknown-event", 3, new { }) with { AggregateId = "folder-a", EventTypeName = "Example.UnknownFolderEvent" },
+                HttpStatusCode.InternalServerError),
+        };
+        foreach ((EventStoreDomainEventEnvelope delivery, HttpStatusCode expected) in deliveries)
+        {
+            using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", delivery, token);
+            response.StatusCode.ShouldBe(expected);
+            ReadModelEntry<FolderPermissionProjection> current = await store.GetAsync<FolderPermissionProjection>("statestore", key, token);
+            current.ETag.ShouldBe(applied.ETag);
+            current.Value.ShouldNotBeNull().LastSequence.ShouldBe(2);
+        }
+        logs.Entries.Select(entry => entry.Fields["Category"]).ShouldBe(new[] { "folder_permission_failed", "folder_permission_failed" });
+
+        await app.StopAsync(token);
+    }
+
     [Theory]
     [InlineData("FolderCommandRejected", "Accepted")]
     [InlineData("FolderCommandRejected", "Created")]
