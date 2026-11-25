@@ -19,16 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "env PROJECT_ROOT=/home/administrator/projects/hexalith/folders /home/administrator/projects/hexalith/folders/.claude/skills/bmad-story-automator/scripts/story-automator stop-hook",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/administrator/.local/bin/bmad-loop relay Stop"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.bmad-loop/bmad_loop_hook.py\" Stop"
           }
         ]
       }
@@ -38,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/administrator/.local/bin/bmad-loop relay SessionStart"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.bmad-loop/bmad_loop_hook.py\" SessionStart"
           }
         ]
       }
@@ -48,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/administrator/.local/bin/bmad-loop relay SessionEnd"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.bmad-loop/bmad_loop_hook.py\" SessionEnd"
           }
         ]
       }
@@ -58,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/administrator/.local/bin/bmad-loop relay PreCompact"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.bmad-loop/bmad_loop_hook.py\" PreCompact"
           }
         ]
       }
@@ -68,7 +59,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/administrator/.local/bin/bmad-loop relay Notification"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.bmad-loop/bmad_loop_hook.py\" Notification"
           }
         ]
       }

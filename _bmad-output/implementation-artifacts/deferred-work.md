@@ -2970,6 +2970,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Make the existing Claude hook executable and project-root paths portable across checkouts.
   evidence: `.claude/settings.json` invokes `/home/administrator/.local/bin/bmad-loop` and another absolute workspace path. These predate this continuation and fail on other machines; the correction belongs to agent configuration, which this workflow defers.
+  status: done 2026-11-25
+  resolution: Claude invokes the tracked BMAD relay through its quoted project directory. All five events passed a disposable test from a different working directory and a checkout path containing spaces. The deleted story-automator hook was removed.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-4.md`
   summary: Include the pre-existing dirty central package configuration in the Story 12.1 verification environment record.
