@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 50d4d7ed025c42f6f09c0c89dc1d0879203d15060e7d51576e7e6e616ac1ea21
+candidate_set_sha256: ee185e2ec12c00439e565a1701862e9c9ddae344b197894db6dff30af9f616c6
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4630,12 +4630,12 @@ artifacts:
     sha256: ad78cb812bd04d1a447582b7d389676d3e2b8b67b94b209ede1f0a331073bfb3
   - path: "src/shared/AdapterCore/MetadataOnlyContractResolver.cs"
     kind: file
-    bytes: 964
-    sha256: febb501cba7668766b4786ac9e9e4032ed51d1b1de8eb3c50ff335c6b738d6b8
+    bytes: 1110
+    sha256: fba33685472abf2aa4d7483030be824dc4a7338b4c6425a95e190a29e664f039
   - path: "src/shared/AdapterCore/MetadataOnlyJson.cs"
     kind: file
-    bytes: 762
-    sha256: dc194d862c4cdb53bc35c772d5aae49234c0498d4745b4e27e5c41ee22499726
+    bytes: 1323
+    sha256: 2da0a346e2535d89f732b9eeff96fb2dcd7aca640aafcebf53c4ad2f04d75f33
   - path: "src/shared/AdapterCore/MutationSourcing.cs"
     kind: file
     bytes: 465

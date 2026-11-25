@@ -15,11 +15,14 @@ internal sealed class MetadataOnlyContractResolver : DefaultContractResolver
         "streamDescriptor",
     };
 
+    /// <summary>Reports whether a wire property can carry content.</summary>
+    internal static bool IsContentProperty(string name) => ForbiddenPropertyNames.Contains(name);
+
     /// <inheritdoc/>
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
     {
         JsonProperty property = base.CreateProperty(member, memberSerialization);
-        if (property.PropertyName is not null && ForbiddenPropertyNames.Contains(property.PropertyName))
+        if (property.PropertyName is { } name && IsContentProperty(name))
         {
             property.ShouldSerialize = _ => false;
             property.Ignored = true;

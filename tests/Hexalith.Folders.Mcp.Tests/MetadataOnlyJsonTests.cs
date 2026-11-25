@@ -52,6 +52,28 @@ public sealed class MetadataOnlyJsonTests
     }
 
     [Fact]
+    public void DropsContentEntriesInDictionariesAndJsonTokensWithoutMutatingInput()
+    {
+        JObject child = JObject.Parse("""
+            {"streamDescriptor":"TOKEN_LEAK","children":[{"inlineContent":"ARRAY_LEAK","size":3}]}
+            """);
+        Dictionary<string, object> payload = new()
+        {
+            ["CONTENTBYTES"] = "DICTIONARY_LEAK",
+            ["child"] = child,
+            ["state"] = "available",
+        };
+
+        JObject output = JObject.Parse(MetadataOnlyJson.Serialize(payload));
+
+        JToken.DeepEquals(output, JObject.Parse("""
+            {"child":{"children":[{"size":3}]},"state":"available"}
+            """)).ShouldBeTrue();
+        child.ContainsKey("streamDescriptor").ShouldBeTrue();
+        payload.ContainsKey("CONTENTBYTES").ShouldBeTrue();
+    }
+
+    [Fact]
     public void SerializesPropertyNamesAsCamelCaseForWireParity()
     {
         string json = MetadataOnlyJson.Serialize(new { CorrelationId = "corr-1", DisplayName = "x" });

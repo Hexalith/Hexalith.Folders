@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Hexalith.Folders.AdapterCore;
@@ -8,7 +9,6 @@ internal static class MetadataOnlyJson
 {
     private static readonly JsonSerializerSettings Settings = new()
     {
-        Formatting = Formatting.Indented,
         NullValueHandling = NullValueHandling.Ignore,
         ContractResolver = new MetadataOnlyContractResolver
         {
@@ -17,5 +17,22 @@ internal static class MetadataOnlyJson
     };
 
     /// <summary>Serializes a value without content-bearing properties at any depth.</summary>
-    public static string Serialize(object value) => JsonConvert.SerializeObject(value, Settings);
+    public static string Serialize(object value)
+    {
+        using JTokenWriter writer = new();
+        JsonSerializer.Create(Settings).Serialize(writer, value);
+        JToken output = writer.Token!;
+
+        // Dictionary entries and JSON tokens bypass the reflected property resolver.
+        if (output is JContainer container)
+        {
+            foreach (JProperty property in container.Descendants().OfType<JProperty>()
+                .Where(property => MetadataOnlyContractResolver.IsContentProperty(property.Name)).ToArray())
+            {
+                property.Remove();
+            }
+        }
+
+        return output.ToString(Formatting.Indented);
+    }
 }
