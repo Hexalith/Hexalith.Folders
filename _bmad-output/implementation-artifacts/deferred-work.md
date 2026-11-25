@@ -3075,6 +3075,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Rejection classifier command sets are literals not tied to the command inventory; unknown types throw on every delivery.
   evidence: FoldersFolderPermissionEventProcessor.cs, FoldersOrganizationAclEventProcessor.cs; add inventory-parity test.
+  status: done 2026-11-25
+  resolution: The shared classifier derives folder command names from the source command catalog. The parity test checks all catalog and Server names against their correct actor and both wrong actor kinds. Existing unknown-command fallback is covered.
 
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-18, chunk 2 tests)
 

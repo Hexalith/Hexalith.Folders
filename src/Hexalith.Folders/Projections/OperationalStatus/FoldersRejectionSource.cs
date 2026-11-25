@@ -2,12 +2,15 @@ using System.Text.Json;
 
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Routing;
 
 namespace Hexalith.Folders.Projections.OperationalStatus;
 
 /// <summary>Validates retained rejection scope without requiring an unknown command to be implemented.</summary>
 public static class FoldersRejectionSource
 {
+    private const string ConfigureProviderBinding = "Hexalith.Folders.Commands.ConfigureProviderBinding";
+
     private static readonly HashSet<string> OrganizationCommands = new(StringComparer.Ordinal)
     {
         "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline",
@@ -15,16 +18,10 @@ public static class FoldersRejectionSource
         "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal",
     };
 
-    private static readonly HashSet<string> FolderCommands = new(StringComparer.Ordinal)
-    {
-        "Hexalith.Folders.Commands.CreateFolder", "Hexalith.Folders.Commands.GrantFolderAccess",
-        "Hexalith.Folders.Commands.RevokeFolderAccess", "Hexalith.Folders.Commands.ArchiveFolder",
-        "Hexalith.Folders.Commands.CreateRepositoryBackedFolder", "Hexalith.Folders.Commands.BindRepository",
-        "Hexalith.Folders.Commands.ConfigureBranchRefPolicy", "Hexalith.Folders.Commands.PrepareWorkspace",
-        "Hexalith.Folders.Commands.LockWorkspace", "Hexalith.Folders.Commands.ReleaseWorkspaceLock",
-        "Hexalith.Folders.Commands.MutateFiles", "Hexalith.Folders.Commands.ChangeNativeTask",
-        "Hexalith.Folders.Commands.AuthorizeWorkspaceContentErasure", "Hexalith.Folders.Commands.CommitWorkspace",
-    };
+    private static readonly HashSet<string> FolderCommands = FoldersCommandCatalog.Commands
+        .Select(static command => command.Route.MessageType!)
+        .Where(static name => name != ConfigureProviderBinding && !OrganizationCommands.Contains(name))
+        .ToHashSet(StringComparer.Ordinal);
 
     /// <summary>Derives owner kind from the envelope scope and checks known commands and any retained scope hints.</summary>
     /// <remarks>Pre-validation rejections can legitimately have null scope hints; none is used as authority.</remarks>
@@ -57,7 +54,7 @@ public static class FoldersRejectionSource
             || !IsRejectionCode(result) || code != result.ToString()
             || OrganizationCommands.Contains(command) && owner != FoldersSourceOwnerKind.Organization
             || FolderCommands.Contains(command) && owner != FoldersSourceOwnerKind.Folder
-            || command == "Hexalith.Folders.Commands.ConfigureProviderBinding" && owner != FoldersSourceOwnerKind.ProviderBinding)
+            || command == ConfigureProviderBinding && owner != FoldersSourceOwnerKind.ProviderBinding)
             throw new InvalidOperationException("Folders rejection command or owner is invalid.");
         RequireHint(root, "ManagedTenantId", "managedTenantId", tenantId);
         RequireHint(root, "OrganizationId", "organizationId", tenantId);

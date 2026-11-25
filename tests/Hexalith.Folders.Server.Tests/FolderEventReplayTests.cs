@@ -8,6 +8,8 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Projections.OperationalStatus;
+using Hexalith.Folders.Routing;
 using Hexalith.Folders.Server;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -733,8 +735,12 @@ public sealed class FolderEventReplayTests
         string[] commandTypes = typeof(FoldersServerModule).GetFields()
             .Where(field => field.IsLiteral && field.Name.EndsWith("CommandType", StringComparison.Ordinal))
             .Select(field => (string)field.GetRawConstantValue()!).ToArray();
-        commandTypes.Length.ShouldBe(18);
-        foreach (string type in commandTypes)
+        string[] catalogTypes = FoldersCommandCatalog.Commands.Select(command => command.Route.MessageType!).ToArray();
+        catalogTypes.Order(StringComparer.Ordinal).ShouldBe(commandTypes.Order(StringComparer.Ordinal));
+        string providerActor = ProviderBindingActorId.Create("binding-a");
+        string[] actors = ["folder-a", "tenant-a", providerActor];
+
+        foreach (string type in catalogTypes)
         {
             CommandEnvelope command = new("message", "tenant-a", "folders", "folder-a", type,
                 [], "correlation-a", null, "user-a", null);
@@ -745,9 +751,17 @@ public sealed class FolderEventReplayTests
                 JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt, "correlation-a");
             bool organization = mapping.ScopeKind == Hexalith.Folders.Server.Authorization.FolderCommandOperationScopeKind.OrganizationBaseline
                 && type != FoldersServerModule.CreateFolderCommandType;
-            string aggregate = type == FoldersServerModule.ConfigureProviderBindingCommandType ? ProviderBindingActorId.Create("binding-a")
+            string aggregate = type == FoldersServerModule.ConfigureProviderBindingCommandType ? providerActor
                 : organization ? "tenant-a" : "folder-a";
-            FolderEventReplay.IsOrganizationProjectionEvent(retained, "tenant-a", aggregate).ShouldBe(organization);
+            FoldersSourceOwnerKind expectedOwner = aggregate == providerActor ? FoldersSourceOwnerKind.ProviderBinding
+                : organization ? FoldersSourceOwnerKind.Organization : FoldersSourceOwnerKind.Folder;
+            FoldersRejectionSource.ReadOwner(retained.Payload, "tenant-a", aggregate, retained.CorrelationId).ShouldBe(expectedOwner);
+            foreach (string wrongActor in actors.Where(actor => actor != aggregate))
+            {
+                Should.Throw<InvalidOperationException>(() =>
+                    FoldersRejectionSource.ReadOwner(retained.Payload, "tenant-a", wrongActor, retained.CorrelationId))
+                    .Message.ShouldBe("Folders rejection command or owner is invalid.");
+            }
         }
     }
 
