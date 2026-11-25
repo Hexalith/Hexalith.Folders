@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 1ac77b92f145969aca3d7606050a0365e1064b3f948da9330153e3530009454e
+candidate_set_sha256: 08288657e9caf1211d90f628e59ed634a735a86b23a8301edb993d643d5a06a3
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -710,8 +710,8 @@ artifacts:
     sha256: 51f6e81d861d627d895f63fbce95c7fec21d382a6ae3bc852ecd32bb6e02c272
   - path: "src/Hexalith.Folders.Contracts/Queries/ListFolderFiles.cs"
     kind: file
-    bytes: 3098
-    sha256: b3ba5e068c06004bf6951146cbfa91ddbbae84db910c6cf223738ca1949b9f97
+    bytes: 3118
+    sha256: 1a4e5519e3ceaf03a8cb8c92d33ade7cb283e1bb0b1d8ce2d43ed18a81b10ec9
   - path: "src/Hexalith.Folders.Contracts/Queries/ListOperationTimeline.cs"
     kind: file
     bytes: 2019
@@ -4634,8 +4634,8 @@ artifacts:
     sha256: fba33685472abf2aa4d7483030be824dc4a7338b4c6425a95e190a29e664f039
   - path: "src/shared/AdapterCore/MetadataOnlyJson.cs"
     kind: file
-    bytes: 1323
-    sha256: 2da0a346e2535d89f732b9eeff96fb2dcd7aca640aafcebf53c4ad2f04d75f33
+    bytes: 3193
+    sha256: 579fa271bb9268225e921e232be10a426fbaed99ec495f8762afb9e10e89802f
   - path: "src/shared/AdapterCore/MutationSourcing.cs"
     kind: file
     bytes: 465
@@ -5658,8 +5658,8 @@ artifacts:
     sha256: c5a3d74072f21a90d52576ed9bdf6833dd7e6f2e3135f94169b1e1c100869706
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs"
     kind: file
-    bytes: 12261
-    sha256: eeda69561d49b649fcd080552f41987d340a74dfba55c9ae7a7881fe086086e2
+    bytes: 12366
+    sha256: 08a07dcc4f05a2fecd0cf1846cc512e049be42a6de5f381e9fdd340d64adb7e2
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentExpiringStore.cs"
     kind: file
     bytes: 2959

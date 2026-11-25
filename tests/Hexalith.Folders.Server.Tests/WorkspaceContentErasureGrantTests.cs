@@ -17,9 +17,10 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class WorkspaceContentErasureGrantTests
 {
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task ProcessorRequiresCreatedFolderBeforeIssuingErasureGrant(bool created)
+    [InlineData(false, null)]
+    [InlineData(true, null)]
+    [InlineData(true, "tenant-a")]
+    public async Task ProcessorRequiresCreatedFolderWithOrganizationBeforeIssuingErasureGrant(bool created, string? organizationId)
     {
         var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateSlimBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions { EnvironmentName = "Test" });
         builder.Services.AddFoldersServerTestDefaults();
@@ -33,7 +34,7 @@ public sealed class WorkspaceContentErasureGrantTests
         {
             IsCreated = true,
             ManagedTenantId = "tenant-a",
-            OrganizationId = "tenant-a",
+            OrganizationId = organizationId,
             FolderId = "folder-a",
         } : FolderState.Empty;
         long head = created ? 1 : 0;
@@ -49,7 +50,7 @@ public sealed class WorkspaceContentErasureGrantTests
 
         var result = await processor.ProcessAsync(command, current);
 
-        if (!created)
+        if (organizationId is null)
         {
             result.IsRejection.ShouldBeTrue();
             result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderCommandRejected>().Code.ShouldBe(nameof(FolderResultCode.FolderNotFound));

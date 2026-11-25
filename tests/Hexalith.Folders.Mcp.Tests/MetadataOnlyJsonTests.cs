@@ -57,6 +57,7 @@ public sealed class MetadataOnlyJsonTests
         JObject child = JObject.Parse("""
             {"streamDescriptor":"TOKEN_LEAK","children":[{"inlineContent":"ARRAY_LEAK","size":3}]}
             """);
+        child["raw"] = new JRaw("""{"contentBytes":"RAW_LEAK","state":"available"}""");
         Dictionary<string, object> payload = new()
         {
             ["CONTENTBYTES"] = "DICTIONARY_LEAK",
@@ -67,10 +68,42 @@ public sealed class MetadataOnlyJsonTests
         JObject output = JObject.Parse(MetadataOnlyJson.Serialize(payload));
 
         JToken.DeepEquals(output, JObject.Parse("""
-            {"child":{"children":[{"size":3}]},"state":"available"}
+            {"child":{"children":[{"size":3}],"raw":{"state":"available"}},"state":"available"}
             """)).ShouldBeTrue();
         child.ContainsKey("streamDescriptor").ShouldBeTrue();
+        child["raw"].ShouldBeOfType<JRaw>();
         payload.ContainsKey("CONTENTBYTES").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void RawMetadataRetainsNumericPrecisionAfterFiltering()
+    {
+        string output = MetadataOnlyJson.Serialize(new JRaw("""
+            {"fraction":0.1234567890123456789012345,"contentBytes":"RAW_LEAK"}
+            """));
+
+        output.ShouldContain("\"fraction\": 0.1234567890123456789012345");
+        output.ShouldNotContain("RAW_LEAK");
+    }
+
+    [Fact]
+    public void FiltersTheSdkWorkspaceTransitionAuditMap()
+    {
+        DateTimeOffset observedAt = new(2026, 11, 25, 12, 0, 0, TimeSpan.Zero);
+        var evidence = new Client.Generated.WorkspaceTransitionEvidence
+        {
+            AuditMetadata = new()
+            {
+                ["observedAt"] = observedAt,
+                ["inlineContent"] = observedAt,
+            },
+        };
+
+        JObject output = JObject.Parse(MetadataOnlyJson.Serialize(evidence));
+
+        var metadata = output["auditMetadata"].ShouldBeOfType<JObject>();
+        metadata.Properties().Select(property => property.Name).ShouldBe(["observedAt"]);
+        metadata["observedAt"]!.ToObject<DateTimeOffset>().ShouldBe(observedAt);
     }
 
     [Fact]

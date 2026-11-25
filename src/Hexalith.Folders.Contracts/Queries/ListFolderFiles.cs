@@ -10,7 +10,7 @@ namespace Hexalith.Folders.Contracts.Queries;
 /// <param name="WorkspaceId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="TaskId">Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.</param>
 /// <param name="Cursor">The cursor value.</param>
-/// <param name="Limit">Maximum number of folder files to return, from 1 through 1000.</param>
+/// <param name="Limit">Maximum number of workspace tree entries to return, from 1 through 1000.</param>
 [Description("List authorized workspace file metadata.")]
 [HexalithQuery("List authorized workspace file metadata.", Domain = "folders",
     WireType = "Hexalith.Folders.Queries.ListFolderFiles",
@@ -24,5 +24,5 @@ public sealed record ListFolderFiles(
     string? TaskId = null,
     [property: JsonPropertyName("cursor"), Description("The cursor."), StringLength(256, MinimumLength = 1)]
     string? Cursor = null,
-    [property: JsonPropertyName("limit"), Description("Maximum number of folder files to return, from 1 through 1000."), Range(1, 1000)]
+    [property: JsonPropertyName("limit"), Description("Maximum number of workspace tree entries to return, from 1 through 1000."), Range(1, 1000)]
     int? Limit = null);
