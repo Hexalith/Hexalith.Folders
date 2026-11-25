@@ -3044,6 +3044,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Reserved/tenant-id AggregateId on non-CreateFolder commands and fold exceptions escaping FolderDomainProcessor as 500 (unverified medium).
   evidence: FoldersDomainServiceRequestHandler.cs:2498-2511, FolderDomainProcessor.cs:112-130; probe with reserved-id commands.
+  status: done 2026-11-25
+  resolution: The production request handler rejects all three reserved actor scope classes for ArchiveFolder before parsing retained state, folder-permission lookup or processor dispatch. The suspected fold exception for reserved actors is ruled out. Genuine corruption on an admitted actor still takes the EventStore infrastructure failure path.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Projection folds skip rejection identity checks and unmapped legacy rejection types make streams unreadable (unverified).
   evidence: FolderEventReplay.cs:1522-1540,1620-1678.
@@ -3351,3 +3353,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Compare production tenant-access projection sizes and event growth with the deployed Dapr and state-store limits.
   evidence: The disposable capacity probe confirmed that a 15,000-message synthetic row exceeds the default 4 MiB transport ceiling and preserves the previous state. Deployment-specific limits and aggregate tenant event volumes are needed to estimate operational headroom.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25-3.md`
+  summary: Make the operational-status capacity regression deterministic during concurrent catch-up.
+  evidence: The complete core run failed the 10,001-position case once with OperationalStatusUnavailableException from RequireCurrentViewsAsync while two writers caught up the same rejection. A serialized rerun of OperationalStatusCapacityTests passed all nine cases. Reproduce the checkpoint and lifecycle-view read interleaving under two authorized writers before changing the SDK or the fail-closed contract.

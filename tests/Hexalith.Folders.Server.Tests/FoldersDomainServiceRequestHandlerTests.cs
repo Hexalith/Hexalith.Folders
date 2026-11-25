@@ -1,7 +1,10 @@
+using System.Text.Json;
+
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -50,6 +53,36 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         permission.LastRequest.ShouldNotBeNull();
         permission.LastRequest.OperationScope.ShouldBe("organization_baseline");
         permission.LastRequest.ActionToken.ShouldBe("configure_provider_binding");
+    }
+
+    [Theory]
+    [InlineData("tenant-a")]
+    [InlineData(FolderStreamName.ReservedOrganizationPermissionScope)]
+    [InlineData(ProviderBindingActorId.Prefix + "reserved")]
+    public async Task ArchiveCommandRejectsReservedActorBeforePermissionLookupAndReplay(string aggregateId)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), token);
+        CapturingFolderPermissionEvidenceProvider permission = new();
+        CountingDomainProcessor processor = new();
+        FoldersDomainServiceRequestHandler handler = new([processor], CreateAuthorizer(store, permission),
+            new FakeTenantContextAccessor("tenant-a", "user-a"), new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
+            new FolderCommandActionTokenMapper(), new ScopedLayeredFolderAuthorizationResultAccessor());
+        DomainServiceRequest original = CreateRequest("tenant-a", "user-a");
+        DomainServiceRequest archive = original with
+        {
+            Command = original.Command with { AggregateId = aggregateId, CommandType = FoldersServerModule.ArchiveFolderCommandType },
+            CurrentState = JsonSerializer.SerializeToElement(new { events = "invalid-retained-events", currentSequence = 1 }),
+        };
+
+        ProblemHttpResult problem = SafeDenialProblem(await handler.ProcessAsync(archive, token));
+
+        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
+        problem.ProblemDetails.Extensions["code"].ShouldBe(LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed);
+        problem.ProblemDetails.Extensions["retryable"].ShouldBe(false);
+        permission.LastRequest.ShouldBeNull();
+        processor.ProcessCalls.ShouldBe(0);
     }
 
     [Fact]
