@@ -13,7 +13,7 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "d417afd8454dac16824af17c2c0a787fe579c342a009e13b6985b147724d89a7";
     public const string GenerationConfigurationSha256 = "16973966e48c29f9bb046eda08be9b06bca5bc3e32ad407bff301041f4ddb2cd";
-    public const string GeneratedHelpersSha256 = "8793ead1ba862c974abe199c47f84a7a9121e80ac9d8d393be823e1e6df270d8";
+    public const string GeneratedHelpersSha256 = "2df72657f6402c4e4c7a46d6d8ee461948c6c8f855c15f70b44d006a23b48279";
     private const string GeneratedClientSha256 = "cbb73939e4731804cd53f5b58f8a29f49ffeb272e34cb62d71fc3c7a479cabc2";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
@@ -41,10 +41,10 @@ public static class HexalithFoldersGeneratedArtifacts
             string configuration = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
             inputPath = "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs";
             string helpers = File.ReadAllText(Path.Combine(repositoryRoot, inputPath));
-            string? malformed = DetectMalformedHelperConstant(helpers);
-            if (malformed is not null)
+            string? helperConstantError = GetHelperConstantError(helpers);
+            if (helperConstantError is not null)
             {
-                return new(false, malformed);
+                return new(false, helperConstantError);
             }
 
             if (!IsCurrent(spine, configuration, helpers))
@@ -77,31 +77,31 @@ public static class HexalithFoldersGeneratedArtifacts
     private static string NormalizeGeneratedHelperHash(string value) =>
         Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
-    // Detects a malformed `public const string GeneratedHelpersSha256 = "...";` constant so
-    // VerifyCurrentDetailed can emit a distinct "corrupted local file" diagnostic instead of
-    // the generic "content hashes do not match" message that misdirects operators to spine
-    // drift. Returns null when the constant is well-formed (64 hex chars or the placeholder).
-    // Round 4 (external) P8.
-    private static string? DetectMalformedHelperConstant(string helpers)
+    // The content hash normalizes the self-digest field. A checked-in file also has to
+    // declare the actual digest so normalization cannot hide drift in that field.
+    private static string? GetHelperConstantError(string helpers)
     {
+        const string recovery = "Delete the generated helper file and run dotnet msbuild src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj -t:GenerateHexalithFoldersIdempotencyHelpers from the repository root.";
         Match permissive = Regex.Match(NormalizeText(helpers), "^[ \\t]*public const string GeneratedHelpersSha256 = \"(?<value>[^\"]*)\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
         if (!permissive.Success)
         {
-            return "generated helpers file is missing the GeneratedHelpersSha256 constant declaration (regenerate via dotnet msbuild /t:GenerateHexalithFoldersIdempotencyHelpers)";
+            return $"generated helpers file is missing the GeneratedHelpersSha256 constant declaration. {recovery}";
         }
 
         string captured = permissive.Groups["value"].Value;
         if (captured == "__GENERATED_HELPERS_SHA256__")
         {
-            return null;
+            return $"generated helpers file still has the GeneratedHelpersSha256 placeholder. {recovery}";
         }
 
         if (captured.Length != 64 || !captured.All(static c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
         {
-            return $"generated helpers file has a malformed GeneratedHelpersSha256 constant (expected 64 hex characters, got {captured.Length}); regenerate via dotnet msbuild /t:GenerateHexalithFoldersIdempotencyHelpers";
+            return $"generated helpers file has a malformed GeneratedHelpersSha256 constant (expected 64 hex characters, got {captured.Length}). {recovery}";
         }
 
-        return null;
+        return captured == GeneratedHelpersSha256
+            ? null
+            : $"generated helpers file has a mismatched GeneratedHelpersSha256 constant. {recovery}";
     }
 
     private static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);

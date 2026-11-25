@@ -3343,6 +3343,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-sdk-verification.md`
   summary: Verify the helper's embedded self-digest value in the checkout verifier.
   evidence: The existing digest normalization treats any 64-digit hexadecimal declaration and the generation placeholder identically. The checkout verifier can require the expected declared value while preserving the three-argument content check.
+  status: done 2026-11-25
+  resolution: Checkout verification rejects a wrong embedded digest and the generation placeholder. The normalized three-argument content check retains its behavior. Test coverage changes the digest alone and checks both APIs.
 
 - source_spec: `spec-five-deferred-contract-fixture-verification.md`
   summary: Validate JSON Schema annotations that declare examples inside schema objects.

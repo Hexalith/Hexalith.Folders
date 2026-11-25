@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: b6a653a9bef430511cecc6ef5ba14e3d6a86b1007f4d7430ba1f5806a13b7a3f
+candidate_set_sha256: 1ac77b92f145969aca3d7606050a0365e1064b3f948da9330153e3530009454e
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -314,8 +314,8 @@ artifacts:
     sha256: cbb73939e4731804cd53f5b58f8a29f49ffeb272e34cb62d71fc3c7a479cabc2
   - path: "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs"
     kind: file
-    bytes: 98299
-    sha256: 42a14d09332da25b9de4b57f40ec8b63c808aacd0a08ee4100a0049214ded47d
+    bytes: 98407
+    sha256: 692b1c39c14772ebb59e319d6c16fed4a473d75441227cbb2be2f99c0e047afe
   - path: "src/Hexalith.Folders.Client/Generated/HexalithFoldersNativeClient.g.cs"
     kind: file
     bytes: 45593
@@ -330,8 +330,8 @@ artifacts:
     sha256: 81a519da2f64376e9907c0a215ade32db19b28a26242f3342e7b7516313e787f
   - path: "src/Hexalith.Folders.Client/Generation/Program.cs"
     kind: file
-    bytes: 60689
-    sha256: aea12d9690b32034ffc131f47f99fdeb77cfe4d55158c8de99529a42620f0060
+    bytes: 60797
+    sha256: 29c9f48683ddfb573a4b2062b9bc7b2986277b21b53126c9be9f4d482ce221ba
   - path: "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj"
     kind: file
     bytes: 407
@@ -4730,8 +4730,8 @@ artifacts:
     sha256: 3ace6926e949e35e0d55ce64e1dbd6b34a1cd686c3b696ce3de4b8bebb20ce4b
   - path: "tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs"
     kind: file
-    bytes: 123823
-    sha256: a3b7460274193fc54556357bfc1748c4205e193440e80a2628049f9ebf5e0dcf
+    bytes: 125183
+    sha256: 6c66ec1d908e738efb9244f32b414142ea0b3b2dc600a8b5fcea23417c39eeba
   - path: "tests/Hexalith.Folders.Client.Tests/FileUploadConvenienceTests.cs"
     kind: file
     bytes: 38433

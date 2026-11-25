@@ -515,6 +515,27 @@ Workspace_preparation_failed=50
                 HexalithFoldersGeneratedArtifacts.VerifyCurrent(symbolicRoot).ShouldBeTrue();
             }
 
+            string helperPath = Path.Combine(checkout, inputs[2]);
+            string helpers = File.ReadAllText(helperPath);
+            string expectedDigest = HexalithFoldersGeneratedArtifacts.GeneratedHelpersSha256;
+            string wrongDigest = (expectedDigest[0] == '0' ? "1" : "0") + expectedDigest[1..];
+            foreach ((string value, string diagnostic) in new[]
+            {
+                (wrongDigest, "mismatched GeneratedHelpersSha256 constant"),
+                ("__GENERATED_HELPERS_SHA256__", "GeneratedHelpersSha256 placeholder"),
+            })
+            {
+                string changed = helpers.Replace($"GeneratedHelpersSha256 = \"{expectedDigest}\"", $"GeneratedHelpersSha256 = \"{value}\"", StringComparison.Ordinal);
+                changed.ShouldNotBe(helpers);
+                File.WriteAllText(helperPath, changed);
+                var verification = HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(rootAlias);
+                verification.IsCurrent.ShouldBeFalse();
+                verification.Diagnostic.ShouldContain(diagnostic);
+                HexalithFoldersGeneratedArtifacts.IsCurrent(File.ReadAllText(Path.Combine(checkout, inputs[0])),
+                    File.ReadAllText(Path.Combine(checkout, inputs[1])), changed).ShouldBeTrue();
+            }
+
+            File.WriteAllText(helperPath, helpers);
             File.AppendAllText(client, "\r\n// controlled client drift");
             HexalithFoldersGeneratedArtifacts.VerifyCurrent(rootAlias).ShouldBeFalse();
             HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(rootAlias).Diagnostic
