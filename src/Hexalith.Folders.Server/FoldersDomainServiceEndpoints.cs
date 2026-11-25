@@ -344,45 +344,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-            if (idempotencyKey is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, ReadYourWrites, [folderId, workspaceId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports read_your_writes only.");
+                return envelopeFailure;
             }
 
             WorkspaceLockStatusQueryResult result = await handler.HandleAsync(
@@ -415,45 +379,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-            if (idempotencyKey is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, EventuallyConsistent, [folderId, workspaceId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports eventually_consistent only.");
+                return envelopeFailure;
             }
 
             WorkspaceLockStatusQueryResult result = await handler.HandleAsync(
@@ -486,44 +414,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, SnapshotPerTask, [folderId, workspaceId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports snapshot_per_task only.");
+                return envelopeFailure;
             }
 
             WorkspaceTransitionEvidenceQueryResult result = await handler.HandleAsync(
@@ -556,45 +449,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-            if (idempotencyKey is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, ReadYourWrites, [folderId, workspaceId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports read_your_writes only.");
+                return envelopeFailure;
             }
 
             WorkspaceStatusQueryResult result = await handler.HandleAsync(
@@ -626,12 +483,12 @@ public static partial class FoldersDomainServiceEndpoints
             =>
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
-            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+            IResult? envelopeFailure = ValidateReadQueryEnvelope(
                 httpContext,
                 correlationId,
                 null,
-                string.IsNullOrWhiteSpace(folderId) ? [taskId] : [taskId, folderId],
-                requireEventuallyConsistent: true);
+                EventuallyConsistent,
+                string.IsNullOrWhiteSpace(folderId) ? [taskId] : [taskId, folderId]);
             if (envelopeFailure is not null)
             {
                 return envelopeFailure;
@@ -735,45 +592,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-            if (idempotencyKey is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, ReadYourWrites, [folderId, workspaceId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports read_your_writes only.");
+                return envelopeFailure;
             }
 
             WorkspaceCleanupStatusQueryResult result = await handler.HandleAsync(
@@ -1131,12 +952,12 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+            IResult? envelopeFailure = ValidateReadQueryEnvelope(
                 httpContext,
                 correlationId,
                 taskId,
-                [folderId, workspaceId],
-                requireEventuallyConsistent: true);
+                EventuallyConsistent,
+                [folderId, workspaceId]);
             if (envelopeFailure is not null)
             {
                 return envelopeFailure;
@@ -1190,12 +1011,12 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+            IResult? envelopeFailure = ValidateReadQueryEnvelope(
                 httpContext,
                 correlationId,
                 taskId,
-                [folderId],
-                requireEventuallyConsistent: true);
+                EventuallyConsistent,
+                [folderId]);
             if (envelopeFailure is not null)
             {
                 return envelopeFailure;
@@ -1229,31 +1050,10 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-            if (idempotencyKey is not null)
+            if ((ValidateReadIdempotency(httpContext, correlationId, taskId)
+                ?? ValidateReadFreshness(httpContext, correlationId, taskId, EventuallyConsistent)) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports eventually_consistent only.");
+                return envelopeFailure;
             }
 
             BranchRefPolicyQueryResult result = await handler.HandleAsync(
@@ -1288,9 +1088,7 @@ public static partial class FoldersDomainServiceEndpoints
             // The operation declares x-hexalith-read-consistency.class: eventually_consistent.
             // A caller-supplied stricter class is silently invalid; surface as 400 instead of
             // silently downgrading to eventually_consistent.
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            if (FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, EventuallyConsistent))
             {
                 return Results.Problem(
                     type: "https://hexalith.dev/errors/folders/validation_error",
@@ -1341,44 +1139,9 @@ public static partial class FoldersDomainServiceEndpoints
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, EventuallyConsistent, [folderId, repositoryBindingId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || !FolderCanonicalSegmentIdentifier.IsValid(repositoryBindingId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId,
-                    message: "Operation supports eventually_consistent only.");
+                return envelopeFailure;
             }
 
             FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
@@ -1408,42 +1171,9 @@ public static partial class FoldersDomainServiceEndpoints
             =>
         {
             string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
-            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
+            if (ValidateReadQueryEnvelope(httpContext, correlationId, null, EventuallyConsistent, [folderId]) is { } envelopeFailure)
             {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "idempotency_key_not_allowed",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: null,
-                    message: "Idempotency-Key is not accepted on read operations.");
-            }
-
-            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId)))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "validation_error",
-                    retryable: false,
-                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                    taskId: null);
-            }
-
-            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-            if (requestedFreshness is not null
-                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
-            {
-                return FolderProblemDetailsFactory.ForDomain(
-                    StatusCodes.Status400BadRequest,
-                    category: "validation_error",
-                    code: "unsupported_read_consistency",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: null,
-                    message: "Operation supports eventually_consistent only.");
+                return envelopeFailure;
             }
 
             string? cursor = FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
@@ -4382,45 +4112,9 @@ public static partial class FoldersDomainServiceEndpoints
         string? correlationId,
         string? taskId)
     {
-        string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
-        if (idempotencyKey is not null)
+        if (ValidateReadQueryEnvelope(httpContext, correlationId, taskId, SnapshotPerTask, [folderId, workspaceId]) is { } envelopeFailure)
         {
-            return FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "idempotency_key_not_allowed",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId,
-                message: "Idempotency-Key is not accepted on read operations.");
-        }
-
-        if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
-            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
-        {
-            return FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
-        }
-
-        string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (requestedFreshness is not null
-            && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
-        {
-            return FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "unsupported_read_consistency",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId,
-                message: "Operation supports snapshot_per_task only.");
+            return envelopeFailure;
         }
 
         string? limit = FolderHttpHeaderReader.ReadQuery(httpContext, "limit");
@@ -5417,12 +5111,12 @@ public static partial class FoldersDomainServiceEndpoints
         string[] identifiers = operationId is null
             ? [folderId, workspaceId, secondaryId ?? string.Empty]
             : [folderId, workspaceId, operationId];
-        IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+        IResult? envelopeFailure = ValidateReadQueryEnvelope(
             httpContext,
             correlationId,
             taskId,
-            identifiers,
-            requireEventuallyConsistent: true);
+            EventuallyConsistent,
+            identifiers);
         if (envelopeFailure is not null)
         {
             return envelopeFailure;
@@ -5761,55 +5455,56 @@ public static partial class FoldersDomainServiceEndpoints
                 taskId: null),
         };
 
-    private static IResult? ValidateEvidenceQueryEnvelope(
+    private static IResult? ValidateReadQueryEnvelope(
         HttpContext httpContext,
         string? correlationId,
         string? taskId,
-        IReadOnlyList<string> identifiers,
-        bool requireEventuallyConsistent)
+        string expectedFreshness,
+        IReadOnlyList<string> identifiers)
     {
-        if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
+        if (ValidateReadIdempotency(httpContext, correlationId, taskId) is { } idempotencyFailure)
         {
-            return FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "idempotency_key_not_allowed",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId,
-                message: "Idempotency-Key is not accepted on read operations.");
+            return idempotencyFailure;
         }
 
         if (identifiers.Any(static identifier => !FolderCanonicalSegmentIdentifier.IsValid(identifier))
-            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
+            || !FolderHttpHeaderReader.AreValidReadHeaderIdentifiers(correlationId, taskId))
         {
             return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
+                correlationId: FolderProblemDetailsFactory.SafeSegmentId(correlationId, redactSensitive: false),
+                taskId: FolderProblemDetailsFactory.SafeSegmentId(taskId, redactSensitive: false));
         }
 
-        string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        string expectedFreshness = requireEventuallyConsistent ? EventuallyConsistent : ReadYourWrites;
-        if (requestedFreshness is not null
-            && !string.Equals(requestedFreshness, expectedFreshness, StringComparison.Ordinal))
-        {
-            return FolderProblemDetailsFactory.ForDomain(
+        return ValidateReadFreshness(httpContext, correlationId, taskId, expectedFreshness);
+    }
+
+    private static IResult? ValidateReadIdempotency(HttpContext httpContext, string? correlationId, string? taskId)
+        => FolderHttpHeaderReader.HasReadIdempotencyKey(httpContext)
+            ? FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "Idempotency-Key is not accepted on read operations.")
+            : null;
+
+    private static IResult? ValidateReadFreshness(HttpContext httpContext, string? correlationId, string? taskId, string expectedFreshness)
+        => FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, expectedFreshness)
+            ? FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_read_consistency",
                 retryable: false,
                 correlationId: correlationId,
                 taskId: taskId,
-                message: $"Operation supports {expectedFreshness} only.");
-        }
-
-        return null;
-    }
+                message: $"Operation supports {expectedFreshness} only.")
+            : null;
 
     private static IResult TenantAccessDenialToProblem(TenantAccessAuthorizationResult denial, string? correlationId)
         => denial.Outcome switch

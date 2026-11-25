@@ -5,7 +5,6 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
@@ -335,20 +334,19 @@ public static class OpsConsoleDiagnosticsEndpoints
     private static bool TryReadOpPreflight(HttpContext httpContext, out string? correlationId, out IResult? problem)
     {
         problem = null;
-        if (!TryReadCorrelation(httpContext, out correlationId))
+        if (!FolderHttpHeaderReader.TryReadDiagnosticCorrelation(httpContext, out correlationId))
         {
             problem = FolderProblemDetailsFactory.ForOpsConsole(StatusCodes.Status400BadRequest, "validation_error", "unsafe_correlation_id", retryable: false, correlationId: null);
             return false;
         }
 
-        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+        if (FolderHttpHeaderReader.HasReadIdempotencyKey(httpContext, includeEmpty: true))
         {
             problem = FolderProblemDetailsFactory.ForOpsConsole(StatusCodes.Status400BadRequest, "validation_error", "idempotency_key_not_allowed", retryable: false, correlationId);
             return false;
         }
 
-        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
+        if (FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, EventuallyConsistent))
         {
             problem = FolderProblemDetailsFactory.ForOpsConsole(StatusCodes.Status400BadRequest, "validation_error", "unsupported_read_consistency", retryable: false, correlationId);
             return false;
@@ -409,36 +407,6 @@ public static class OpsConsoleDiagnosticsEndpoints
         }
 
         httpContext.Response.Headers[FreshnessHeaderName] = freshness;
-    }
-
-    private static bool TryReadCorrelation(HttpContext httpContext, out string? correlationId)
-    {
-        correlationId = null;
-        if (!httpContext.Request.Headers.TryGetValue(CorrelationHeaderName, out StringValues values))
-        {
-            return true;
-        }
-
-        foreach (string? raw in values)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            string candidate = raw.Trim();
-            if (!FolderHttpHeaderReader.IsSafeHeaderValue(candidate)
-                || !FolderCanonicalPathIdentifier.IsValid(candidate)
-                || FolderSensitiveDiagnosticDetector.IsSensitive(candidate))
-            {
-                return false;
-            }
-
-            correlationId = candidate;
-            return true;
-        }
-
-        return true;
     }
 
 }

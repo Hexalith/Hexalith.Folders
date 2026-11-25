@@ -8,7 +8,6 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
@@ -96,37 +95,9 @@ public static partial class ProviderReadinessEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
+        if (ValidateReadEnvelope(httpContext, out string? correlationId) is { } envelopeFailure)
         {
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "unsafe_correlation_id",
-                retryable: false,
-                correlationId: null);
-        }
-
-        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
-        {
-            // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
-            // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "idempotency_key_not_allowed",
-                retryable: false,
-                correlationId);
-        }
-
-        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
-        {
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "unsupported_read_consistency",
-                retryable: false,
-                correlationId);
+            return envelopeFailure;
         }
 
         if (!FolderCanonicalPathIdentifier.IsValid(providerBindingRef))
@@ -223,37 +194,9 @@ public static partial class ProviderReadinessEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
+        if (ValidateReadEnvelope(httpContext, out string? correlationId) is { } envelopeFailure)
         {
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "unsafe_correlation_id",
-                retryable: false,
-                correlationId: null);
-        }
-
-        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
-        {
-            // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
-            // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "idempotency_key_not_allowed",
-                retryable: false,
-                correlationId);
-        }
-
-        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
-        {
-            return FolderProblemDetailsFactory.ForProviderReadiness(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "unsupported_read_consistency",
-                retryable: false,
-                correlationId);
+            return envelopeFailure;
         }
 
         if (!TryReadSupportEvidencePagination(httpContext, out string? cursor, out int limit))
@@ -280,6 +223,41 @@ public static partial class ProviderReadinessEndpoints
         return ToHttpResult(httpContext, result);
     }
 
+    private static IResult? ValidateReadEnvelope(HttpContext httpContext, out string? correlationId)
+    {
+        if (!FolderHttpHeaderReader.TryReadDiagnosticCorrelation(httpContext, out correlationId))
+        {
+            return FolderProblemDetailsFactory.ForProviderReadiness(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsafe_correlation_id",
+                retryable: false,
+                correlationId: null);
+        }
+
+        if (FolderHttpHeaderReader.HasReadIdempotencyKey(httpContext, includeEmpty: true))
+        {
+            return FolderProblemDetailsFactory.ForProviderReadiness(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId);
+        }
+
+        if (FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, EventuallyConsistent))
+        {
+            return FolderProblemDetailsFactory.ForProviderReadiness(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsupported_read_consistency",
+                retryable: false,
+                correlationId);
+        }
+
+        return null;
+    }
+
     private static async Task<IResult> ValidateProviderReadinessAsync(
         HttpContext httpContext,
         ProviderReadinessValidationService service,
@@ -293,7 +271,7 @@ public static partial class ProviderReadinessEndpoints
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
         string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
-        if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
+        if (FolderHttpHeaderReader.HasReadIdempotencyKey(httpContext))
         {
             // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
             // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
@@ -305,8 +283,7 @@ public static partial class ProviderReadinessEndpoints
                 correlationId);
         }
 
-        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (freshness is not null && !string.Equals(freshness, SnapshotPerTask, StringComparison.Ordinal))
+        if (FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, SnapshotPerTask))
         {
             return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
@@ -577,36 +554,6 @@ public static partial class ProviderReadinessEndpoints
         }
 
         limit = Math.Min(requestedLimit, MaxSupportEvidenceLimit);
-        return true;
-    }
-
-    private static bool TryReadSupportEvidenceCorrelation(HttpContext httpContext, out string? correlationId)
-    {
-        correlationId = null;
-        if (!httpContext.Request.Headers.TryGetValue("X-Correlation-Id", out StringValues values))
-        {
-            return true;
-        }
-
-        foreach (string? raw in values)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            string candidate = raw.Trim();
-            if (!FolderHttpHeaderReader.IsSafeHeaderValue(candidate)
-                || !FolderCanonicalPathIdentifier.IsValid(candidate)
-                || FolderSensitiveDiagnosticDetector.IsSensitive(candidate))
-            {
-                return false;
-            }
-
-            correlationId = candidate;
-            return true;
-        }
-
         return true;
     }
 

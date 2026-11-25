@@ -9,6 +9,58 @@ namespace Hexalith.Folders.Server;
 /// </summary>
 internal static class FolderHttpHeaderReader
 {
+    /// <summary>Returns whether a read operation must reject the idempotency header.</summary>
+    /// <param name="httpContext">The current HTTP context.</param>
+    /// <param name="includeEmpty">Whether the route rejects even an empty or unusable header.</param>
+    /// <returns>Whether the route's configured header check found an idempotency key.</returns>
+    public static bool HasReadIdempotencyKey(HttpContext httpContext, bool includeEmpty = false)
+        => includeEmpty
+            ? httpContext.Request.Headers.ContainsKey("Idempotency-Key")
+            : ReadHeader(httpContext, "Idempotency-Key") is not null;
+
+    /// <summary>Returns whether the request supplies a freshness class other than the route's accepted class.</summary>
+    /// <param name="httpContext">The current HTTP context.</param>
+    /// <param name="expectedFreshness">The route's accepted freshness class.</param>
+    /// <returns>Whether the first usable freshness header differs from the accepted class.</returns>
+    public static bool HasUnsupportedReadFreshness(HttpContext httpContext, string expectedFreshness)
+        => ReadHeader(httpContext, "X-Hexalith-Freshness") is { } requestedFreshness
+            && !string.Equals(requestedFreshness, expectedFreshness, StringComparison.Ordinal);
+
+    /// <summary>Validates any correlation or task identifiers supplied for a canonical-segment read.</summary>
+    /// <param name="correlationId">The optional correlation identifier.</param>
+    /// <param name="taskId">The optional task identifier.</param>
+    /// <returns>Whether both identifiers are absent or canonical.</returns>
+    public static bool AreValidReadHeaderIdentifiers(string? correlationId, string? taskId)
+        => (correlationId is null || FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+            && (taskId is null || FolderCanonicalSegmentIdentifier.IsValid(taskId));
+
+    /// <summary>Reads the optional diagnostic correlation identifier, declining an unsafe first nonblank value.</summary>
+    /// <param name="httpContext">The current HTTP context.</param>
+    /// <param name="correlationId">The trimmed identifier when present and safe.</param>
+    /// <returns>Whether the header is absent, blank, or safe to echo.</returns>
+    public static bool TryReadDiagnosticCorrelation(HttpContext httpContext, out string? correlationId)
+    {
+        correlationId = null;
+        foreach (string? raw in httpContext.Request.Headers["X-Correlation-Id"])
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                continue;
+            }
+
+            string candidate = raw.Trim();
+            if (!IsSafeHeaderValue(candidate) || !FolderCanonicalPathIdentifier.IsSafeDiagnosticId(candidate))
+            {
+                return false;
+            }
+
+            correlationId = candidate;
+            return true;
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Returns the first non-empty safe value for <paramref name="name"/> from the request headers.
     /// </summary>

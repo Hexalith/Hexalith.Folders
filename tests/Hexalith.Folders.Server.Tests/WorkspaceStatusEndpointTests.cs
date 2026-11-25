@@ -187,6 +187,30 @@ public sealed class WorkspaceStatusEndpointTests
     }
 
     [Fact]
+    public async Task GetWorkspaceStatusShouldRejectABlankKeyBeforeOtherInvalidHeaders()
+    {
+        CountingWorkspaceStatusReadModel readModel = new(StatusReadModel());
+        await using WebApplication app = BuildApp(readModel);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateStatusRequest();
+        request.Headers.Remove("X-Correlation-Id");
+        request.Headers.Add("X-Correlation-Id", "installation-reference");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
+        request.Headers.TryAddWithoutValidation("Idempotency-Key", " ").ShouldBeTrue();
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        using JsonDocument problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        problem.RootElement.GetProperty("code").GetString().ShouldBe("idempotency_key_not_allowed");
+        problem.RootElement.GetProperty("correlationId").ValueKind.ShouldBe(JsonValueKind.Null);
+        problem.RootElement.TryGetProperty("taskId", out _).ShouldBeFalse();
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task GetWorkspaceStatusShouldRejectUnsupportedFreshnessBeforeReadModelAccess()
     {
         CountingWorkspaceStatusReadModel readModel = new(StatusReadModel());

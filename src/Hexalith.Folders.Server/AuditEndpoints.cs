@@ -376,7 +376,7 @@ public static partial class AuditEndpoints
         string? taskId,
         string evidenceSource)
     {
-        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+        if (FolderHttpHeaderReader.HasReadIdempotencyKey(httpContext, includeEmpty: true))
         {
             return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
@@ -391,21 +391,19 @@ public static partial class AuditEndpoints
 
         if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
             || (extraIdentifier is not null && !FolderCanonicalSegmentIdentifier.IsValid(extraIdentifier))
-            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
-            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
+            || !FolderHttpHeaderReader.AreValidReadHeaderIdentifiers(correlationId, taskId))
         {
             return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
-                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null,
+                correlationId: FolderProblemDetailsFactory.SafeSegmentId(correlationId, redactSensitive: false),
+                taskId: FolderProblemDetailsFactory.SafeSegmentId(taskId, redactSensitive: false),
                 evidenceSource: evidenceSource);
         }
 
-        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
-        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
+        if (FolderHttpHeaderReader.HasUnsupportedReadFreshness(httpContext, EventuallyConsistent))
         {
             return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,

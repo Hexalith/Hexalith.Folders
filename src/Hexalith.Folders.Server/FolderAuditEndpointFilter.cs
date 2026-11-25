@@ -25,7 +25,7 @@ public sealed class FolderAuditEndpointFilter(
 
         string? endpointName = context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<IEndpointNameMetadata>()?.EndpointName;
         if (Pd10V2CandidateCompatibilitySeam.IsGeneratedReadOperation(endpointName)
-            && context.HttpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+            && FolderHttpHeaderReader.HasReadIdempotencyKey(context.HttpContext, includeEmpty: true))
         {
             string? correlationId = FolderProblemDetailsFactory.SafeSegmentId(
                 FolderHttpHeaderReader.ReadHeader(context.HttpContext, "X-Correlation-Id"),

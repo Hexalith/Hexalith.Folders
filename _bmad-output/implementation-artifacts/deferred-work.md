@@ -3140,6 +3140,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Server validation duplication remains beyond the 11.4 extraction list: the correlation-header readers and the inline read-envelope checks.
   evidence: Pre-existing. OpsConsole `TryReadCorrelation` (`OpsConsoleDiagnosticsEndpoints.cs:436`) and Provider `TryReadSupportEvidenceCorrelation` (`ProviderReadinessEndpoints.cs:595`) differ only in name. About ten Domain read handlers, plus the Audit, Provider and OpsConsole envelopes, inline the Idempotency-Key, canonical-ID and freshness checks. The `ClientTenantIds` / `ClientPrincipalIds` copies are tracked by the 10.9 review row. This is a candidate for Story 11.13 cleanup.
+  status: done 2026-11-25
+  resolution: Read operations share idempotency, freshness, diagnostic correlation and canonical header checks. Domain and Provider reuse their respective envelope implementations. Tests pin selected header precedence and route-specific blank-key behavior.
 
 ## Deferred from: code review of spec-11-5-consolidate-domain-and-provider-helper-duplication.md (2026-10-23, chunk 1 domain)
 
