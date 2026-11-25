@@ -2931,6 +2931,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-3.md`
   summary: Add explicit dependency comparison commands to the Story 12.1 current-head verification record.
   evidence: The record identifies baseline 27d5446960a08f4c8669de20d85ab9a9ba68507d and current pins but omits comparison commands against previous Platform pin 2594b89cb2efed226e6f24e5e3a7cdf4d993b5a8 and Tenants pin 7ad54431996f9f1f0d277005eb2a73b67b55fea6. The baseline commit preserves these ranges; explicit commands would make the chosen scope easier to audit. This spec-only improvement is deferred by the one-shot workflow.
+  status: done 2026-11-25
+  resolution: Added read-only comparisons from the preceding gitlinks to the recorded historical Platform and Tenants revisions. Both comparisons run against the declared local repositories.
 
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-14, groups 2 and 3)
 

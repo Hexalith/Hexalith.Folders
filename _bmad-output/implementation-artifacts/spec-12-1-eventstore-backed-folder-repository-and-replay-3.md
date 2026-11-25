@@ -25,6 +25,16 @@ context:
 - Investigation baseline: `27d5446960a08f4c8669de20d85ab9a9ba68507d`, clean `main`. EventStore remains `173ad7f4e56a72f44621c7d3d7be86a5ec19dc03`; Platform is `92a02924894f6f2f219801a90e5bf25716abd028`; Tenants is `91faf19d8a3e9f254596363330a9130a970f4875`.
 - Independent investigation confirmed all original execution tasks and final review corrections complete. Production host composition binds actor-folded repositories and durable permission stores; startup rejects incorrect repositories. `/project` validates retained event identifiers before SDK dispatch. Authenticated Workers persist derived permission rows through the platform store.
 - The latest Platform changes concern Kubernetes operations tooling and timesheets deployment documentation; Tenants changes concern UI/BFF flows, localization, tests, and nested gitlinks. No changed Client/Contracts source consumed by Folders was identified. Nested submodules remain untouched.
+
+  Compare the previous and recorded pins from the Folders root to reproduce the scope review. Remove `--stat` to inspect the patches.
+
+  ```bash
+  git -C references/Hexalith.Platform diff --stat \
+    2594b89cb2efed226e6f24e5e3a7cdf4d993b5a8 92a02924894f6f2f219801a90e5bf25716abd028
+  git -C references/Hexalith.Tenants diff --stat \
+    7ad54431996f9f1f0d277005eb2a73b67b55fea6 91faf19d8a3e9f254596363330a9130a970f4875
+  ```
+
 - Intent gaps: none. Irreversible actions: none. Footprint: this verification record only; no new runtime interface or code change.
 - Fresh verification used .NET SDK `10.0.401`, Debug assets and source project references. Commands below ran from the project root, `/home/administrator/projects/hexalith/folders`:
 
