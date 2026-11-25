@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Hexalith.Folders.Authorization;
 
 /// <summary>Waits briefly for committed events to reach permission projections before mutation denial.</summary>
@@ -11,37 +9,45 @@ internal static class PermissionProjectionCatchUp
     /// <summary>Bounds enabled reads and retries; exhausted deadlines never produce available authority.</summary>
     internal static async Task<EffectivePermissionsReadModelResult> ReadAsync(
         Func<CancellationToken, Task<EffectivePermissionsReadModelResult>> read, bool waitForCatchUp,
-        DateTimeOffset observedAt, CancellationToken cancellationToken)
+        DateTimeOffset observedAt, CancellationToken cancellationToken, TimeProvider? timeProvider = null)
     {
         if (!waitForCatchUp)
         {
             return await read(cancellationToken).ConfigureAwait(false);
         }
 
-        long started = Stopwatch.GetTimestamp();
-        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeProvider ??= TimeProvider.System;
+        long started = timeProvider.GetTimestamp();
+        using CancellationTokenSource budget = new(Budget, timeProvider);
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, budget.Token);
         var notificationCompleted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         // Cancellation callbacks run in reverse registration order. This first registration
         // completes after the source registrations, including when the timer already owns cancellation.
         using CancellationTokenRegistration notification = deadline.Token.UnsafeRegister(
             static state => ((TaskCompletionSource)state!).TrySetResult(), notificationCompleted);
-        deadline.CancelAfter(Budget);
         EffectivePermissionsReadModelResult? stale = null;
         try
         {
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                TimeSpan remaining = Budget - Stopwatch.GetElapsedTime(started);
+                TimeSpan remaining = Budget - timeProvider.GetElapsedTime(started);
                 if (remaining <= TimeSpan.Zero)
                 {
                     return await ExhaustedAsync().ConfigureAwait(false);
                 }
 
-                EffectivePermissionsReadModelResult result = await read(deadline.Token)
-                    .WaitAsync(remaining, cancellationToken).ConfigureAwait(false);
+                Task<EffectivePermissionsReadModelResult> pending = read(deadline.Token);
+                remaining = Budget - timeProvider.GetElapsedTime(started);
+                if (remaining <= TimeSpan.Zero)
+                {
+                    return await ExhaustedAsync().ConfigureAwait(false);
+                }
+
+                EffectivePermissionsReadModelResult result = await pending
+                    .WaitAsync(remaining, timeProvider, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
-                remaining = Budget - Stopwatch.GetElapsedTime(started);
+                remaining = Budget - timeProvider.GetElapsedTime(started);
                 if (remaining <= TimeSpan.Zero)
                 {
                     return await ExhaustedAsync().ConfigureAwait(false);
@@ -54,7 +60,7 @@ internal static class PermissionProjectionCatchUp
 
                 stale = result;
                 await Task.Delay(remaining < PollInterval ? remaining : PollInterval,
-                    deadline.Token).ConfigureAwait(false);
+                    timeProvider, deadline.Token).ConfigureAwait(false);
             }
         }
         catch (TimeoutException)

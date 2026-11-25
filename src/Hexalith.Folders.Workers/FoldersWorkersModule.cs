@@ -184,6 +184,7 @@ public static partial class FoldersWorkersModule
             FoldersFolderPermissionEventProcessor folderPermissionProcessor,
             FoldersOperationalStatusEventProcessor operationalStatusProcessor,
             FoldersProviderBindingEventProcessor providerBindingProcessor,
+            TimeProvider timeProvider,
             ILoggerFactory loggerFactory,
             CancellationToken cancellationToken) =>
         {
@@ -197,7 +198,7 @@ public static partial class FoldersWorkersModule
                     await organizationProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
                     stage = "folder_permission";
                     await folderPermissionProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
-                }, cancellationToken).ConfigureAwait(false);
+                }, cancellationToken, timeProvider).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {

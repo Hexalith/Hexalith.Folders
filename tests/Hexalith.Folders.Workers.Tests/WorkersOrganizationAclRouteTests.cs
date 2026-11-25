@@ -12,6 +12,7 @@ using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.NativeContent.Tests;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Tests.OperationalStatus;
@@ -344,36 +345,54 @@ public sealed class WorkersOrganizationAclRouteTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(bool writeConflict)
+    public async Task DeliveryReevaluatesAfterASequenceGapOrConditionalWriteConflict(bool writeConflict)
     {
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        CancellationToken token = TestContext.Current.CancellationToken;
+        TaskCompletionSource retryScheduled = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TimeSpan retryInterval = TimeSpan.FromMilliseconds(25);
+        NativeContentClock time = new()
+        {
+            TimerScheduled = dueTime =>
+            {
+                if (dueTime == retryInterval) retryScheduled.TrySetResult();
+            },
+        };
         WorkerRouteReadModelStore store = new();
-        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        WebApplication app = await StartMaintenanceHostAsync(store, store, timeProvider: time);
         await using var cleanup = app.ConfigureAwait(false);
         using HttpClient client = AuthenticatedClient(app);
-        TaskCompletionSource observed = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        store.ReadObserved = key =>
+        var baseline = Envelope("baseline", 1, new OrganizationAclBaselineInitialized("tenant-a", "tenant-a",
+            "corr", "task", "key", "fingerprint"));
+        if (writeConflict)
         {
-            if (key == "projection:folders:organization-permissions:tenant-a") observed.TrySetResult();
-        };
+            using HttpResponseMessage initialized = await client.PostAsJsonAsync("/folders/events", baseline, token);
+            initialized.StatusCode.ShouldBe(HttpStatusCode.OK);
+            store.ForcedWriteConflicts = 1;
+        }
+
         Task<HttpResponseMessage> grant = client.PostAsJsonAsync("/folders/events", Envelope("grant", 2,
             new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
-                "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint")),
-            TestContext.Current.CancellationToken);
-        await observed.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
-        store.ReadObserved = null;
-        store.ForcedWriteConflicts = writeConflict ? 1 : 0;
-        using HttpResponseMessage baseline = await client.PostAsJsonAsync("/folders/events", Envelope("baseline", 1,
-            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
-        baseline.StatusCode.ShouldBe(HttpStatusCode.OK);
-        using HttpResponseMessage granted = await grant.ConfigureAwait(true);
+                "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint")), token);
+        await retryScheduled.Task.WaitAsync(TimeSpan.FromSeconds(30), token);
+        grant.IsCompleted.ShouldBeFalse();
+        if (!writeConflict)
+        {
+            (await store.GetAsync<OrganizationPermissionProjection>("statestore", key, token)).Value.ShouldBeNull();
+            using HttpResponseMessage initialized = await client.PostAsJsonAsync("/folders/events", baseline, token);
+            initialized.StatusCode.ShouldBe(HttpStatusCode.OK);
+        }
+
+        (await store.GetAsync<OrganizationPermissionProjection>("statestore", key, token))
+            .Value.ShouldNotBeNull().LastSequence.ShouldBe(1);
+        time.Advance(retryInterval);
+        using HttpResponseMessage granted = await grant.WaitAsync(TimeSpan.FromSeconds(30), token);
         granted.StatusCode.ShouldBe(HttpStatusCode.OK);
-        OrganizationPermissionProjection persisted = (await store.GetAsync<OrganizationPermissionProjection>(
-            "statestore", "projection:folders:organization-permissions:tenant-a", TestContext.Current.CancellationToken)
-            .ConfigureAwait(true)).Value!;
+        var persisted = (await store.GetAsync<OrganizationPermissionProjection>("statestore", key, token)).Value.ShouldNotBeNull();
         persisted.LastSequence.ShouldBe(2);
         persisted.Grants.ShouldHaveSingleItem().PrincipalId.ShouldBe("user-a");
         persisted.RecentMessages!.Count.ShouldBe(2);
+        store.ForcedWriteConflicts.ShouldBe(0);
     }
 
     [Theory]
@@ -382,7 +401,17 @@ public sealed class WorkersOrganizationAclRouteTests
     public async Task FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(bool operationalUnavailable)
     {
         WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = 1, FailOperationalBatch = operationalUnavailable };
-        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        CancellationToken token = TestContext.Current.CancellationToken;
+        TimeSpan retryInterval = TimeSpan.FromMilliseconds(25);
+        TaskCompletionSource retryScheduled = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        NativeContentClock time = new()
+        {
+            TimerScheduled = dueTime =>
+            {
+                if (dueTime == retryInterval) retryScheduled.TrySetResult();
+            },
+        };
+        WebApplication app = await StartMaintenanceHostAsync(store, store, timeProvider: time).ConfigureAwait(true);
         await using var cleanup = app.ConfigureAwait(false);
         using HttpClient client = AuthenticatedClient(app);
         byte[] retainedCreate = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
@@ -395,8 +424,10 @@ public sealed class WorkersOrganizationAclRouteTests
             GlobalPosition = 1,
         };
 
-        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", created,
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        Task<HttpResponseMessage> pending = client.PostAsJsonAsync("/folders/events", created, token);
+        await retryScheduled.Task.WaitAsync(TimeSpan.FromSeconds(30), token);
+        time.Advance(retryInterval);
+        using HttpResponseMessage response = await pending.WaitAsync(TimeSpan.FromSeconds(30), token);
         response.StatusCode.ShouldBe(operationalUnavailable ? HttpStatusCode.InternalServerError : HttpStatusCode.OK);
         store.ForcedWriteConflicts.ShouldBe(0);
         FolderPermissionProjection persisted = (await store.GetAsync<FolderPermissionProjection>("statestore",
@@ -428,19 +459,29 @@ public sealed class WorkersOrganizationAclRouteTests
     [InlineData(true)]
     public async Task UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(bool writeConflict)
     {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        TaskCompletionSource retryScheduled = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        NativeContentClock time = new()
+        {
+            TimerScheduled = dueTime =>
+            {
+                if (dueTime == TimeSpan.FromMilliseconds(25)) retryScheduled.TrySetResult();
+            },
+        };
         WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = writeConflict ? int.MaxValue : 0 };
-        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        WebApplication app = await StartMaintenanceHostAsync(store, store, timeProvider: time);
         await using var cleanup = app.ConfigureAwait(false);
         using HttpClient client = AuthenticatedClient(app);
-        using CancellationTokenSource bound = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
-        bound.CancelAfter(TimeSpan.FromSeconds(5));
-        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", Envelope("baseline",
+        Task<HttpResponseMessage> pending = client.PostAsJsonAsync("/folders/events", Envelope("baseline",
             writeConflict ? 1 : 2, new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")),
-            bound.Token).ConfigureAwait(true);
+            token);
+        await retryScheduled.Task.WaitAsync(TimeSpan.FromSeconds(30), token);
+        pending.IsCompleted.ShouldBeFalse();
+        time.Advance(TimeSpan.FromSeconds(1));
+        using HttpResponseMessage response = await pending.WaitAsync(TimeSpan.FromSeconds(30), token);
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         (await store.GetAsync<OrganizationPermissionProjection>("statestore",
-            "projection:folders:organization-permissions:tenant-a", TestContext.Current.CancellationToken)
-            .ConfigureAwait(true)).Value.ShouldBeNull();
+            "projection:folders:organization-permissions:tenant-a", token)).Value.ShouldBeNull();
     }
 
     [Theory]
@@ -650,13 +691,14 @@ public sealed class WorkersOrganizationAclRouteTests
     }
 
     private static async Task<WebApplication> StartMaintenanceHostAsync(IReadModelStore store,
-        IReadModelConditionalEraser eraser, ILoggerProvider? logs = null)
+        IReadModelConditionalEraser eraser, ILoggerProvider? logs = null, TimeProvider? timeProvider = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         { EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         if (logs is not null) builder.Logging.AddProvider(logs);
+        if (timeProvider is not null) builder.Services.AddSingleton(timeProvider);
         builder.Services.AddFoldersTenantEventWorkers();
         var nativeSource = new OperationalStatusNativeSource();
         builder.Services.RemoveAll<INativeSourceScanner>();

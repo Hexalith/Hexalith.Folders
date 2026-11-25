@@ -3083,6 +3083,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Wall-clock-dependent tests (permission catch-up timing, Workers concurrent-delivery 1 s budget) may flake on loaded CI.
   evidence: EventStoreOrganizationEffectivePermissionsReadModelTests.cs, WorkersOrganizationAclRouteTests.cs; inject fake TimeProvider/budget or soak 50x.
+  status: done 2026-11-25
+  resolution: Permission catch-up and Workers retry tests drive their deadlines and poll intervals with a controllable clock. Coverage checks both budgets, elapsed task acquisition, fresh and stale outcomes, caller cancellation, and ordered or conflicting writes.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Tenant-access projection retry exhaustion (persistent conflict) is untested; revocation drop risk unverified.
   evidence: EventStoreFolderTenantAccessProjectionStoreTests.cs:55-89.

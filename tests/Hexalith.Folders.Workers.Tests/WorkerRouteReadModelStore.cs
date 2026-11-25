@@ -9,7 +9,6 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelCon
 {
     private readonly InMemoryReadModelStore _store = new();
     private readonly Lock _lock = new();
-    public Action<string>? ReadObserved { get; set; }
     public int ForcedWriteConflicts { get; set; }
     public bool FailOperationalBatch { get; set; }
     public void Remove(string key)
@@ -25,7 +24,6 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelCon
         => _store.TryReadEtagAsync(storeName, key, cancellationToken);
     public Task<ReadModelEntry<TValue>> GetAsync<TValue>(string storeName, string key, CancellationToken cancellationToken = default) where TValue : class
     {
-        ReadObserved?.Invoke(key);
         return _store.GetAsync<TValue>(storeName, key, cancellationToken);
     }
     public Task SaveAsync<TValue>(string storeName, string key, TValue value, CancellationToken cancellationToken = default) where TValue : class

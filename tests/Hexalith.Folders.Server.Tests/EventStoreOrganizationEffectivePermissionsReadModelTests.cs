@@ -10,6 +10,7 @@ using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.NativeContent.Tests;
 using Hexalith.Folders.Projections.TenantAccess;
 
 using Microsoft.Extensions.Configuration;
@@ -32,9 +33,10 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     {
         MemoryReadModels store = new();
         TestClock clock = new();
+        NativeContentClock time = ClockObservingCatchUpPoll(out Task pollScheduled);
         TestSequenceReader heads = new();
-        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
-        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads, time);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization, time);
         CancellationToken ct = TestContext.Current.CancellationToken;
         await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
             new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
@@ -52,7 +54,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         {
             if (projected || actor != (organizationScope ? "tenant-a" : "folder-a")) return;
             projected = true;
-            await Task.Delay(authoritativeReadDelayMilliseconds, ct).ConfigureAwait(false);
+            await Task.Delay(TimeSpan.FromMilliseconds(authoritativeReadDelayMilliseconds), time, ct).ConfigureAwait(false);
             if (organizationScope)
             {
                 await organization.ApplyAsync("tenant-a", "tenant-a", "granted", 2,
@@ -69,16 +71,18 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         };
         // Exercise policy propagation through the actual evidence provider: no model wait flag is supplied here.
         IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
-        var elapsed = System.Diagnostics.Stopwatch.StartNew();
-        FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(model, clock)
+        Task<FolderPermissionEvidenceResult> pending = new EffectivePermissionsFolderPermissionEvidenceProvider(model, clock)
             .GetEvidenceAsync(new("tenant-a", "user-a", "user-a", organizationScope ? "create_folder" : "read_metadata",
                 organizationScope ? "organization_baseline" : "folder-a", "corr", null,
                 FolderOperationPolicyClass.Mutation, false), ct);
+        pending.IsCompleted.ShouldBeFalse();
+        time.Advance(TimeSpan.FromMilliseconds(authoritativeReadDelayMilliseconds));
+        await pollScheduled.WaitAsync(TimeSpan.FromSeconds(30), ct);
+        time.Advance(TimeSpan.FromMilliseconds(25));
+        FolderPermissionEvidenceResult result = await pending.WaitAsync(TimeSpan.FromSeconds(30), ct);
         result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
         result.FreshnessWatermark.ShouldBe("2");
         result.FreshnessClass.ShouldBe("fresh");
-        if (authoritativeReadDelayMilliseconds > 0)
-            elapsed.Elapsed.ShouldBeGreaterThan(TimeSpan.FromMilliseconds(500));
     }
 
     /// <summary>Neither scope admits noncooperative late authority; immediate reads retain their independent lifetime.</summary>
@@ -89,9 +93,10 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     {
         MemoryReadModels store = new();
         TestClock clock = new();
+        NativeContentClock time = new();
         TestSequenceReader heads = new() { CurrentSequence = 1 };
-        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
-        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads, time);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization, time);
         CancellationToken ct = TestContext.Current.CancellationToken;
         await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
             new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
@@ -107,15 +112,16 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         heads.OnReadAsync = _ => release.Task; // Deliberately ignores the supplied cancellation token.
         try
         {
-            var elapsed = System.Diagnostics.Stopwatch.StartNew();
-            var result = await model.GetAsync(request, ct).WaitAsync(TimeSpan.FromSeconds(4), ct);
-            elapsed.Elapsed.ShouldBeGreaterThan(TimeSpan.FromSeconds(1));
-            elapsed.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(3));
+            Task<EffectivePermissionsReadModelResult> pending = model.GetAsync(request, ct);
+            time.Advance(TimeSpan.FromMilliseconds(1999));
+            pending.IsCompleted.ShouldBeFalse();
+            time.Advance(TimeSpan.FromMilliseconds(1));
+            var result = await pending.WaitAsync(TimeSpan.FromSeconds(30), ct);
             result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
             result.Snapshot.ShouldBeNull();
             result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");
             Task<EffectivePermissionsReadModelResult> immediate = model.GetAsync(request with { WaitForCatchUp = false }, ct);
-            await Task.Delay(2200, ct);
+            time.Advance(TimeSpan.FromSeconds(3));
             immediate.IsCompleted.ShouldBeFalse();
             release.SetResult();
             (await immediate.ConfigureAwait(true)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
@@ -128,6 +134,32 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         }
     }
 
+    [Fact]
+    public async Task TimeSpentGettingAReadTaskConsumesTheSameCatchUpBudget()
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        NativeContentClock time = new();
+        TaskCompletionSource<EffectivePermissionsReadModelResult> release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<EffectivePermissionsReadModelResult> pending = PermissionProjectionCatchUp.ReadAsync(_ =>
+        {
+            time.Advance(TimeSpan.FromMilliseconds(1250));
+            return release.Task;
+        }, true, time.UtcNow, token, time);
+        try
+        {
+            time.Advance(TimeSpan.FromMilliseconds(749));
+            pending.IsCompleted.ShouldBeFalse();
+            time.Advance(TimeSpan.FromMilliseconds(1));
+            var result = await pending.WaitAsync(TimeSpan.FromSeconds(30), token);
+            result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+            result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");
+        }
+        finally
+        {
+            release.TrySetCanceled(token);
+        }
+    }
+
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
@@ -137,9 +169,10 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     {
         MemoryReadModels store = new();
         TestClock clock = new();
+        NativeContentClock time = ClockObservingCatchUpPoll(out Task pollScheduled);
         TestSequenceReader heads = new();
-        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
-        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads, time);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization, time);
         CancellationToken ct = TestContext.Current.CancellationToken;
         if (organizationScope)
         {
@@ -166,8 +199,16 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
                 await folder.ApplyAsync("tenant-a", "folder-a", "rejected", 2, "digest-rejected", null, ct).ConfigureAwait(false);
         };
         IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
-        var result = await model.GetAsync(new("tenant-a", organizationScope ? "organization_baseline" : "folder-a",
-            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: wait), ct);
+        Task<EffectivePermissionsReadModelResult> pending = model.GetAsync(
+            new("tenant-a", organizationScope ? "organization_baseline" : "folder-a",
+                [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: wait), ct);
+        if (wait)
+        {
+            await pollScheduled.WaitAsync(TimeSpan.FromSeconds(30), ct);
+            time.Advance(TimeSpan.FromMilliseconds(25));
+        }
+
+        var result = await pending.WaitAsync(TimeSpan.FromSeconds(30), ct);
         result.Status.ShouldBe(wait ? EffectivePermissionsReadModelStatus.Available : EffectivePermissionsReadModelStatus.Stale);
         result.Snapshot!.Freshness.ProjectionWatermark.ShouldBe(wait ? "2" : "1");
     }
@@ -180,18 +221,25 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     {
         MemoryReadModels store = new();
         TestClock clock = new();
+        NativeContentClock time = new();
         TestSequenceReader heads = new() { CurrentSequence = 1 };
-        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
-        IEffectivePermissionsReadModel model = organizationScope ? organization : new EventStoreFolderEffectivePermissionsReadModel(store, clock, heads, organization);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads, time);
+        IEffectivePermissionsReadModel model = organizationScope ? organization : new EventStoreFolderEffectivePermissionsReadModel(store, clock, heads, organization, time);
         EffectivePermissionsReadModelRequest request = new("tenant-a", organizationScope ? "organization_baseline" : "folder-a",
             [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: true);
-        var started = System.Diagnostics.Stopwatch.StartNew();
-        var result = await model.GetAsync(request, TestContext.Current.CancellationToken);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        Task<EffectivePermissionsReadModelResult> pending = model.GetAsync(request, ct);
+        pending.IsCompleted.ShouldBeFalse();
+        time.Advance(TimeSpan.FromSeconds(2));
+        var result = await pending.WaitAsync(TimeSpan.FromSeconds(30), ct);
         result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Stale);
         result.Snapshot!.EvidenceRows.ShouldBeEmpty();
-        started.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(3));
-        using CancellationTokenSource cancellation = new(TimeSpan.FromMilliseconds(50));
-        (await Should.ThrowAsync<OperationCanceledException>(() => model.GetAsync(request, cancellation.Token)))
+
+        using CancellationTokenSource cancellation = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        Task<EffectivePermissionsReadModelResult> cancelled = model.GetAsync(request, cancellation.Token);
+        cancelled.IsCompleted.ShouldBeFalse();
+        await cancellation.CancelAsync();
+        (await Should.ThrowAsync<OperationCanceledException>(() => cancelled.WaitAsync(TimeSpan.FromSeconds(30), ct)))
             .CancellationToken.ShouldBe(cancellation.Token);
     }
 
@@ -587,11 +635,12 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     {
         MemoryReadModels store = new();
         TestClock clock = new();
+        NativeContentClock time = ClockObservingCatchUpPoll(out Task pollScheduled);
         TestSequenceReader heads = new();
         heads.Heads["tenant-a"] = 3;
         heads.Heads["folder-a"] = 1;
-        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
-        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads, time);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization, time);
         CancellationToken ct = TestContext.Current.CancellationToken;
 
         await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
@@ -621,9 +670,13 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
                         "user-a", "read_metadata", "corr", "task", "revoke-key", "revoke-fingerprint"), ct).ConfigureAwait(false);
             }
         };
-        var evidence = await new EffectivePermissionsFolderPermissionEvidenceProvider(folder, clock).GetEvidenceAsync(
+        Task<FolderPermissionEvidenceResult> pending = new EffectivePermissionsFolderPermissionEvidenceProvider(folder, clock).GetEvidenceAsync(
             new("tenant-a", "user-a", "actor_present", "read_metadata", "folder-a", "corr", "task",
                 FolderOperationPolicyClass.Mutation, AllowBoundedStale: false), ct);
+
+        await pollScheduled.WaitAsync(TimeSpan.FromSeconds(30), ct);
+        time.Advance(TimeSpan.FromMilliseconds(25));
+        var evidence = await pending.WaitAsync(TimeSpan.FromSeconds(30), ct);
 
         baselineHeadReads.ShouldBeGreaterThanOrEqualTo(2);
         evidence.Status.ShouldBe(FolderPermissionEvidenceStatus.Denied);
@@ -1057,6 +1110,19 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
         result.Snapshot.ShouldBeNull();
         (await evidence.GetEvidenceAsync(operation, ct)).Status.ShouldNotBe(FolderPermissionEvidenceStatus.Allowed);
+    }
+
+    private static NativeContentClock ClockObservingCatchUpPoll(out Task pollScheduled)
+    {
+        TaskCompletionSource observed = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        pollScheduled = observed.Task;
+        return new NativeContentClock
+        {
+            TimerScheduled = dueTime =>
+            {
+                if (dueTime == TimeSpan.FromMilliseconds(25)) observed.TrySetResult();
+            },
+        };
     }
 
     private sealed class TestClock : IUtcClock

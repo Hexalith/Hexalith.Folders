@@ -7,7 +7,8 @@ namespace Hexalith.Folders.Authorization;
 
 /// <summary>Event-derived organization baseline shared by Server and Workers.</summary>
 public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
-    IReadModelStore store, IUtcClock clock, IOrganizationStreamSequenceReader sequenceReader)
+    IReadModelStore store, IUtcClock clock, IOrganizationStreamSequenceReader sequenceReader,
+    TimeProvider timeProvider)
     : IEffectivePermissionsReadModel
 {
     /// <summary>The SDK state-store component shared by permission readers and maintenance.</summary>
@@ -17,13 +18,23 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
     private const int ReplayWindow = 256;
     private static readonly TimeSpan ProjectedClockSkew = TimeSpan.FromMinutes(2);
 
+    /// <summary>Creates a permission reader using the system clock for catch-up deadlines.</summary>
+    /// <param name="store">The durable read-model store.</param>
+    /// <param name="clock">The clock for evidence timestamps.</param>
+    /// <param name="sequenceReader">The authoritative stream sequence reader.</param>
+    public EventStoreOrganizationEffectivePermissionsReadModel(
+        IReadModelStore store, IUtcClock clock, IOrganizationStreamSequenceReader sequenceReader)
+        : this(store, clock, sequenceReader, TimeProvider.System)
+    {
+    }
+
     public Task<EffectivePermissionsReadModelResult> GetAsync(
         EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
         return PermissionProjectionCatchUp.ReadAsync(
             token => GetOnceAsync(request with { WaitForCatchUp = false }, token),
-            request.WaitForCatchUp, clock.UtcNow, cancellationToken);
+            request.WaitForCatchUp, clock.UtcNow, cancellationToken, timeProvider);
     }
 
     private async Task<EffectivePermissionsReadModelResult> GetOnceAsync(
