@@ -1,5 +1,3 @@
-using Hexalith.Folders.Aggregates.Folder;
-
 namespace Hexalith.Folders.Aggregates.Organization;
 
 public sealed record OrganizationStreamName(string Value)
@@ -52,7 +50,7 @@ public sealed record OrganizationStreamName(string Value)
     /// <summary>Validates the tenant namespace shared by organization stream and command validators.</summary>
     internal static bool IsValidManagedTenant(string? value)
         => IsValidSegment(value) && !ProviderBindingActorId.IsReserved(value)
-            && !string.Equals(value, FolderStreamName.ReservedOrganizationPermissionScope, StringComparison.Ordinal);
+            && !string.Equals(value, StreamNameSegment.ReservedOrganizationPermissionScope, StringComparison.Ordinal);
 
     internal static bool IsValidSegment(string? value)
         => StreamNameSegment.IsValid(value);

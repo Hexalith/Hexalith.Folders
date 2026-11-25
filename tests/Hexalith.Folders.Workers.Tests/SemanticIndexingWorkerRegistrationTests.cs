@@ -161,6 +161,27 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     }
 
     [Fact]
+    public async Task WorkersUseTheConfiguredMemoriesPublisherComponent()
+    {
+        const string sharedComponent = "mapped-pubsub";
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Environments.Development });
+        builder.Configuration[MemoriesSemanticIndexingPort.PubSubConfigurationKey] = sharedComponent;
+        builder.Configuration["Folders:Workers:PubSubName"] = "isolated-inbound-pubsub";
+        builder.Services.AddFoldersTenantEventWorkers();
+        DaprClient dapr = Substitute.For<DaprClient>();
+        builder.Services.AddSingleton(dapr);
+
+        await using WebApplication app = builder.Build();
+        var port = app.Services.GetRequiredService<ISemanticIndexingPort>();
+        await port.IndexFileVersionAsync(CreateRequest(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        object?[] arguments = dapr.ReceivedCalls().ShouldHaveSingleItem().GetArguments();
+        arguments[0].ShouldBe(sharedComponent);
+        arguments[1].ShouldBe(FoldersSemanticIndexingDefaults.EventsTopicName);
+    }
+
+    [Fact]
     public async Task SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent()
     {
         DaprClient dapr = Substitute.For<DaprClient>();

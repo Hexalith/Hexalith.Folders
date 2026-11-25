@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <IsPublishable>true</IsPublishable>
-    <EnableContainer>true</EnableContainer>
-    <ContainerRepository>eventstore</ContainerRepository>
+    <IsPublishable>false</IsPublishable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
@@ -17,7 +15,7 @@
     <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Testing/Hexalith.EventStore.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="../Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Gateway\Hexalith.EventStore.Gateway.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.DomainService\Hexalith.EventStore.DomainService.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.EventStore.Gateway" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />

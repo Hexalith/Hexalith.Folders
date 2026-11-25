@@ -12,7 +12,7 @@ public sealed class FoldersWireNameMappingTests
     public void EveryCommandWireMatchesTheDomainCatalogAndImmutableInventory()
     {
         string catalog = File.ReadAllText(Path.Combine(McpCliContractTestSupport.RepositoryRoot,
-            "src/Hexalith.Folders/Routing/FoldersCommandCatalog.cs"));
+            "src/Hexalith.Folders.Contracts/Routing/FoldersCommandCatalog.cs"));
         catalog.ShouldContain("string discriminator = \"Hexalith.Folders.Commands.\" + command;");
         var catalogNames = Regex.Matches(catalog, "Command\\(\"(?<name>[^\"]+)\", ")
             .Select(match => match.Groups["name"].Value).ToHashSet(StringComparer.Ordinal);

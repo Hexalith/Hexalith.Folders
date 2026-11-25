@@ -10,7 +10,7 @@ public static class OperationalStatusKeys
     /// <summary>The shared SDK read-model component.</summary>
     public const string StoreName = "statestore";
     /// <summary>The named SDK projection route.</summary>
-    public const string ProjectionType = "operational-status";
+    public const string ProjectionType = Server.FoldersProjectionCatalogDeclarations.ProjectionType;
     /// <summary>The C3 maximum view retention.</summary>
     public static TimeSpan Retention { get; } = TimeSpan.FromDays(400);
     /// <summary>Gets the folder checkpoint key.</summary>

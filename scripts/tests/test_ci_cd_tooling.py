@@ -442,7 +442,7 @@ print(os.environ['TEST_TAG_SHA'])
                     "HEXALITH_RELEASE_SOURCE_BRANCH": "main",
                     "HEXALITH_RELEASE_SOURCE_CI_WORKFLOW": "ci.yml",
                     "HEXALITH_RELEASE_ENVIRONMENT": "production",
-                    "HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT": "5",
+                    "HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT": "6",
                     "HEXALITH_RELEASE_REQUIRE_AUTHORITY": "false",
                     "HEXALITH_RELEASE_PACKAGE_MANIFEST": "tools/release-packages.json",
                 }

@@ -21,8 +21,8 @@ public static class FoldersDevelopmentCatalog
         var tenants = Project("tenants");
         var folders = Project("folders");
         var memories = Project("memories");
-        Assembly folderOwner = Load(folders.Resource, "Hexalith.Folders.Server.dll");
-        Assembly folderAdapters = Load(gateway.Resource, "Hexalith.Folders.EventStore.dll");
+        Assembly folderOwner = Load(folders.Resource, "Hexalith.Folders.Contracts.dll");
+        Assembly folderAdapters = Load(gateway.Resource, "Hexalith.Folders.EventStoreExtensions.dll");
         Assembly tenantOwner = Load(tenants.Resource, "Hexalith.Tenants.Contracts.dll");
         Assembly tenantAdapters = Load(tenants.Resource, "Hexalith.Tenants.Server.dll");
         var owners = new List<DevelopmentRouteCatalogOwner>

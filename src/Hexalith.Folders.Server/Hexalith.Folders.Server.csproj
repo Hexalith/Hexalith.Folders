@@ -44,12 +44,8 @@
     <PackageReference Include="Hexalith.Memories.Contracts" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />
     <PackageReference Include="Hexalith.Memories.Client.Rest" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />
   </ItemGroup>
-  <!-- Both actual executables expose the same module policies without an executable library reference. -->
   <ItemGroup>
-    <Compile Include="../Hexalith.Folders.EventStore/*IdempotencyIntentAdapter.cs" Link="CatalogPolicies/%(Filename)%(Extension)" />
-    <Compile Include="../Hexalith.Folders.EventStore/FolderAccessIdempotencyIntent.cs" Link="CatalogPolicies/FolderAccessIdempotencyIntent.cs" />
-    <Compile Include="../Hexalith.Folders.EventStore/FoldersCanonicalIntentBuilder.cs" Link="CatalogPolicies/FoldersCanonicalIntentBuilder.cs" />
-    <Compile Include="../Hexalith.Folders.EventStore/FoldersCommandIntentDeclarations.cs" Link="CatalogPolicies/FoldersCommandIntentDeclarations.cs" />
-    <Compile Include="../Hexalith.Folders.EventStore/FoldersCatalogAdapters.cs" Link="CatalogPolicies/FoldersCatalogAdapters.cs" />
+    <ProjectReference Include="../Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj" />
+    <Compile Include="../Hexalith.Folders.Contracts/Routing/Payloads/FoldersCommandPayloads.cs" Link="Routing/FoldersCommandPayloads.cs" />
   </ItemGroup>
 </Project>

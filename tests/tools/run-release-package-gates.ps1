@@ -144,12 +144,12 @@ function Read-AndValidateManifest {
         Fail-Gate -Category 'manifest-package-set' -Reason 'malformed-json-manifest'
     }
     $packages = @($manifest.packages)
-    if ($packages.Count -ne 5) {
-        Fail-Gate -Category 'manifest-package-set' -Reason 'expected-exactly-five-packages'
+    if ($packages.Count -ne 6) {
+        Fail-Gate -Category 'manifest-package-set' -Reason 'expected-exactly-six-packages'
     }
     $ids = @($packages | ForEach-Object { [string]$_.id })
     $projects = @($packages | ForEach-Object { [string]$_.project })
-    if (@($ids | Sort-Object -Unique).Count -ne 5 -or @($projects | Sort-Object -Unique).Count -ne 5) {
+    if (@($ids | Sort-Object -Unique).Count -ne 6 -or @($projects | Sort-Object -Unique).Count -ne 6) {
         Fail-Gate -Category 'manifest-package-set' -Reason 'duplicate-package-id-or-project'
     }
     foreach ($package in $packages) {
@@ -164,7 +164,7 @@ function Read-AndValidateManifest {
     $policy = Get-Content -Raw -Path $policyPath
     foreach ($required in @(
         'inventoryPath: tools/release-packages.json',
-        'expectedPackageCount: 5',
+        'expectedPackageCount: 6',
         'feed: https://api.nuget.org/v3/index.json',
         'duplicatePolicy: fail'
     )) {

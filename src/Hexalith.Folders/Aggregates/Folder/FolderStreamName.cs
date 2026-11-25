@@ -5,7 +5,7 @@ namespace Hexalith.Folders.Aggregates.Folder;
 public sealed record FolderStreamName(string Value)
 {
     internal const int MaxSegmentLength = StreamNameSegment.MaxLength;
-    public const string ReservedOrganizationPermissionScope = "organization_baseline";
+    public const string ReservedOrganizationPermissionScope = StreamNameSegment.ReservedOrganizationPermissionScope;
 
     public static FolderStreamName Create(string managedTenantId, string folderId)
     {

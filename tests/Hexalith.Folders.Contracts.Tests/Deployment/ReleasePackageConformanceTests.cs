@@ -18,6 +18,7 @@ public sealed partial class ReleasePackageConformanceTests
     private static readonly string[] _expectedPackages =
     [
         "Hexalith.Folders.Contracts",
+        "Hexalith.Folders.EventStoreExtensions",
         "Hexalith.Folders",
         "Hexalith.Folders.Client",
         "Hexalith.Folders.Aspire",
@@ -25,12 +26,12 @@ public sealed partial class ReleasePackageConformanceTests
     ];
 
     [Fact]
-    public void JsonManifestShouldBeTheSingleExactFivePackageInventory()
+    public void JsonManifestShouldBeTheSingleExactReleasePackageInventory()
     {
         using JsonDocument document = JsonDocument.Parse(ReadText(ManifestPath));
         JsonElement[] packages = document.RootElement.GetProperty("packages").EnumerateArray().ToArray();
         packages.Select(static package => package.GetProperty("id").GetString()).ShouldBe(_expectedPackages);
-        packages.Select(static package => package.GetProperty("project").GetString()).Distinct(StringComparer.Ordinal).Count().ShouldBe(5);
+        packages.Select(static package => package.GetProperty("project").GetString()).Distinct(StringComparer.Ordinal).Count().ShouldBe(_expectedPackages.Length);
 
         foreach (JsonElement package in packages)
         {
@@ -42,7 +43,7 @@ public sealed partial class ReleasePackageConformanceTests
         YamlMappingNode policy = LoadSingleYamlDocument(PolicyPath);
         policy.GetReleaseScalar("kind").ShouldBe("ReleasePackagePolicy");
         policy.GetReleaseScalar("inventoryPath").ShouldBe(ManifestPath);
-        policy.GetReleaseScalar("expectedPackageCount").ShouldBe("5");
+        policy.GetReleaseScalar("expectedPackageCount").ShouldBe(_expectedPackages.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
         policy.GetReleaseScalar("feed").ShouldBe("https://api.nuget.org/v3/index.json");
         policy.GetReleaseScalar("symbolsRequired").ShouldBe("true");
         policy.GetReleaseScalar("duplicatePolicy").ShouldBe("fail");

@@ -15,27 +15,11 @@ public static class FoldersIdempotencyIntentAdapterServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        _ = services.AddIdempotencyIntentAdapter<CreateFolderIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<ArchiveFolderIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<GrantFolderAccessIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<RevokeFolderAccessIdempotencyIntentAdapter>();
-        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
-            "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline", "initialize-organization-acl-baseline"));
-        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
-            "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal", "grant-organization-acl-principal"));
-        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
-            "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal", "revoke-organization-acl-principal"));
-        _ = services.AddIdempotencyIntentAdapter<ConfigureProviderBindingIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<CreateRepositoryBackedFolderIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<BindRepositoryIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<ConfigureBranchRefPolicyIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<PrepareWorkspaceIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<LockWorkspaceIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<ChangeNativeTaskIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<ReleaseWorkspaceLockIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<MutateFilesIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<AuthorizeContentErasureIdempotencyIntentAdapter>();
-        _ = services.AddIdempotencyIntentAdapter<CommitWorkspaceIdempotencyIntentAdapter>();
+        foreach (IDeclaredIdempotencyIntentAdapter adapter in FoldersCatalogAdapterSource.Create())
+        {
+            _ = services.AddSingleton<IIdempotencyIntentAdapter>(adapter);
+        }
+
         _ = services.AddSingleton<IHostedService, FoldersIdempotencyIntentAdapterCatalog>();
         return services;
     }

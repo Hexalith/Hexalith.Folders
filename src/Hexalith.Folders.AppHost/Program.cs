@@ -19,7 +19,7 @@ string pubSubComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "pu
 HexalithEventStoreSecurityResources? security = builder.AddHexalithEventStoreSecurity();
 
 // Folders-owned EventStore command host: platform gateway-only sidecar wiring, plus Folders trusted
-// idempotency adapters registered in Hexalith.Folders.EventStore. Keep AddHexalithEventStore so the
+// idempotency adapters supplied by Hexalith.Folders.EventStoreExtensions. Keep AddHexalithEventStore so the
 // helper still owns the eventstore sidecar and the shared statestore/pubsub Dapr components.
 IResourceBuilder<ProjectResource> eventStoreProject = builder.AddProject<Projects.Hexalith_Folders_EventStore>(FoldersAspireModule.EventStoreAppId);
 HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(

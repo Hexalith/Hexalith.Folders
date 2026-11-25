@@ -1,7 +1,7 @@
 kind: ReleasePackagePolicy
 version: 2
 inventoryPath: tools/release-packages.json
-expectedPackageCount: 5
+expectedPackageCount: 6
 feed: https://api.nuget.org/v3/index.json
 symbolsRequired: true
 duplicatePolicy: fail
@@ -9,6 +9,7 @@ excludedPackableProjects:
   - src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj
   - src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj
 nonPackageableProjects:
+  - src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj
   - src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
   - src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj
   - src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj

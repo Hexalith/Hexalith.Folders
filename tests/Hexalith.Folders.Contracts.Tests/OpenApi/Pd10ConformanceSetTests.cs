@@ -111,7 +111,7 @@ public sealed class Pd10ConformanceSetTests
     [InlineData("src/Hexalith.Folders.Mcp/Tools/FileTools.cs")]
     [InlineData("src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj")]
     [InlineData("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj")]
-    [InlineData("src/Hexalith.Folders/Aggregates/StreamNameSegment.cs")]
+    [InlineData("src/Hexalith.Folders.Contracts/Aggregates/StreamNameSegment.cs")]
     [InlineData("src/Hexalith.Folders/Hashing/LengthPrefixedHash.cs")]
     [InlineData("src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs")]
     [InlineData("tests/tools/Task36FoldObserver/Task36FoldObserver.csproj")]

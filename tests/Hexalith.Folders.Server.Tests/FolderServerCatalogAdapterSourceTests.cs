@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 
 using Hexalith.EventStore.DomainService;
+using Hexalith.Folders.EventStore;
 using Hexalith.Folders.Server;
 
 using Shouldly;
@@ -18,12 +19,15 @@ public sealed class FolderServerCatalogAdapterSourceTests
     [Fact]
     public void ActualServerFactoryMatchesEveryOwnerCommandDeclaration()
     {
-        RouteCatalogAdapterSourceAttribute source = typeof(FoldersRuntimeCatalogDeclarations).Assembly
+        RouteCatalogAdapterSourceAttribute source = typeof(FolderServerCatalogAdapterSource).Assembly
             .GetCustomAttributes<RouteCatalogAdapterSourceAttribute>().Single();
         source.SourceType.ShouldBe(typeof(FolderServerCatalogAdapterSource));
-        source.SourceType.Assembly.ShouldBe(typeof(FoldersRuntimeCatalogDeclarations).Assembly);
+        source.SourceType.Assembly.ShouldBe(typeof(FolderServerCatalogAdapterSource).Assembly);
+        typeof(FoldersCatalogAdapterSource).Assembly.GetName().Name.ShouldBe("Hexalith.Folders.EventStoreExtensions");
         var adapters = ((IReadOnlyList<IDeclaredIdempotencyIntentAdapter>)source.SourceType
             .GetMethod("Create", BindingFlags.Public | BindingFlags.Static)!.Invoke(null, null)!).ToDictionary(adapter => adapter.CommandType);
+        adapters.Values.Select(adapter => adapter.GetType().Assembly)
+            .ShouldAllBe(assembly => assembly == typeof(FoldersCatalogAdapterSource).Assembly);
         adapters.Count.ShouldBe(18);
         adapters.Keys.Order(StringComparer.Ordinal).ShouldBe(FoldersRuntimeCatalogDeclarations.Commands
             .Select(command => command.Route.MessageType!).Order(StringComparer.Ordinal));

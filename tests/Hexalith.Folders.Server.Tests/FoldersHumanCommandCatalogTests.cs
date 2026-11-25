@@ -59,6 +59,21 @@ public sealed class FoldersHumanCommandCatalogTests
         }
     }
 
+    [Fact]
+    public void ContractsExportTheActualInstalledCommandPayloadSchemas()
+    {
+        var operations = FoldersRuntimeCatalogDeclarations.Operations.ToDictionary(operation => operation.RouteId);
+        foreach (var command in FoldersRuntimeCatalogDeclarations.Commands)
+        {
+            Type payload = FolderDomainProcessor.CatalogPayloadTypes.First(
+                type => type.FullName == command.Route.Execution!.HandlerType);
+            var runtimeOperation = RouteOperationSchema.Create(command.Route, payload, typeof(SubmitCommandResponse),
+                "public", "agent-eligible", JsonSerializerOptions.Web);
+
+            operations[command.Route.RouteId].Digest.ShouldBe(runtimeOperation.Digest, command.Route.RouteId);
+        }
+    }
+
     [Theory]
     [InlineData(FoldersServerModule.CreateFolderCommandType, "/api/v1/folders")]
     [InlineData(FoldersServerModule.CommitWorkspaceCommandType, "/api/v1/folders/folder-a/workspaces/workspace-a/commits")]

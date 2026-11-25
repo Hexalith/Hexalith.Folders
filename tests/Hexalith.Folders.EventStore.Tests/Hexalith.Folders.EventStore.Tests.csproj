@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Update="Fixtures/legacy-idempotency-descriptors.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../module/hexalith.module-manifest.v2.json" Link="hexalith.module-manifest.v2.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.EventStore\Hexalith.Folders.EventStore.csproj" />

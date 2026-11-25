@@ -82,7 +82,7 @@ internal sealed class FoldersProjectionCatalogFixture
             .Single(item => item.Domain == "folders" && item.ProjectionType == OperationalStatusKeys.ProjectionType);
         // This isolated component catalog serves the actual named projection only. Full runtime
         // command/query/legacy ownership is qualified by the separate complete-cohort composition.
-        var declarations = CompiledRouteCatalogDeclarations.Read([handler.GetType().Assembly])
+        var declarations = CompiledRouteCatalogDeclarations.Read([typeof(FoldersProjectionCatalogDeclarations).Assembly])
             .Where(item => item.Kind == "projection" && item.Execution!.HandlerType == handler.GetType().FullName).ToArray();
         var declaration = declarations.Single(item => item.Execution!.HandlerType == handler.GetType().FullName);
         var endpoint = ((IEndpointRouteBuilder)_app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()

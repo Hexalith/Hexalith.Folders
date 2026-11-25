@@ -2,7 +2,7 @@ using Hexalith.EventStore.DomainService;
 
 namespace Hexalith.Folders.EventStore;
 
-/// <summary>Creates the unchanged module command policies for both actual owner executable images.</summary>
+/// <summary>Creates the unchanged module command policies for EventStore gateways.</summary>
 internal static class FoldersCatalogAdapters
 {
     /// <summary>Returns one fresh instance of every existing trusted mutation adapter.</summary>
