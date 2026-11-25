@@ -2925,6 +2925,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-3.md`
   summary: Document the fresh-checkout restore prerequisite for the completed Story 12.1 Server/Workers verification commands.
   evidence: Review found that the recorded successful Debug/source-reference builds use --no-restore and therefore assume existing restored assets. Adding an explicit prerequisite would improve reproduction; the one-shot workflow routes spec-only improvements to deferred work.
+  status: done 2026-11-25
+  resolution: Documented the historical checkout and Debug source-graph restore before the recorded no-restore builds.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-3.md`
   summary: Add explicit dependency comparison commands to the Story 12.1 current-head verification record.

@@ -28,10 +28,16 @@ context:
 - Intent gaps: none. Irreversible actions: none. Footprint: this verification record only; no new runtime interface or code change.
 - Fresh verification used .NET SDK `10.0.401`, Debug assets and source project references. Commands below ran from the project root, `/home/administrator/projects/hexalith/folders`:
 
+  In a fresh checkout at the recorded revision, use that revision's README setup to check out the declared root submodules. Restore the Debug source-reference graph before running the recorded `--no-restore` builds below.
+
   ```bash
-  dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+  dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
+  ```
+
+  ```bash
+  dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
   dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll
-  dotnet build tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj -c Debug --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+  dotnet build tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj -c Debug --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
   dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll
   ```
 
