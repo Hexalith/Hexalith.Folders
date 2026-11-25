@@ -2976,6 +2976,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-4.md`
   summary: Include the pre-existing dirty central package configuration in the Story 12.1 verification environment record.
   evidence: `Directory.Packages.props` imports `references/Hexalith.Builds/Props/Directory.Packages.props`, whose preserved user edit changes `HexalithEventStoreVersion` from `3.120.0` to `3.121.0` at Builds revision `9f0121c77e3f085c58f5c926057606db8e6511a7`. The executed Debug lane explicitly selects EventStore source projects, so the passing source checks do not establish packaged Release compatibility. The one-shot workflow defers spec-only reproducibility improvements; no dependency edit or failing consumer check resulted.
+  status: done 2026-11-25
+  resolution: The historical Story 12.1 record identifies the imported Builds revision and the existing EventStore package override. The observed Debug builds explicitly used the EventStore source revision.
 
 - source_spec: `spec-story-1-17-platform-host-bootstrap.md`
   summary: Resolve Platform runtime image-version catalog lookup from the qualified workspace mapping.
