@@ -264,13 +264,15 @@ public sealed class WorkersOrganizationAclRouteTests
                 "user-a", "create_folder", "correlation-a", "task-a", "revoke-key", "revoke-fingerprint"))
             : Envelope("revocation", 3, new FolderAccessRevoked(tenant, tenant, folder, FolderAccessPrincipalKind.User,
                 "user-a", "read_metadata", "admin-a", "correlation-a", "task-a", "revoke-key", "revoke-fingerprint", 2, now))
-                with { AggregateId = folder };
+                with
+            { AggregateId = folder };
         var later = organization
             ? Envelope("grant-b", 4, organizationGrant with
-                { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint" })
+            { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint" })
             : Envelope("grant-b", 4, folderGrant with
-                { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint", AccessSequence = 3 })
-                with { AggregateId = folder };
+            { PrincipalId = "user-b", IdempotencyKey = "second-key", IdempotencyFingerprint = "second-fingerprint", AccessSequence = 3 })
+                with
+            { AggregateId = folder };
 
         await DeliverAsync(initial, HttpStatusCode.OK);
         await DeliverAsync(granted, HttpStatusCode.OK);
