@@ -187,10 +187,12 @@ public sealed class ProviderReadinessEndpointTests
         json.ShouldContain("\"correlationId\":\"corr-unavailable\"");
     }
 
-    [Fact]
-    public async Task ProviderReadinessRouteShouldGenerateSafeCorrelationWhenHeaderIsMissingOrUnsafe()
+    [Theory]
+    [InlineData("ghp_abcdefghijklmnopqrstuvwxyz123456")]
+    [InlineData("github_pat_SYNTHETIC_NOT_A_REAL_VALUE_42")]
+    [InlineData("glpat-SYNTHETIC-NOT_A_REAL_VALUE-42")]
+    public async Task ProviderReadinessRouteShouldGenerateSafeCorrelationWhenHeaderIsUnsafe(string unsafeCorrelation)
     {
-        const string unsafeCorrelation = "ghp_abcdefghijklmnopqrstuvwxyz123456";
         await using WebApplication app = BuildApp(FakeGitProvider.WithOperationRows(
             ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
             ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.RepositoryCreation),

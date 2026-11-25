@@ -232,6 +232,8 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
     [InlineData(ReadinessPath, "repository")]
     [InlineData(ReadinessPath, "repo_aaaaaaaa")]
     [InlineData(ReadinessPath, "providerpayload")]
+    [InlineData(ReadinessPath, "github_pat_SYNTHETIC_NOT_A_REAL_VALUE_42")]
+    [InlineData(ReadinessPath, "glpat-SYNTHETIC-NOT_A_REAL_VALUE-42")]
     public async Task DiagnosticsShouldRejectSensitiveCorrelationId(string path, string correlationId)
     {
         // A correlation id that carries a secret-looking value (token/secret/credential/URL, or the

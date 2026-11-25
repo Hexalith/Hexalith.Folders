@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Observability;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -795,7 +796,7 @@ public sealed partial class ProviderReadinessValidationService(
             || value.Contains("providerpayload", StringComparison.OrdinalIgnoreCase)
             || value.Contains("privatekey", StringComparison.OrdinalIgnoreCase)
             || value.Contains("private key", StringComparison.OrdinalIgnoreCase)
-            || ProviderTokenPattern().IsMatch(value)
+            || FolderAuditSanitizer.ContainsProviderCredential(value)
             || JwtPattern().IsMatch(value)
             || PemPattern().IsMatch(value);
 
@@ -931,7 +932,7 @@ public sealed partial class ProviderReadinessValidationService(
             || canonical.Contains("privatekey", StringComparison.Ordinal)
             || canonical.Contains("private key", StringComparison.Ordinal)
             || canonical.Contains("installation", StringComparison.Ordinal)
-            || ProviderTokenPattern().IsMatch(value)
+            || FolderAuditSanitizer.ContainsProviderCredential(value)
             || JwtPattern().IsMatch(value)
             || PemPattern().IsMatch(value);
     }
@@ -944,9 +945,6 @@ public sealed partial class ProviderReadinessValidationService(
 
     [GeneratedRegex("\\A[a-z0-9][a-z0-9._:/-]{0,255}\\z", RegexOptions.CultureInvariant)]
     private static partial Regex SafeMetadataTokenPattern();
-
-    [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
-    private static partial Regex ProviderTokenPattern();
 
     [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
     private static partial Regex JwtPattern();

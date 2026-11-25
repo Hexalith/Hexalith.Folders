@@ -47,6 +47,22 @@ public sealed class FolderAuditObservationTests
         FolderAuditSanitizer.TrySanitizeCategory("com\npleted", out _).ShouldBeFalse();
     }
 
+    [Theory]
+    [InlineData("github_pat_AbCdEfGh012345678901")]
+    [InlineData("glpat-AbCdEfGh01234567_89-0")]
+    public void AuditIdentifiersShouldExcludeProviderPatPatterns(string credential)
+    {
+        FolderAuditObservation observation = new FolderAuditObservationBuilder
+        {
+            TenantId = "tenant-a",
+            CorrelationId = credential,
+            TaskId = credential,
+        }.Build();
+
+        observation.CorrelationId.ShouldBeNull();
+        observation.TaskId.ShouldBeNull();
+    }
+
     [Fact]
     public void ApprovedMetadataFieldsShouldBePreserved()
     {

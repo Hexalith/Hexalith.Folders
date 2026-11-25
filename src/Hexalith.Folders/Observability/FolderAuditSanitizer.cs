@@ -50,6 +50,12 @@ public static partial class FolderAuditSanitizer
     public static bool TrySanitizeCategory(string? value, out string? sanitized)
         => TrySanitize(value, CategoryPattern(), MaxCategoryLength, out sanitized);
 
+    /// <summary>Detects GitHub and GitLab personal access tokens within a diagnostic value.</summary>
+    /// <param name="value">The diagnostic value to inspect.</param>
+    /// <returns>Whether the value contains a provider credential pattern.</returns>
+    internal static bool ContainsProviderCredential(string value)
+        => ProviderCredentialPattern().IsMatch(value);
+
     private static string RequiredSafeIdentifier(string? value, string fallback)
         => TrySanitizeIdentifier(value, out string? sanitized) && sanitized is not null ? sanitized : fallback;
 
@@ -126,8 +132,12 @@ public static partial class FolderAuditSanitizer
             || canonical.Contains("payload", StringComparison.Ordinal)
             || canonical.Contains("privatekey", StringComparison.Ordinal)
             || canonical.Contains("private_key", StringComparison.Ordinal)
-            || canonical.Contains("installation", StringComparison.Ordinal);
+            || canonical.Contains("installation", StringComparison.Ordinal)
+            || ContainsProviderCredential(value);
     }
+
+    [GeneratedRegex("(?:gh[pousr]_|github_pat_)[a-zA-Z0-9_]{20,}|glpat-[a-zA-Z0-9_-]{20,}", RegexOptions.CultureInvariant)]
+    private static partial Regex ProviderCredentialPattern();
 
     [GeneratedRegex("\\A[A-Za-z0-9._:-]+\\z", RegexOptions.Compiled)]
     private static partial Regex IdentifierPattern();

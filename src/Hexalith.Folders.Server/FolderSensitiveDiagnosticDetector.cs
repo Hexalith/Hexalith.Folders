@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Observability;
+
 namespace Hexalith.Folders.Server;
 
 /// <summary>
@@ -30,13 +32,10 @@ internal static partial class FolderSensitiveDiagnosticDetector
             || canonical.Contains("privatekey", StringComparison.Ordinal)
             || canonical.Contains("private key", StringComparison.Ordinal)
             || canonical.Contains("installation", StringComparison.Ordinal)
-            || ProviderTokenPattern().IsMatch(value)
+            || FolderAuditSanitizer.ContainsProviderCredential(value)
             || JwtPattern().IsMatch(value)
             || PemPattern().IsMatch(value);
     }
-
-    [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
-    private static partial Regex ProviderTokenPattern();
 
     [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
     private static partial Regex JwtPattern();

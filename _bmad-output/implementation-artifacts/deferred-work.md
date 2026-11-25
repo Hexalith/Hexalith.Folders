@@ -3134,6 +3134,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: The shared detector misses fine-grained GitHub PATs (`github_pat_…`) and GitLab `glpat-…` tokens.
   evidence: Pre-existing Provider HTTP filter (`src/Hexalith.Folders.Server/FolderSensitiveDiagnosticDetector.cs:15`). `github_pat_` tokens match `^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$`, so Provider and OpsConsole would accept such a value as a correlation ID and echo it. Story 11.4 required the shared detector to equal the Provider filter, and widening it changes Provider wire behaviour.
+  status: done 2026-11-25
+  resolution: HTTP diagnostics, provider readiness, and audit use the shared provider credential pattern. Synthetic fine-grained GitHub and GitLab values are removed before response or observation.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Server validation duplication remains beyond the 11.4 extraction list: the correlation-header readers and the inline read-envelope checks.
