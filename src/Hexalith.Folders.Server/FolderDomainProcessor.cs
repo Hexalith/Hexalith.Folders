@@ -1338,6 +1338,11 @@ public sealed partial class FolderDomainProcessor(
         if (request is null || !Content.WorkspaceContentErasure.IsCanonicalRequest(request)
             || _actorFolderRepository is null) return Rejection(command, FolderResultCode.ValidationFailed, null);
         var state = _actorFolderRepository.Load(FolderStreamName.Create(command.TenantId, command.AggregateId));
+        if (!state.IsCreated || string.IsNullOrWhiteSpace(state.OrganizationId))
+        {
+            return Rejection(command, FolderResultCode.FolderNotFound, null);
+        }
+
         if (state.ContentErasureGrants.TryGetValue(request.ReceiptId, out long grant) && grant >= request.ExpectedGeneration)
             return grant == request.ExpectedGeneration ? new PayloadDomainResult("{\"status\":\"accepted\"}", [])
                 : Rejection(command, FolderResultCode.AppendConflict, null);
@@ -1348,7 +1353,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(command, FolderResultCode.AppendConflict, null);
         string fingerprint = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(request.ReceiptId + ":" + head.ToString(System.Globalization.CultureInfo.InvariantCulture))));
-        var accepted = new WorkspaceContentErasureAuthorized(command.TenantId, state.OrganizationId!, command.AggregateId,
+        var accepted = new WorkspaceContentErasureAuthorized(command.TenantId, state.OrganizationId, command.AggregateId,
             request.WorkspaceId, request.ReceiptId, head, command.UserId, command.CorrelationId, ReadRequiredTaskId(command),
             command.MessageId, fingerprint, DateTimeOffset.UtcNow);
         return new PayloadDomainResult("{\"status\":\"accepted\"}", [accepted]);

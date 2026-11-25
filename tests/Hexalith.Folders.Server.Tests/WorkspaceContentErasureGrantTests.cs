@@ -3,8 +3,11 @@ using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Parity.Testing;
 using Hexalith.Folders.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Hexalith.EventStore.Client.Handlers;
+using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService.Content;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server.Content;
 using Shouldly;
 using Xunit;
@@ -13,6 +16,53 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class WorkspaceContentErasureGrantTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProcessorRequiresCreatedFolderBeforeIssuingErasureGrant(bool created)
+    {
+        var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateSlimBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions { EnvironmentName = "Test" });
+        builder.Services.AddFoldersServerTestDefaults();
+        builder.Services.AddFoldersServer();
+        builder.Services.RemoveAll<IFolderRepository>();
+        builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
+        await using var app = builder.Build();
+        using var scope = app.Services.CreateScope();
+        var processor = scope.ServiceProvider.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single();
+        FolderState state = created ? FolderState.Empty with
+        {
+            IsCreated = true,
+            ManagedTenantId = "tenant-a",
+            OrganizationId = "tenant-a",
+            FolderId = "folder-a",
+        } : FolderState.Empty;
+        long head = created ? 1 : 0;
+        string receiptId = "content_" + new string('a', 64);
+        var request = new WorkspaceContentErasureRequest("workspace-a", receiptId, AssignedTaskId: null, head);
+        var command = new CommandEnvelope("erase-message", "tenant-a", "folders", "folder-a",
+            FoldersServerModule.AuthorizeContentErasureCommandType,
+            System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(request, System.Text.Json.JsonSerializerOptions.Web),
+            "correlation-a", null, "user-a", new Dictionary<string, string> { ["taskId"] = "task-a" });
+        DomainServiceCurrentState current = new(
+            created ? System.Text.Json.JsonSerializer.SerializeToElement(state) : null, [], head, head);
+        using var actor = FolderActorSequenceScope.Enter(command.TenantId, command.AggregateId, head);
+
+        var result = await processor.ProcessAsync(command, current);
+
+        if (!created)
+        {
+            result.IsRejection.ShouldBeTrue();
+            result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderCommandRejected>().Code.ShouldBe(nameof(FolderResultCode.FolderNotFound));
+            return;
+        }
+
+        result.IsSuccess.ShouldBeTrue();
+        var grant = result.Events.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceContentErasureAuthorized>();
+        grant.OrganizationId.ShouldBe(state.OrganizationId);
+        FolderState folded = state.Apply([grant], FolderStreamName.Create(command.TenantId, command.AggregateId));
+        folded.ContentErasureGrants.ShouldContainKeyAndValue(receiptId, head);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

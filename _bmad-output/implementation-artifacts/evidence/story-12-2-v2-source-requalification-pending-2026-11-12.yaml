@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: ee185e2ec12c00439e565a1701862e9c9ddae344b197894db6dff30af9f616c6
+candidate_set_sha256: 8544b564d7b63d463e56087c771ebe1a168c69b3944fb2689de1fc39dcc4d4a7
 artifact_count: 1687
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1246,8 +1246,8 @@ artifacts:
     sha256: 50a196458ab1f091148ddac8194c8b5f4856c306582147be6e223ea6d7bc40e3
   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
     kind: file
-    bytes: 86730
-    sha256: d192720d79df0bb2cec92852d1fa9de21044f727cc718e1ceb7d50a2acd0fd56
+    bytes: 86909
+    sha256: 76380ca6e25f26123eb9c74426c0f7dca3567b74aefdecfe539d26ce7e881517
   - path: "src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs"
     kind: file
     bytes: 3370
@@ -5658,8 +5658,8 @@ artifacts:
     sha256: c5a3d74072f21a90d52576ed9bdf6833dd7e6f2e3135f94169b1e1c100869706
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentErasureGrantTests.cs"
     kind: file
-    bytes: 9499
-    sha256: 8466045225e608caf992372efd1db2c47ca746e174868258ba77e78594d806bb
+    bytes: 12261
+    sha256: eeda69561d49b649fcd080552f41987d340a74dfba55c9ae7a7881fe086086e2
   - path: "tests/Hexalith.Folders.Server.Tests/WorkspaceContentExpiringStore.cs"
     kind: file
     bytes: 2959
