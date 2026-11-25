@@ -9,6 +9,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Workers;
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Tenants.Contracts.Enums;
 using Hexalith.Tenants.Contracts.Events;
@@ -307,6 +308,52 @@ public sealed class WorkersTenantEventTests
         }
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ExhaustedConditionalWritesFailTheCallbackAndKeepTheSameRevocationRetryable(bool disableTenant)
+    {
+        const int attempts = 3;
+        const string key = "projection:folders:tenant-access:tenant-a";
+        CancellationToken token = TestContext.Current.CancellationToken;
+        WorkerRouteReadModelStore writes = new();
+        WorkerTestHost host = await StartWorkerHostAsync(writes).ConfigureAwait(true);
+        await using var lifetime = host.ConfigureAwait(true);
+        var revocation = disableTenant
+            ? Envelope("01J00000000000000000001003", 3, new TenantDisabled("tenant-a", Now))
+            : Envelope("01J00000000000000000001003", 3, new UserRemovedFromTenant("tenant-a", "user-a"));
+
+        await DeliverAsync(Envelope("01J00000000000000000001001", 1, new TenantCreated("tenant-a", "Tenant A", null, Now)), HttpStatusCode.OK);
+        await DeliverAsync(Envelope("01J00000000000000000001002", 2, new UserAddedToTenant("tenant-a", "user-a", TenantRole.TenantOwner)), HttpStatusCode.OK);
+        var initial = await writes.GetAsync<FolderTenantAccessProjection>("statestore", key, token);
+        initial.Value.ShouldNotBeNull().Watermark.ShouldBe(2);
+
+        writes.ForcedWriteConflicts = attempts;
+        await DeliverAsync(revocation, HttpStatusCode.InternalServerError);
+        writes.ForcedWriteConflicts.ShouldBe(0);
+        var unchanged = await writes.GetAsync<FolderTenantAccessProjection>("statestore", key, token);
+        unchanged.ETag.ShouldBe(initial.ETag);
+        unchanged.Value.ShouldNotBeNull().Enabled.ShouldBeTrue();
+        unchanged.Value.Watermark.ShouldBe(2);
+        unchanged.Value.Principals.ShouldContainKey("user-a");
+        unchanged.Value.ProcessedMessages.ShouldNotContainKey(revocation.MessageId);
+
+        await DeliverAsync(revocation, HttpStatusCode.OK);
+        var applied = await writes.GetAsync<FolderTenantAccessProjection>("statestore", key, token);
+        applied.ETag.ShouldNotBe(initial.ETag);
+        applied.Value.ShouldNotBeNull().Watermark.ShouldBe(3);
+        applied.Value.ProcessedMessages.ShouldContainKey(revocation.MessageId);
+        applied.Value.Enabled.ShouldBe(!disableTenant);
+        applied.Value.Principals.ContainsKey("user-a").ShouldBe(disableTenant);
+
+        async Task DeliverAsync(EventStoreDomainEventEnvelope envelope, HttpStatusCode expected)
+        {
+            using HttpResponseMessage response = await host.Client.PostAsJsonAsync(FoldersWorkersModule.TenantEventsRoute,
+                envelope, token).ConfigureAwait(false);
+            response.StatusCode.ShouldBe(expected);
+        }
+    }
+
     [Fact]
     public async Task TenantSubscriptionEndpointShouldRejectInvalidPayloadWithoutMutatingProjectionOrEchoingPayload()
     {
@@ -430,9 +477,11 @@ public sealed class WorkersTenantEventTests
             "json",
             JsonSerializer.SerializeToUtf8Bytes(@event));
 
-    private static async Task<WorkerTestHost> StartWorkerHostAsync()
+    private static async Task<WorkerTestHost> StartWorkerHostAsync(IReadModelStore? readModels = null)
     {
-        InMemoryFolderTenantAccessProjectionStore store = new();
+        IFolderTenantAccessProjectionStore store = readModels is null
+            ? new InMemoryFolderTenantAccessProjectionStore()
+            : new EventStoreFolderTenantAccessProjectionStore(readModels);
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
@@ -466,7 +515,7 @@ public sealed class WorkersTenantEventTests
     private sealed record WorkerTestHost(
         WebApplication App,
         HttpClient Client,
-        InMemoryFolderTenantAccessProjectionStore Store) : IAsyncDisposable
+        IFolderTenantAccessProjectionStore Store) : IAsyncDisposable
     {
         public async ValueTask DisposeAsync()
         {

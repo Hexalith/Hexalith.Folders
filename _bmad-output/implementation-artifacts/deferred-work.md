@@ -3088,6 +3088,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Tenant-access projection retry exhaustion (persistent conflict) is untested; revocation drop risk unverified.
   evidence: EventStoreFolderTenantAccessProjectionStoreTests.cs:55-89.
+  status: done 2026-11-25
+  resolution: The authenticated tenant callback returns 500 after exhausting three durable conditional writes for a tenant disable or membership removal. The stored row stays unchanged and the same envelope succeeds after the conflict clears. Recovery after a later committed sequence remains governed by the tenant projection rebuild procedure.
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Callback authorization is asserted as endpoint metadata only; add 401/403 request tests for /process, /project, /query, /admin; strengthen the archive-principal accepted row.
   evidence: FoldersServerHostCompositionTests.cs, ServerEndpointRegistrationTests.cs, ArchiveFolderProcessWiringTests.cs.
