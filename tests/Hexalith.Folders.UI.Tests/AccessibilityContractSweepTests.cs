@@ -78,6 +78,7 @@ public sealed class AccessibilityContractSweepTests
                 {
                     (BunitContext ctx, _, _) = DiagnosticTestContext.Create();
                     using BunitContext _ctx = ctx;
+                    ctx.SetRendererInfo(new RendererInfo("Server", true));
                     AssertStructuralA11y(ctx.Render<FoldersPage>(), "console-page-folders-root");
                     break;
                 }

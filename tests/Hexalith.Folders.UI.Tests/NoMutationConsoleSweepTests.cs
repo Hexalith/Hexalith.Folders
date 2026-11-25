@@ -72,6 +72,7 @@ public sealed class NoMutationConsoleSweepTests
                 {
                     (BunitContext ctx, _, _) = DiagnosticTestContext.Create();
                     using BunitContext _ctx = ctx;
+                    ctx.SetRendererInfo(new RendererInfo("Server", true));
                     AssertReadOnly(ctx.Render<FoldersPage>(), "console-page-folders-root");
                     break;
                 }

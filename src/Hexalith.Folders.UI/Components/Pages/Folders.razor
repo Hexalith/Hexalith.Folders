@@ -15,8 +15,10 @@
 
     <div class="fc-folder-nav">
         <label for="console-page-folders-id-input">Folder identifier</label>
-        <input id="console-page-folders-id-input" @bind="_folderId" data-testid="console-page-folders-id-input" />
-        <button type="button" @onclick="OpenFolder" data-testid="console-page-folders-open">Open folder</button>
+        <input id="console-page-folders-id-input" @bind="_folderId" disabled="@(!RendererInfo.IsInteractive)"
+               data-testid="console-page-folders-id-input" />
+        <button type="button" @onclick="OpenFolder" disabled="@(!RendererInfo.IsInteractive)"
+                data-testid="console-page-folders-open">Open folder</button>
     </div>
 
     <ConsoleEmptyState Reason="EmptyStateReason.InsufficientFilterScope" />

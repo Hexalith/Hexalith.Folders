@@ -27,7 +27,8 @@ using Xunit;
 /// </para>
 /// </summary>
 [Collection(PlaywrightCollection.Name)]
-public sealed class ConsoleKeyboardFocusGateTests : IClassFixture<AccessibilityConsoleHostFixture>, IAsyncLifetime
+public sealed class ConsoleKeyboardFocusGateTests
+    : IClassFixture<AccessibilityConsoleHostFixture>, IClassFixture<InteractiveConsoleHostFixture>
 {
     // Generous upper bound on Tab presses: the shell chrome exposes only a handful of focusable controls before
     // the console content, so this comfortably traverses into and through the page content on every journey entry.
@@ -50,32 +51,16 @@ public sealed class ConsoleKeyboardFocusGateTests : IClassFixture<AccessibilityC
 
     private readonly PlaywrightFixture _playwright;
     private readonly AccessibilityConsoleHostFixture _host;
-    private IBrowserContext? _context;
-    private IPage? _page;
+    private readonly InteractiveConsoleHostFixture _interactiveHost;
 
-    public ConsoleKeyboardFocusGateTests(PlaywrightFixture playwright, AccessibilityConsoleHostFixture host)
+    public ConsoleKeyboardFocusGateTests(
+        PlaywrightFixture playwright,
+        AccessibilityConsoleHostFixture host,
+        InteractiveConsoleHostFixture interactiveHost)
     {
         _playwright = playwright;
         _host = host;
-    }
-
-    public async ValueTask InitializeAsync()
-    {
-        _context = await _playwright.CreateAuthenticatedContextAsync(_host.BaseAddress).ConfigureAwait(false);
-        _page = await _context.NewPageAsync().ConfigureAwait(false);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_page is not null)
-        {
-            await _page.CloseAsync().ConfigureAwait(false);
-        }
-
-        if (_context is not null)
-        {
-            await _context.DisposeAsync().ConfigureAwait(false);
-        }
+        _interactiveHost = interactiveHost;
     }
 
     [Theory]
@@ -96,15 +81,26 @@ public sealed class ConsoleKeyboardFocusGateTests : IClassFixture<AccessibilityC
         string rootTestId,
         string populatedTestId)
     {
-        IPage page = Page;
+        bool isFolderDiscovery = routeKey == "folders";
+        Uri baseAddress = isFolderDiscovery ? _interactiveHost.BaseAddress : _host.BaseAddress;
+        IBrowserContext context = await _playwright.CreateAuthenticatedContextAsync(baseAddress);
+        await using var cleanup = context.ConfigureAwait(false);
+        IPage page = await context.NewPageAsync();
 
-        Uri target = new(_host.BaseAddress, ResolveRoute(routeKey));
-        IResponse? response = await page.GotoAsync(target.ToString());
+        string target = new Uri(baseAddress, ResolveRoute(routeKey)).ToString();
+        IResponse? response = isFolderDiscovery
+            ? await BlazorCircuit.GotoAndWaitForFirstRenderAsync(page, target, TestContext.Current.CancellationToken)
+            : await page.GotoAsync(target);
         response.ShouldNotBeNull();
         response.Status.ShouldBeInRange(200, 399);
 
         await page.Locator($"[data-testid=\"{populatedTestId}\"]")
             .WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+
+        if (isFolderDiscovery)
+        {
+            await Assertions.Expect(page.GetByTestId("console-page-folders-id-input")).ToBeEnabledAsync();
+        }
 
         // Genuine keyboard traversal: collect each distinct console-content control the keyboard reaches and
         // whether it shows a visible focus indicator while focused.
@@ -156,6 +152,4 @@ public sealed class ConsoleKeyboardFocusGateTests : IClassFixture<AccessibilityC
         _ => throw new ArgumentOutOfRangeException(nameof(routeKey), routeKey, "Unknown console route key."),
     };
 
-    private IPage Page => _page
-        ?? throw new InvalidOperationException("The Playwright page has not completed InitializeAsync.");
 }
