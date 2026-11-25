@@ -173,20 +173,7 @@ public sealed record FolderState(
         IdempotencyFingerprints: FrozenDictionary<string, string>.Empty);
 
     public FolderState Apply(IEnumerable<IFolderEvent> events, FolderStreamName expectedStreamName)
-    {
-        ArgumentNullException.ThrowIfNull(events);
-        ArgumentNullException.ThrowIfNull(expectedStreamName);
-
-        FolderState state = this;
-        foreach (IFolderEvent folderEvent in events)
-        {
-            // Fold every retained position. Value equality cannot distinguish a repeated
-            // delivery from a second invalid transition in the authoritative stream.
-            state = FolderStateApply.Apply(state, folderEvent, expectedStreamName);
-        }
-
-        return state;
-    }
+        => FolderStateApply.ApplyBatch(this, events, expectedStreamName);
 
     public bool HasFolderAccess(FolderAccessEntryKey key)
         => AccessOverrides.TryGetValue(key, out FolderAccessOverride? access)

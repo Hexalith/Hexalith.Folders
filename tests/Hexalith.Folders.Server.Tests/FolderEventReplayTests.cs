@@ -22,6 +22,52 @@ public sealed class FolderEventReplayTests
     private static readonly DateTimeOffset OccurredAt = new(2026, 10, 11, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public void LargeFolderHistoryPreservesFingerprintsAndStateWithoutQuadraticCopies()
+    {
+        const int policyChanges = 2_500;
+        FolderCreated created = Created();
+        BranchRefPolicyConfigured policy = new("tenant-a", "tenant-a", "folder-a", "binding-a", "policy-a", "main",
+            ["main"], [], "user-a", "correlation-a", "task-a", "Policy-0", "upper-fingerprint", OccurredAt);
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState snapshot = FolderStateApply.Apply(FolderStateApply.Apply(FolderState.Empty, created, stream), policy, stream);
+        List<EventEnvelope> retained = [Envelope(created), Envelope(typeof(BranchRefPolicyConfigured).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(policy), 2)];
+        for (int index = 0; index < policyChanges; index++)
+        {
+            var changed = policy with { IdempotencyKey = $"policy-{index}", IdempotencyFingerprint = $"fingerprint-{index}" };
+            retained.Add(Envelope(typeof(BranchRefPolicyConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(changed), retained.Count + 1));
+        }
+
+        var replaced = policy with { IdempotencyKey = "policy-0", IdempotencyFingerprint = "later-fingerprint", PolicyRef = "latest-policy" };
+        retained.Add(Envelope(typeof(BranchRefPolicyConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(replaced), retained.Count + 1));
+        var withoutKey = replaced with { IdempotencyKey = " ", IdempotencyFingerprint = "ignored-fingerprint" };
+        retained.Add(Envelope(typeof(BranchRefPolicyConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(withoutKey), retained.Count + 1));
+        ProjectionRequest request = new("tenant-a", "folders", "folder-a", retained.Select(item =>
+            new ProjectionEventDto(item.Metadata.EventTypeName, item.Payload, "json", item.Metadata.SequenceNumber,
+                OccurredAt, "correlation-a") { MetadataVersion = 1 }).ToArray());
+        var tail = new DomainServiceCurrentState(snapshot, retained.Skip(2).ToArray(), 2, retained.Count);
+        FolderEventReplay replay = new(new([typeof(FolderCreated), typeof(BranchRefPolicyConfigured)], []));
+
+        long allocated = GC.GetAllocatedBytesForCurrentThread();
+        FolderState actor = replay.FoldFolder(tail, "tenant-a", "folder-a");
+        FolderState projection = FolderEventReplay.FoldFolder(request);
+        long foldedBytes = GC.GetAllocatedBytesForCurrentThread() - allocated;
+
+        actor.IsCreated.ShouldBeTrue();
+        actor.BranchRefPolicy.ShouldNotBeNull().PolicyRef.ShouldBe("latest-policy");
+        projection.BranchRefPolicy.ShouldNotBeNull().PolicyRef.ShouldBe(actor.BranchRefPolicy!.PolicyRef);
+        actor.IdempotencyFingerprints.Count.ShouldBe(policyChanges + 2);
+        actor.IdempotencyFingerprints["policy-0"].ShouldBe("later-fingerprint");
+        actor.IdempotencyFingerprints["Policy-0"].ShouldBe("upper-fingerprint");
+        actor.IdempotencyFingerprints[$"policy-{policyChanges - 1}"].ShouldBe($"fingerprint-{policyChanges - 1}");
+        actor.IdempotencyFingerprints.ShouldNotContainKey(" ");
+        projection.IdempotencyFingerprints.ShouldBe(actor.IdempotencyFingerprints, ignoreOrder: true);
+        snapshot.IdempotencyFingerprints.Count.ShouldBe(2);
+        snapshot.IdempotencyFingerprints.ShouldNotContainKey("policy-0");
+        foldedBytes.ShouldBeLessThan(64L * 1024 * 1024);
+    }
+
+    [Fact]
     public void LargeOrganizationHistoryFoldsOnceForActorAndProjectionWithoutQuadraticCopies()
     {
         const int grants = 10_000;

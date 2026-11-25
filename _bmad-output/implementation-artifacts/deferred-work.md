@@ -2964,6 +2964,8 @@ resolution: The parser rejects empty and whitespace identifiers before creating 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Remove pre-existing quadratic allocation from full folder-state replay without weakening immutable state or event-order guards.
   evidence: `FolderStateApply.RecordIdempotency` copies and freezes all preceding fingerprints per event at both original baseline `09c964353c1d7c15244b3a1c5f4066c361ada994` and current source. The independent harness at `/tmp/folders-review-blind-harness/` measured approximately 80 MB for 1000 events, 273 MB for 2000 and 1042 MB for 4000. A replay accumulator and large-folder allocation/end-state regression should address the original fold algorithm separately.
+  status: done 2026-11-25
+  resolution: Folder actor and projection replay build the fingerprint map once per batch and freeze it at the fold boundary. A 2,500-event snapshot and projection regression verifies end-state parity and fails the old fold at 861,606,616 allocated bytes against a 64 MiB ceiling.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Make the existing Claude hook executable and project-root paths portable across checkouts.

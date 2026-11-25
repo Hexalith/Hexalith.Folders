@@ -13,6 +13,30 @@ public static class FolderStateApply
         ArgumentNullException.ThrowIfNull(folderEvent);
         ArgumentNullException.ThrowIfNull(expectedStreamName);
 
+        FolderState next = ApplyTransition(state, folderEvent, expectedStreamName);
+        return WithFingerprints(next, RecordIdempotency(null, state.IdempotencyFingerprints, folderEvent));
+    }
+
+    internal static FolderState ApplyBatch(FolderState state, IEnumerable<IFolderEvent> events, FolderStreamName expectedStreamName)
+    {
+        ArgumentNullException.ThrowIfNull(events);
+        ArgumentNullException.ThrowIfNull(expectedStreamName);
+
+        IReadOnlyDictionary<string, string> initialFingerprints = state.IdempotencyFingerprints;
+        Dictionary<string, string>? fingerprints = null;
+        foreach (IFolderEvent folderEvent in events)
+        {
+            ArgumentNullException.ThrowIfNull(folderEvent);
+            // Value equality cannot distinguish a repeated delivery from a second invalid retained transition.
+            state = ApplyTransition(state, folderEvent, expectedStreamName);
+            fingerprints = RecordIdempotency(fingerprints, initialFingerprints, folderEvent);
+        }
+
+        return WithFingerprints(state, fingerprints);
+    }
+
+    private static FolderState ApplyTransition(FolderState state, IFolderEvent folderEvent, FolderStreamName expectedStreamName)
+    {
         FolderStreamName actual = FolderStreamName.Create(folderEvent.ManagedTenantId, folderEvent.FolderId);
         if (!string.Equals(actual.Value, expectedStreamName.Value, StringComparison.Ordinal))
         {
@@ -31,7 +55,7 @@ public static class FolderStateApply
 
         return folderEvent switch
         {
-            WorkspaceNativeTaskChanged native => WorkspaceNativeTaskService.Apply(state, native) with { IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, native) },
+            WorkspaceNativeTaskChanged native => WorkspaceNativeTaskService.Apply(state, native),
             FolderCreated created => state with
             {
                 IsCreated = true,
@@ -85,19 +109,16 @@ public static class FolderStateApply
                 WorkspaceCommitChangedPathMetadataDigest = null,
                 WorkspaceCommitReconciliationReference = null,
                 WorkspaceCommitReconciliationRequired = false,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             FolderAccessGranted granted => state with
             {
                 AccessOverrides = RecordGrant(state.AccessOverrides, granted),
                 AccessSequence = AdvanceWatermark(state.AccessSequence, granted.AccessSequence),
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             FolderAccessRevoked revoked => state with
             {
                 AccessOverrides = RecordRevoke(state.AccessOverrides, revoked),
                 AccessSequence = AdvanceWatermark(state.AccessSequence, revoked.AccessSequence),
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             FolderArchived archived => state with
             {
@@ -108,7 +129,6 @@ public static class FolderStateApply
                 ArchiveTaskId = archived.TaskId,
                 ArchiveIdempotencyKey = archived.IdempotencyKey,
                 ArchivedAt = archived.OccurredAt,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             RepositoryBindingRequested requested => ApplyRepositoryBindingRequested(state, requested),
             ExistingRepositoryBindingRequested requested => ApplyExistingRepositoryBindingRequested(state, requested),
@@ -127,7 +147,6 @@ public static class FolderStateApply
                     configured.IdempotencyKey,
                     configured.IdempotencyFingerprint,
                     configured.OccurredAt),
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             RepositoryBindingFailed failed => ApplyRepositoryBindingFailed(state, failed),
             ProviderOutcomeUnknown unknown => ApplyProviderOutcomeUnknown(state, unknown),
@@ -139,7 +158,6 @@ public static class FolderStateApply
             {
                 ContentErasureGrants = new Dictionary<string, long>(state.ContentErasureGrants, StringComparer.Ordinal)
                 { [erased.ReceiptId] = erased.SourceGeneration }.ToFrozenDictionary(StringComparer.Ordinal),
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, erased),
             },
             WorkspaceFileMutationAccepted accepted => ApplyWorkspaceFileMutationAccepted(state, accepted),
             WorkspaceCommitSucceeded succeeded => ApplyWorkspaceCommitSucceeded(state, succeeded),
@@ -179,7 +197,6 @@ public static class FolderStateApply
             RepositoryBindingTaskId = requested.TaskId,
             RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
             RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
         };
     }
 
@@ -212,7 +229,6 @@ public static class FolderStateApply
             RepositoryBindingTaskId = requested.TaskId,
             RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
             RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
         };
     }
 
@@ -238,7 +254,6 @@ public static class FolderStateApply
             RepositoryBindingTaskId = bound.TaskId,
             RepositoryBindingIdempotencyKey = bound.IdempotencyKey,
             RepositoryBindingIdempotencyFingerprint = bound.IdempotencyFingerprint,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, bound),
         };
     }
 
@@ -264,7 +279,6 @@ public static class FolderStateApply
             RepositoryBindingTaskId = failed.TaskId,
             RepositoryBindingIdempotencyKey = failed.IdempotencyKey,
             RepositoryBindingIdempotencyFingerprint = failed.IdempotencyFingerprint,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, failed),
         };
     }
 
@@ -292,7 +306,6 @@ public static class FolderStateApply
             RepositoryBindingTaskId = unknown.TaskId,
             RepositoryBindingIdempotencyKey = unknown.IdempotencyKey,
             RepositoryBindingIdempotencyFingerprint = unknown.IdempotencyFingerprint,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, unknown),
         };
     }
 
@@ -312,7 +325,6 @@ public static class FolderStateApply
         FolderState next = WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
         {
             WorkspaceActorPrincipalId = recorded.ActorPrincipalId ?? state.WorkspaceActorPrincipalId,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
         };
 
         return transition.NextState == FolderWorkspaceLifecycleState.Committed
@@ -347,7 +359,6 @@ public static class FolderStateApply
             WorkspaceLockEffectiveAt = acquired.EffectiveAt,
             WorkspaceLockExpiresAt = acquired.ExpiresAt,
             WorkspaceLockRetryEligibilityBasis = acquired.RetryEligibilityBasis,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, acquired),
         };
     }
 
@@ -371,7 +382,6 @@ public static class FolderStateApply
             WorkspaceLockEffectiveAt = null,
             WorkspaceLockExpiresAt = null,
             WorkspaceLockRetryEligibilityBasis = null,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, released),
         };
 
         return state.WorkspaceLifecycleState == FolderWorkspaceLifecycleState.Locked
@@ -395,7 +405,6 @@ public static class FolderStateApply
             WorkspaceNativeProviderWork = state.WorkspaceNativeProviderWork || state.WorkspaceNativeLease && accepted.ContentBinding?.AcceptedSdkKey is null,
             ContentPublications = RecordContentPublication(state, accepted),
             FileIdentities = FolderFileIdentityState.Apply(state.FileIdentities, accepted),
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),
         };
     }
 
@@ -451,7 +460,6 @@ public static class FolderStateApply
             WorkspaceCommitChangedPathMetadataDigest = succeeded.ChangedPathMetadataDigest,
             WorkspaceCommitReconciliationReference = null,
             WorkspaceCommitReconciliationRequired = false,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, succeeded),
         };
 
         return CloseTask(next, succeeded.WorkspaceId, succeeded.TaskId, "committed", succeeded.OperationId,
@@ -489,7 +497,6 @@ public static class FolderStateApply
             WorkspaceCommitChangedPathMetadataDigest = failed.ChangedPathMetadataDigest,
             WorkspaceCommitReconciliationReference = null,
             WorkspaceCommitReconciliationRequired = false,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, failed),
         };
     }
 
@@ -515,7 +522,6 @@ public static class FolderStateApply
             WorkspaceCommitChangedPathMetadataDigest = unknown.ChangedPathMetadataDigest,
             WorkspaceCommitReconciliationReference = unknown.ReconciliationReference,
             WorkspaceCommitReconciliationRequired = unknown.ReconciliationRequired,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, unknown),
         };
     }
 
@@ -532,7 +538,6 @@ public static class FolderStateApply
             WorkspaceTaskId = requested.TaskId,
             WorkspaceActorPrincipalId = requested.ActorPrincipalId,
             WorkspaceLifecycleUpdatedAt = requested.OccurredAt,
-            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
         };
         // Commit evidence belongs to the previous workspace, whose projection and task
         // closure remain retained independently. A new binding has no provider outcome.
@@ -669,9 +674,7 @@ public static class FolderStateApply
                 history));
     }
 
-    // The state record exposes a frozen dictionary, so each event has to produce a fresh
-    // frozen snapshot. We accept the freeze cost per event because each transition is the
-    // unit of observable consistency; callers replay events one-at-a-time through Apply.
+    // ACL overrides are part of the transition state. The next event can read what this event wrote.
     private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> ReplaceOverride(
         IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
         FolderAccessEntryKey key,
@@ -687,21 +690,23 @@ public static class FolderStateApply
     private static long AdvanceWatermark(long current, long candidate)
         => candidate > current ? candidate : current;
 
-    private static IReadOnlyDictionary<string, string> RecordIdempotency(
-        IReadOnlyDictionary<string, string> current,
+    private static Dictionary<string, string>? RecordIdempotency(
+        Dictionary<string, string>? pending,
+        IReadOnlyDictionary<string, string> initial,
         IFolderEvent folderEvent)
     {
-        if (string.IsNullOrWhiteSpace(folderEvent.IdempotencyKey))
+        if (!string.IsNullOrWhiteSpace(folderEvent.IdempotencyKey))
         {
-            return current;
+            pending ??= new Dictionary<string, string>(initial, StringComparer.Ordinal);
+            pending[folderEvent.IdempotencyKey] = folderEvent.IdempotencyFingerprint;
         }
 
-        Dictionary<string, string> next = new(current, StringComparer.Ordinal)
-        {
-            [folderEvent.IdempotencyKey] = folderEvent.IdempotencyFingerprint,
-        };
-        return next.ToFrozenDictionary(StringComparer.Ordinal);
+        return pending;
     }
+
+    // Publish the fingerprint map only at the fold boundary. Transitions do not inspect it.
+    private static FolderState WithFingerprints(FolderState state, Dictionary<string, string>? pending)
+        => pending is null ? state : state with { IdempotencyFingerprints = pending.ToFrozenDictionary(StringComparer.Ordinal) };
 
     // Re-canonicalize on apply so events produced by a future buggy writer with mixed-case,
     // unsorted, or duplicate tags do not propagate that drift into state.
