@@ -77,8 +77,10 @@ public sealed class FoldersHumanCommandCatalogTests
         {
             Type payload = FolderDomainProcessor.CatalogPayloadTypes.First(
                 type => type.FullName == command.Route.Execution!.HandlerType);
+            string ingress = command.Route.MessageType == FoldersServerModule.ProvisionFolderCommandType
+                ? "internal" : "public";
             var runtimeOperation = RouteOperationSchema.Create(command.Route, payload, typeof(SubmitCommandResponse),
-                "public", "agent-eligible", JsonSerializerOptions.Web);
+                ingress, "agent-eligible", JsonSerializerOptions.Web);
 
             operations[command.Route.RouteId].Digest.ShouldBe(runtimeOperation.Digest, command.Route.RouteId);
         }
