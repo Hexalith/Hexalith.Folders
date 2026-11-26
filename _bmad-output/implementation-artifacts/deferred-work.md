@@ -3393,3 +3393,23 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25-3.md`
   summary: Make the operational-status capacity regression deterministic during concurrent catch-up.
   evidence: The complete core run failed the 10,001-position case once with OperationalStatusUnavailableException from RequireCurrentViewsAsync while two writers caught up the same rejection. A serialized rerun of OperationalStatusCapacityTests passed all nine cases. Reproduce the checkpoint and lifecycle-view read interleaving under two authorized writers before changing the SDK or the fail-closed contract.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Translate Polly `TimeoutRejectedException` from the bounded gateway client into the documented 503 `gateway-timeout` `EventStoreGatewayException`.
+  evidence: `EventStoreGatewayClient.SendTranslatingAsync` catches only `HttpRequestException` and `TaskCanceledException`. A command still running when the 30 s total budget ends raises a raw Polly exception, as the inherited pipeline already did. Live candidate-1 hit this twice on a single attempt of about 28 s.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Decide how the gateway client's 30 s single-attempt budget relates to the gateway's own command budget.
+  evidence: A gateway command slower than 30 s is abandoned while it keeps running, and a caller retry with the same key can then meet the duplicate Pending 202. Domain queries size their pipeline from `InvocationTimeoutSeconds`; gateway commands have no equivalent. Unverified medium; settle it by measuring the server-side command bound and choosing the client budget against it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Stop transport retries of gateway command POSTs after an ambiguous post-send connection failure.
+  evidence: The standard retry handles `HttpRequestException` whether or not the body reached the gateway. A connection reset during execution resubmits the same idempotency key, which can meet Pending (202). This is pre-existing and unchanged by the bounded policy; settle it with a retry predicate limited to pre-send connection errors, while still retrying early 503s.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Cap or ignore a `Retry-After` that consumes the whole gateway client budget.
+  evidence: The gateway's sidecar-unavailable 503 sends `Retry-After: 30`, equal to the 30 s total budget, so the retry never runs and the caller gets a total timeout instead of the 503. The inherited pipeline behaved the same.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Apply the single-attempt gateway command policy to hosts that register `AddEventStoreGatewayClient` without `AddEventStoreDomainService`.
+  evidence: Only domain-service hosts receive the bounded gateway policy. The EventStore samples keep the inherited 10 s attempt and retries. They send no idempotency key today, so the Pending 202 cannot arise there, but resubmission remains possible.

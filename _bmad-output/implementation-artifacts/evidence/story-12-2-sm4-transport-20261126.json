@@ -350,5 +350,22 @@
     "note": "An outside fast-forward pull of 8c5452c0 during this session replaced the local inventory; it binds the committed content of the two retained local Folders changes. This session changed no Folders source."
   },
   "protected_bodies_unchanged": true,
-  "rerun_command": "run-with-temp bash .artifacts/sm4-transport-20261126/orchestrate.sh"
+  "rerun_command": "run-with-temp bash .artifacts/sm4-transport-20261126/orchestrate.sh",
+  "post_review": {
+    "eventstore_head": "8a3536ba56733eeba61b8e831547ca4ab113a0a1",
+    "upstream_commit_of_this_change": "528696d93 fix(domain-service): keep a held gateway command on one attempt (committed and pushed to EventStore origin/main by a concurrent Cursor session; content byte-identical to the reviewed change)",
+    "review": "Blind, edge-case and verification-gap layers. 5 patched (test isolation pin, registration-order theory, wording, policy summary, neutral SDK test), 5 deferred to deferred-work.md, 4 rejected.",
+    "uncommitted_follow_ups": [
+      "src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs (comment)",
+      "src/Hexalith.EventStore.ServiceDefaults/BoundedInvocationResilienceExtensions.cs (summary)",
+      "tests/Hexalith.EventStore.DomainService.Tests/GatewayCommandTransportTests.cs"
+    ],
+    "tests_on_new_base": {
+      "domainservice_selected_classes": {
+        "Pass": 138
+      },
+      "gateway_transport_tests": 4
+    },
+    "note": "The live comparison ran on EventStore 943be126; the base later moved to 88c8b27b7 (#408), which also routes a configured Dapr gateway (DW-163). Re-qualify live on the new base."
+  }
 }
