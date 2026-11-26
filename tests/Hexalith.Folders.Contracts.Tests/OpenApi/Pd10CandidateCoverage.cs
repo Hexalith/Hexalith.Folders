@@ -88,9 +88,12 @@ internal static class Pd10CandidateCoverage
         foreach (string directory in new[]
         {
             "src/Hexalith.Folders.Server/Authentication",
+            "src/Hexalith.Folders.Server/Provisioning",
+            "src/Hexalith.Folders.Contracts/Provisioning",
             "src/shared/AdapterCore",
             "tests/Hexalith.Folders.Tests/Queries/FileContext",
             "tests/Hexalith.Folders.Server.Tests/Authentication",
+            "tests/Hexalith.Folders.Server.Tests/Provisioning",
             "tests/Hexalith.Folders.IntegrationTests/Routing",
         })
         {

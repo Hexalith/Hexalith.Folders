@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 
@@ -45,24 +46,31 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def reject_output_alias(root: Path, output: Path, paths: list[str]) -> None:
+    """Refuse to overwrite candidate or historical inputs, even when inventory is incomplete."""
+    resolved_output = output.resolve()
+    for historical_input in (HISTORICAL_V1_PATH, MATRIX_PATH, *IMMUTABLE_CONFORMANCE_HASHES):
+        if (root / historical_input).resolve() == resolved_output:
+            raise RuntimeError("The conformance-set output must not alias immutable historical evidence.")
+    for relative_path in paths:
+        if (root / relative_path).resolve() == resolved_output:
+            raise RuntimeError("The conformance-set output must not alias a required candidate input.")
+
+
 def candidate_paths(root: Path, output: Path) -> list[str]:
     allowlist = root / STORY_OWNED_PATHS_PATH
     paths = [line.strip() for line in allowlist.read_text(encoding="utf-8").splitlines() if line.strip()]
     if paths != sorted(set(paths)):
         raise RuntimeError("The story-owned candidate path allowlist must be unique and ordinally sorted.")
 
+    reject_output_alias(root, output, paths)
+
     missing = sorted(required_runtime_paths(root) - set(paths))
     if missing:
         raise RuntimeError("Candidate inventory omits runtime/test compile inputs: " + ", ".join(missing))
 
-    resolved_output = output.resolve()
-    for historical_input in (HISTORICAL_V1_PATH, *IMMUTABLE_CONFORMANCE_HASHES):
-        if (root / historical_input).resolve() == resolved_output:
-            raise RuntimeError("The conformance-set output must not alias immutable historical evidence.")
     for relative_path in paths:
         candidate = root / relative_path
-        if candidate.resolve() == resolved_output:
-            raise RuntimeError("The conformance-set output must not alias a required candidate input.")
         if candidate.is_symlink() or not candidate.is_file():
             raise RuntimeError(f"Story-owned candidate path is not a regular file: {relative_path}")
 
@@ -79,13 +87,7 @@ def artifact_entry(
     return relative_path, "file", len(content), hashlib.sha256(content).hexdigest(), None
 
 
-def main() -> int:
-    arguments = parse_arguments()
-    root = arguments.repository_root.resolve()
-    output = arguments.output or root / OUTPUT_PATH
-    if not output.is_absolute():
-        output = root / output
-    output = output.resolve()
+def write_conformance_set(root: Path, output: Path, baseline_commit: str) -> None:
     paths = candidate_paths(root, output)
     for relative_path, expected_digest in IMMUTABLE_CONFORMANCE_HASHES.items():
         if hashlib.sha256((root / relative_path).read_bytes()).hexdigest() != expected_digest:
@@ -108,7 +110,7 @@ def main() -> int:
         "source_identity_qualification: pending-after-qualified-source-pins",
         f"prior_conformance_set_path: {PRIOR_CONFORMANCE_PATH}",
         f"prior_conformance_set_sha256: {hashlib.sha256((root / PRIOR_CONFORMANCE_PATH).read_bytes()).hexdigest()}",
-        f"baseline_commit: {json.dumps(arguments.baseline_commit)}",
+        f"baseline_commit: {json.dumps(baseline_commit)}",
         f"source_baseline_commit: {json.dumps(SOURCE_BASELINE_COMMIT)}",
         f"historical_v1_path: {HISTORICAL_V1_PATH}",
         f"historical_v1_sha256: {historical_v1_digest}",
@@ -138,6 +140,20 @@ def main() -> int:
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def main() -> int:
+    arguments = parse_arguments()
+    root = arguments.repository_root.resolve()
+    output = arguments.output or root / OUTPUT_PATH
+    if not output.is_absolute():
+        output = root / output
+    output = output.resolve()
+    try:
+        write_conformance_set(root, output, arguments.baseline_commit)
+    except RuntimeError as error:
+        print(error, file=sys.stderr)
+        return 1
     return 0
 
 

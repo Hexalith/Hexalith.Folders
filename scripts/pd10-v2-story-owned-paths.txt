@@ -168,6 +168,7 @@ src/Hexalith.Folders.Contracts/Projections/Audit/RedactableAuditTimestampPrecisi
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactableDiagnosticIdentifier.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactionMetadata.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactionVisibility.cs
+src/Hexalith.Folders.Contracts/Provisioning/FolderProvisioningRequest.cs
 src/Hexalith.Folders.Contracts/Queries/GetAuditRecord.cs
 src/Hexalith.Folders.Contracts/Queries/GetBranchRefPolicy.cs
 src/Hexalith.Folders.Contracts/Queries/GetCommitEvidence.cs
@@ -232,6 +233,7 @@ src/Hexalith.Folders.EventStoreExtensions/LockWorkspaceIdempotencyIntentAdapter.
 src/Hexalith.Folders.EventStoreExtensions/MutateFilesIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/OrganizationAclIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/PrepareWorkspaceIdempotencyIntentAdapter.cs
+src/Hexalith.Folders.EventStoreExtensions/ProvisionFolderIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/ReleaseWorkspaceLockIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/RevokeFolderAccessIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.Mcp/Composition/BearerTokenHandler.cs
@@ -362,6 +364,12 @@ src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs
 src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs
 src/Hexalith.Folders.Server/Program.cs
 src/Hexalith.Folders.Server/ProviderReadinessEndpoints.cs
+src/Hexalith.Folders.Server/Provisioning/CommittedProvisioningStep.cs
+src/Hexalith.Folders.Server/Provisioning/DurableTaskStepLookupClient.cs
+src/Hexalith.Folders.Server/Provisioning/FolderProvisioningContract.cs
+src/Hexalith.Folders.Server/Provisioning/FolderProvisioningEndpoints.cs
+src/Hexalith.Folders.Server/Provisioning/FolderProvisioningService.cs
+src/Hexalith.Folders.Server/Provisioning/FolderProvisioningStreamPresence.cs
 src/Hexalith.Folders.Server/Queries/FolderFileOwnerReadQueryHandler.cs
 src/Hexalith.Folders.Server/Queries/FolderFileReferenceReadQueryHandler.cs
 src/Hexalith.Folders.Server/Queries/FolderOwnerQueryBinding.cs
@@ -484,6 +492,7 @@ src/Hexalith.Folders/Aggregates/Folder/FolderFileReferenceBindingRequest.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderIdempotencyLookupResult.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderOperatorDisposition.cs
+src/Hexalith.Folders/Aggregates/Folder/FolderProvisioningReceipt.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderRepositoryBindingState.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs
 src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
@@ -1395,6 +1404,18 @@ tests/Hexalith.Folders.Server.Tests/ProductionProcessClaimTransformEvidenceAcces
 tests/Hexalith.Folders.Server.Tests/ProductionProcessTenantContextAccessor.cs
 tests/Hexalith.Folders.Server.Tests/ProductionProcessWireEventTests.cs
 tests/Hexalith.Folders.Server.Tests/ProviderReadinessEndpointTests.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/FolderProvisioningContractTests.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationActorHost.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationAdmission.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationClock.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationEffect.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationFixture.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationInvoker.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationIssuer.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationPresenceHandler.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationStreams.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningQualificationTests.cs
+tests/Hexalith.Folders.Server.Tests/Provisioning/ProvisioningUnavailableDispatchProbe.cs
 tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs
 tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs
 tests/Hexalith.Folders.Server.Tests/ScopeCheckingFolderPermissionEvidenceProvider.cs
