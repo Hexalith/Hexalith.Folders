@@ -1,0 +1,252 @@
+{
+  "story": "12.2",
+  "date": "2026-11-26",
+  "verification_scope": "Disposable real-provider Debug source qualification with local Folders and EventStore changes",
+  "source_inputs": {
+    "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs": "5dfa959b2a215178732f777fc12befc5ba4468903ee7e1c49a75bf2b505899b8",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs": "f20065a7f48f986732feb85a7c67d0cc0bb84ce5f1e938532ff400091cdbdd9f",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs": "7fa063ce81dfbf04b7f809f5d4ebc40e1363462bcbf0278bb789833f09f106d4",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandHandlerIdempotencyAdmissionTests.cs": "b3d8577381ca806ee63003c25936d76289386af4fbae66a8ddf9506b1c33d20f"
+  },
+  "retained_reference": {
+    "folders_commit": "a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a",
+    "eventstore_commit": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+    "sm4": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 6845.831,
+        "p95_ms": 8071.427,
+        "p95_budget_ms": 1000,
+        "over_budget": true
+      },
+      "workers_operational_delivery": {
+        "count": 27,
+        "p50_ms": 2356.321,
+        "p95_ms": 7907.817,
+        "p95_budget_ms": 1000,
+        "over_budget": true
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 636.058,
+        "p95_ms": 1046.687,
+        "p95_budget_ms": 500,
+        "over_budget": true
+      }
+    },
+    "receipt": {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-current-source-qualification-20261126.json",
+      "sha256": "2304dcd74b8186dcf3141f7a3c45e4ca0b91c7960356fe6928bd4728593d72e4"
+    }
+  },
+  "focused": {
+    "folders-red": {
+      "test_counts": {
+        "Fail": 1
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/focused/folders-red.xml",
+        "sha256": "48d00fd02dd908be81e52948589d3f9303a5663ea4bfed942016e496eed0a0eb"
+      }
+    },
+    "sdk-red": {
+      "test_counts": {
+        "Fail": 1,
+        "Pass": 1
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/focused/sdk-red.xml",
+        "sha256": "2d2efb37b56811e861854574835eb46551c997285f5a8e9149ab51b499c44797"
+      }
+    },
+    "folders-green": {
+      "test_counts": {
+        "Pass": 204
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/focused/folders-green.xml",
+        "sha256": "c3679a76925a966cc8f0c80d574cdad602a53288275b287dbefd3d2e12a878b8"
+      }
+    },
+    "sdk-green": {
+      "test_counts": {
+        "Pass": 73
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/focused/sdk-green.xml",
+        "sha256": "da59a50ed2ea19a093b8a383ef1b61b2f018ac86a378de9bc7670dd7193c763d"
+      }
+    }
+  },
+  "debug_build": {
+    "root": {
+      "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-build-root.log",
+      "sha256": "a0d0c7e588a7bc36240744837c6f731fb9ef1aec1ba26161de17a699390389e5"
+    },
+    "memories": {
+      "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-build-memories.log",
+      "sha256": "a3ba7102f8501ba6048b4db5862823eeb0a1b037a927d149293cbd49f7184934"
+    },
+    "warnings": 0,
+    "errors": 0,
+    "producer": {
+      "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-producer-audit.json",
+      "sha256": "6990413f93c6327111dc5351c4fe183db91ba9922645c21c95ca5c56f4cbac18"
+    },
+    "audited_assemblies": 237,
+    "frozen_and_protected_bodies_match": true
+  },
+  "strict_operational_runs": {
+    "baseline": {
+      "folders_commit": "a878668e185f0e5d7492556b7a675da1ed33a157",
+      "eventstore_commit": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-sm4-7bff5X/run-runtime.py baseline strict OperationalStatusDurabilityAcceptanceTests",
+      "exit_code": 1,
+      "test_results": [
+        "Fail"
+      ],
+      "test_seconds": 256.824,
+      "matched_loaded_assembly_observations": 162,
+      "source_or_runtime_drift": false,
+      "cleanup_counts": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "sm4": {},
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/baseline-receipt.json",
+        "sha256": "d97d2e8b10b779914c6dab9b548a14ab9f6dca84a4d515b6a60219aec92691a7"
+      },
+      "actual_binding_audit": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/baseline-loaded-audit.json",
+        "sha256": "90dfc2312e47e46683916af1305c9cdc87b4b92fc462a1b30100dc40a26b8f1b"
+      },
+      "disposition": "Repository binding returned 409 idempotency_conflict after an attempt timed out during actor routing"
+    },
+    "candidate": {
+      "folders_commit": "b9ac1212aa2e65fe10ed50379bb4a04b3cebac77",
+      "eventstore_commit": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-sm4-7bff5X/run-runtime.py candidate strict OperationalStatusDurabilityAcceptanceTests",
+      "exit_code": 1,
+      "test_results": [
+        "Fail"
+      ],
+      "test_seconds": 536.509,
+      "matched_loaded_assembly_observations": 282,
+      "source_or_runtime_drift": false,
+      "cleanup_counts": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 7,
+        "remaining_observed_directories": 0
+      },
+      "sm4": {},
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-receipt.json",
+        "sha256": "e22889445e1fe4b55badf2dc0fc43ce018a746a84677040400525ce85c19088d"
+      },
+      "actual_binding_audit": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-loaded-audit.json",
+        "sha256": "5962dba85febff8c8a3e72959979f0ceae60424b16b5728c3e33797cffd72c84"
+      },
+      "disposition": "Authenticated UpdateTenant returned 500 unavailable during host restart; no complete SM4 sample"
+    },
+    "candidate-retry": {
+      "folders_commit": "b9ac1212aa2e65fe10ed50379bb4a04b3cebac77",
+      "eventstore_commit": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-sm4-7bff5X/run-runtime.py candidate-retry strict OperationalStatusDurabilityAcceptanceTests",
+      "exit_code": 0,
+      "test_results": [
+        "Pass"
+      ],
+      "test_seconds": 553.62,
+      "matched_loaded_assembly_observations": 623,
+      "source_or_runtime_drift": false,
+      "cleanup_counts": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 3,
+        "remaining_observed_directories": 0
+      },
+      "sm4": {
+        "command_acknowledgement": {
+          "count": 10,
+          "p50_ms": 9443.867,
+          "p95_ms": 36418.406,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "workers_operational_delivery": {
+          "count": 26,
+          "p50_ms": 2869.27,
+          "p95_ms": 7073.676,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "status_read": {
+          "count": 12,
+          "p50_ms": 790.691,
+          "p95_ms": 1003.751,
+          "p95_budget_ms": 500.0,
+          "over_budget": true
+        }
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-receipt.json",
+        "sha256": "2014a523ca394fa8732079fbd11bb6fd4924ebdf4062f18af818414d3c530d09"
+      },
+      "actual_binding_audit": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-loaded-audit.json",
+        "sha256": "e349fad23ca8439056c53e44015e2bed41bcbc704760da61002f00b0614126be"
+      }
+    }
+  },
+  "pd10": {
+    "added_provisioning_inputs": 21,
+    "artifact_count": 1714,
+    "candidate_set_sha256": "c6c753b1a98043a5692c4cf7e0244b75cbb55a388f58cb0969bf54e120110399",
+    "approval_status": "pending-a6b",
+    "production_exposure": "disabled",
+    "selected_verification": {
+      "test_counts": {
+        "Pass": 47
+      },
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-7bff5X/pd10-final.xml",
+        "sha256": "3f0849eb814ba93ad6abac8e9787e18a583db48978209d7b7cd1ef972faa91ed"
+      }
+    }
+  },
+  "trace_examples": {
+    "qualified_retry_repository_binding_first_http_request": {
+      "elapsed_ms": 30014,
+      "admission_occurrences": 3,
+      "admission_total_ms": 10969,
+      "routing_total_ms": 8166,
+      "reconciliation_occurrences": 2,
+      "reconciliation_total_ms": 3189
+    },
+    "qualified_retry_branch_policy": {
+      "elapsed_ms": 9163,
+      "execution_fence_validations": 6,
+      "routing_total_ms": 3243
+    },
+    "qualified_retry_lifecycle": {
+      "elapsed_ms": 1003,
+      "parallel_acl_native_source_observation_ms": [
+        570,
+        576
+      ],
+      "post_selection_native_source_observation_ms": 322
+    }
+  },
+  "closure": {
+    "story": "in-progress",
+    "sm4": "over-budget",
+    "publication": "open",
+    "staging_and_deployed_consumers": "open",
+    "whole_story_independent_acceptance": "open"
+  }
+}

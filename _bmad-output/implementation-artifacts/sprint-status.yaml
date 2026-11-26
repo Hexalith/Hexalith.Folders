@@ -1,6 +1,7 @@
 # generated: 2026-05-12T07:11:18+02:00
 # historical_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
-# last_updated: 2026-11-21 (release repairs, SDK isolation, preserved story keys and Forgejo selection in ../planning-artifacts/sprint-change-proposal-2026-11-21.md)
+# last_updated: 2026-11-26 (Story 12.2 Platform prerequisite accepted for disposable source qualification)
+# previous_update_2026_11_21: release repairs, SDK isolation, preserved story keys and Forgejo selection in ../planning-artifacts/sprint-change-proposal-2026-11-21.md
 # previous_update_2026_11_20: repository audit applied to existing stories and open maintenance items; see sprint-change-proposal-2026-11-20.md
 # previous_update_2026_11_13: 2026-11-13 (correct-course sprint-change-proposal-2026-11-13: Story 12.2's strict fixture can never match a pre-provisioned owner workload enrollment because it draws a random run identity each run. Its enrollment now comes from a Platform run-owned workload-binding authority (Platform Story 2.12, backlog); owner enrollment proof moves to Platform Story 10.1. New pending external node EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY gates 12.2; 12.2 stays in-progress.)
 # previous_story_5_12_followup_build: 2026-11-11 (Story 5.12 follow-up build completed -> review; all ten approved patches plus four independent-review corrections implemented. McpCli 46/46; full Contracts 677/682 with exactly the five approved PD10 failures; Release solution 0 warnings/errors; all three review layers completed and every finding triaged. No new deferrals; existing AppHost source/package collision and PD10 reseal remain with their owners.)
@@ -42,7 +43,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '05-12-2026 07:11'
-last_updated: '11-21-2026 17:25'
+last_updated: '11-26-2026 11:45'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -281,6 +282,7 @@ development_status:
   # needs Stories 4.22 and 11.15
   # 2026-11-13: 12.2 also needs Platform Story 2.12 (run-owned workload authority, EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY)
   # 2026-11-21: Platform 2.12 is done. All three Folders strict cases passed on the reviewed November 15 inputs. Selected-gitlink qualification, SM4, release and governance gates remain open.
+  # 2026-11-26: All three strict cases passed on the selected gitlinks. The Platform owner accepted disposable source qualification. SM4, publication, staging, deployed-consumer evidence, PD10/A6b and independent whole-story acceptance remain open.
   12-2-durable-projections-and-task-completion-pipeline: in-progress
   12-3-durable-workspace-file-content-store-and-content-read-source: in-progress
   12-4-real-git-commit-executor-and-provider-write-path: backlog

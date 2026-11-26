@@ -252,7 +252,9 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         if (!first.IsAvailable || first.IsStale || first.IsDegraded || first.Value is null)
             throw new OperationalStatusUnavailableException();
         OperationalStatusViewEvidence? evidence = first.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(WireJson);
-        string? receiptKey = evidence is null ? null : OperationalStatusKeys.Receipt(tenantId, folderId, evidence.Sequence);
+        // Lifecycle is verified against the checkpoint from the same SDK selection.
+        string? receiptKey = requireCurrentSequence || evidence is null
+            ? null : OperationalStatusKeys.Receipt(tenantId, folderId, evidence.Sequence);
         T? firstRow = first.Value[key]?.Deserialize<T>(WireJson);
         if (firstRow is not null && !identity(firstRow)) throw new InvalidOperationException("Foreign operational view.");
         bool requireApplicability = !requireCurrentSequence && firstRow is not null

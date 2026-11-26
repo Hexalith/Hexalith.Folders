@@ -397,6 +397,37 @@ public sealed class OperationalStatusPersistenceTests
     }
 
     [Fact]
+    public async Task LifecycleReadsOneSelectedSnapshotWithoutReadingThePositionReceipt()
+    {
+        const string tenantId = "tenant-a";
+        const string folderId = "folder-a";
+        OperationalStatusTestStore store = new();
+        var source = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
+        var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: OperationalStatusTestData.Scanner);
+        (await writer.ApplyAsync(tenantId, folderId, "live", source, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+
+        string lifecycleKey = OperationalStatusKeys.Lifecycle(tenantId, folderId);
+        string checkpointKey = OperationalStatusKeys.Checkpoint(tenantId, folderId);
+        string evidenceKey = OperationalStatusKeys.Evidence(lifecycleKey);
+        string receiptKey = OperationalStatusKeys.Receipt(tenantId, folderId, source[0].Sequence);
+        store.Snapshot<OperationalStatusReceipt>(OperationalStatusKeys.StoreName, receiptKey).ShouldNotBeNull();
+        List<string> readKeys = [];
+        OperationalStatusReadObserver observed = new(store, key => { readKeys.Add(key); return Task.CompletedTask; });
+        var reader = new EventStoreOperationalStatusReadModel(new(observed, store), new OperationalStatusClock(),
+            new OperationalStatusSequenceReader { Head = source.Length });
+
+        var result = await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Available);
+        result.Snapshot!.Freshness.ProjectionWatermark.ShouldBe("1");
+        foreach (string key in new[] { lifecycleKey, checkpointKey, evidenceKey })
+        {
+            readKeys.Count(readKey => readKey == store.PhysicalKey(key)).ShouldBe(1);
+        }
+        readKeys.ShouldNotContain(store.PhysicalKey(receiptKey));
+    }
+
+    [Fact]
     public async Task ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence()
     {
         OperationalStatusTestStore store = new();

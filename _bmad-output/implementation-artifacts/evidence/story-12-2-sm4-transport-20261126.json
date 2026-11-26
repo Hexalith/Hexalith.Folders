@@ -1,0 +1,354 @@
+{
+  "story": "12.2",
+  "scope": "Local source qualification — SM4 gateway transport resubmission",
+  "date": "2026-11-26",
+  "status": "in-progress",
+  "sm4": "open",
+  "revisions": {
+    ".": "c00bad4d364dc25800cf9dc41220c1eba512fed9",
+    "references/Hexalith.AI.Tools": "01e64857ab73bde74be137c675a8376c4da8cbee",
+    "references/Hexalith.Builds": "bf8a28b4bbcec619e8d9764d335f786f2bafb69e",
+    "references/Hexalith.CiCd": "9405c50501e7a587b677fa890700e12363f00b66",
+    "references/Hexalith.Commons": "ab6e29bc72c2c08a2d72d4ee09cf20dd3ae029b5",
+    "references/Hexalith.EventStore": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+    "references/Hexalith.FrontComposer": "781a48f5e2fde9e54222670fe4989b7132faf1ca",
+    "references/Hexalith.McpCli": "c07d09ccf2e7dbb8781b20bf093e4e65d3f14216",
+    "references/Hexalith.Memories": "667fbf2564ee2a1a30487e24cba20b37eebb76d0",
+    "references/Hexalith.Parties": "c4f72ea86e11fed7a48de129eba1c3c2cba1c1ed",
+    "references/Hexalith.Platform": "3848af49f9afc91b174b4c716751fe49cb15dbba",
+    "references/Hexalith.PolymorphicSerializations": "94ae242d609d0126735a8ab387960ec41265a4f7",
+    "references/Hexalith.Projects": "77dc1ab5db4163dcbb116b177319dfe350c89799",
+    "references/Hexalith.Tenants": "54985ab11ade150d5fa908be179cf2a5a407353d"
+  },
+  "revision_note": "Both arms used these 14 revisions. Folders c00bad4d differs from the earlier comparison's b9ac1212 only in tests/Hexalith.Folders.Server.Tests/FoldersHumanCommandCatalogTests.cs (an outside fast-forward pull during this session).",
+  "arms": {
+    "baseline": "Revisions above plus the retained local changes (Folders EventStoreOperationalStatusReadModel.cs and its test; EventStore SubmitCommandHandler.cs, RouteCatalogAuthority.cs and their tests).",
+    "candidate": "Baseline plus the EventStore gateway transport registration and its two new test files.",
+    "transport_source_sha256": {
+      "baseline": "0b82f6a36f127aff99d1706819903611e20d282067f9cf67405ed76cf63a9cc1",
+      "candidate": "2eb1169fccec31617ccf821c7c710dccbf1d4b47846bcea652f00f400cfdfd3b"
+    },
+    "domainservice_dll_sha256": {
+      "baseline": [
+        "95221d80e7d320e36bbaa047932531a0de68837178d25299dad09b03a6f3cf58"
+      ],
+      "candidate": [
+        "6d0273018e259ffd73b8c01b5dc635966585eb21fcf68ebf8393b381d4f37123"
+      ]
+    }
+  },
+  "candidate_change": {
+    "file": "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/EventStoreDomainServiceExtensions.cs",
+    "summary": "AddEventStoreDomainServiceCore applies the existing AddEventStoreBoundedInvocationResilience policy to the SDK gateway client (IEventStoreGatewayClient): one attempt owns the 30 s budget, early transient replies still retry, the inherited 10 s attempt/retry pipeline is removed for that client only.",
+    "sha256": {
+      "EventStoreDomainServiceExtensions.cs": "2eb1169fccec31617ccf821c7c710dccbf1d4b47846bcea652f00f400cfdfd3b",
+      "GatewayCommandTransportStub.cs": "63da8b806ad3c5f39f3c2ab853a8cf6590de4ef164f8139049bd43360f637044",
+      "GatewayCommandTransportTests.cs": "0da5c55c64c8274a74a57020246ef0c23fedfb0d104153c630e579b202367be9"
+    }
+  },
+  "denial_trace": {
+    "source": ".artifacts/sm4-local-comparison/candidate-retry-private.log (earlier default candidate, 202)",
+    "original_attempt_ms": {
+      "SubmitAcquire": 480,
+      "Admission": 4943,
+      "ExecutionCapability": 817,
+      "ExecutionBegin": 1517,
+      "ExecutionFence": 1219,
+      "ProjectionActivation": 13,
+      "RouterAcquire": 570,
+      "FencedActorRpc": "started at +10.0 s, still running when the client attempt was cancelled at 10,054 ms"
+    },
+    "resubmission_ms": {
+      "SubmitAcquire": 698,
+      "Admission": 6538,
+      "decision": "Pending",
+      "SubmitRelease": 251,
+      "response": "AcceptedResult (202)"
+    },
+    "original_outcome": "Domain rejection decided 7.6 s after the resubmission started and persisted after the 202 was returned.",
+    "state_producing_202": "IdempotencyAdmissionState Pending written by the original's ExecutionBegin, read by the duplicate admission as IdempotencyAdmissionDecision.Pending; SubmitCommandHandler returns a plain SubmitCommandResult for Pending, which the gateway controller writes as Accepted.",
+    "trigger": "Folders Server's IEventStoreGatewayClient inherited the SDK ConfigureHttpClientDefaults standard pipeline: 10 s attempt timeout, 30 s total, POST retries.",
+    "baseline_same_path": "Yes. Same Polly defaults and Pending branch in both arms; reproduced live in baseline-1. Retained earlier logs show inherited-pipeline attempt timeouts with resubmission in the prior passing baseline (6), the a878668e baseline (5), the paired default baseline (2) and every earlier candidate run (1-3)."
+  },
+  "binding_trace_breakdown": {
+    "source": ".artifacts/sm4-local-comparison/candidate-default-final-private.log (13,097 ms)",
+    "first_attempt_ms": {
+      "SubmitAcquire": 51,
+      "Admission": 1773,
+      "ExecutionCapability": 193,
+      "ExecutionBegin": 423,
+      "ExecutionFence_initial": 332,
+      "RouterAcquire": 43,
+      "FencedActorRpc": 4289,
+      "ExecutionFence_after_routing": [
+        323,
+        318,
+        678,
+        505,
+        426
+      ],
+      "AdmissionCompletion": "573 (failed: cancelled by the 10 s client attempt timeout)",
+      "RecoveryPersistence": "415 (failed)"
+    },
+    "second_admission": "2,271 ms: the transport resubmission after the cancelled first attempt. Removed by the change.",
+    "fenced_actor_rpc": "262 ms to actor Processing; 251 ms to domain invocation; /process 3,341 ms, of which seven sequential native source-head reads took 552, 430, 520, 425, 378, 402 and 157 ms (2,864 ms) each after an 8-11 ms workload token; event persistence 140 ms; publish and completion 150 ms.",
+    "execution_fence": "Each ValidateExecutionAsync spends about 15 ms in route-catalog state I/O; the rest is unlogged actor and catalog work under load."
+  },
+  "lifecycle_trace_breakdown": {
+    "source": ".artifacts/sm4-local-comparison/candidate-default-final-private.log (1,668 ms)",
+    "folder_and_organization_acl_observations_ms": [
+      678,
+      861
+    ],
+    "per_observation": "Folders-side catalog lease 30-85 ms (GET, GET, CAS POST, CAS 409 retry under concurrency), EventStore read handling 550-780 ms, Folders-side release about 15 ms.",
+    "selection_ms": 72,
+    "fresh_folder_head_ms": 696,
+    "disposition": "No change. The two ACL reads authenticate different streams and the fresh folder-head read after selection detects a source advance; none can be shared or reordered."
+  },
+  "focused": {
+    "red": {
+      "counts": {
+        "Fail": 1,
+        "Pass": 1
+      },
+      "sha256": "4225a9193558871bb07bbd23e3cd7b98b12fdcc31ed6346bab3e605e40946a30"
+    },
+    "green-final": {
+      "counts": {
+        "Pass": 2
+      },
+      "sha256": "d8de0a8741c7504ad82bcfb106bd81dc12bd4db7ea9a573784c4583e1849c8a6"
+    },
+    "domainservice-full": {
+      "counts": {
+        "Pass": 1434,
+        "Skip": 1
+      },
+      "sha256": "1242ac57772ce318e1e168eb49fff21837a62577c0240a66368ccf68fb236c98"
+    },
+    "sdk-focused": {
+      "counts": {
+        "Pass": 264
+      },
+      "sha256": "0ceac073f7cdf7c410401235be15388b3c64131557101dd05e35e1bd297032ef"
+    },
+    "folders-host-composition": {
+      "counts": {
+        "Pass": 26
+      },
+      "sha256": "4aceca0ea45447dea01d0d6d5f39f3fd034a1a804e72f0fbdd76dbec7659ce48"
+    }
+  },
+  "live_runs": [
+    {
+      "label": "baseline-1",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T13:35:52.038397+00:00",
+      "utc_end": "2026-11-26T13:40:07.096480+00:00",
+      "load_average_1m": {
+        "samples": 20,
+        "min_1m": 14.67,
+        "max_1m": 28.1,
+        "mean_1m": 20.3
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 1,
+          "resubmissions_after_timeout": 1,
+          "total_timeouts": 0
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/baseline-1-receipt.json",
+        "sha256": "004f79f8e8bb0d363855919436b51573e81ca1bbf76d2bb61f7fea67ec194b94"
+      },
+      "disposition": "Unknown-provider denial returned 202. The 10 s attempt timed out during the fenced actor call; the resubmission's admission read the original's Pending reservation and returned Accepted after the original had already been rejected and persisted."
+    },
+    {
+      "label": "baseline-2",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T13:40:50.134440+00:00",
+      "utc_end": "2026-11-26T13:46:48.588086+00:00",
+      "load_average_1m": {
+        "samples": 27,
+        "min_1m": 19.08,
+        "max_1m": 41.29,
+        "mean_1m": 27
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 3,
+          "resubmissions_after_timeout": 3,
+          "total_timeouts": 1
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/baseline-2-receipt.json",
+        "sha256": "b5849ea2d15cc3847a98e523a2e0e014aaf78fe0a75179955a5713183ec4d102"
+      },
+      "disposition": "Denial passed. Repository binding was accepted by the original at 10.6 s, just after its 10 s attempt was cancelled; two resubmissions spent 6.7 s in admission and 6.7 s in reconciliation, the 30 s total timeout returned 503, and the fixture's 75 s retry deadline cancelled the call (test line 213)."
+    },
+    {
+      "label": "baseline-3",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T13:47:27.845374+00:00",
+      "utc_end": "2026-11-26T13:52:07.093062+00:00",
+      "load_average_1m": {
+        "samples": 22,
+        "min_1m": 23.58,
+        "max_1m": 30.48,
+        "mean_1m": 26.9
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 2,
+          "resubmissions_after_timeout": 2,
+          "total_timeouts": 1
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/baseline-3-receipt.json",
+        "sha256": "4a90b7735645e1d091e656e17faa539548f611dfe0b934863f65f50f2a9b4dac"
+      },
+      "disposition": "Unknown-provider denial returned 503 provider_unavailable after two attempt timeouts and the 30 s total timeout."
+    },
+    {
+      "label": "candidate-1",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T13:55:38.063245+00:00",
+      "utc_end": "2026-11-26T14:05:07.265775+00:00",
+      "load_average_1m": {
+        "samples": 41,
+        "min_1m": 21.27,
+        "max_1m": 66.88,
+        "mean_1m": 45.8
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 0,
+          "resubmissions_after_timeout": 0,
+          "total_timeouts": 0
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 2
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/candidate-1-receipt.json",
+        "sha256": "ffd85eea64857ce6aaeaad319b9520ce90b17193c6773c21efbda4c172feb0a2"
+      },
+      "disposition": "Unknown-provider denial returned 403 from one 14 s attempt with durable completion. Pipeline folder creation (test line 208) then took about 28 s inside EventStore for its single attempt, missed the 30 s budget twice and the fixture's 75 s deadline cancelled it. No resubmission occurred."
+    },
+    {
+      "label": "candidate-2",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T14:07:12.791021+00:00",
+      "utc_end": "2026-11-26T14:11:30.205609+00:00",
+      "load_average_1m": {
+        "samples": 26,
+        "min_1m": 51.3,
+        "max_1m": 70.63,
+        "mean_1m": 61.1
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 0,
+          "resubmissions_after_timeout": 0,
+          "total_timeouts": 0
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/candidate-2-receipt.json",
+        "sha256": "d0a681b6af4ddbade7bd517e13176b58f68752d80de899323972dd92bdb2c9a8"
+      },
+      "disposition": "Fixture bootstrap AddUserToTenant through the EventStore gateway returned 500 before the test body (not routed through the changed client)."
+    },
+    {
+      "label": "candidate-3",
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "utc_start": "2026-11-26T14:12:28.726793+00:00",
+      "utc_end": "2026-11-26T14:16:26.085095+00:00",
+      "load_average_1m": {
+        "samples": 20,
+        "min_1m": 42,
+        "max_1m": 53.82,
+        "mean_1m": 49
+      },
+      "gateway_client": {
+        "inherited_standard_pipeline": {
+          "attempt_timeouts": 0,
+          "resubmissions_after_timeout": 0,
+          "total_timeouts": 0
+        },
+        "bounded_single_attempt_pipeline": {
+          "attempt_timeouts": 0,
+          "total_timeouts": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "receipt": {
+        "path": ".artifacts/sm4-transport-20261126/candidate-3-receipt.json",
+        "sha256": "947407a8b42dbbe421779255326b302421d2710938234966bbed26ab81f57c4e"
+      },
+      "disposition": "Same fixture bootstrap AddUserToTenant 500 as candidate-2."
+    }
+  ],
+  "p95": {
+    "baseline": "none: no fresh baseline run passed",
+    "candidate": "none: no candidate run passed",
+    "note": "Whole-test failures emit no percentile. The retained earlier values (baseline 36,418 ms / 1,003.751 ms; candidate 14,453 ms / 1,673 ms) are not comparable to these arms."
+  },
+  "measurement_conditions": "Concurrent Codex sessions in other checkouts kept the 14-core host at 1-minute load averages of 15-71 (baseline runs averaged 20-27, candidate runs 46-61). A matched quiet-host rerun is required before any latency conclusion.",
+  "pd10": {
+    "inventory_entries": 1714,
+    "matching_working_tree": 1712,
+    "mismatched": [
+      "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs"
+    ],
+    "candidate_set_sha256": "6d727cb409b5055ad6bb40e8aa55dd5ca05546051495467d9b28cd80ca4777a7",
+    "note": "An outside fast-forward pull of 8c5452c0 during this session replaced the local inventory; it binds the committed content of the two retained local Folders changes. This session changed no Folders source."
+  },
+  "protected_bodies_unchanged": true,
+  "rerun_command": "run-with-temp bash .artifacts/sm4-transport-20261126/orchestrate.sh"
+}

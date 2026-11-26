@@ -1,0 +1,847 @@
+{
+  "story": "12.2",
+  "scope": "Local source qualification",
+  "status": "in-progress",
+  "revisions": {
+    ".": "b9ac1212aa2e65fe10ed50379bb4a04b3cebac77",
+    "references/Hexalith.EventStore": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+    "references/Hexalith.Platform": "3848af49f9afc91b174b4c716751fe49cb15dbba"
+  },
+  "measurement": "Protected test stopwatch around the complete retrying client send; nearest-rank p95 across accepted mutations or required successful status reads. Whole-test failures have no percentile.",
+  "preserved_inputs": {
+    "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs": "5dfa959b2a215178732f777fc12befc5ba4468903ee7e1c49a75bf2b505899b8",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs": "f20065a7f48f986732feb85a7c67d0cc0bb84ce5f1e938532ff400091cdbdd9f",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs": "7fa063ce81dfbf04b7f809f5d4ebc40e1363462bcbf0278bb789833f09f106d4",
+    "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandHandlerIdempotencyAdmissionTests.cs": "b3d8577381ca806ee63003c25936d76289386af4fbae66a8ddf9506b1c33d20f"
+  },
+  "protected_bodies": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+  },
+  "prior_passing_baseline": {
+    "receipt": {
+      "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-receipt.json",
+      "sha256": "2014a523ca394fa8732079fbd11bb6fd4924ebdf4062f18af818414d3c530d09"
+    },
+    "exit_code": 0,
+    "result": {
+      "Pass": 1
+    },
+    "p95": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 9443.867,
+        "p95_ms": 36418.406,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true
+      },
+      "workers_operational_delivery": {
+        "count": 26,
+        "p50_ms": 2869.27,
+        "p95_ms": 7073.676,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 790.691,
+        "p95_ms": 1003.751,
+        "p95_budget_ms": 500.0,
+        "over_budget": true
+      }
+    },
+    "loaded": {
+      "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-loaded-audit.json",
+      "sha256": "e349fad23ca8439056c53e44015e2bed41bcbc704760da61002f00b0614126be"
+    },
+    "matched_loaded_rows": 623,
+    "binding_issues": 0,
+    "source_drift": [],
+    "runtime_drift": [],
+    "cleanup": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 3,
+      "remaining_observed_directories": 0
+    },
+    "profile": {
+      "binding": [
+        {
+          "endpoint_ms": 30014,
+          "stages_ms": {
+            "Admission": [
+              1529,
+              5173,
+              4267
+            ],
+            "Routing": [
+              8166
+            ],
+            "FencedActorRpc": [
+              7827
+            ],
+            "Reconciliation": [
+              2278,
+              911
+            ]
+          }
+        },
+        {
+          "endpoint_ms": 3481,
+          "stages_ms": {
+            "Admission": [
+              1568
+            ],
+            "Routing": [],
+            "FencedActorRpc": [],
+            "Reconciliation": [
+              366
+            ]
+          }
+        }
+      ],
+      "details": [
+        {
+          "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-repository-bindings.json",
+          "sha256": "9a349d0c79078f4db48388e07b3f84f1122d3a710e6b15e8d006555b22e13163"
+        },
+        {
+          "path": ".artifacts/story-12-2-sm4-7bff5X/candidate-retry-lifecycle-status.json",
+          "sha256": "0fe9a2b80e27acc1c59ea19ef7aa40640ad87f627902f91cd190b00fdfe27dc9"
+        }
+      ],
+      "timed_lifecycle_example": {
+        "endpoint_ms": 1003,
+        "native_observations": [
+          {
+            "start_ms": 20,
+            "elapsed_ms": 570,
+            "status": 200
+          },
+          {
+            "start_ms": 21,
+            "elapsed_ms": 576,
+            "status": 200
+          },
+          {
+            "start_ms": 680,
+            "elapsed_ms": 322,
+            "status": 200
+          }
+        ]
+      },
+      "retained_lifecycle_example": {
+        "endpoint_ms": 1003,
+        "utc_start": "2026-11-26T11:32:53.875000+00:00",
+        "NativeSourceMetadata": [
+          {
+            "start_ms": 20,
+            "elapsed_ms": 570,
+            "status": 200
+          },
+          {
+            "start_ms": 21,
+            "elapsed_ms": 576,
+            "status": 200
+          },
+          {
+            "start_ms": 680,
+            "elapsed_ms": 322,
+            "status": 200
+          }
+        ],
+        "eventstore-workload-assertion-issuer": [
+          {
+            "start_ms": 12,
+            "elapsed_ms": 8,
+            "status": 200
+          },
+          {
+            "start_ms": 14,
+            "elapsed_ms": 7,
+            "status": 200
+          },
+          {
+            "start_ms": 673,
+            "elapsed_ms": 6,
+            "status": 200
+          }
+        ],
+        "overlapping_catalog_http_starts_including_background": {
+          "folders GET": 12,
+          "folders POST": 9,
+          "eventstore GET": 25,
+          "eventstore POST": 16
+        }
+      }
+    },
+    "same_source_and_runtime": "All 14 repository revisions and captured source maps match the baseline here. All 237 producer paths match in DLL hash, MVID and version."
+  },
+  "fresh_baseline_attempts": [
+    {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/baseline-receipt.json",
+        "sha256": "efb71830736bf068f6f2e7ef0c606b638cd5922c30cf0cba6217013b8ed50307"
+      },
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "p95": {},
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/baseline-loaded-audit.json",
+        "sha256": "0e20995671b657ded7b242b88be49d613eb2c35836ad198745b9b5eceb106c39"
+      },
+      "matched_loaded_rows": 156,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 5,
+        "remaining_observed_directories": 0
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/baseline-retry-receipt.json",
+        "sha256": "f98ece2dd3fbd0f309b66054c6bee1693e9b17c2c142edf6cb6106568b4dd3b5"
+      },
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "p95": {},
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/baseline-retry-loaded-audit.json",
+        "sha256": "d66de65c50bce262a563d8a8a2582db4633104a8373675d8529f3d65c0f7923b"
+      },
+      "matched_loaded_rows": 156,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 1,
+        "remaining_observed_directories": 0
+      }
+    }
+  ],
+  "baseline_startup_failure": "Both stopped at authenticated CreateTenant, HTTP 500 unavailable. Domain invocation exceeded its configured 5 seconds.",
+  "baseline_producers": {
+    "path": ".artifacts/sm4-local-comparison/baseline-producer-audit.json",
+    "sha256": "5e2f73e390e78d878cc63278ac4ae18a0c43ca2f8d4576edca106302bd65ac3a"
+  },
+  "candidate_producers": {
+    "path": ".artifacts/sm4-local-comparison/candidate-producer-audit.json",
+    "sha256": "266d38665b14129f2c5f53ce85b55821fe3617f2dd95df44b0473a76e505ecae"
+  },
+  "candidate_patch_inputs": [
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs",
+      "sha256": "e3b7f9f6772f3ea887eccb392c79627d3ff1bcc8f7231d99e26b82325ee46ddc"
+    },
+    {
+      "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Routing/ParallelCatalogObservationTests.cs",
+      "sha256": "2d4545c0786b670f9e8c01b78dc8e643fae8205df0a23ed12ffb654cd572e489"
+    }
+  ],
+  "focused": {
+    "red": {
+      "counts": {
+        "Fail": 1
+      },
+      "xml": {
+        "path": ".artifacts/sm4-local-comparison/red.xml",
+        "sha256": "a3e001480009e8d9ce8899cffc424fa82e5212a39833c6f76267931ded82af09"
+      }
+    },
+    "sdk-focused": {
+      "counts": {
+        "Pass": 202
+      },
+      "xml": {
+        "path": ".artifacts/sm4-local-comparison/sdk-focused.xml",
+        "sha256": "d442864c8fa793d4f1a7f03dd44977826319b503ecddfcc7e7be964e76bf8d80"
+      }
+    },
+    "folders-focused": {
+      "counts": {
+        "Pass": 204
+      },
+      "xml": {
+        "path": ".artifacts/sm4-local-comparison/folders-focused.xml",
+        "sha256": "f6c5aff7094ad7a7bd647803c130717f47d10ea752db0fa4eff37d8b25b68794"
+      }
+    }
+  },
+  "candidate_runs": {
+    "candidate": {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/candidate-receipt.json",
+        "sha256": "9bdca3a17ea54751354b79601bc7954312f5ad20bb20d3a43e031e6d402e89a1"
+      },
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "p95": {},
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/candidate-loaded-audit.json",
+        "sha256": "9f79188e32b557a8b0d7d03861b8c190439fe14de6e4acc18d337b08df08da31"
+      },
+      "matched_loaded_rows": 160,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "profile": {
+        "binding": [],
+        "details": [
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-repository-bindings.json",
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+          },
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-lifecycle-status.json",
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+          }
+        ],
+        "timed_lifecycle_example": null
+      }
+    },
+    "candidate-retry": {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/candidate-retry-receipt.json",
+        "sha256": "e873d59adb78f97cf9f25abfc72e454c55c0b3eee30058cbf69da6038990c81e"
+      },
+      "exit_code": 1,
+      "result": {
+        "Fail": 1
+      },
+      "p95": {},
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/candidate-retry-loaded-audit.json",
+        "sha256": "a008b7c970a6506a205762261a197e82cd41cff8cebe5c114bcd2299a816176f"
+      },
+      "matched_loaded_rows": 160,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "profile": {
+        "binding": [],
+        "details": [
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-retry-repository-bindings.json",
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+          },
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-retry-lifecycle-status.json",
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+          }
+        ],
+        "timed_lifecycle_example": null
+      }
+    },
+    "candidate-scoped": {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/candidate-scoped-receipt.json",
+        "sha256": "a8fa52eb5bcaed67300ad081ae9dd6578cd610d7710c7ec3615830360f74288d"
+      },
+      "exit_code": 0,
+      "result": {
+        "Pass": 1
+      },
+      "p95": {
+        "command_acknowledgement": {
+          "count": 10,
+          "p50_ms": 7367.677,
+          "p95_ms": 22062.313,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "workers_operational_delivery": {
+          "count": 26,
+          "p50_ms": 3074.331,
+          "p95_ms": 5751.047,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "status_read": {
+          "count": 12,
+          "p50_ms": 1005.045,
+          "p95_ms": 1604.724,
+          "p95_budget_ms": 500.0,
+          "over_budget": true
+        }
+      },
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/candidate-scoped-loaded-audit.json",
+        "sha256": "3c043a5018b591d7bd603ee6574ffb9773b75dd494b8e162af5ff63fef1c4532"
+      },
+      "matched_loaded_rows": 512,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "profile": {
+        "binding": [
+          {
+            "endpoint_ms": 8937,
+            "stages_ms": {
+              "Admission": [
+                1103
+              ],
+              "Routing": [
+                3921
+              ],
+              "FencedActorRpc": [
+                3800
+              ],
+              "Reconciliation": []
+            }
+          }
+        ],
+        "details": [
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-scoped-repository-bindings.json",
+            "sha256": "4f5824ae00a5f25346a3d0166e8a026843e56e52b1bb4ea974948fe2034c5676"
+          },
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-scoped-lifecycle-status.json",
+            "sha256": "52c17ab7c023f16a0ebcb35914b319ab376edf87da94cc9ea2aa441e3f7e4752"
+          }
+        ],
+        "timed_lifecycle_example": {
+          "endpoint_ms": 1603,
+          "native_observations": [
+            {
+              "start_ms": 25,
+              "elapsed_ms": 718,
+              "status": 200
+            },
+            {
+              "start_ms": 24,
+              "elapsed_ms": 938,
+              "status": 200
+            },
+            {
+              "start_ms": 1036,
+              "elapsed_ms": 561,
+              "status": 200
+            }
+          ]
+        }
+      }
+    },
+    "candidate-default-final": {
+      "receipt": {
+        "path": ".artifacts/sm4-local-comparison/candidate-default-final-receipt.json",
+        "sha256": "406d976b7a633c5f582b064d072030e3064c2f3783bbd8d2a00fd00625c142c5"
+      },
+      "exit_code": 0,
+      "result": {
+        "Pass": 1
+      },
+      "p95": {
+        "command_acknowledgement": {
+          "count": 10,
+          "p50_ms": 9941.561,
+          "p95_ms": 14453.364,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "workers_operational_delivery": {
+          "count": 26,
+          "p50_ms": 2825.56,
+          "p95_ms": 8313.656,
+          "p95_budget_ms": 1000.0,
+          "over_budget": true
+        },
+        "status_read": {
+          "count": 12,
+          "p50_ms": 620.726,
+          "p95_ms": 1673.355,
+          "p95_budget_ms": 500.0,
+          "over_budget": true
+        }
+      },
+      "loaded": {
+        "path": ".artifacts/sm4-local-comparison/candidate-default-final-loaded-audit.json",
+        "sha256": "18a64a3469b55c289064ae3153a3161b9076a558386523be3a91ae19560006f5"
+      },
+      "matched_loaded_rows": 557,
+      "binding_issues": 0,
+      "source_drift": [],
+      "runtime_drift": [],
+      "cleanup": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "profile": {
+        "binding": [
+          {
+            "endpoint_ms": 13097,
+            "stages_ms": {
+              "Admission": [
+                1773,
+                2271
+              ],
+              "Routing": [
+                4337
+              ],
+              "FencedActorRpc": [
+                4289
+              ],
+              "Reconciliation": []
+            }
+          }
+        ],
+        "details": [
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-default-final-repository-bindings.json",
+            "sha256": "12c670a91afabd35e610cd3f41532de1eaa9e90ae4edb425e0b0875539b04dbf"
+          },
+          {
+            "path": ".artifacts/sm4-local-comparison/candidate-default-final-lifecycle-status.json",
+            "sha256": "552b8e2257c1cee07617344a8c8ef27f95e139ef9d26e4e9d53cb37405bde718"
+          }
+        ],
+        "timed_lifecycle_example": {
+          "endpoint_ms": 854,
+          "native_observations": [
+            {
+              "start_ms": 10,
+              "elapsed_ms": 333,
+              "status": 200
+            },
+            {
+              "start_ms": 10,
+              "elapsed_ms": 435,
+              "status": 200
+            },
+            {
+              "start_ms": 553,
+              "elapsed_ms": 301,
+              "status": 200
+            }
+          ]
+        },
+        "slowest_accepted_create_folder": {
+          "client_http_ms": 14453.1639,
+          "endpoint_ms": 14447,
+          "admissions_ms": [
+            1577,
+            3179
+          ],
+          "fenced_actor_rpc_ms": [
+            3689
+          ]
+        },
+        "lifecycle_1668ms": {
+          "endpoint_ms": 1668,
+          "utc_start": "2026-11-26T12:43:40.180000+00:00",
+          "NativeSourceMetadata": [
+            {
+              "start_ms": 15,
+              "elapsed_ms": 678,
+              "status": 200
+            },
+            {
+              "start_ms": 15,
+              "elapsed_ms": 861,
+              "status": 200
+            },
+            {
+              "start_ms": 954,
+              "elapsed_ms": 696,
+              "status": 200
+            }
+          ],
+          "eventstore-workload-assertion-issuer": [
+            {
+              "start_ms": 8,
+              "elapsed_ms": 7,
+              "status": 200
+            },
+            {
+              "start_ms": 10,
+              "elapsed_ms": 5,
+              "status": 200
+            },
+            {
+              "start_ms": 946,
+              "elapsed_ms": 8,
+              "status": 200
+            }
+          ],
+          "overlapping_catalog_http_starts_including_background": {
+            "folders GET": 12,
+            "eventstore GET": 34,
+            "eventstore POST": 23,
+            "folders POST": 8
+          }
+        }
+      },
+      "default_selector_capture": ".artifacts/sm4-local-comparison/candidate-default-final-selectors.json",
+      "producer_audit": ".artifacts/sm4-local-comparison/final-candidate-producer-audit.json"
+    }
+  },
+  "sm4": "open",
+  "candidate_source_delta": {
+    "Hexalith.EventStore": [
+      "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs",
+      "tests/Hexalith.EventStore.Server.Tests/Routing/ParallelCatalogObservationTests.cs"
+    ]
+  },
+  "standard_candidate_failures": {
+    "candidate": "Unknown provider profile safe denial expected HTTP 403 and observed HTTP 503 provider_unavailable.",
+    "candidate-retry": "Unknown provider profile safe denial expected HTTP 403 and observed HTTP 202."
+  },
+  "verification_notes": {
+    "incremental_build": "Producer preflight rejected a stale EventStore DLL and clone checkout line-ending differences. Corrected the disposable build and required zero PDB or compile-document mismatches before live testing.",
+    "build": {
+      "root": {
+        "path": ".artifacts/sm4-local-comparison/candidate-build.log",
+        "sha256": "b6dea627bb803f3327f44720a849dbccc537336be295cd38911aff51781f5ee7"
+      },
+      "root_warnings": 1,
+      "root_errors": 0,
+      "warning": "Existing CS0618 in Hexalith.Tenants.Aspire AddProject."
+    },
+    "scope": "All three protected acceptance sources match the retained SHA-256 values. Only OperationalStatusDurabilityAcceptanceTests ran live for this remediation.",
+    "catalog_input": "The validated binding digest stays within a single admission attempt. Host capture, trust validation, fresh-state read, ETag write, cancellation and retry remain in their original order.",
+    "lifecycle": "Folder and organization ACL calls authenticate different source identities. The fresh folder read is ordered after checkpoint/view selection. They cannot share a source-head result.",
+    "fresh_baseline_command": "run-with-temp /usr/bin/python3 -B .artifacts/sm4-local-comparison/run-runtime.py baseline strict OperationalStatusDurabilityAcceptanceTests",
+    "standard_candidate_command": "run-with-temp bash .artifacts/sm4-local-comparison/run-final.sh candidate-default-final",
+    "retry_note": "Client retries are included in accepted-operation latency. Protected whole-test failures stop before emitting p95 and remain visible as separate invocations."
+  },
+  "pd10": {
+    "artifacts_verified_against_disk": 1714,
+    "candidate_set_sha256": "c6c753b1a98043a5692c4cf7e0244b75cbb55a388f58cb0969bf54e120110399",
+    "approval_status": "pending-a6b"
+  },
+  "paired_baseline_scoped": {
+    "receipt": {
+      "path": ".artifacts/sm4-local-comparison/paired-baseline-scoped-receipt.json",
+      "sha256": "689a47211acc8979408546943a5032f9dba45d66c6934420b5b7a8e3f70df8e8"
+    },
+    "exit_code": 0,
+    "result": {
+      "Pass": 1
+    },
+    "p95": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 4671.117,
+        "p95_ms": 6896.454,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true
+      },
+      "workers_operational_delivery": {
+        "count": 26,
+        "p50_ms": 2066.307,
+        "p95_ms": 8425.206,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 301.514,
+        "p95_ms": 401.838,
+        "p95_budget_ms": 500.0,
+        "over_budget": false
+      }
+    },
+    "loaded": {
+      "path": ".artifacts/sm4-local-comparison/paired-baseline-scoped-loaded-audit.json",
+      "sha256": "8390bb08e5a6df9cb74c7e0bb5c74825132570ea9b58e9adea87ec5d9db64eb1"
+    },
+    "matched_loaded_rows": 560,
+    "binding_issues": 0,
+    "source_drift": [],
+    "runtime_drift": [],
+    "cleanup": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 0,
+      "remaining_observed_directories": 0
+    },
+    "all_14_revision_and_source_maps_match_default_baseline": true,
+    "profile": {
+      "binding": [
+        {
+          "endpoint_ms": 5345,
+          "admission_ms": [
+            734
+          ],
+          "routing_ms": [
+            2510
+          ]
+        }
+      ]
+    }
+  },
+  "private_profile": {
+    "candidate-scoped": {
+      "path": ".artifacts/sm4-local-comparison/candidate-scoped-selectors.json",
+      "sha256": "8ca67ac07a1084fbc085f9de5560c009ed72b0909cb4d93a3c7d9776e13b1675"
+    },
+    "paired-baseline-scoped": {
+      "path": ".artifacts/sm4-local-comparison/paired-baseline-scoped-selectors.json",
+      "sha256": "079d5006063b5dc933cdae3e0f3b86732634db04e7c66129033b6dd436ece7b0"
+    },
+    "settings": {
+      "EventStore__RouteCatalog__ScopedDecodeReuse": "true",
+      "EventStore__RouteCatalog__RetainValidatedCatalogBytes": "true"
+    }
+  },
+  "profile_note": "The private comparison enables two existing Debug/Development catalog computation settings in both arms. Their source checks, durable lease writes and retry contracts still run. The default profile is reported separately.",
+  "private_candidate_branch_policy": [
+    {
+      "endpoint_ms": 20909,
+      "stages": {
+        "Admission": [
+          1606,
+          3709
+        ],
+        "Routing": [
+          6125
+        ],
+        "FencedActorRpc": [
+          5917
+        ],
+        "Reconciliation": [
+          1147
+        ]
+      }
+    }
+  ],
+  "binding_digest_probe": {
+    "input_bytes": 245091,
+    "count": 100,
+    "p50_ms": 1.6132,
+    "p95_ms": 4.3934,
+    "method": "Isolated unchanged ComputeDigest on the 245091-byte activation captured from the disposable real-provider fixture. Ten warmups, followed by 100 complete digest calls with equality checks. These timings are not HTTP timings."
+  },
+  "default_profile_baseline": {
+    "receipt": {
+      "path": ".artifacts/sm4-local-comparison/paired-default-receipt.json",
+      "sha256": "3142ea330b5680f3e75f319b4b078cbab66a4bbb6a0a08637af25751844da2a4"
+    },
+    "exit_code": 1,
+    "result": {
+      "Fail": 1
+    },
+    "p95": {},
+    "loaded": {
+      "path": ".artifacts/sm4-local-comparison/paired-default-loaded-audit.json",
+      "sha256": "d6ea3c7a5ade40c7981895d6eff04a0cc44390fa2e02b41e75dd2c2c09fba59b"
+    },
+    "matched_loaded_rows": 286,
+    "binding_issues": 0,
+    "source_drift": [],
+    "runtime_drift": [],
+    "cleanup": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 5,
+      "remaining_observed_directories": 0
+    },
+    "profile": {
+      "binding": [
+        {
+          "endpoint_ms": 16954,
+          "stages_ms": {
+            "Admission": [
+              1679,
+              1944
+            ],
+            "Routing": [
+              6239
+            ],
+            "FencedActorRpc": [
+              6179
+            ],
+            "Reconciliation": [
+              796
+            ]
+          }
+        }
+      ],
+      "details": [
+        {
+          "path": ".artifacts/sm4-local-comparison/paired-default-repository-bindings.json",
+          "sha256": "4844a780fe14fdf0de6077fb8e3bc884b6eb07b66eb820c40610cabc9ed709c0"
+        },
+        {
+          "path": ".artifacts/sm4-local-comparison/paired-default-lifecycle-status.json",
+          "sha256": "3e4e1bb23491adb77f5fb31d9abe9d1fc71f67c91fb60cddc091f0ffc88ecb03"
+        }
+      ],
+      "timed_lifecycle_example": {
+        "endpoint_ms": 1394,
+        "native_observations": [
+          {
+            "start_ms": 11,
+            "elapsed_ms": 749,
+            "status": 200
+          },
+          {
+            "start_ms": 11,
+            "elapsed_ms": 821,
+            "status": 200
+          },
+          {
+            "start_ms": 850,
+            "elapsed_ms": 543,
+            "status": 200
+          }
+        ]
+      }
+    },
+    "producer_audit": {
+      "path": ".artifacts/sm4-local-comparison/paired-default-producer-audit.json",
+      "sha256": "d36cf8808af5a5beffeb18d56faa52114bf2fb97dd4c56d2c1ae090f7c41e7b9"
+    },
+    "all_14_revision_and_source_maps_match_default_baseline": true,
+    "disposition": "Authenticated UpdateTenant during restart returned HTTP 500 unavailable instead of 202; the test stopped before reporting p95.",
+    "command": "run-with-temp bash .artifacts/sm4-local-comparison/run-final-baseline.sh paired-default"
+  },
+  "conclusion": "SM4 remains open. Each completed candidate run exceeded both budgets. One passing run per arm and the opposite outcomes across profiles do not establish a reproducible end-to-end speedup. No private settings were added to the product or the acceptance fixture.",
+  "primary_comparison": {
+    "baseline": "prior_passing_baseline",
+    "candidate": "candidate_runs.candidate-default-final",
+    "fresh_default_baseline_results": [
+      "baseline: CreateTenant 500",
+      "baseline-retry: CreateTenant 500",
+      "paired-default: UpdateTenant 500"
+    ],
+    "default_candidate_results": [
+      "candidate: denial 503",
+      "candidate-retry: denial 202",
+      "candidate-default-final: Pass"
+    ]
+  }
+}
