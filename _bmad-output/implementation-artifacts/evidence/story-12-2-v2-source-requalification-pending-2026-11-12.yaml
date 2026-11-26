@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 6d727cb409b5055ad6bb40e8aa55dd5ca05546051495467d9b28cd80ca4777a7
+candidate_set_sha256: bece1fac450ea1e298adba763473d24489e093c6a5d63f4505804fb5ac454618
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4142,8 +4142,8 @@ artifacts:
     sha256: 08a0fe6ecc4d4fda559000800b8e07bfa67f0379fe459c07d81125a1c4ac8cf0
   - path: "src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs"
     kind: file
-    bytes: 29447
-    sha256: 7ce390fcea1aa4b503860baf47c41ee38cf71dddeb1f924a3dfb6a7384bb737d
+    bytes: 29570
+    sha256: 5dfa959b2a215178732f777fc12befc5ba4468903ee7e1c49a75bf2b505899b8
   - path: "src/Hexalith.Folders/Queries/Folders/FolderLifecycleAuthorizationOutcome.cs"
     kind: file
     bytes: 448
@@ -6302,8 +6302,8 @@ artifacts:
     sha256: 43599be8cd4a91e3764bb3c726aac46805fc7f349bb687c3dc91b87b835b55aa
   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusPersistenceTests.cs"
     kind: file
-    bytes: 39816
-    sha256: 272f8e31dc34dfedd73605a891140dbd0d089e07bd25a675838fbc89e35f428a
+    bytes: 41733
+    sha256: f20065a7f48f986732feb85a7c67d0cc0bb84ce5f1e938532ff400091cdbdd9f
   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusReadInterleavingStore.cs"
     kind: file
     bytes: 1405
