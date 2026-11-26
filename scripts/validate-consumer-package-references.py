@@ -13,14 +13,16 @@ import tempfile
 import xml.etree.ElementTree as element_tree
 import zipfile
 
-from release_package_contract import validate_packages
+from release_package_contract import ROOT, validate_packages
 
 EXTENSION_PACKAGE = "Hexalith.Folders.EventStoreExtensions"
+EXTENSION_CONTRACTS_PACKAGE = "Hexalith.Folders.Contracts"
+EXTENSION_LOADER_PROBE = ROOT / "tests" / "tools" / "EventStoreExtensionConsumer" / "Program.cs"
 EXTENSION_CONSUMER_PACKAGES = {
     name.casefold()
     for name in (
         EXTENSION_PACKAGE,
-        "Hexalith.Folders.Contracts",
+        EXTENSION_CONTRACTS_PACKAGE,
         "Hexalith.EventStore.Contracts",
         "Hexalith.McpCli.Abstractions",
         "Hexalith.Commons.UniqueIds",
@@ -29,8 +31,10 @@ EXTENSION_CONSUMER_PACKAGES = {
 }
 
 
-def write_consumer(root: pathlib.Path, name: str, packages: list[str], version: str) -> pathlib.Path:
-    """Write one empty package-only consumer project."""
+def write_consumer(
+    root: pathlib.Path, name: str, packages: dict[str, str], program: pathlib.Path | None = None
+) -> pathlib.Path:
+    """Write an isolated package-only consumer project."""
 
     directory = root / name
     directory.mkdir()
@@ -40,26 +44,53 @@ def write_consumer(root: pathlib.Path, name: str, packages: list[str], version: 
     element_tree.SubElement(properties, "TargetFramework").text = "net11.0"
     element_tree.SubElement(properties, "Nullable").text = "enable"
     element_tree.SubElement(properties, "ImplicitUsings").text = "enable"
+    if program is not None:
+        element_tree.SubElement(properties, "OutputType").text = "Exe"
     references = element_tree.SubElement(root_element, "ItemGroup")
     element_tree.SubElement(references, "FrameworkReference", {"Include": "Microsoft.AspNetCore.App"})
-    for package_id in packages:
+    for package_id, version in packages.items():
         element_tree.SubElement(references, "PackageReference", {"Include": package_id, "Version": version})
     element_tree.ElementTree(root_element).write(project, encoding="utf-8", xml_declaration=False)
-    (directory / "Consumer.cs").write_text("public sealed class Consumer { }\n", encoding="utf-8")
+    if program is None:
+        (directory / "Consumer.cs").write_text("public sealed class Consumer { }\n", encoding="utf-8")
+    else:
+        (directory / "Program.cs").write_bytes(program.read_bytes())
     return project
+
+
+def eventstore_server_version(extension_project: str) -> str:
+    """Resolve the same EventStore SDK pin used to build the packed extension."""
+    version = subprocess.run(
+        [
+            "dotnet", "msbuild", extension_project, "-nologo", "-getProperty:HexalithEventStoreVersion",
+            "-p:Configuration=Release", "-p:UseNuGetDeps=true", "-p:UseHexalithProjectReferences=false",
+        ],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.strip()
+    if not version:
+        raise ValueError("Could not resolve the release EventStore SDK version.")
+    return version
 
 
 def validate_extension_consumer(project: pathlib.Path, package_directory: pathlib.Path, version: str) -> None:
     """Check the published package and a consumer's isolated restore graph."""
     assets = json.loads((project.parent / "obj" / "project.assets.json").read_text(encoding="utf-8"))
+    dependencies = set()
     for library in assets["libraries"]:
         dependency = library.split("/", 1)[0]
-        if dependency.casefold() not in EXTENSION_CONSUMER_PACKAGES:
+        dependency_key = dependency.casefold()
+        if dependency_key not in EXTENSION_CONSUMER_PACKAGES:
             raise ValueError(f"{EXTENSION_PACKAGE} brought unexpected dependency {dependency} into its consumer.")
+        dependencies.add(dependency_key)
+    if EXTENSION_CONTRACTS_PACKAGE.casefold() not in dependencies:
+        raise ValueError(f"{EXTENSION_PACKAGE} did not restore required dependency {EXTENSION_CONTRACTS_PACKAGE}.")
 
     with zipfile.ZipFile(package_directory / f"{EXTENSION_PACKAGE}.{version}.nupkg") as package:
         manifest_path = "build/hexalith.module-manifest.v2.json"
-        source_manifest = pathlib.Path(__file__).resolve().parent.parent / "module" / "hexalith.module-manifest.v2.json"
+        source_manifest = ROOT / "module" / "hexalith.module-manifest.v2.json"
         if package.read(manifest_path) != source_manifest.read_bytes():
             raise ValueError(f"{EXTENSION_PACKAGE} packaged a different manifest from {source_manifest.name}.")
 
@@ -71,6 +102,8 @@ def main() -> int:
     package_directory = args.package_directory.resolve()
     manifest, version = validate_packages(package_directory)
     package_ids = [package.package_id for package in manifest]
+    extension_project = next(package.project for package in manifest if package.package_id == EXTENSION_PACKAGE)
+    server_version = eventstore_server_version(extension_project)
 
     with tempfile.TemporaryDirectory(prefix="hexalith-folders-package-consumers-") as temporary:
         root = pathlib.Path(temporary)
@@ -96,11 +129,18 @@ def main() -> int:
             encoding="utf-8",
         )
         split = max(1, (len(package_ids) + 1) // 2)
-        extension_consumer = write_consumer(root, "EventStoreExtensionConsumer", [EXTENSION_PACKAGE], version)
+        extension_consumer = write_consumer(root, "EventStoreExtensionConsumer", {EXTENSION_PACKAGE: version})
+        loader_consumer = write_consumer(
+            root,
+            "EventStoreExtensionLoaderConsumer",
+            {EXTENSION_PACKAGE: version, "Hexalith.EventStore.Server": server_version},
+            EXTENSION_LOADER_PROBE,
+        )
         projects = [
-            write_consumer(root, "PrimaryPackagesConsumer", package_ids[:split], version),
-            write_consumer(root, "ExtendedPackagesConsumer", package_ids[split:], version),
+            write_consumer(root, "PrimaryPackagesConsumer", dict.fromkeys(package_ids[:split], version)),
+            write_consumer(root, "ExtendedPackagesConsumer", dict.fromkeys(package_ids[split:], version)),
             extension_consumer,
+            loader_consumer,
         ]
         environment = os.environ.copy()
         environment["NUGET_PACKAGES"] = str(root / ".nuget" / "packages")
@@ -112,6 +152,9 @@ def main() -> int:
                 env=environment,
                 check=True,
             )
+        validate_extension_consumer(extension_consumer, package_directory, version)
+
+        for project in projects:
             subprocess.run(
                 ["dotnet", "build", str(project), "--no-restore", "--configuration", "Release", "-warnaserror"],
                 cwd=project.parent,
@@ -119,9 +162,14 @@ def main() -> int:
                 check=True,
             )
 
-        validate_extension_consumer(extension_consumer, package_directory, version)
+        subprocess.run(
+            ["dotnet", "run", "--project", str(loader_consumer), "--configuration", "Release", "--no-build"],
+            cwd=loader_consumer.parent,
+            env=environment,
+            check=True,
+        )
 
-    print(f"Validated three package-only consumers for all {len(package_ids)} packages at {version}.")
+    print(f"Validated four package-only consumers for all {len(package_ids)} packages at {version}.")
     return 0
 
 

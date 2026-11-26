@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: c6e04ba7f73f40893f05b1ae9e3da08d1a6788125677e11d25e90d674e750708
-artifact_count: 1692
+candidate_set_sha256: 8e96c745014f4a13f9a42c764412029f1ad27a63557181f876d1f7662f223761
+artifact_count: 1693
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -114,12 +114,12 @@ artifacts:
     sha256: 2c129ee0460c8504cd2c69a1345ebd89e75bae8418cc6551ea23e992e1f75deb
   - path: "scripts/pd10-v2-coverage-roots.txt"
     kind: file
-    bytes: 363
-    sha256: f9c78a94a840171d8eb4d75f1163d13d9d8c0769688f68b06d72d06d97c2aefd
+    bytes: 405
+    sha256: 58a40a8e1ac985408e1c1c801b4d96f39ad3d63df1bca0de48060ddeab3a5db7
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 121562
-    sha256: 5453adb958de33b1a9a1cdfb854db60c029c50a3d48a37052289301455847e1a
+    bytes: 121656
+    sha256: fe25e720108565ab541734f291f51c78dd65d09b7dddc1a7964b9689044117bf
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -864,6 +864,10 @@ artifacts:
     kind: file
     bytes: 2014
     sha256: ca37376caa0300a959114f5c110f3d6768ac26f290bc921a4072fc38df2ef164
+  - path: "src/Hexalith.Folders.EventStore/FoldersIdempotencyIntentAdapterServiceCollectionExtensions.cs"
+    kind: file
+    bytes: 1053
+    sha256: 091ce501940d7b381649b99dad071144bd5debe499ee5293d0a301bba24c06b0
   - path: "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj"
     kind: file
     bytes: 2211

@@ -209,6 +209,7 @@ src/Hexalith.Folders.Contracts/Routing/FoldersRuntimeCatalogDeclarations.cs
 src/Hexalith.Folders.Contracts/Routing/Payloads/FoldersCommandPayloads.cs
 src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
 src/Hexalith.Folders.EventStore/FoldersDomainServiceSafeDenialExceptionHandler.cs
+src/Hexalith.Folders.EventStore/FoldersIdempotencyIntentAdapterServiceCollectionExtensions.cs
 src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj
 src/Hexalith.Folders.EventStore/Program.cs
 src/Hexalith.Folders.EventStoreExtensions/ArchiveFolderIdempotencyIntentAdapter.cs

@@ -24,6 +24,17 @@ public sealed class WorkersHostSecurityEnrollmentTests
     [Fact]
     public async Task ProductionPipelineHasEmptyInventoriesExactProbesAndAuthenticatedChannelCallbacks()
     {
+        using JsonDocument manifest = JsonDocument.Parse(await File.ReadAllBytesAsync(
+            Path.Combine(AppContext.BaseDirectory, "hexalith.module-manifest.v2.json"),
+            TestContext.Current.CancellationToken));
+        JsonElement readiness = manifest.RootElement.GetProperty("modules").EnumerateArray()
+            .Single(module => module.GetProperty("identity").GetProperty("moduleId").GetString() == "folders")
+            .GetProperty("lifecycle").GetProperty("readiness").EnumerateArray()
+            .Single(probe => probe.GetProperty("server").GetString() == "workers");
+        readiness.GetProperty("kind").GetString().ShouldBe("http");
+        string readyPath = readiness.GetProperty("endpoint").GetString().ShouldNotBeNull();
+        readyPath.ShouldBe("/ready");
+
         var store = new InMemoryFolderTenantAccessProjectionStore();
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions { EnvironmentName = Environments.Development });
         builder.WebHost.UseUrls("http://127.0.0.1:0");
@@ -38,7 +49,7 @@ public sealed class WorkersHostSecurityEnrollmentTests
         (await EventStoreHttpEndpointInventory.ValidateAsync(endpoints, app.Services)).ShouldBeEmpty();
         EventStoreDomainServiceEndpointInventory.Validate(endpoints, null).ShouldBeEmpty();
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.Single()) };
-        foreach (string probe in new[] { "/health", "/alive", "/ready" })
+        foreach (string probe in new[] { "/health", "/alive", readyPath })
         {
             using HttpResponseMessage response = await client.GetAsync(probe, TestContext.Current.CancellationToken);
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
