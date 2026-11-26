@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: bece1fac450ea1e298adba763473d24489e093c6a5d63f4505804fb5ac454618
+candidate_set_sha256: 4decd6f61c99865d8a479a8a8ba7987371758c89cb88960ba28a019b12ffd052
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -702,8 +702,8 @@ artifacts:
     sha256: e8fde9bac421e227a30de300c345c357c074d46a866d2fd6ecec5aab9c68a816
   - path: "src/Hexalith.Folders.Contracts/Provisioning/FolderProvisioningRequest.cs"
     kind: file
-    bytes: 1148
-    sha256: 292d76499d17ca077ce248b287ff4ab9bbde9957bbb6dc91696aeab610c9a3fb
+    bytes: 1191
+    sha256: c2e7750a1a4feca3577413b37072bf6124cc4c573d453a3271649067de3bec7a
   - path: "src/Hexalith.Folders.Contracts/Queries/GetAuditRecord.cs"
     kind: file
     bytes: 1960
@@ -1502,8 +1502,8 @@ artifacts:
     sha256: 6f42b3f2ae3c04b1df7530763445bb74a6736e7d0b624461900135c3568f9044
   - path: "src/Hexalith.Folders.Server/Provisioning/FolderProvisioningService.cs"
     kind: file
-    bytes: 19977
-    sha256: 2d1400ca4476c7649e16ffda74ca7a222ae5c5a884e1a742f3e4bd998084dc07
+    bytes: 20022
+    sha256: c1b67f05f0ab22423d10ef4b57a9edfa04eeaae09dafaae31bbe204cb3d3331f
   - path: "src/Hexalith.Folders.Server/Provisioning/FolderProvisioningStreamPresence.cs"
     kind: file
     bytes: 3140
@@ -1898,8 +1898,8 @@ artifacts:
     sha256: cd7befe992533c8205f8745d73ba8b96dbcc2bcdeb6e65056b1ba42a1f38d793
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs"
     kind: file
-    bytes: 41153
-    sha256: df2b12a67c6eb5f2c0d87c150de275f89e3c31af86af509e028b0e6e34783797
+    bytes: 41647
+    sha256: 7f401afb7b4f086959e71351110434a60a0a5c61858348862419402cd5e4b171
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderAppendOutcome.cs"
     kind: file
     bytes: 166
@@ -1946,8 +1946,8 @@ artifacts:
     sha256: a0c9c4a8961b5c5e3255a9b9848ff7ce4aa4f86e0ef6d349cffae8200afb05ef
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs"
     kind: file
-    bytes: 44112
-    sha256: 48b1f47caad47233b5ddbb0585a1a7da1cc35b6a8a2507ce66591f289f28b06d
+    bytes: 44973
+    sha256: 2c497ec097cfb207e48489dd0e7425d6e36d0b705aefe926badfc96a2e33753e
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs"
     kind: file
     bytes: 761

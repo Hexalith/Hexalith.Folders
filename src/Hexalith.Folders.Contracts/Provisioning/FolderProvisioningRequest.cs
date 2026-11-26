@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Server.Provisioning;
 /// <param name="TaskId">The task admitted by EventStore.</param>
 /// <param name="StepKey">Its canonical numbered owner step key.</param>
 /// <param name="AdmissionOperation">The exact versioned EventStore admission operation.</param>
-/// <param name="RequestSha256">The normalized admitted request digest.</param>
+/// <param name="RequestSha256">The normalized Folder provisioning intent digest bound by the committed task step.</param>
 /// <param name="Fence">The caller's current positive execution fence.</param>
 /// <param name="ExpectedVersion">Zero for an absent owner stream.</param>
 /// <param name="DisplayName">The intended Folder display name.</param>

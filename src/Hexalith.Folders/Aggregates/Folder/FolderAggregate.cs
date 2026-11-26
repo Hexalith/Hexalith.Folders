@@ -6,8 +6,16 @@ public static class FolderAggregate
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(command);
+        return Create(state, command, occurredAt, FolderCommandValidator.Validate(command));
+    }
 
-        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+    /// <summary>Creates the Folder for an already verified create-only owner provisioning request.</summary>
+    internal static FolderResult HandleProvisioning(CreateFolder command, DateTimeOffset occurredAt)
+        => Create(FolderState.Empty, command, occurredAt, FolderCommandValidator.ValidateProvisioning(command));
+
+    private static FolderResult Create(FolderState state, CreateFolder command, DateTimeOffset occurredAt,
+        FolderCommandValidationResult validation)
+    {
         if (!validation.IsAccepted)
         {
             return FolderResult.Rejected(command, validation.Code);

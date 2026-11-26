@@ -319,7 +319,7 @@ internal sealed class FolderProvisioningService(
             || request is null || request.Fence <= 0
             || !FolderProvisioningContract.IsCanonicalStep(request.TaskId, request.StepKey)
             || request.AdmissionOperation is not { Length: > 0 and <= 128 }
-            || request.DisplayName is null || request.DisplayName.AsSpan().Trim().Length is < 1 or > 128
+            || request.DisplayName is null || request.DisplayName.AsSpan().Trim().Length is < 1 or > FolderCommandValidator.MaxProvisioningDisplayNameLength
             || request.RequestSha256 is not { Length: 64 }
             || request.RequestSha256.Any(character => character is not (>= 'a' and <= 'f' or >= '0' and <= '9')))
         {
@@ -354,7 +354,7 @@ internal sealed class FolderProvisioningService(
         string receiptId = ReceiptId(binding);
         var command = new CreateFolder(binding.TenantId, binding.TenantId, folderId, intent.DisplayName,
             null, null, [], binding.OriginalActorId, correlation, binding.TaskId.ToLowerInvariant(), receiptId, binding.TenantId);
-        FolderResult result = FolderAggregate.Handle(FolderState.Empty, command, clock.GetUtcNow());
+        FolderResult result = FolderAggregate.HandleProvisioning(command, clock.GetUtcNow());
         if (result.Events is not [FolderCreated created])
         {
             return Results.BadRequest();

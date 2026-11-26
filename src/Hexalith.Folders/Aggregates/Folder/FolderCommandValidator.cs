@@ -14,6 +14,9 @@ public static partial class FolderCommandValidator
     internal const int MaxTagCount = 32;
     internal const int MaxBranchRefPatternCount = 16;
     private const int MaxDisplayNameLength = 128;
+
+    /// <summary>The maximum trimmed display name length in UTF-16 code units for owner provisioning.</summary>
+    internal const int MaxProvisioningDisplayNameLength = 160;
     private const int MaxDescriptionLength = 512;
     private const int MinimumWorkspaceLockLeaseSeconds = 1;
     private const int MaximumWorkspaceLockLeaseSeconds = 86400;
@@ -58,6 +61,18 @@ public static partial class FolderCommandValidator
     ];
 
     public static FolderCommandValidationResult Validate(IFolderCommand command)
+        => Validate(command, MaxDisplayNameLength);
+
+    /// <summary>Validates create-only owner provisioning with its own display name limit.</summary>
+    internal static FolderCommandValidationResult ValidateProvisioning(CreateFolder command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        return command.DisplayName.AsSpan().Trim().Length > MaxProvisioningDisplayNameLength
+            ? FolderCommandValidationResult.Rejected(FolderResultCode.InvalidFolderMetadata)
+            : Validate(command, MaxProvisioningDisplayNameLength);
+    }
+
+    private static FolderCommandValidationResult Validate(IFolderCommand command, int maxCreateDisplayNameLength)
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -245,7 +260,7 @@ public static partial class FolderCommandValidator
         }
 
         IReadOnlyList<string>? tags = ValidateAndCanonicalizeTags(create.Tags);
-        if (!IsSafeMetadata(create.DisplayName, required: true, MaxDisplayNameLength)
+        if (!IsSafeMetadata(create.DisplayName, required: true, maxCreateDisplayNameLength)
             || !IsSafeMetadata(create.Description, required: false, MaxDescriptionLength)
             || !IsSafePathLabel(create.PathLabel)
             || tags is null)
