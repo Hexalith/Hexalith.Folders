@@ -1,0 +1,71 @@
+{
+  "story": "12.2",
+  "date": "2026-11-26",
+  "dependency": "EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY",
+  "folders_commit": "a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a",
+  "folders_platform_gitlink": "3848af49f9afc91b174b4c716751fe49cb15dbba",
+  "platform_tree": "82497215aa4b3cdacdd96ace2c4dfdd8bc9ff5f1",
+  "reused_source_qualification": {
+    "receipt": "story-12-2-current-source-qualification-20261126.json",
+    "private_receipt_hashes_verified": 23,
+    "root_gitlinks_verified": 13,
+    "compiled_platform_enrollment_sources_verified": 3,
+    "strict_passes": {
+      "operational_status_durability": 1,
+      "folder_durability": 1,
+      "original_primary_bounded_history": 1
+    },
+    "runtime_assembly_matches": 1299,
+    "stable_producer_copies": 236,
+    "stable_source_asset_graphs": 16,
+    "owned_cleanup_remainders": 0
+  },
+  "supplemental_platform_controls": {
+    "inputs": "Standalone Platform checkout with Debug source references to disposable sibling checkouts at the Folders root gitlinks. The November 26 provider JAR was reused. The launcher and verification scripts matched the pinned Platform source.",
+    "provider_jar_sha256": "83009556552b986cfcb9b6f4c4515a6551af6e338a7fc761f423d59819cc1a08",
+    "build": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.5.1 -p:EnablePrivateCatalogInvocationProof=true -p:VersionSuffix=story12-2-qualification -p:HexalithPartiesRoot=<Folders-pinned-sibling> -p:HexalithBuildsRoot=<Folders-pinned-sibling> -m:1 -nr:false -v:quiet",
+    "build_exit_code": 0,
+    "build_warnings": 10,
+    "build_errors": 0,
+    "composition_assembly_sha256": "e6a34b37d6718cb5bcffc6dadd9ae92f29e3a261270dc1f8b33cc10848c1ccbb",
+    "test_assembly_sha256": "a3eab083fef06453fd55cf800bb1aa0264d48b69f11355c8c3fd832dcf8b66b3",
+    "focused_classes": {
+      "classes": ["PlatformWorkloadEnrollmentTests", "PlatformRunOwnedWorkloadEnrollmentTests"],
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "explicit_selected_separately": 1
+    },
+    "live_command": "NO_COLOR=1 TERM=dumb /usr/bin/python3 -B verify_component.py --run-owned --platform-assembly <Debug Platform Composition test DLL>",
+    "live_exit_code": 0,
+    "unchanged_consumer_and_fresh_host": {
+      "passed": 1,
+      "provisioned": true,
+      "resources": 8,
+      "workloads": 6,
+      "remaining_owned_containers": 0,
+      "remaining_owned_temporary_paths": 0
+    },
+    "bridge_cancellation": {
+      "passed": 1,
+      "request_published": true,
+      "cancellation_observed": true,
+      "release_published": true,
+      "child_alive_after_cleanup": true,
+      "remaining_owned_containers": 0,
+      "remaining_owned_temporary_paths": 0
+    },
+    "tracked_platform_checkout_clean_after_run": true,
+    "disposable_workspace_removed": true,
+    "private_logs_directory": ".artifacts/story-12-2-20261126-platform-owner-handoff/",
+    "private_receipt_sha256": {
+      "checkouts.txt": "bad0f39d695be8640a6f8f0e792087185f4d9e170a89a600170a19db979ba27c",
+      "build-private.log": "be1e3b4584d04b4a82d9d58a6f30b79f7cffe887c5decc1a3cee84a582a96134",
+      "platform-enrollment-private.xml": "b96e6327e75a3e3b88a44555f11d7e4e099d9dce6d2c3c05a168bce8ae022359",
+      "platform-live-private.log": "25b6eccdeb7800f39ffaab56c333b0072eac5e89b8317b15588939ece3268aaf"
+    }
+  },
+  "platform_owner_decision": "pending",
+  "story_status": "in-progress"
+}

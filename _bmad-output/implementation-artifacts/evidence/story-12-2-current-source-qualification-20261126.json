@@ -1,0 +1,487 @@
+{
+  "story": "12.2",
+  "recorded_utc": "2026-11-26T09:53:42.706710+00:00",
+  "status": "in-progress",
+  "full_acceptance": false,
+  "inputs": {
+    "folders_commit": "a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a",
+    "gitlinks": {
+      "Hexalith.AI.Tools": "01e64857ab73bde74be137c675a8376c4da8cbee",
+      "Hexalith.Builds": "bf8a28b4bbcec619e8d9764d335f786f2bafb69e",
+      "Hexalith.CiCd": "9405c50501e7a587b677fa890700e12363f00b66",
+      "Hexalith.Commons": "ab6e29bc72c2c08a2d72d4ee09cf20dd3ae029b5",
+      "Hexalith.EventStore": "943be126d81fc82761c27d856c3c8d85cbeb2c99",
+      "Hexalith.FrontComposer": "781a48f5e2fde9e54222670fe4989b7132faf1ca",
+      "Hexalith.McpCli": "c07d09ccf2e7dbb8781b20bf093e4e65d3f14216",
+      "Hexalith.Memories": "667fbf2564ee2a1a30487e24cba20b37eebb76d0",
+      "Hexalith.Parties": "c4f72ea86e11fed7a48de129eba1c3c2cba1c1ed",
+      "Hexalith.Platform": "3848af49f9afc91b174b4c716751fe49cb15dbba",
+      "Hexalith.PolymorphicSerializations": "94ae242d609d0126735a8ab387960ec41265a4f7",
+      "Hexalith.Projects": "77dc1ab5db4163dcbb116b177319dfe350c89799",
+      "Hexalith.Tenants": "54985ab11ade150d5fa908be179cf2a5a407353d"
+    },
+    "protected_bodies": {
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+      "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc",
+      "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d"
+    },
+    "parent_frozen_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+    "sdk": "11.0.100",
+    "dapr_cli": "1.19.1",
+    "dapr_runtime": "1.19.1",
+    "aspire_apphost_sdk": "17.0.0",
+    "observed_daprd_binary_sha256": "b1ece5da76674bf6e15126aeb019fa58e444b5b8edf4d0ac59e32df895ae8fd2"
+  },
+  "builds": {
+    "root": {
+      "command": "run-with-temp dotnet build Hexalith.Folders.slnx -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.5.1 -p:EnablePrivateCatalogInvocationProof=true -p:VersionSuffix=story12-2-qualification -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/build-root.log",
+        "sha256": "0105d5ce1ced5487b0516fe4a2f0c98f90b766451c94c90f5e72cdfe322ffcee"
+      }
+    },
+    "memories": {
+      "command": "cd references/Hexalith.Memories\nrun-with-temp dotnet build src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.5.1 -p:EnablePrivateCatalogInvocationProof=true -p:VersionSuffix=story12-2-qualification -m:1 -nr:false -v:quiet",
+      "exit_code": 0,
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/build-memories.log",
+        "sha256": "0ceac9b7eeae0d0e0809a888c6c341a0b1d379ade96b4e8fbaa073dee14dfbf7"
+      }
+    },
+    "provider": {
+      "command": "mvn -B -o -Dproject.build.outputTimestamp=2026-11-26T00:00:00Z package",
+      "exit_code": 0,
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/build-provider.log",
+        "sha256": "ac6f90b287b6fe0cfb4029b24c26e263ac388e07dc68ed12f2efec3fdfac5322"
+      }
+    }
+  },
+  "producer_audit": {
+    "producer_copies": 236,
+    "project_assets": 16,
+    "sdk_version": "5.5.1.0",
+    "source_only": true,
+    "pre_live": {
+      "path": ".artifacts/story-12-2-20261126-qualification/pre-live-audit.json",
+      "sha256": "7ea85deef241098d67c2a9076cb4899d5f9835b92c91a4d9d96593ff0caf0083"
+    },
+    "post_live": {
+      "path": ".artifacts/story-12-2-20261126-qualification/post-live-audit.json",
+      "sha256": "5b1ce9dfcb541e7727923abb761f3c0dba0d649d0750ab44e54de95746089019"
+    },
+    "post_live_copies_identical": true,
+    "post_live_asset_graphs_identical": true
+  },
+  "provider": {
+    "forgejo": {
+      "reference": "codeberg.org/forgejo/forgejo:16.0.3",
+      "local_descriptor_sha256": "7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5",
+      "platform": "linux/amd64",
+      "oci_version": "16.0.3",
+      "linux_amd64_manifest_sha256": "121ff0f31cfa3f36f051a1590d50c35e1d99491e1788f5f12ced66a957c5be0b"
+    },
+    "keycloak": "26.6.4",
+    "jar": {
+      "path": ".artifacts/story-12-2-20261126-qualification/provider/target/keycloak-workload-binding-1.0.0-SNAPSHOT.jar",
+      "sha256": "83009556552b986cfcb9b6f4c4515a6551af6e338a7fc761f423d59819cc1a08"
+    },
+    "launcher": {
+      "path": ".artifacts/story-12-2-20261126-qualification/provider/run_owned.py",
+      "sha256": "3d0255b6d0262a2420a3cbd42e8f35fda04c09e3560fc886f912922c49e95320"
+    },
+    "launcher_matches_platform_source": true,
+    "java_cases": {
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "strict_folders": {
+    "operational": {
+      "test_class": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-20261126-qualification/run-runtime.py operational strict OperationalStatusDurabilityAcceptanceTests",
+      "environment": {
+        "Folders__EventStoreDaprHttpPort": 34593,
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+        "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+      },
+      "exit_code": 0,
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 490.052
+      },
+      "test_body_seconds": 400.781,
+      "actual_forgejo_image_ids": [
+        "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5"
+      ],
+      "actual_run_owned_workload_enrollments": 1,
+      "matched_loaded_assemblies": 593,
+      "source_head_or_runtime_drift": false,
+      "owned_cleanup_remainders": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "private_receipt": {
+        "path": ".artifacts/story-12-2-20261126-qualification/operational-receipt.json",
+        "sha256": "0b38a8b20044d91116b48a578a1d914f0f996733cfe826300f2f89c30d006024"
+      },
+      "private_raw_xml": {
+        "path": ".artifacts/story-12-2-20261126-qualification/operational-private.xml",
+        "sha256": "a8c0b6f718a32eb682ed78fc8ef39b4a90364f6fb1139683c13633db521d0352"
+      }
+    },
+    "folder": {
+      "test_class": "Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-20261126-qualification/run-runtime.py folder strict FolderDurabilityAcceptanceTests",
+      "environment": {
+        "Folders__EventStoreDaprHttpPort": 59461,
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+        "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+      },
+      "exit_code": 0,
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 207.75
+      },
+      "test_body_seconds": 113.226,
+      "actual_forgejo_image_ids": [
+        "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5"
+      ],
+      "actual_run_owned_workload_enrollments": 1,
+      "matched_loaded_assemblies": 306,
+      "source_head_or_runtime_drift": false,
+      "owned_cleanup_remainders": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "private_receipt": {
+        "path": ".artifacts/story-12-2-20261126-qualification/folder-receipt.json",
+        "sha256": "40f289f7a6aae720ff82cc16f0719431a61b045f1022cc027f1be578224fb3fd"
+      },
+      "private_raw_xml": {
+        "path": ".artifacts/story-12-2-20261126-qualification/folder-private.xml",
+        "sha256": "52253391f7f3f6a1cef5248b1f0640d7c714e5385fe925800054b4c1ecace783"
+      }
+    },
+    "bounded": {
+      "test_class": "Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests",
+      "command": "run-with-temp /usr/bin/python3 -B .artifacts/story-12-2-20261126-qualification/run-runtime.py bounded strict OperationalStatusBoundedHistoryAcceptanceTests",
+      "environment": {
+        "Folders__EventStoreDaprHttpPort": 47369,
+        "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true",
+        "FOLDERS_BOUNDED_HISTORY_ORIGINAL_SOURCE": "1",
+        "FOLDERS_TASK36_LIFECYCLE_DIAGNOSTICS_DISABLED": "true"
+      },
+      "exit_code": 0,
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 1821.725
+      },
+      "test_body_seconds": 1746.57,
+      "actual_forgejo_image_ids": [
+        "sha256:7c4e1db440be7b2ca685b49d0d7864cdd78e92431f531bf7893659def8200fc5"
+      ],
+      "actual_run_owned_workload_enrollments": 1,
+      "matched_loaded_assemblies": 400,
+      "source_head_or_runtime_drift": false,
+      "owned_cleanup_remainders": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "private_receipt": {
+        "path": ".artifacts/story-12-2-20261126-qualification/bounded-receipt.json",
+        "sha256": "079bab3819c2feda0c3fe024190251646d47ee3c32227641459e0467245f0477"
+      },
+      "private_raw_xml": {
+        "path": ".artifacts/story-12-2-20261126-qualification/bounded-private.xml",
+        "sha256": "3cca2ba4e5ba486cd7002f983fb712e4d99a926b90b40f62c3d2b33c04fdfb7c"
+      }
+    }
+  },
+  "bounded_history_evidence": {
+    "transport": "authenticated named/shared SDK rebuild",
+    "source": "Explicit Debug EventStore.Testing synthetic original-primary source",
+    "initial_positions": 10001,
+    "grown_positions": 10002,
+    "replaced_host_processes": 4,
+    "lease_seconds": 3600
+  },
+  "component_suites": {
+    "ordinary-tests": {
+      "results": {
+        "passed": 2593,
+        "failed": 0,
+        "skipped": 2,
+        "errors": 0,
+        "time": 118.472
+      },
+      "not_run": 0,
+      "assembly_sha256": "a152453f571b3c9c92abf601ce65173baaf52d6ca353088fa750eb203820ea3e",
+      "private_xml_sha256": "660ee66462988adc78d5f5c2f5f00ddd0f5b4b49796fb0736128bca5b613fa8e"
+    },
+    "ordinary-server-tests": {
+      "results": {
+        "passed": 1564,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 227.36
+      },
+      "not_run": 11,
+      "assembly_sha256": "9c486f968b31b9bca93162b57c63e90badb77e019220ba31b3fae0c2c63430d7",
+      "private_xml_sha256": "e740c00c8edd00a941c42a5096523c13912fbf8ebc943b8abd6faa5bd0ac175d"
+    },
+    "ordinary-workers-tests": {
+      "results": {
+        "passed": 204,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 7.197
+      },
+      "not_run": 0,
+      "assembly_sha256": "b2a12da35e0ce521ff87d597a392510be23b7a93b2bfcfb659e45e76665f0b8f",
+      "private_xml_sha256": "e30a111b19031c6b7233e184325a10cfdc834c0150d512897d9799ac863fd929"
+    },
+    "ordinary-integrationtests": {
+      "results": {
+        "passed": 888,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 41.123
+      },
+      "not_run": 0,
+      "assembly_sha256": "1285d0e1045adbbace2ce0455ec66788bb9c5c01ec71846f3c8aef0141122712",
+      "private_xml_sha256": "21b06d8f4c9fa3faf51c568135867d9a03e5f0e79c6422cfe7dea276249a9625"
+    },
+    "ordinary-eventstore-tests": {
+      "results": {
+        "passed": 128,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 3.446
+      },
+      "not_run": 0,
+      "assembly_sha256": "2c81efa3a73fa6e8e2dac0828c5ec9af436ea9678b9853885198103a1433c9d0",
+      "private_xml_sha256": "f3eeda4773d5ee9c680099d0974e180190ffcee76531cbd65171a2bad5895a74"
+    },
+    "ordinary-contracts-tests": {
+      "results": {
+        "passed": 781,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "time": 210.975
+      },
+      "not_run": 0,
+      "assembly_sha256": "a680b5c52bf42ce12b45fd4db85de573b4b01bbf2944e99c0e0ca58e0e792614",
+      "private_xml_sha256": "a3b1b5035cb650196fff39072820728ce9816f73ae37d947b958fe4b206a9657"
+    }
+  },
+  "component_cases_passed": 6158,
+  "component_cases_optional_skip": 2,
+  "bounded_history_component_positions": [
+    10001,
+    32769
+  ],
+  "matrix": {
+    "passed_case_counts": {
+      "delivery_and_replay": 14,
+      "task_closure": 5,
+      "conflict_and_crash": 22,
+      "denial_and_storage": 4,
+      "retention": 7
+    },
+    "method_results": {
+      "path": ".artifacts/story-12-2-20261126-qualification/matrix-audit.json",
+      "sha256": "93d552a4a0d6ee48833bdb42ab42846c0f001e30cf059c552d0c77dfa598e10d"
+    }
+  },
+  "platform_consumer": {
+    "python": {
+      "command": "env -u TMPDIR -u TMP -u TEMP /usr/bin/python3 -B -m unittest test_run_owned test_component_fixture",
+      "python_suite_cwd": ".artifacts/story-12-2-20261126-qualification/provider",
+      "passed": 59,
+      "exit_code": 0,
+      "uid_1001": {
+        "qualification": "run-owned enrollment",
+        "non1000Caller": 1001,
+        "runtimeGroup": 0,
+        "hostSecretPermissions": [
+          "0600"
+        ],
+        "hostSecretOwners": [
+          1001
+        ],
+        "realProviderAndCleanup": true
+      },
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/provider-python-private.log",
+        "sha256": "39915aac581613c85ecc267f02ff132cd73dbb71634c25b3381b7354dbd6581b"
+      }
+    },
+    "run_owned": {
+      "exit_code": 0,
+      "observations": {
+        "qualification": "run-owned enrollment",
+        "serverVersion": "26.6.4",
+        "imageId": "sha256:0aae0de7fca85525f727d3354df17896092de8bb26ae4c12d89c77e5df8cbce4",
+        "providerSha256": "83009556552B986CFCB9B6F4C4515A6551AF6E338A7FC761F423D59819CC1A08",
+        "resourceCount": 8,
+        "workloadCount": 6,
+        "startupImport": true,
+        "observedRemainingContainers": 0,
+        "observedRemainingTemporaryPaths": 0
+      },
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/provider-enrollment-private.log",
+        "sha256": "f154e39f4dc257b18f7f3022c0ce46133acf2bb37ac26515d94f122ac21642e8"
+      }
+    },
+    "configuration": {
+      "exit_code": 0,
+      "summary": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "time": 1.261
+      },
+      "private_xml": {
+        "path": ".artifacts/story-12-2-20261126-qualification/apphost-enrollment-config-private.xml",
+        "sha256": "56374382e6188efc20e6933789a07d5284766d04c27f507652b84482384b8ec4"
+      }
+    },
+    "actual_issuer": {
+      "exit_code": 0,
+      "server_cases": {
+        "total": 11,
+        "errors": 0,
+        "failed": 0,
+        "skipped": 0,
+        "notRun": 0,
+        "securityCases": 11,
+        "completeProject": false
+      },
+      "consumer_cases_passed": 5,
+      "negative_controls": [
+        "credential",
+        "tenant",
+        "domain",
+        "audience",
+        "operation",
+        "scan-without-grant",
+        "missing",
+        "extra",
+        "duplicate",
+        "oversized",
+        "unbound",
+        "revoked",
+        "expired",
+        "ambiguous",
+        "caller",
+        "revision"
+      ],
+      "owned_cleanup": {
+        "containers": 0,
+        "temporary_paths": 0
+      },
+      "private_log": {
+        "path": ".artifacts/story-12-2-20261126-qualification/provider-issuer-private.log",
+        "sha256": "9a1f84aa908632407e02f634da49d287b4833f5a30d7cd585df4481150167585"
+      }
+    }
+  },
+  "focused_eventstore_scanner_and_source_authority": {
+    "build_command": "cd references/Hexalith.EventStore\nrun-with-temp dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -p:HexalithEventStoreVersion=5.5.1 -p:VersionSuffix=story12-2-qualification -m:1 -nr:false -v:quiet",
+    "build_exit": 0,
+    "build_log": {
+      "path": ".artifacts/story-12-2-20261126-qualification/build-sdk.log",
+      "sha256": "2e66393709c03c6a057f9482a4d2fcc0d24e8f82b13759f5e9d2d30e06e3c20c"
+    },
+    "test_project": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests",
+    "test_command": "run-with-temp dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net11.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Security.SecretsProtectionTests -class Hexalith.EventStore.Server.Tests.Controllers.NativeSourceScannerAuthorizationTests -result-xml <private-receipts>/sdk-scanner-private.xml",
+    "test_exit": 0,
+    "summary": {
+      "total": 300,
+      "passed": 300,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0,
+      "time": 11.69
+    },
+    "private_xml": {
+      "path": ".artifacts/story-12-2-20261126-qualification/sdk-scanner-private.xml",
+      "sha256": "a55bcbf49cef6f518d6be0873b79c1beef5f43b5772e1fc410ef2cbd4969f68c"
+    }
+  },
+  "sm4": {
+    "record_only": true,
+    "measurements": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 6845.831,
+        "p95_ms": 8071.427,
+        "p95_budget_ms": 1000,
+        "over_budget": true
+      },
+      "workers_operational_delivery": {
+        "count": 27,
+        "p50_ms": 2356.321,
+        "p95_ms": 7907.817,
+        "p95_budget_ms": 1000,
+        "over_budget": true
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 636.058,
+        "p95_ms": 1046.687,
+        "p95_budget_ms": 500,
+        "over_budget": true
+      }
+    },
+    "gate": "open"
+  },
+  "open_gates": {
+    "platform_acceptance": "pending owner decision for the exact Folders and Platform revisions",
+    "sm4": "All three current p95 measurements exceed their existing budgets. Record-only finding.",
+    "governance": "PD10/A6b and production enrollment remain owner-controlled.",
+    "review": "Whole-story independent acceptance remains open."
+  },
+  "private_qualification_index": {
+    "path": ".artifacts/story-12-2-20261126-qualification/portable-evidence.json",
+    "sha256": "a199b86afff4478636ec4ef9810d7b34ddfda6d237166032c15fbe37df6f4ce0"
+  },
+  "private_component_receipts": {
+    "path": ".artifacts/story-12-2-20261126-qualification/ordinary-receipts.json",
+    "sha256": "df172e0ba70f2c8459260ee712ae213761aea30c7c352eb3ee400a0b28dc5f50"
+  },
+  "docker_descriptor_observations": {
+    "path": ".artifacts/story-12-2-20261126-qualification/preflight-images.json",
+    "sha256": "60893d4d43f9743213357c790cdde8d06a1aafee0f35364576d014bdfd984891"
+  },
+  "final_aspire_sessions": 0
+}

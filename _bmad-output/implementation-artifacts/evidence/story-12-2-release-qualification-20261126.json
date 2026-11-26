@@ -1,0 +1,43 @@
+{
+  "story": "12.2",
+  "date": "2026-11-26",
+  "source_revision": "a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a",
+  "configuration": "Release",
+  "sdk": "11.0.100",
+  "dependency_mode": "NuGet",
+  "workspace": "Disposable local clone with every direct gitlink at the recorded revision",
+  "restore": {
+    "command": "dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1",
+    "exit_code": 0
+  },
+  "build": {
+    "command": "dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1",
+    "exit_code": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  "package_validation": {
+    "command": "pwsh -NoProfile -File tests/tools/run-release-package-gates.ps1 -Mode DryRun -Version 0.0.0-story12.2 -SourceRevisionId a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a -SkipRestoreBuild",
+    "exit_code": 0,
+    "sealed_package_symbol_pairs": 6,
+    "package_only_consumers": 4,
+    "gate_report_sha256": "e78d475e822fbd5bda9f9d176205d7d9f986376f5516efa885d6cb42ac3351a7",
+    "publication_gate_status": "skipped-dry-run"
+  },
+  "contract_validation": {
+    "command_template": "dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net11.0/Hexalith.Folders.Contracts.Tests.dll -class '*<class>' -result-xml <receipt>",
+    "assembly_sha256": "79f2b4e2f62e6f0c1fd82c4cd92cdaf4c524b6644f3391196e0449bfa989fede",
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed_by_class": {
+      "Pd10ConformanceSetTests": 21,
+      "Pd10V2CandidateContractTests": 5,
+      "Pd10V2ContractTests": 6,
+      "Pd10V2GeneratorTests": 8,
+      "AuthorizationMatrixContractTests": 7
+    }
+  },
+  "local_logs": ".artifacts/story-12-2-20261126-release-verification/",
+  "scratch_removed": true
+}

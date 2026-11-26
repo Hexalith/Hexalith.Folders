@@ -2863,12 +2863,13 @@ proof, telemetry policy, service replacement or public route change is authorize
   Disabling must omit only LifecycleDiagnosticObserver registration; retain the nonempty shutdown
   path's existing fold-registration semantics, the actual production services and Folders' mandatory
   fold evidence. No dummy sink, private handler, service proxy or forced Activity is permitted.
-- [ ] Add meaningful focused control(s) in existing Tool/Server/AppHost test locations proving
+- [x] Add meaningful focused control(s) in existing Tool/Server/AppHost test locations proving
   default-on and explicit-off service registration/behavior, invalid-value default, retained
   Folders fold observation and absence of extra fold observer on EventStore. Build/run affected
   individual Debug/source projects serially with both flags; refresh only affected pending compile
   inventory hashes/paths and run its controls plus unchanged source privacy scanner as appropriate.
   Preserve strictd29, companion/capacity, mutation2s, datedPD10 and frozen497c hashes.
+  Verified on the revisions recorded in the November 26 qualification below.
 - [x] Hand off a new exact phase patch, before/after/guard/output hashes, commands and all results
   under `/tmp/story12-2-observer-control-20261104`; never overwrite prior handoffs. Release all
   selected outputs with no active build/test/topology. Parent owns coherent runtime/Memories audit,
@@ -3910,3 +3911,21 @@ The protected bodies and this frozen block remain exact. Capacity evidence for t
 Folders `d58d5d7a54f63f7223b972f22f11c58510a94119` selects Platform `0aacf13244fa6b1d9e08d627149d72cf12229167`. On these revisions the Folders and Platform live enrollment checks passed, including Platform cancellation. The provider passed 23 Java tests. System Python passed 58 of 59 checks. The UID 1001 portability check requires a supported runner with permission to switch user. [Component results, revisions and assembly hashes](evidence/story-12-2-platform-pin-qualification-20261122.json)
 
 Bounded history, operational durability and folder durability each failed during fixture startup. Codeberg served the Forgejo 16.0.3 image index and returned HTTP 404 for its referenced Linux/AMD64 manifest. All three exited before their durability assertions, so this revision has no SM4 measurements. Platform and Folders fixture maintainers need the digest-matched image for the rerun. Story 12.2 remains in progress and the Platform prerequisite remains pending. Hosted push CI and contract-spine passed on the Folders commit. The push workflow skipped its Aspire and performance jobs. [CI](https://github.com/Hexalith/Hexalith.Folders/actions/runs/45002607113) · [Contract spine](https://github.com/Hexalith/Hexalith.Folders/actions/runs/45002606908)
+
+### Current pinned-source qualification — 2026-11-26
+
+Folders `a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a` selects EventStore `943be126d81fc82761c27d856c3c8d85cbeb2c99` and Platform `3848af49f9afc91b174b4c716751fe49cb15dbba`. The recovered Forgejo 16.0.3 Linux/AMD64 manifest matches the digest recorded in the November 22 failure. The unchanged operational durability, folder durability and bounded-history tests each passed with zero failures or skips. The bounded run exercised authenticated rebuild from 10,001 through 10,002 synthetic original-primary positions, including four changed process IDs, inherited replay and conflicting delivery. All 1,299 observed assembly bindings match the 236 audited producer copies. Source and runtime hashes stayed stable, and all observed owned processes, containers and directories were removed.
+
+Six Debug/source component suites passed 6,158 tests with two existing optional Domain skips. Passing cases cover all five frozen matrix rows and the 10,001- and 32,769-position production-handler rebuilds. The 11 explicit Server issuer cases passed with five live AppHost consumer controls. The provider passed 23 Java and 59 Python cases, including the previously blocked UID 1001 portability control. The exact-cohort Folders enrollment control, eight AppHost configuration controls and 300 focused EventStore scanner and source-authorization cases also passed. [Current qualification evidence](evidence/story-12-2-current-source-qualification-20261126.json)
+
+The fixture lifecycle observer verification is complete on this cohort. All 43 Server observer cases and 21 PD10 conformance controls passed, including the current source inventory checks. The privacy scanner passed all 299 cases. A supplemental `run-with-temp dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net11.0/Hexalith.Folders.AppHost.Tests.dll -class '*FolderDurabilityObserverConfigurationTests' -noLogo` run on assembly SHA-256 `4870e64ee36a52bfbfcda8e4c7749c0889e19251c3225455b6fa3088570ef105` passed all 10 cases with zero failures or skips.
+
+The local Release build passed with zero warnings and errors. The dry run validated six package and symbol pairs and four package-only consumers. All 47 selected PD10 and authorization-matrix checks passed. [Release qualification evidence](evidence/story-12-2-release-qualification-20261126.json)
+
+SM4 remains open under its approved measurement-only scope. Command acknowledgement p95 was 8,071.427 ms against 1,000 ms, and status read p95 was 1,046.687 ms against 500 ms. Workers delivery p95 was 7,907.817 ms against its 1,000 ms diagnostic budget.
+
+### Platform owner acceptance on 2026-11-26
+
+Jerome explicitly replied “accept” to the Platform owner approval request on 2026-11-26. The decision satisfies `EXT-PLATFORM-RUN-OWNED-WORKLOAD-AUTHORITY` for disposable source qualification on Folders `a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a` and its Platform gitlink `3848af49f9afc91b174b4c716751fe49cb15dbba`. The receipts cover live enrollment and issuer controls, standalone Platform fresh-host adoption and cancellation, all three strict durability passes, runtime assembly bindings and observed cleanup. [Approval request](story-12-2-platform-owner-approval-request-2026-11-26.md) · [Source qualification](evidence/story-12-2-current-source-qualification-20261126.json) · [Platform control receipt](evidence/story-12-2-platform-owner-handoff-20261126.json) · [External dependency tracker](../planning-artifacts/planning-story-manifest.yaml)
+
+Story 12.2 and the sprint remain in progress. SM4, publication, staging evidence, deployed-consumer evidence, PD10/A6b governance and independent whole-story acceptance remain open.

@@ -1483,11 +1483,15 @@ external_nodes:
     - Platform Story 2.12 — Provision a run-owned workload-binding authority for disposable test environments (requested by
       sprint-change-proposal-2026-11-13)
     release_identifier: hexalith-platform-run-owned-workload-authority-v1
-    observed_repository_commit: 0aacf13244fa6b1d9e08d627149d72cf12229167
-    release_version_or_commit: pending-folders-gitlink-qualification
+    observed_repository_commit: 3848af49f9afc91b174b4c716751fe49cb15dbba
+    release_version_or_commit: 3848af49f9afc91b174b4c716751fe49cb15dbba
     evidence_paths:
       platform_story: references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-2-12-provision-a-run-owned-workload-binding-authority.md
-      folders_qualification: _bmad-output/implementation-artifacts/spec-12-2-historical-source-authority.md
+      historical_folders_qualification: _bmad-output/implementation-artifacts/spec-12-2-historical-source-authority.md
+      folders_qualification: _bmad-output/implementation-artifacts/evidence/story-12-2-current-source-qualification-20261126.json
+      platform_live_controls: _bmad-output/implementation-artifacts/evidence/story-12-2-platform-owner-handoff-20261126.json
+      acceptance_request: _bmad-output/implementation-artifacts/story-12-2-platform-owner-approval-request-2026-11-26.md
+      acceptance_record: _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
       enrollment_runbook: references/Hexalith.Platform/docs/security/workload-binding-enrollment.md
       source_story_authority: references/Hexalith.Platform/_bmad-output/planning-artifacts/epics.md
       escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-11-13.md
@@ -1497,12 +1501,16 @@ external_nodes:
     - Platform component evidence for full enrollment, cohort or tenant mismatch, foreign-run manifest, missing TLS trust,
       and cleanup.
     - The exact Platform commit that Folders pins as its references/Hexalith.Platform gitlink.
-    acceptance_status: pending
-    acceptance_reason: Platform Story 2.12 is done. Folders recorded three passing strict cases on its November 15 source tuple. Acceptance still requires binding the selected Platform commit and its component and Folders fixture evidence to the Folders gitlink.
+    acceptance_status: accepted
+    acceptance_reason: >-
+      On 2026-11-26 Jerome explicitly replied “accept” to the approval request for disposable source qualification on
+      Folders a2f4dbcfe5c6a98e698e8fc5b1036e2f6d86b88a and its Platform gitlink
+      3848af49f9afc91b174b4c716751fe49cb15dbba. The receipts verify live enrollment, Platform fresh-host adoption and
+      cancellation, all three strict durability passes, runtime assembly bindings and observed cleanup.
     placeholder_acceptance_forbidden: true
-    decision_status: pending
+    decision_status: accepted
     execution_authorization_status: external-owner-controlled
-    delivery_evidence_status: pending
+    delivery_evidence_status: accepted
 relock_nodes:
   RELOCK-PLANNING:
     node_type: relock-milestone
