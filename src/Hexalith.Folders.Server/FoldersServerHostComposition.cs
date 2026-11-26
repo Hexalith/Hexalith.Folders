@@ -3,6 +3,7 @@ using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Provisioning;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.Client.Registration;
@@ -35,6 +36,7 @@ public static class FoldersServerHostComposition
         FoldersApiRoutingMode mode = FoldersApiRouting.ResolveMode(builder.Configuration);
 
         builder.Services.AddFoldersServer();
+        builder.Services.AddFoldersProvisioning();
         builder.AddEventStoreDomainService(typeof(FoldersModule).Assembly);
         // The SDK owns exporters, HTTP instrumentation and Dapr-partitioned resilience.
         // Enroll only Folders' module signals and monitored readiness into those defaults.
@@ -138,6 +140,7 @@ public static class FoldersServerHostComposition
         }
         app.MapSubscribeHandler().RequireEventStoreSidecarChannel();
         app.MapFoldersServerEndpoints();
+        app.MapFoldersProvisioning();
         app.MapEventStoreDomainProjectionEndpoints();
         app.MapEventStoreDomainProjectionMetadataEndpoint();
         app.MapEventStoreRouteCatalog();

@@ -23,6 +23,10 @@ public sealed record FolderPermissionProjection(
     IReadOnlyList<FolderPermissionOverrideEntry> Overrides,
     IReadOnlyList<FolderProjectionMessage> RecentMessages)
 {
+    /// <summary>Gets the restricted Folder stream’s explicit inheritance choice, when present.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? InheritOrganizationPermissions { get; init; }
+
     /// <summary>Gets event-derived identity lineage used only by the projection writer; narrow readers use the isolated identity row.</summary>
     public IReadOnlyDictionary<string, Hexalith.Folders.Aggregates.Folder.FolderFileIdentity> FileIdentities { get; init; }
         = System.Collections.Frozen.FrozenDictionary<string, Hexalith.Folders.Aggregates.Folder.FolderFileIdentity>.Empty;

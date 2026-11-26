@@ -24,6 +24,7 @@ internal static class FoldersCatalogAdapters
         new OrganizationAclIdempotencyIntentAdapter("Hexalith.Folders.Commands.InitializeOrganizationAclBaseline", "initialize-organization-acl-baseline"),
         new OrganizationAclIdempotencyIntentAdapter("Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal", "revoke-organization-acl-principal"),
         new PrepareWorkspaceIdempotencyIntentAdapter(),
+        new ProvisionFolderIdempotencyIntentAdapter(),
         new ReleaseWorkspaceLockIdempotencyIntentAdapter(),
         new RevokeFolderAccessIdempotencyIntentAdapter()
     ];

@@ -36,10 +36,10 @@ public sealed class FoldersHumanCommandCatalogTests
         var operations = CompiledRouteCatalogDeclarations.ReadOperations([typeof(FoldersRuntimeCatalogDeclarations).Assembly]);
         var commands = operations.Where(operation => operation.Kind == "command").ToArray();
         commands.Select(operation => operation.MessageType).Order(StringComparer.Ordinal).ShouldBe(publishedCommands);
-        commands.Length.ShouldBe(18);
+        commands.Length.ShouldBe(19);
         ClaimsPrincipal human = Human(surface);
         EventStoreHttpHostSecurityExtensions.IsHuman(human).ShouldBeTrue();
-        foreach (var operation in commands)
+        foreach (var operation in commands.Where(operation => operation.MessageType != FoldersServerModule.ProvisionFolderCommandType))
         {
             operation.Ingress.ShouldBe("public");
             operation.Eligibility.ShouldBe("agent-eligible");
@@ -50,8 +50,9 @@ public sealed class FoldersHumanCommandCatalogTests
             RouteCatalogSurfacePolicy.Allows(operation, new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "human-a")], "Bearer")))
                 .ShouldBeFalse();
         }
-        var internalOperations = operations.Where(operation => routes.Single(route => route.RouteId == operation.RouteId).Kind != "command").ToArray();
-        internalOperations.Length.ShouldBe(5);
+        var internalOperations = operations.Where(operation => operation.MessageType == FoldersServerModule.ProvisionFolderCommandType
+            || routes.Single(route => route.RouteId == operation.RouteId).Kind != "command").ToArray();
+        internalOperations.Length.ShouldBe(6);
         foreach (var operation in internalOperations)
         {
             operation.Ingress.ShouldBe("internal");

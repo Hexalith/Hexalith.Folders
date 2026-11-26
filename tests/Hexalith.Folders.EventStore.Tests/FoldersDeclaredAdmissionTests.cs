@@ -11,6 +11,7 @@ using Hexalith.EventStore.Server.Commands;
 using Hexalith.EventStore.Server.Pipeline.Commands;
 using Hexalith.EventStore.ServiceDefaults.Routing;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Server.Provisioning;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ public sealed class FoldersDeclaredAdmissionTests
     /// <summary>Gets every existing discriminator from the pre-migration byte capture.</summary>
     public static IEnumerable<object[]> LegacyCommands => LegacyDescriptors().Select(static row => new object[] { row.CommandType });
 
-    /// <summary>Requires one golden row for every adapter installed by production registration.</summary>
+    /// <summary>Requires one golden row for each legacy adapter and separately verifies the provisioning adapter.</summary>
     [Fact]
     public async Task LegacyFixtureDiscriminatorsExactlyMatchProductionAdapters()
     {
@@ -34,7 +35,37 @@ public sealed class FoldersDeclaredAdmissionTests
         string[] fixtureDiscriminators = LegacyDescriptors().Select(static row => row.CommandType).ToArray();
         fixtureDiscriminators.Distinct(StringComparer.Ordinal).Count().ShouldBe(fixtureDiscriminators.Length);
         fixtureDiscriminators.Order(StringComparer.Ordinal).ShouldBe(
-            fixture.Adapters.Select(static adapter => adapter.CommandType).Order(StringComparer.Ordinal));
+            fixture.Adapters.Select(static adapter => adapter.CommandType)
+                .Where(static command => command != FoldersServerModule.ProvisionFolderCommandType)
+                .Order(StringComparer.Ordinal));
+        fixture.Adapters.Single(adapter => adapter.CommandType == FoldersServerModule.ProvisionFolderCommandType)
+            .ShouldBeOfType<ProvisionFolderIdempotencyIntentAdapter>();
+    }
+
+    [Fact]
+    public async Task ProvisioningRegistrySeparatesChangedIntentAndPreservesEquivalentFenceTakeover()
+    {
+        using FoldersDeclaredAdmissionFixture fixture = await FoldersDeclaredAdmissionFixture.CreateAsync().ConfigureAwait(true);
+        await fixture.ActivateAsync().ConfigureAwait(true);
+        var request = new FolderProvisioningRequest(
+            "task-a", "task-a/step/1", "sample.provision@1",
+            FolderProvisioningContract.ComputeRequestSha256("Folder A"), 1, 0, "Folder A");
+        var command = new SubmitCommand("message-provisioning", "tenant-a", "folders",
+            FolderProvisioningContract.DeriveFolderId("tenant-a", request.StepKey), FoldersServerModule.ProvisionFolderCommandType,
+            Encode(request), "correlation-a", "worker-a", null, IdempotencyKey: "attempt-a");
+
+        CancellationToken token = TestContext.Current.CancellationToken;
+        TrustedIdempotencyDescriptor first = await fixture.Registry.ResolveAsync(command, token).ConfigureAwait(true);
+        TrustedIdempotencyDescriptor takeover = await fixture.Registry.ResolveAsync(
+            command with { Payload = Encode(request with { Fence = 2 }) }, token).ConfigureAwait(true);
+        TrustedIdempotencyDescriptor changed = await fixture.Registry.ResolveAsync(
+            command with { Payload = Encode(request with { DisplayName = "Folder B" }) }, token).ConfigureAwait(true);
+        first.OperationId.ShouldBe("provision-folder");
+        takeover.CanonicalIntent.ShouldBe(first.CanonicalIntent);
+        changed.CanonicalIntent.ShouldNotBe(first.CanonicalIntent);
+
+        static byte[] Encode(FolderProvisioningRequest request)
+            => JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerOptions.Web);
     }
 
     /// <summary>Compares every real admitted descriptor with its complete pre-migration bytes.</summary>

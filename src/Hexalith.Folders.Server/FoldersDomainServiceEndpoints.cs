@@ -19,6 +19,7 @@ using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Content;
+using Hexalith.Folders.Server.Provisioning;
 using Hexalith.EventStore.DomainService.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -110,8 +111,10 @@ public static partial class FoldersDomainServiceEndpoints
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
             FoldersDomainServiceRequestHandler handler,
+            HttpContext context,
             CancellationToken cancellationToken)
-            => await handler.ProcessAsync(request, cancellationToken).ConfigureAwait(false))
+            => await handler.ProcessAsync(request, context.RequestServices.GetService<FolderProvisioningService>(),
+                cancellationToken).ConfigureAwait(false))
         .WithName("ProcessFolderDomainCommand")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
@@ -3663,6 +3666,11 @@ public static partial class FoldersDomainServiceEndpoints
         string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
         string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
         envelope = new MutationCommandEnvelope(string.Empty, string.Empty, string.Empty, string.Empty);
+
+        if (FolderProvisioningService.MutationsFrozen(httpContext.RequestServices.GetService<IConfiguration>()))
+        {
+            return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+        }
 
         if (!(FolderCanonicalSegmentIdentifier.IsValid(idempotencyKey) || httpContext.Items["Folders:NativeRequest"] is true && WorkspaceNativeAddress.IsSdkKey(idempotencyKey))
             || !FolderCanonicalSegmentIdentifier.IsValid(correlationId)

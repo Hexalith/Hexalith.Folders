@@ -4,6 +4,7 @@ using Hexalith.EventStore.Contracts.Authorization;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Server.Provisioning;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Routing;
@@ -19,7 +20,7 @@ namespace Hexalith.Folders.Server.Tests;
 /// <summary>Retains one validated isolated catalog for the actual production callback registrations.</summary>
 /// <param name="services">The isolated production-composed services.</param>
 /// <param name="endpoints">The actual mapped callback endpoints.</param>
-/// <param name="includeCreateFolder">Whether this isolated fixture also serves the exact signed CreateFolder callback and legacy projection.</param>
+/// <param name="includeCreateFolder">Whether this isolated fixture also serves the signed Folder create callbacks and legacy projection.</param>
 internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Func<IEnumerable<Endpoint>> endpoints, bool includeCreateFolder = false) : IRouteCatalogAuthority
 {
     private CommittedRouteCatalogSnapshot? _snapshot;
@@ -82,6 +83,21 @@ internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Fun
                 RouteCatalogCodec.ComputeDescriptorDigest(descriptor), "mutation", "fixture-v1", ["fixture-v1"],
                 "fixture-keys", "fixture-idempotency-ring", "fixture-v1", [new("fixture-v1", "fixture-v1")], "eventstore", string.Empty);
             admission.Add(entry with { ContentDigest = RouteCatalogCodec.ComputeIdempotencyEntryDigest(entry) });
+            CommandIntentDeclaration provision = FoldersRuntimeCatalogDeclarations.Commands
+                .Single(declaration => declaration.Route.MessageType == FoldersServerModule.ProvisionFolderCommandType);
+            RouteContractDeclaration provisionRoute = Add(provision.Route.RouteId, "folders", FoldersServerModule.ProvisionFolderCommandType,
+                null, typeof(FolderProvisioningRequest), "process", EventStoreOperationIdentifiers.DomainServiceProcess,
+                typeof(DomainServiceRequest), typeof(DomainServiceWireResult));
+            IdempotencyCatalogEntry provisionEntry = entry with
+            {
+                RouteId = provisionRoute.RouteId,
+                CommandType = FoldersServerModule.ProvisionFolderCommandType,
+                OperationId = provision.OperationId,
+                DescriptorSchema = provision.DescriptorSchema,
+                DescriptorDigest = RouteCatalogCodec.ComputeDescriptorDigest(provision.DescriptorSchema),
+                ContentDigest = string.Empty,
+            };
+            admission.Add(provisionEntry with { ContentDigest = RouteCatalogCodec.ComputeIdempotencyEntryDigest(provisionEntry) });
             Add("folders-legacy", "folders", null, "folder-state", typeof(FolderDomainProjectionHandler), "project",
                 EventStoreOperationIdentifiers.DomainServiceProject, typeof(ProjectionRequest), typeof(ProjectionResponse),
                 ["folder-state", "organization-provider-binding"]);
@@ -98,8 +114,15 @@ internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Fun
         }
         RouteCatalogEnvelope envelope = RouteCatalogCodec.Seal(new(3, 1, "Production", false,
             declarations, targets, admission, string.Empty, string.Empty, operations, []));
+        IReadOnlyList<RouteCatalogAuxiliaryOperation> auxiliary = RouteCatalogDomainObservation.Auxiliary(local, endpoints());
+        if (includeCreateFolder)
+        {
+            auxiliary = [.. auxiliary, new("g1-tasks", "internal/durable-tasks/v1/steps/lookup",
+                "eventstore:durable-task-step-lookup", "folders")];
+        }
+
         return new(RouteCatalogCodec.Encode(envelope), RouteCatalogCodec.ComputeRootDigest(envelope), 1,
-            RouteCatalogDomainObservation.Auxiliary(local, endpoints()), RouteCatalogDomainObservation.Capabilities(local), identity.AppId);
+            auxiliary, RouteCatalogDomainObservation.Capabilities(local), identity.AppId);
 
         RouteContractDeclaration Add(string id, string domain, string? query, string? projection, Type handler, string method,
             string operationName, Type request, Type response, IReadOnlyList<string>? outputs = null)

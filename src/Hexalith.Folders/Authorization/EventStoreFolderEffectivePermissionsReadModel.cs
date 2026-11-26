@@ -173,8 +173,9 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
             };
         }
 
-        List<EffectivePermissionEvidenceRow> rows = [.. (baseline.Snapshot?.EvidenceRows ?? []).Select(
-            row => row with { Sequence = 0 })];
+        List<EffectivePermissionEvidenceRow> rows = folder.InheritOrganizationPermissions == false
+            ? []
+            : [.. (baseline.Snapshot?.EvidenceRows ?? []).Select(row => row with { Sequence = 0 })];
         foreach (FolderPermissionOverrideEntry item in folder.Overrides)
         {
             rows.Add(new EffectivePermissionEvidenceRow(item.IsGranted
@@ -292,11 +293,19 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
 
         bool created = prior?.IsCreated ?? false;
         bool archived = prior?.IsArchived ?? false;
+        bool? inheritOrganization = prior?.InheritOrganizationPermissions;
         List<FolderPermissionOverrideEntry> overrides = [.. prior?.Overrides ?? []];
         switch (@event)
         {
-            case FolderCreated when !created:
+            case FolderCreated creation when !created:
+                if (creation.ProvisioningReceipt is null && creation.InheritOrganizationPermissions is not null
+                    || creation.ProvisioningReceipt is not null && creation.InheritOrganizationPermissions != false)
+                {
+                    throw new InvalidOperationException("Folder creation authority is invalid.");
+                }
+
                 created = true;
+                inheritOrganization = creation.InheritOrganizationPermissions;
                 break;
             case FolderCreated:
                 throw new InvalidOperationException("Folder projection contains a duplicate create.");
@@ -331,6 +340,7 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
         FolderPermissionProjection next = new(tenantId, tenantId, folderId, sequence, created, archived,
             clock.UtcNow, overrides, recent)
         {
+            InheritOrganizationPermissions = inheritOrganization,
             FileIdentities = @event is WorkspaceFileMutationAccepted mutation
                 ? FolderFileIdentityState.Apply(prior?.FileIdentities ?? System.Collections.Frozen.FrozenDictionary<string, FolderFileIdentity>.Empty, mutation)
                 : prior?.FileIdentities ?? System.Collections.Frozen.FrozenDictionary<string, FolderFileIdentity>.Empty,

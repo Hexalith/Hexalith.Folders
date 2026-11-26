@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService.Content;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Provisioning;
 using Hexalith.Folders.Queries.FileContext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -64,6 +65,12 @@ internal static partial class WorkspaceNativeEndpoints
             }
             var change = JsonSerializer.Deserialize<WorkspaceNativeLeaseRequest>(bytes, Json) ?? throw new JsonException();
             ValidateLease(change);
+            if (change.Operation != "validate"
+                && FolderProvisioningService.MutationsFrozen(http.RequestServices.GetService<IConfiguration>()))
+            {
+                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
             var source = http.RequestServices.GetRequiredService<WorkspaceContentStateReader>();
             var current = await source.ReadAsync(scope, deadline.Token).ConfigureAwait(false);
             WorkspaceOperationEvidence.RequireScope(current.State, scope);

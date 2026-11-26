@@ -3,6 +3,7 @@ using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.ServiceDefaults;
+using Hexalith.Folders.Server.Provisioning;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Tenants.Client.Registration;
@@ -29,6 +30,9 @@ public static class FoldersServerModule
     public const string TenantEventsTopicName = FoldersTenantEventSubscription.TopicName;
 
     public const string DomainName = "folders";
+
+    /// <summary>The deployment-enrolled workload command for create-only provisioning.</summary>
+    public const string ProvisionFolderCommandType = FolderProvisioningRequest.CommandType;
 
     public const string CreateFolderCommandType = "Hexalith.Folders.Commands.CreateFolder";
 

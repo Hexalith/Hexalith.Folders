@@ -1,6 +1,7 @@
 using Hexalith.EventStore.Contracts.Authorization;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Routing;
+using Hexalith.Folders.Server.Provisioning;
 
 namespace Hexalith.Folders.Routing;
 
@@ -49,6 +50,11 @@ public static class FoldersCommandCatalog
         Command("PrepareWorkspace", "prepare-workspace",
             "Hexalith.Folders.Server.FolderDomainProcessor+PrepareWorkspacePayload",
             [Payload("branch_ref_policy_ref"), Payload("folder_id", nullable: false), Payload("repository_binding_id"), Payload("task_id", nullable: false), Payload("workspace_id"), Payload("workspace_policy_ref")], task: true),
+        Command("ProvisionFolder", "provision-folder",
+            typeof(FolderProvisioningRequest).FullName!,
+            [Payload("task_id", nullable: false), Payload("step_key", nullable: false),
+                Payload("admission_operation", nullable: false), Payload("request_sha256", nullable: false),
+                Payload("expected_version", nullable: false), Payload("display_name", nullable: false)]),
         Command("ReleaseWorkspaceLock", "release-workspace-lock",
             "Hexalith.Folders.Server.FolderDomainProcessor+ReleaseWorkspaceLockPayload",
             [Payload("folder_id", nullable: false), Payload("lock_id"), Payload("lock_ownership_proof"), Payload("task_id", nullable: false), Payload("workspace_id")], task: true),

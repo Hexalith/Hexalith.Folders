@@ -6,6 +6,7 @@ using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Server.Provisioning;
 
 using Microsoft.AspNetCore.Http;
 
@@ -18,13 +19,30 @@ public sealed class FoldersDomainServiceRequestHandler(
     IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
     IFolderCommandActionTokenMapper actionTokenMapper,
     ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor,
-    HumanAuthorityReceiptVerifier? humanReceiptVerifier = null)
+    HumanAuthorityReceiptVerifier? humanReceiptVerifier = null,
+    IConfiguration? configuration = null)
 {
     private const string OrganizationBaselineScope = FolderStreamName.ReservedOrganizationPermissionScope;
 
-    public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
+    public Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
+        => ProcessAsync(request, provisioning: null, cancellationToken);
+
+    internal async Task<IResult> ProcessAsync(DomainServiceRequest request, FolderProvisioningService? provisioning,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
+
+        if (FolderProvisioningService.MutationsFrozen(configuration))
+        {
+            return new AuthorizationDenialTransportResult(Results.StatusCode(StatusCodes.Status503ServiceUnavailable));
+        }
+
+        if (request.Command.CommandType == FolderProvisioningContract.CommandType)
+        {
+            return provisioning is null
+                ? Results.NotFound()
+                : await provisioning.ProcessAsync(request, cancellationToken).ConfigureAwait(false);
+        }
 
         IDisposable? humanAuthorityScope = null;
         if (humanReceiptVerifier is not null

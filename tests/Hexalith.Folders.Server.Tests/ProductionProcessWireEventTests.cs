@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Dapr.Client;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
@@ -21,6 +22,8 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Provisioning;
+using Hexalith.Folders.Server.Tests.Provisioning;
 using Hexalith.Folders.Testing;
 using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Tests.OperationalStatus;
@@ -64,6 +67,14 @@ public sealed class ProductionProcessWireEventTests
             new EffectivePermissionsFreshness("read_your_writes", now, "1", false, null),
             RevocationFreshnessEstablished: true, TaskScope: null));
 
+        var unavailableLookup = new ProvisioningUnavailableDispatchProbe();
+        WebApplicationBuilder lookupBuilder = WebApplication.CreateSlimBuilder();
+        lookupBuilder.Configuration["urls"] = "http://127.0.0.1:0";
+        await using WebApplication lookupApplication = lookupBuilder.Build();
+        lookupApplication.MapPost("/v1.0/invoke/g1-tasks/method/internal/durable-tasks/v1/steps/lookup",
+            unavailableLookup.Respond);
+        await lookupApplication.StartAsync(TestContext.Current.CancellationToken);
+
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
@@ -74,12 +85,21 @@ public sealed class ProductionProcessWireEventTests
         builder.Configuration["Authentication:JwtBearer:Issuer"] = "hexalith-dev";
         builder.Configuration["Authentication:JwtBearer:SigningKey"] = workloadKey;
         builder.Configuration["Authentication:HumanAuthorityReceipt:SigningKey"] = receiptKey;
+        builder.Configuration["Folders:Provisioning:Enabled"] = "true";
+        builder.Configuration["Folders:Provisioning:WorkerWorkload"] = "g2-worker";
+        builder.Configuration["Folders:Provisioning:DurableTaskAppId"] = "g1-tasks";
         builder.Services.AddFoldersServerTestDefaults();
         InMemoryReadModelStore operationalStore = new();
         builder.Services.AddSingleton<IReadModelStore>(operationalStore);
         builder.Services.AddSingleton<IReadModelBatchStore>(operationalStore);
         builder.Services.AddSingleton<IReadModelPendingBatchRecoveryStore>(operationalStore);
         builder.AddFoldersServerHost();
+        builder.Services.AddSingleton<IWorkloadAssertionIssuer>(unavailableLookup);
+        builder.Services.RemoveAll<DaprClient>();
+        builder.Services.AddSingleton<DaprClient>(_ => new DaprClientBuilder()
+            .UseHttpEndpoint(lookupApplication.Urls.Single()).Build());
+        builder.Services.AddHttpClient(nameof(DurableTaskStepLookupClient)).ConfigurePrimaryHttpMessageHandler(
+            static () => new SocketsHttpHandler { AllowAutoRedirect = false });
         builder.Services.AddFoldersProviderBindingPersistence();
         OperationalStatusSequenceReader sourceHead = new();
         builder.Services.RemoveAll<IOrganizationStreamSequenceReader>();
@@ -153,6 +173,40 @@ public sealed class ProductionProcessWireEventTests
                 ["create_folder"], receiptKey, now);
 
             AssertEvent(await ProcessAsync(client, command, null, receipt), typeof(FolderCreated));
+
+            var request = new FolderProvisioningRequest(
+                "task-a", "task-a/step/1", "sample.provision@1",
+                FolderProvisioningContract.ComputeRequestSha256("New Folder"), 1, 0, "New Folder");
+            var provision = new CommandEnvelope("provision-message", "tenant-a", "folders",
+                FolderProvisioningContract.DeriveFolderId("tenant-a", request.StepKey), FoldersServerModule.ProvisionFolderCommandType,
+                JsonSerializer.SerializeToUtf8Bytes(request, JsonSerializerOptions.Web), "correlation-a", null, "g2-worker",
+                new Dictionary<string, string> { [EventStoreGatewayVerifiedOrigin.ExtensionKey] = "g2-worker" });
+            using (HttpResponseMessage unavailableProvision = await client.PostAsJsonAsync(FoldersServerModule.ProcessRoute,
+                new DomainServiceRequest(provision, CurrentState: null), TestContext.Current.CancellationToken))
+            {
+                unavailableProvision.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable,
+                    await unavailableProvision.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+                unavailableProvision.Headers.GetValues("X-Hexalith-Authorization-Denial").ShouldBe(["v1"]);
+                (await unavailableProvision.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldBeEmpty();
+                unavailableLookup.Path.ShouldBe("/v1.0/invoke/g1-tasks/method/internal/durable-tasks/v1/steps/lookup");
+                var issuerRequest = unavailableLookup.Assertion.ShouldNotBeNull();
+                issuerRequest.Audience.ShouldBe("g1-tasks");
+                issuerRequest.Operation.ShouldBe("eventstore:durable-task-step-lookup");
+                var bindings = issuerRequest.Bindings.ShouldNotBeNull();
+                bindings[EventStoreWorkloadAuthenticationDefaults.TenantBindingClaimType].ShouldBe("tenant-a");
+                bindings[EventStoreWorkloadAuthenticationDefaults.DomainBindingClaimType].ShouldBe("folders");
+            }
+
+            app.Configuration["Folders:Provisioning:FreezeMutations"] = "true";
+            using (HttpResponseMessage frozen = await client.PostAsJsonAsync(FoldersServerModule.ProcessRoute,
+                new DomainServiceRequest(command, CurrentState: null) { HumanAuthorityReceipt = receipt },
+                TestContext.Current.CancellationToken))
+            {
+                frozen.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+                frozen.Headers.GetValues("X-Hexalith-Authorization-Denial").ShouldBe(["v1"]);
+                (await frozen.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldBeEmpty();
+            }
+            app.Configuration["Folders:Provisioning:FreezeMutations"] = "false";
 
             ProjectionEventDto retained = new(typeof(FolderCreated).FullName!,
                 File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution",

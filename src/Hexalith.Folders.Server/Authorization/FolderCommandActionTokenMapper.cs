@@ -12,6 +12,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
             [FoldersServerModule.InitializeOrganizationAclBaselineCommandType] = new("manage_organization_acl", FolderCommandOperationScopeKind.OrganizationBaseline),
             [FoldersServerModule.GrantOrganizationAclPrincipalCommandType] = new("manage_organization_acl", FolderCommandOperationScopeKind.OrganizationBaseline),
             [FoldersServerModule.RevokeOrganizationAclPrincipalCommandType] = new("manage_organization_acl", FolderCommandOperationScopeKind.OrganizationBaseline),
+            [FoldersServerModule.ProvisionFolderCommandType] = new("create_folder", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.ArchiveFolderCommandType] = new("archive_folder", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.CreateRepositoryBackedFolderCommandType] = new("create_repository_backed_folder", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.BindRepositoryCommandType] = new("bind_repository", FolderCommandOperationScopeKind.FolderAggregate),

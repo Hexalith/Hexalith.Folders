@@ -229,6 +229,21 @@ public sealed class FolderEventReplayTests
         result.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
         result.State.GetProperty("displayName").GetString().ShouldBe("Folder A");
         result.State.TryGetProperty("empty", out _).ShouldBeFalse();
+        result.State.TryGetProperty("provisioningReceipt", out _).ShouldBeFalse();
+        result.State.TryGetProperty("inheritOrganizationPermissions", out _).ShouldBeFalse();
+
+        var restricted = created with
+        {
+            ProvisioningReceipt = new("provision-receipt", "tenant-a", "folder-a", "user-a", "task-a",
+                "task-a/step/1", "test.provision@1", new string('a', 64), 3),
+            InheritOrganizationPermissions = false,
+        };
+        ProjectionResponse? protectedResult = DomainProjectionDispatcher.Project(services, request with
+        {
+            Events = [stored with { Payload = JsonSerializer.SerializeToUtf8Bytes(restricted) }],
+        }, TestContext.Current.CancellationToken);
+        protectedResult.ShouldNotBeNull();
+        protectedResult.State.GetRawText().ShouldBe(result.State.GetRawText());
 
         Should.Throw<InvalidOperationException>(() => DomainProjectionDispatcher.Project(
             services, request with { Events = [stored with { EventTypeName = "Hexalith.Folders.Aggregates.Folder.UnknownEvent" }] },

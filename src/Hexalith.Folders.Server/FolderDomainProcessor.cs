@@ -12,6 +12,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Observability;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Server.Provisioning;
 
 namespace Hexalith.Folders.Server;
 
@@ -52,7 +53,7 @@ public sealed partial class FolderDomainProcessor(
         typeof(ConfigureProviderBindingPayload), typeof(CreateRepositoryBackedFolderPayload), typeof(BindRepositoryPayload),
         typeof(BranchRefPolicyPayload), typeof(PrepareWorkspacePayload), typeof(LockWorkspacePayload),
         typeof(Content.WorkspaceNativeTaskCommand), typeof(ReleaseWorkspaceLockPayload), typeof(FileMutationPayload),
-        typeof(Content.WorkspaceContentErasureRequest), typeof(CommitWorkspacePayload),
+        typeof(Content.WorkspaceContentErasureRequest), typeof(CommitWorkspacePayload), typeof(FolderProvisioningRequest),
     ];
 
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
@@ -235,6 +236,10 @@ public sealed partial class FolderDomainProcessor(
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
     }
+
+    /// <summary>Reads the private workload command through the strict owner wire contract.</summary>
+    internal static FolderProvisioningRequest? ReadProvisioningCommand(CommandEnvelope command)
+        => JsonSerializer.Deserialize<FolderProvisioningRequest>(command.Payload, FolderProvisioningService.WireJson);
 
     private static bool IsOrganizationAclCommand(string commandType)
         => commandType is FoldersServerModule.InitializeOrganizationAclBaselineCommandType

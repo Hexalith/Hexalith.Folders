@@ -15,7 +15,9 @@ public sealed class FolderDomainProjectionHandler : IDomainProjectionHandler
         .Where(static property => property.Name != nameof(FolderState.AccessOverrides)
             && property.Name != nameof(FolderState.FileIdentities)
             && property.Name != nameof(FolderState.TaskClosures)
-            && property.Name != nameof(FolderState.WorkspaceCommitOperationId))
+            && property.Name != nameof(FolderState.WorkspaceCommitOperationId)
+            && property.Name != nameof(FolderState.ProvisioningReceipt)
+            && property.Name != nameof(FolderState.InheritOrganizationPermissions))
         .ToArray();
 
     /// <inheritdoc/>

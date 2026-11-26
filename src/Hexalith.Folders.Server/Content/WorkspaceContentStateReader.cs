@@ -29,12 +29,18 @@ internal sealed class WorkspaceContentStateReader(IFolderRepository repository, 
         var result = await new AuthoritativeEventStreamReader(gateway, clock, TimeSpan.FromSeconds(2))
             .ReadAsync(new AggregateIdentity(scope.TenantId, scope.Domain, scope.AggregateId), token).ConfigureAwait(false);
         var stream = result.Stream ?? throw new ContentUnavailableException();
+        var folded = FoldCommittedStream(replay, stream, scope.TenantId, scope.Domain, scope.AggregateId);
+        return new(folded, stream.Head, stream.Events, false);
+    }
+
+    internal static FolderState FoldCommittedStream(FolderEventReplay replay, AuthoritativeEventStream stream,
+        string tenantId, string domain, string folderId)
+    {
         EventEnvelope[] events = stream.Events.Select(item => new EventEnvelope(new EventMetadata(item.MessageId,
-            scope.AggregateId, "folder", scope.TenantId, scope.Domain, item.SequenceNumber, item.GlobalPosition, item.Timestamp,
+            folderId, "folder", tenantId, domain, item.SequenceNumber, item.GlobalPosition, item.Timestamp,
             item.CorrelationId ?? "source", item.CausationId ?? "source", item.UserId ?? "source", "source", item.EventTypeName,
             item.MetadataVersion, item.SerializationFormat)
         { PayloadVersion = item.PayloadVersion }, item.Payload, null)).ToArray();
-        var folded = replay.FoldFolder(new DomainServiceCurrentState(null, events, 0, stream.Head), scope.TenantId, scope.AggregateId);
-        return new(folded, stream.Head, stream.Events, false);
+        return replay.FoldFolder(new DomainServiceCurrentState(null, events, 0, stream.Head), tenantId, folderId);
     }
 }

@@ -3,6 +3,10 @@
     <IsPackable>false</IsPackable>
     <DefineConstants Condition="'$(HexalithEventStoreFromSource)' == 'true'">$(DefineConstants);FOLDERS_OWNER_METADATA_SOURCE</DefineConstants>
   </PropertyGroup>
+  <ItemGroup Condition="'$(EnableG2ProvisioningQualification)' != 'true' or '$(HexalithEventStoreFromSource)' != 'true'">
+    <!-- The isolated live lane uses the committed G-1 source APIs and runs through its persisted probe. -->
+    <Compile Remove="Provisioning/ProvisioningQualification*.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="../shared/AuditLeakage/*.cs" Link="AuditLeakage/%(Filename)%(Extension)" />
   </ItemGroup>

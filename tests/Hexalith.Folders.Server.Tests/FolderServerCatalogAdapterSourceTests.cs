@@ -28,7 +28,8 @@ public sealed class FolderServerCatalogAdapterSourceTests
             .GetMethod("Create", BindingFlags.Public | BindingFlags.Static)!.Invoke(null, null)!).ToDictionary(adapter => adapter.CommandType);
         adapters.Values.Select(adapter => adapter.GetType().Assembly)
             .ShouldAllBe(assembly => assembly == typeof(FoldersCatalogAdapterSource).Assembly);
-        adapters.Count.ShouldBe(18);
+        adapters.Count.ShouldBe(19);
+        adapters.ShouldContainKey(FoldersServerModule.ProvisionFolderCommandType);
         adapters.Keys.Order(StringComparer.Ordinal).ShouldBe(FoldersRuntimeCatalogDeclarations.Commands
             .Select(command => command.Route.MessageType!).Order(StringComparer.Ordinal));
         foreach (var declaration in FoldersRuntimeCatalogDeclarations.Commands)

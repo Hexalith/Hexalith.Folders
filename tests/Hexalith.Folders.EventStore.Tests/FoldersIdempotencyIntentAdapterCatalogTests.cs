@@ -75,6 +75,7 @@ public sealed class FoldersIdempotencyIntentAdapterCatalogTests
     private static readonly string[] ExpectedCommandTypes =
     [
         FoldersServerModule.CreateFolderCommandType,
+        FoldersServerModule.ProvisionFolderCommandType,
         FoldersServerModule.ArchiveFolderCommandType,
         FoldersServerModule.GrantFolderAccessCommandType,
         FoldersServerModule.RevokeFolderAccessCommandType,

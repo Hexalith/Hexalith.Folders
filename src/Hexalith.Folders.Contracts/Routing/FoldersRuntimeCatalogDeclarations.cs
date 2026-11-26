@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Routing;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Routing;
+using Hexalith.Folders.Server.Provisioning;
 
 [assembly: RouteCatalogDeclarationSource(typeof(Hexalith.Folders.Server.FoldersRuntimeCatalogDeclarations))]
 
@@ -48,7 +49,8 @@ public static class FoldersRuntimeCatalogDeclarations
                 : typeof(FolderFileReferenceReadResult),
         };
         return RouteOperationSchema.Create(route, request, response,
-            route.Kind == "command" ? "public" : "internal", "agent-eligible", JsonSerializerOptions.Web);
+            route.Kind == "command" && route.MessageType != FolderProvisioningRequest.CommandType
+                ? "public" : "internal", "agent-eligible", JsonSerializerOptions.Web);
     }).ToArray();
 
     private static Type ResolveRequestType(string handlerType)

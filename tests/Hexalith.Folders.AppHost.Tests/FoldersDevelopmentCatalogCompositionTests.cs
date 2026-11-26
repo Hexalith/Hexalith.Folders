@@ -43,15 +43,18 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
             TestContext.Current.TestOutputHelper!.WriteLine("CATALOG_MODEL_OWNED " + JsonSerializer.Serialize(new { temporary, catalogDirectory }));
             var envelope = RouteCatalogCodec.Decode(await File.ReadAllBytesAsync(Path.Combine(catalog.Directory, "catalog.json"), TestContext.Current.CancellationToken).ConfigureAwait(true), catalog.RootDigest);
             envelope.SchemaVersion.ShouldBe(3);
-            envelope.Idempotency.Count(entry => entry.Domain == "folders").ShouldBe(18);
+            envelope.Idempotency.Count(entry => entry.Domain == "folders").ShouldBe(19);
+            envelope.Idempotency.ShouldContain(entry => entry.Domain == "folders" && entry.OperationId == "provision-folder");
             envelope.Idempotency.Count(entry => entry.Domain != "folders").ShouldBe(13);
             envelope.Idempotency.ShouldContain(entry => entry.Domain == "tenants" && entry.OperationId == "tenants:refresh-tenant-access");
             envelope.Routes.Where(route => route.RouteId.StartsWith("folders-", StringComparison.Ordinal)).ShouldAllBe(route => route.AppId == "folders-selected");
             envelope.Idempotency.ShouldAllBe(entry => entry.ConsumerAppId == "eventstore-selected");
             envelope.Idempotency.Single(entry => entry.OperationId == "commit-workspace").RetentionTier.ShouldBe("commit");
             var folderOperations = envelope.Operations!.Where(operation => operation.RouteId.StartsWith("folders-", StringComparison.Ordinal)).ToArray();
-            folderOperations.Where(operation => operation.Kind == "command").Count().ShouldBe(18);
-            folderOperations.Where(operation => operation.Kind == "command")
+            var folderCommands = folderOperations.Where(operation => operation.Kind == "command").ToArray();
+            folderCommands.Length.ShouldBe(19);
+            folderCommands.Single(operation => operation.RouteId == "folders-provision-folder").Ingress.ShouldBe("internal");
+            folderCommands.Where(operation => operation.RouteId != "folders-provision-folder")
                 .ShouldAllBe(operation => operation.Ingress == "public" && operation.Eligibility == "agent-eligible");
             folderOperations.Where(operation => operation.Kind != "command").Count().ShouldBe(5);
             folderOperations.Where(operation => operation.Kind != "command").ShouldAllBe(operation => operation.Ingress == "internal");

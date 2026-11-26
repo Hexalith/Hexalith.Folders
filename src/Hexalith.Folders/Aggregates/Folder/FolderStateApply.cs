@@ -53,12 +53,21 @@ public static class FolderStateApply
             throw new InvalidOperationException("Folder event order is invalid.");
         }
 
+        if (folderEvent is FolderCreated createdEvent
+            && (createdEvent.ProvisioningReceipt is null && createdEvent.InheritOrganizationPermissions is not null
+                || createdEvent.ProvisioningReceipt is not null && createdEvent.InheritOrganizationPermissions != false))
+        {
+            throw new InvalidOperationException("Folder creation authority is invalid.");
+        }
+
         return folderEvent switch
         {
             WorkspaceNativeTaskChanged native => WorkspaceNativeTaskService.Apply(state, native),
             FolderCreated created => state with
             {
                 IsCreated = true,
+                ProvisioningReceipt = created.ProvisioningReceipt,
+                InheritOrganizationPermissions = created.InheritOrganizationPermissions,
                 ManagedTenantId = created.ManagedTenantId,
                 OrganizationId = created.OrganizationId,
                 FolderId = created.FolderId,

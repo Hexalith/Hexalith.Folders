@@ -147,9 +147,11 @@ public sealed class OrganizationDeliveryRegressionTests
             var evidence = await new EffectivePermissionsFolderPermissionEvidenceProvider(readModel, clock).GetEvidenceAsync(
                 new("tenant-a", "user-a", "user-a", mapping.ActionToken, "organization_baseline", "corr", null,
                     FolderOperationPolicyClass.Mutation, false), TestContext.Current.CancellationToken);
-            evidence.Status.ShouldBe(mapping.ScopeKind == FolderCommandOperationScopeKind.OrganizationBaseline
+            bool usesOrganizationGrant = mapping.ScopeKind == FolderCommandOperationScopeKind.OrganizationBaseline
+                || name == FoldersServerModule.ProvisionFolderCommandType;
+            evidence.Status.ShouldBe(usesOrganizationGrant
                 ? FolderPermissionEvidenceStatus.Allowed : FolderPermissionEvidenceStatus.NotFoundSafe, name);
         }
-        mapped.ShouldBe(18);
+        mapped.ShouldBe(19);
     }
 }

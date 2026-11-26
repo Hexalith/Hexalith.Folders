@@ -3,6 +3,7 @@ using Hexalith.EventStore.DomainService.Content;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Provisioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,11 @@ internal static class WorkspaceContentRetentionEndpoints
             async (string folderId, string workspaceId,
                 HttpContext context, ITenantContextAccessor tenant, IAuthoritativeContentStore store, CancellationToken token) =>
             {
+                if (FolderProvisioningService.MutationsFrozen(context.RequestServices.GetService<IConfiguration>()))
+                {
+                    return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
                 string? correlation = FolderHttpHeaderReader.ReadHeader(context, "X-Correlation-Id");
                 string? task = FolderHttpHeaderReader.ReadHeader(context, "X-Hexalith-Task-Id");
                 WorkspaceContentDispositionRequest? request;

@@ -18,6 +18,54 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed partial class WorkspaceOperationEvidenceTests
 {
+    [Fact]
+    public async Task FrozenFolderRejectsDirectWritesAndKeepsNativeReadsAvailable()
+    {
+        var fixture = await NativeContentFixture.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = fixture.ConfigureAwait(true);
+        using HttpClient http = fixture.Client();
+        var client = new NativeClient(http);
+        var lease = await AcquireAsync(client).ConfigureAwait(true);
+        int submissions = fixture.Gateway.Submissions.Count;
+        int contentWrites = fixture.Dapr.TrySaveByteOperations.Count;
+        fixture.App.Configuration["Folders:Provisioning:FreezeMutations"] = "true";
+
+        var validation = await client.ChangeNativeTaskLeaseAsync("folder-a", "workspace-a", "correlation-a", "task-a",
+            Owned("validate", lease), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        validation.LockFence.ShouldBe(lease.LockFence);
+        var evidence = await client.GetNativeOperationEvidenceAsync("folder-a", "workspace-a", "correlation-a", "task-a",
+            Request(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        evidence.Status.ShouldBe("missing");
+
+        var renewal = await Should.ThrowAsync<HexalithFoldersNativeApiException>(() => client.ChangeNativeTaskLeaseAsync(
+            "folder-a", "workspace-a", "correlation-a", "task-a", Owned("renew", lease),
+            TestContext.Current.CancellationToken)).ConfigureAwait(true);
+        renewal.StatusCode.ShouldBe(503);
+
+        using var create = new HttpRequestMessage(HttpMethod.Post, "/api/v1/folders")
+        {
+            Content = new StringContent("""{"requestSchemaVersion":"v1","folderMetadata":{"displayName":"Frozen"}}""",
+                Encoding.UTF8, "application/json"),
+        };
+        using var disposition = new HttpRequestMessage(HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/content/disposition")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(new { operation = "hold", receiptId = "content_" + new string('a', 64) }),
+                Encoding.UTF8, "application/json"),
+        };
+        foreach (HttpRequestMessage request in new[] { create, disposition })
+        {
+            request.Headers.Add("Idempotency-Key", "key-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+            using HttpResponseMessage response = await http.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        }
+
+        fixture.Gateway.Submissions.Count.ShouldBe(submissions);
+        fixture.Dapr.TrySaveByteOperations.Count.ShouldBe(contentWrites);
+    }
+
     [Theory]
     [InlineData("operation-evidence", "{}")]
     [InlineData("operation-evidence", "")]

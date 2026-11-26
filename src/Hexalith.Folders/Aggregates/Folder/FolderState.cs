@@ -64,6 +64,14 @@ public sealed record FolderState(
     long AccessSequence,
     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
 {
+    /// <summary>Gets the owner receipt carried by a restricted create.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public FolderProvisioningReceipt? ProvisioningReceipt { get; init; }
+
+    /// <summary>Gets the explicit inheritance choice when a Folder was provisioned.</summary>
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public bool? InheritOrganizationPermissions { get; init; }
+
     /// <summary>Gets irrevocable metadata-only receipt erasure reservations serialized by the source actor.</summary>
     public IReadOnlyDictionary<string, long> ContentErasureGrants { get; init; }
         = FrozenDictionary<string, long>.Empty;
