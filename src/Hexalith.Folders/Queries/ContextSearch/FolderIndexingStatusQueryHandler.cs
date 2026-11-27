@@ -90,7 +90,6 @@ public sealed class FolderIndexingStatusQueryHandler(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Indexing-status read failed safely. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return SafeResult(FolderIndexingStatusResultCode.ReadModelUnavailable, query);

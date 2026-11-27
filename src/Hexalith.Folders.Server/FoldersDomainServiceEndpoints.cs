@@ -86,9 +86,13 @@ public static partial class FoldersDomainServiceEndpoints
 
     /// <summary>Maps dispatcher results to the unchanged safe callback response.</summary>
     /// <param name="result">The dispatcher result.</param>
+    /// <param name="gatewayRead">Whether the request uses the public Gateway query contract.</param>
     /// <returns>The callback status and scrubbed response body.</returns>
-    internal static IResult ToQueryHttpResult(QueryResult result)
-        => result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
+    internal static IResult ToQueryHttpResult(QueryResult result, bool gatewayRead = false)
+        => result.Success ? Results.Ok(result)
+            : gatewayRead && result.ErrorMessage == QueryAdapterFailureReason.ReadModelUnavailable
+            ? Results.Ok(QueryResult.Failure(QueryAdapterFailureReason.ReadModelUnavailable))
+            : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor or QueryAdapterFailureReason.InvalidPage
             ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
 
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
@@ -97,10 +101,10 @@ public static partial class FoldersDomainServiceEndpoints
         WorkspaceContentRetentionEndpoints.Map(endpoints);
         WorkspaceNativeEndpoints.Map(endpoints);
 
-        RouteHandlerBuilder queryEndpoint = endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
+        RouteHandlerBuilder queryEndpoint = endpoints.MapPost("/query", async (QueryEnvelope query, HttpContext context, CancellationToken token) =>
         {
-            QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
-            return ToQueryHttpResult(result);
+            QueryResult result = await DomainQueryDispatcher.ExecuteAsync(context.RequestServices, query, token).ConfigureAwait(false);
+            return ToQueryHttpResult(result, query.CallerAuthority?.Origin == "authenticated-caller");
         }).RequireEventStoreDomainServicePolicy("/query");
 
         if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
@@ -1957,6 +1961,30 @@ public static partial class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    /// <summary>Pages ordered ACL metadata using the ACL entry cursor already used on REST.</summary>
+    internal static bool TryPageFolderAcl(IReadOnlyList<FolderAclEntryView> entries, string? cursor, int limit,
+        out FolderAclEntryView[] page, out string? nextCursor)
+    {
+        int cursorIndex = -1;
+        if (cursor is not null)
+        {
+            cursorIndex = entries.Select(static (entry, index) => (entry, index))
+                .Where(item => string.Equals(item.entry.AclEntryId, cursor, StringComparison.Ordinal))
+                .Select(static item => item.index).DefaultIfEmpty(-1).Single();
+            if (cursorIndex < 0)
+            {
+                page = [];
+                nextCursor = null;
+                return false;
+            }
+        }
+
+        int start = cursorIndex + 1;
+        page = [.. entries.Skip(start).Take(limit)];
+        nextCursor = start + page.Length < entries.Count ? page[^1].AclEntryId : null;
+        return true;
+    }
+
     private static IResult ToFolderAclEntryListHttpResult(
         HttpContext httpContext,
         ListFolderAclEntriesQueryResult result,
@@ -1972,29 +2000,17 @@ public static partial class FoldersDomainServiceEndpoints
         switch (result.Code)
         {
             case ListFolderAclEntriesQueryResultCode.Allowed:
-                int start = 0;
-                if (cursor is not null)
+                if (!TryPageFolderAcl(result.Entries, cursor, limit, out FolderAclEntryView[] page, out string? nextCursor))
                 {
-                    int cursorIndex = result.Entries
-                        .Select(static (entry, index) => (entry, index))
-                        .Where(item => string.Equals(item.entry.AclEntryId, cursor, StringComparison.Ordinal))
-                        .Select(static item => item.index)
-                        .DefaultIfEmpty(-1)
-                        .Single();
-                    if (cursorIndex < 0)
-                    {
-                        return FolderProblemDetailsFactory.ForAudit(
-                            StatusCodes.Status400BadRequest,
-                            category: "validation_error",
-                            code: "cursor_tampered",
-                            retryable: false,
-                            correlationId: correlationId,
-                            taskId: null,
-                            message: "Pagination cursor is malformed or tampered.",
-                            evidenceSource: "folder_acl");
-                    }
-
-                    start = cursorIndex + 1;
+                    return FolderProblemDetailsFactory.ForAudit(
+                        StatusCodes.Status400BadRequest,
+                        category: "validation_error",
+                        code: "cursor_tampered",
+                        retryable: false,
+                        correlationId: correlationId,
+                        taskId: null,
+                        message: "Pagination cursor is malformed or tampered.",
+                        evidenceSource: "folder_acl");
                 }
 
                 if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
@@ -2004,9 +2020,7 @@ public static partial class FoldersDomainServiceEndpoints
 
                 httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
 
-                FolderAclEntryView[] page = [.. result.Entries.Skip(start).Take(limit)];
-                bool isTruncated = start + page.Length < result.Entries.Count;
-                string? nextCursor = isTruncated ? page[^1].AclEntryId : null;
+                bool isTruncated = nextCursor is not null;
                 return Results.Json(
                     new FolderAclEntryListResponse(
                         [.. page.Select(static e => new FolderAclEntryResponse(e.AclEntryId, e.SubjectRef, e.PermissionLevel, e.Effect))],
@@ -5576,10 +5590,12 @@ public static partial class FoldersDomainServiceEndpoints
         httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
     }
 
-    private static string CommitReferenceClassification(string currentState)
+    /// <summary>Classifies an operation's commit reference for metadata responses.</summary>
+    internal static string CommitReferenceClassification(string currentState)
         => currentState == "committed" ? "opaque_reference" : "unavailable";
 
-    private static string ReconciliationStateFor(string currentState)
+    /// <summary>Maps workspace state to the canonical reconciliation state.</summary>
+    internal static string ReconciliationStateFor(string currentState)
         => currentState switch
         {
             "reconciliation_required" => "required",
@@ -5590,7 +5606,8 @@ public static partial class FoldersDomainServiceEndpoints
             _ => "not_required",
         };
 
-    private static string FinalStateEvidenceFor(string currentState)
+    /// <summary>Maps workspace state to the canonical final-state evidence.</summary>
+    internal static string FinalStateEvidenceFor(string currentState)
         => currentState switch
         {
             "committed" => "committed",
@@ -5600,10 +5617,12 @@ public static partial class FoldersDomainServiceEndpoints
             _ => "pending",
         };
 
-    private static bool EscalationRequiredFor(string currentState)
+    /// <summary>Reports whether the workspace state requires escalation.</summary>
+    internal static bool EscalationRequiredFor(string currentState)
         => currentState is "reconciliation_required" or "failed" or "inaccessible";
 
-    private static string PermissionToken(EffectivePermissionLevel permission)
+    /// <summary>Maps an effective permission to its canonical wire token.</summary>
+    internal static string PermissionToken(EffectivePermissionLevel permission)
         => permission switch
         {
             EffectivePermissionLevel.Read => "read",
@@ -5763,7 +5782,8 @@ public static partial class FoldersDomainServiceEndpoints
     // Maps the folder lifecycle-status projection's repository lifecycle string onto the
     // canonical RepositoryBinding.bindingState enum (story 8.1 DD5). A Bound repository is
     // surfaced by the lifecycle handler as "ready" (active) or "inaccessible" (archived).
-    private static string? MapRepositoryBindingState(string? lifecycleState)
+    /// <summary>Maps folder lifecycle state to the canonical repository binding state.</summary>
+    internal static string? MapRepositoryBindingState(string? lifecycleState)
         => lifecycleState switch
         {
             "requested" => "requested",

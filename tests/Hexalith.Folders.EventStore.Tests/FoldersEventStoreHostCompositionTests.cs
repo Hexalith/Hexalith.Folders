@@ -1,17 +1,22 @@
 using System.Net;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
+using Hexalith.EventStore.Contracts.Queries;
+using Hexalith.EventStore.Controllers;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ErrorHandling;
 using Hexalith.EventStore.Server.DomainServices;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.EventStore;
+using Hexalith.Folders.Server;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -26,6 +31,38 @@ namespace Hexalith.Folders.EventStore.Tests;
 /// <summary>Guards the real command host's safe-denial registration and handler ordering.</summary>
 public sealed class FoldersEventStoreHostCompositionTests
 {
+    /// <summary>Exercises the real Gateway's configuration-driven originating authority capture.</summary>
+    [Fact]
+    public void GatewayEntryPointEnrollsExactlyThePublicFoldersQueryAuthorities()
+    {
+        using FoldersEventStoreHostFactory factory = new();
+        IConfiguration configuration = factory.Services.GetRequiredService<IConfiguration>();
+        string[] queryTypes = FoldersRuntimeCatalogDeclarations.Operations
+            .Where(operation => operation is { Kind: "query", Ingress: "public" })
+            .Select(operation => operation.MessageType!).Order(StringComparer.Ordinal).ToArray();
+        queryTypes.Length.ShouldBe(17);
+        configuration.GetSection("Authentication:QueryAuthority:RequiredQueries:folders").GetChildren()
+            .Select(child => child.Value).Order(StringComparer.Ordinal).ShouldBe(queryTypes);
+
+        // The host fixture has no external workload assertion issuer. Exercise the actual SDK capture
+        // used by the query controller, with the entry point's configuration and verified identity shape.
+        MethodInfo capture = typeof(QueriesController).Assembly
+            .GetType("Hexalith.EventStore.Queries.GatewayQueryCallerAuthority", throwOnError: true)!
+            .GetMethod("Capture", BindingFlags.Static | BindingFlags.NonPublic).ShouldNotBeNull();
+        ClaimsPrincipal principal = new(new ClaimsIdentity(
+            [new("sub", "gateway-reader"), new(ClaimTypes.Role, "reader"), new("eventstore:permission", "read_metadata")], "Bearer"));
+        foreach (string queryType in queryTypes)
+        {
+            var authority = capture.Invoke(null, [principal, configuration, "folders", queryType])
+                .ShouldBeOfType<QueryCallerAuthority>();
+            authority.Origin.ShouldBe("authenticated-caller");
+            authority.Roles.ShouldBe(["reader"]);
+            authority.Permissions.ShouldBe(["read_metadata"]);
+        }
+
+        capture.Invoke(null, [principal, configuration, "folders", "Hexalith.Folders.Queries.GetAuditRecord"]).ShouldBeNull();
+    }
+
     /// <summary>Executes the actual gateway pipeline with its public inventories and distinct human/channel credentials.</summary>
     [Fact]
     public async Task CommandHostEnrollsHttpSecurityAndSeparatesHumanDocumentationFromSidecarCallbacks()

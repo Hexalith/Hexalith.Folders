@@ -3453,3 +3453,23 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
   summary: Implement Gateway IDomainQueryHandler registrations for the 6 residual InMemory-backed queries (Q01 GetAuditRecord, Q11 GetOperationTimelineEntry, Q16 GetProviderSupportEvidence, Q26 GetWorkspaceTransitionEvidence, Q28 ListAuditTrail, Q31 ListOperationTimeline), including Q16 tenant-wide aggregateId scope validation and durable projection alignment.
   evidence: Split from Story 5.14 during Step 2 scope gate because these 6 queries still lack EventStore-backed read models (e.g., Q26 depends on backlog Story 4.18) and separating them keeps the primary spec within the 900-1600 token target.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
+  summary: Enroll the 17 public Folders query wire types in the Platform-owned EventStore Gateway.
+  evidence: The Platform catalog bootstrap configures originating query authority for Conversations but does not yet list Folders. The Folders-owned Gateway derives its own enrollment. Qualify signed dispatch through the Platform composition before McpCli enrollment.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
+  summary: Derive the reserved provider actor in the generic McpCli path for Q13 and Q35.
+  evidence: The Folders callback accepts only the exact reserved actor derived from the provider reference, but the generic aggregate accessor reads the raw payload reference and rejects an explicit override. The fix belongs to the external enrollment or generic routing owner.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
+  summary: Preserve and validate the original paging inputs for enrolled queries at EventStore ingress.
+  evidence: EventStore normalizes empty paging and blank cursors before dispatch. The Folders callback rejects these values when present, but cannot observe input removed before the envelope is signed.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
+  summary: Reject the incoming Idempotency-Key on read ingress in EventStore Gateway.
+  evidence: The Gateway creates a separate POST /query callback without the incoming Idempotency-Key header. The signed Folders receiver rejects the header if present; the Gateway owns validation of its own input.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
+  summary: Map ReadModelUnavailable to retryable query transport errors in EventStore.
+  evidence: The installed SubmitQueryHandler maps the callback sentinel to a generic internal error. The Folders Gateway handles the exact Folders sentinel locally, while shared Platform Gateway hosts need the owner-provided mapping.

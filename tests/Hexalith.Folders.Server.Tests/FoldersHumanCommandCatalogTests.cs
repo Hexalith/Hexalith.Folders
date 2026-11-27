@@ -50,13 +50,33 @@ public sealed class FoldersHumanCommandCatalogTests
             RouteCatalogSurfacePolicy.Allows(operation, new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "human-a")], "Bearer")))
                 .ShouldBeFalse();
         }
-        var internalOperations = operations.Where(operation => operation.MessageType == FoldersServerModule.ProvisionFolderCommandType
-            || routes.Single(route => route.RouteId == operation.RouteId).Kind != "command").ToArray();
+        var internalOperations = operations.Where(operation => operation.Ingress == "internal").ToArray();
         internalOperations.Length.ShouldBe(6);
         foreach (var operation in internalOperations)
         {
             operation.Ingress.ShouldBe("internal");
             RouteCatalogSurfacePolicy.Allows(operation, human, verifiedOriginatingProof: true).ShouldBeFalse();
+        }
+
+        var publicQueries = operations.Where(operation => operation is { Kind: "query", Ingress: "public" }).ToArray();
+        publicQueries.Select(operation => operation.MessageType).Order(StringComparer.Ordinal).ShouldBe(new[]
+        {
+            "GetBranchRefPolicy", "GetCommitEvidence", "GetEffectivePermissions", "GetFolderIndexingStatus", "GetFolderLifecycleStatus",
+            "GetProviderBinding", "GetProviderOutcome", "GetReconciliationStatus", "GetRepositoryBinding", "GetTaskStatus",
+            "GetWorkspaceCleanupStatus", "GetWorkspaceLock", "GetWorkspaceRetryEligibility", "GetWorkspaceStatus",
+            "ListFolderAclEntries", "SearchFolderIndexedFiles", "ValidateProviderReadiness",
+        }.Select(name => "Hexalith.Folders.Queries." + name));
+        foreach (var operation in publicQueries)
+        {
+            RouteContractDeclaration route = routes.Single(route => route.RouteId == operation.RouteId);
+            operation.Eligibility.ShouldBe("agent-eligible");
+            route.Execution.ShouldBeOfType<RouteExecutionDeclaration>().ShouldSatisfyAllConditions(
+                execution => execution.TargetKind.ShouldBe("domain-service"),
+                execution => execution.QueryKind.ShouldBe("projection"),
+                execution => execution.RequiresDelegatedContext.ShouldBeFalse());
+            route.ProjectionType.ShouldNotBeNullOrEmpty();
+            FoldersRuntimeCatalogDeclarations.ReceiverMethods[route.RouteId].ShouldBe("query");
+            RouteCatalogSurfacePolicy.Allows(operation, human).ShouldBeTrue();
         }
     }
 

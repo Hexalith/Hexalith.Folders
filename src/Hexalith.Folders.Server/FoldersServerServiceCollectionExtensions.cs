@@ -13,6 +13,7 @@ using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
+using Hexalith.Folders.Queries.Gateway;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Server.ContextSearch;
@@ -147,6 +148,30 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
 
+        return services;
+    }
+
+    /// <summary>Registers the public Gateway handlers for the production durable read composition.</summary>
+    internal static IServiceCollection AddFoldersGatewayQueryHandlers(this IServiceCollection services)
+    {
+        services.TryAddScoped<GatewayQueryExecutionSupport>();
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetBranchRefPolicyGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetCommitEvidenceGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetEffectivePermissionsGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetFolderIndexingStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetFolderLifecycleStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetProviderBindingGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetProviderOutcomeGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetReconciliationStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetRepositoryBindingGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetTaskStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetWorkspaceCleanupStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetWorkspaceLockGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetWorkspaceRetryEligibilityGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, GetWorkspaceStatusGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, ListFolderAclEntriesGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, SearchFolderIndexedFilesGatewayQueryHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainQueryHandler, ValidateProviderReadinessGatewayQueryHandler>());
         return services;
     }
 

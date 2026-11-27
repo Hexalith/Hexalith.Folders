@@ -47,6 +47,7 @@ public sealed class ContextSearchQueryHandler(
     private const int MaxResultCount = 500;
     private const int MaxCursorLength = 256;
     private const long MaxResponseBytes = 1048576;
+    private static readonly TimeSpan _gatewaySearchBudget = TimeSpan.FromSeconds(2);
     private static readonly JsonSerializerOptions ResponseBudgetJsonOptions = new(JsonSerializerDefaults.Web);
 
     private readonly LayeredFolderAuthorizationService _authorizationService = authorizationService;
@@ -57,9 +58,17 @@ public sealed class ContextSearchQueryHandler(
         logger ?? NullLogger<ContextSearchQueryHandler>.Instance;
 
     /// <summary>Executes the authorized, security-trimmed, metadata-only context search.</summary>
-    public async Task<ContextSearchQueryResult> HandleAsync(
+    public Task<ContextSearchQueryResult> HandleAsync(
         ContextSearchQuery query,
         CancellationToken cancellationToken = default)
+        => HandleCoreAsync(query, verifyContinuation: false, cancellationToken);
+
+    /// <summary>Searches with a public continuation based on a subsequent visible hydrated hit.</summary>
+    internal Task<ContextSearchQueryResult> HandleGatewayAsync(ContextSearchQuery query, CancellationToken cancellationToken)
+        => HandleCoreAsync(query, verifyContinuation: true, cancellationToken);
+
+    private async Task<ContextSearchQueryResult> HandleCoreAsync(ContextSearchQuery query, bool verifyContinuation,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(query);
         cancellationToken.ThrowIfCancellationRequested();
@@ -123,29 +132,17 @@ public sealed class ContextSearchQueryHandler(
 
         Stopwatch stopwatch = Stopwatch.StartNew();
 
+        FolderSearchSourceRequest sourceRequest = new(allowed.AuthoritativeTenantId, organizationId, query.FolderId,
+            query.WorkspaceId, query.PrincipalId, ActionToken, query.TaskId, query.CorrelationId,
+            allowed.FreshnessWatermark, query.QueryText!, limit, offset);
         FolderSearchSourceResult sourceResult;
         try
         {
-            sourceResult = await _source.SearchAsync(
-                new FolderSearchSourceRequest(
-                    allowed.AuthoritativeTenantId,
-                    organizationId,
-                    query.FolderId,
-                    query.WorkspaceId,
-                    query.PrincipalId,
-                    ActionToken,
-                    query.TaskId,
-                    query.CorrelationId,
-                    allowed.FreshnessWatermark,
-                    query.QueryText!,
-                    limit,
-                    offset),
-                cancellationToken).ConfigureAwait(false);
+            sourceResult = await _source.SearchAsync(sourceRequest, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Context search source failed safely. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
@@ -178,10 +175,7 @@ public sealed class ContextSearchQueryHandler(
 
             // Security-trim (defense in depth): a poisoned/stale index could echo a foreign hit despite the
             // server-side attribute filter; drop anything whose recovered identity is not the authorized scope.
-            if (!string.Equals(hit.ManagedTenantId, allowed.AuthoritativeTenantId, StringComparison.Ordinal)
-                || !string.Equals(hit.FolderId, query.FolderId, StringComparison.Ordinal)
-                || !string.Equals(hit.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal)
-                || !string.Equals(hit.OrganizationId, organizationId, StringComparison.Ordinal))
+            if (!MatchesScope(hit, sourceRequest))
             {
                 continue;
             }
@@ -203,37 +197,28 @@ public sealed class ContextSearchQueryHandler(
 
             // Authoritative hydration: drop hits without a current bridge entry, in a non-live state, or whose
             // hydrated identity disagrees with the recovered hit (the bridge read, not the index, is the truth).
-            SemanticIndexingBridgeEntry? entry;
+            ContextSearchItem? item;
             try
             {
-                entry = await _bridgeReadModel
-                    .GetFileVersionByIdAsync(allowed.AuthoritativeTenantId, query.FolderId, hit.FileVersionId, cancellationToken)
-                    .ConfigureAwait(false);
+                item = await HydrateAsync(hit, sourceRequest, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 _logger.LogWarning(
-                    ex,
                     "Context search hydration failed safely. Exception type: {ExceptionType}",
                     ex.GetType().FullName);
                 return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
             }
 
-            if (entry is null
-                || !IsVisible(entry.Status)
-                || !string.Equals(entry.Identity.OrganizationId, organizationId, StringComparison.Ordinal)
-                || !string.Equals(entry.Identity.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal))
+            if (item is null)
             {
                 rejectedFileVersions.Add(hit.FileVersionId);
                 continue;
             }
 
-            ContextSearchItem item = MapItem(hit, entry);
             items.Add(item);
             emittedFileVersions.Add(hit.FileVersionId);
         }
-
-        stopwatch.Stop();
 
         int rawRowsAdvanced = Math.Max(
             observedSourceRows,
@@ -243,14 +228,22 @@ public sealed class ContextSearchQueryHandler(
             : offset + rawRowsAdvanced;
         // A duplicate of an emitted item hides nothing from the caller, so it counts toward a full page. Rows dropped
         // by trimming or hydration do not, which keeps their existence out of the pagination metadata.
-        bool hasMore = items.Count + duplicateRows >= limit
-            && rawRowsAdvanced > 0
-            && nextOffset > offset
-            && sourceResult.TotalCount > nextOffset;
+        bool hasRawTail = nextOffset > offset && sourceResult.TotalCount > nextOffset;
+        bool hasMore = hasRawTail && (verifyContinuation
+            ? await HasVisibleNextPageAsync(sourceRequest with { Offset = nextOffset }, emittedFileVersions,
+                _gatewaySearchBudget - stopwatch.Elapsed, cancellationToken).ConfigureAwait(false)
+            : items.Count + duplicateRows >= limit);
+        stopwatch.Stop();
         string? nextCursor = hasMore ? BuildCursor(nextOffset) : null;
+        DateTimeOffset observedAt = _clock.UtcNow;
+        if (verifyContinuation)
+        {
+            // Keep the public byte estimate stable even when the bounded probe delays the response.
+            observedAt = DateTimeOffset.FromUnixTimeSeconds(observedAt.ToUnixTimeSeconds());
+        }
         FolderLifecycleFreshness freshness = new(
             EventuallyConsistent,
-            _clock.UtcNow,
+            observedAt,
             allowed.FreshnessWatermark,
             Stale: false,
             "search_index");
@@ -271,13 +264,65 @@ public sealed class ContextSearchQueryHandler(
                 limit,
                 items.Count,
                 actualBytes,
-                stopwatch.ElapsedMilliseconds,
+                verifyContinuation ? 0 : stopwatch.ElapsedMilliseconds,
                 hasMore,
                 truncatedReason),
             freshness,
             query.CorrelationId,
             query.TaskId,
             AuthorizationDenial: null);
+    }
+
+    private async Task<bool> HasVisibleNextPageAsync(FolderSearchSourceRequest request, HashSet<string> emitted,
+        TimeSpan remaining, CancellationToken cancellationToken)
+    {
+        if (remaining <= TimeSpan.Zero)
+        {
+            return false;
+        }
+
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        deadline.CancelAfter(remaining);
+        try
+        {
+            // Verify the same bounded raw window a following request will read. Raw totals never authorize a cursor.
+            FolderSearchSourceResult page = await _source.SearchAsync(request, deadline.Token).ConfigureAwait(false);
+            if (page.Status != FolderSearchSourceStatus.Available)
+            {
+                return false;
+            }
+
+            HashSet<string> seen = new(emitted, StringComparer.Ordinal);
+            foreach (FolderSearchSourceHit hit in page.Hits.Take(request.Limit))
+            {
+                if (MatchesScope(hit, request) && seen.Add(hit.FileVersionId)
+                    && await HydrateAsync(hit, request, deadline.Token).ConfigureAwait(false) is not null)
+                {
+                    return !deadline.IsCancellationRequested;
+                }
+            }
+
+            return false;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            _logger.LogWarning("Context search continuation could not be verified. Exception type: {ExceptionType}", ex.GetType().FullName);
+            return false;
+        }
+    }
+
+    private static bool MatchesScope(FolderSearchSourceHit hit, FolderSearchSourceRequest request)
+        => hit.ManagedTenantId == request.ManagedTenantId && hit.FolderId == request.FolderId
+            && hit.WorkspaceId == request.WorkspaceId && hit.OrganizationId == request.OrganizationId;
+
+    private async Task<ContextSearchItem?> HydrateAsync(FolderSearchSourceHit hit, FolderSearchSourceRequest request,
+        CancellationToken cancellationToken)
+    {
+        SemanticIndexingBridgeEntry? entry = await _bridgeReadModel.GetFileVersionByIdAsync(
+            request.ManagedTenantId, request.FolderId, hit.FileVersionId, cancellationToken).ConfigureAwait(false);
+        return entry is not null && IsVisible(entry.Status) && entry.Identity.OrganizationId == request.OrganizationId
+            && entry.Identity.WorkspaceId == request.WorkspaceId ? MapItem(hit, entry) : null;
     }
 
     private static ContextSearchResultCode? ValidateC4Bounds(ContextSearchQuery query)
@@ -369,7 +414,8 @@ public sealed class ContextSearchQueryHandler(
         return offset;
     }
 
-    private static bool TryParseCursor(string? cursor, out int offset)
+    /// <summary>Validates the existing index search cursor for both query transports.</summary>
+    internal static bool TryParseCursor(string? cursor, out int offset)
     {
         offset = 0;
         return cursor is null

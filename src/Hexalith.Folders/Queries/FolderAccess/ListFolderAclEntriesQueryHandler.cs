@@ -96,7 +96,6 @@ public sealed class ListFolderAclEntriesQueryHandler(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Folder ACL read failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return Safe(

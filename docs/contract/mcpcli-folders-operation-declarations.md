@@ -307,3 +307,24 @@ as well as changed Contracts/test rows and the new paths. PD10 remains red:
 the five failing test names match the pre-existing baseline, but their byte-bound
 mismatch evidence changes as these rows change. The McpCli selector runs as an
 independent CI step so those PD10 failures cannot mask its pass/fail result.
+
+## Story 5.14 Gateway runtime enrollment
+
+The 17 public projection routes in
+[FoldersRuntimeCatalogDeclarations](../../src/Hexalith.Folders.Contracts/Routing/FoldersRuntimeCatalogDeclarations.cs)
+are the query authority enrollment set. The Folders Gateway entry point derives
+`Authentication:QueryAuthority:RequiredQueries:folders` from those routes.
+For a Platform-owned Gateway, configure that section with the exact
+`MessageType` values of the 17 routes and enable signed workload assertions
+for the Folders `/query` receiver. Schema-v3 catalogs reserve
+`RequiresDelegatedContext` for internal owner operations. All 17 public
+handlers still require the SDK to verify an `authenticated-caller` binding.
+Delegated public requests are denied while that binding carries permission
+evidence for only one principal.
+
+The Q13 and Q35 payloads keep the opaque `providerBindingRef`. The sending
+Gateway integration must route these two queries to the exact reserved ID
+derived by `ProviderBindingActorId.Create(providerBindingRef)`. The current
+generic McpCli aggregate accessor forwards the public reference. Provider
+query enrollment therefore still needs the upstream reserved-actor routing
+before those operations can execute through the generic heads.

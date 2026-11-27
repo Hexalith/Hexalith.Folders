@@ -109,6 +109,8 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<EventStoreOperationalStatusReadModel>();
         services.RemoveAll<IFolderLifecycleStatusReadModel>();
         services.AddSingleton<IFolderLifecycleStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        services.RemoveAll<IBranchRefPolicyReadModel>();
+        services.AddSingleton<IBranchRefPolicyReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
         services.RemoveAll<IWorkspaceLockStatusReadModel>();
         services.AddSingleton<IWorkspaceLockStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
         services.RemoveAll<IWorkspaceStatusReadModel>();

@@ -77,7 +77,6 @@ public sealed class WorkspaceLockStatusQueryHandler(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Workspace lock read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return SafeResult(

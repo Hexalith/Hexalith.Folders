@@ -183,9 +183,10 @@ public sealed class FoldersServerHostCompositionTests
         projectionCatalog.Bind(orphanRequest);
         using HttpResponseMessage orphanResponse = await client.SendAsync(orphanRequest, TestContext.Current.CancellationToken);
         orphanResponse.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        using IServiceScope queryScope = app.Services.CreateScope();
         var unserved = AdminOperationalIndexMetadata.Create(
             app.Services.GetRequiredService<Hexalith.EventStore.Client.Discovery.DiscoveryResult>(), ["orphan"],
-            app.Services.GetServices<IDomainQueryHandler>(), app.Services.GetServices<IAsyncDomainProjectionHandler>(),
+            queryScope.ServiceProvider.GetServices<IDomainQueryHandler>(), app.Services.GetServices<IAsyncDomainProjectionHandler>(),
             "folders", "v1", app.Services.GetRequiredService<IOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>>().Value,
             ["folders"], app.Services.GetServices<IDomainProjectionHandler>());
         unserved.Domains.ShouldBeEmpty();

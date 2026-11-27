@@ -21,7 +21,9 @@ namespace Hexalith.Folders.Server.Tests;
 /// <param name="services">The isolated production-composed services.</param>
 /// <param name="endpoints">The actual mapped callback endpoints.</param>
 /// <param name="includeCreateFolder">Whether this isolated fixture also serves the signed Folder create callbacks and legacy projection.</param>
-internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Func<IEnumerable<Endpoint>> endpoints, bool includeCreateFolder = false) : IRouteCatalogAuthority
+/// <param name="tenant">The tenant for the isolated receiver binding.</param>
+internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Func<IEnumerable<Endpoint>> endpoints,
+    bool includeCreateFolder = false, string tenant = "tenant-a") : IRouteCatalogAuthority
 {
     private CommittedRouteCatalogSnapshot? _snapshot;
 
@@ -102,10 +104,21 @@ internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Fun
                 EventStoreOperationIdentifiers.DomainServiceProject, typeof(ProjectionRequest), typeof(ProjectionResponse),
                 ["folder-state", "organization-provider-binding"]);
         }
+        var publicQueries = FoldersRuntimeCatalogDeclarations.Routes.Where(route =>
+            route is { Kind: "query", Execution.QueryKind: "projection" }).ToDictionary(route => route.MessageType!, StringComparer.Ordinal);
+        var publicOperations = FoldersRuntimeCatalogDeclarations.Operations.Where(operation =>
+            operation is { Kind: "query", Ingress: "public" }).ToDictionary(operation => operation.RouteId, StringComparer.Ordinal);
         foreach (IDomainQueryHandler handler in local.GetServices<IDomainQueryHandler>())
         {
-            Add("query-" + declarations.Count, handler.Domain, handler.QueryType, null, handler.GetType(),
-                "query", EventStoreOperationIdentifiers.DomainServiceQuery, typeof(QueryEnvelope), typeof(QueryResult));
+            if (handler.Domain == "folders" && publicQueries.TryGetValue(handler.QueryType, out RouteContractDeclaration? declaredRoute))
+            {
+                Bind(declaredRoute, publicOperations[declaredRoute.RouteId], "query");
+            }
+            else
+            {
+                Add("query-" + declarations.Count, handler.Domain, handler.QueryType, null, handler.GetType(),
+                    "query", EventStoreOperationIdentifiers.DomainServiceQuery, typeof(QueryEnvelope), typeof(QueryResult));
+            }
         }
         foreach (IAsyncDomainProjectionHandler handler in local.GetServices<IAsyncDomainProjectionHandler>())
         {
@@ -133,11 +146,16 @@ internal sealed class FoldersCallbackRouteCatalog(IServiceProvider services, Fun
                     outputs ?? (projection is null ? [] : [projection])));
             RouteOperationContract operation = RouteOperationSchema.Create(declaration, request, response,
                 "internal", "agent-eligible", JsonSerializerOptions.Web);
+            Bind(declaration, operation, method);
+            return declaration;
+        }
+
+        void Bind(RouteContractDeclaration declaration, RouteOperationContract operation, string method)
+        {
             declarations.Add(declaration);
             operations.Add(operation);
-            targets.Add(new(id, 1, RouteCatalogCodec.ComputeDeclarationDigest(declaration), identity.AppId, method,
-                identity.ServiceVersion, declaration.CredentialKind, declaration.Operation, false, "tenant-a", operation.Digest));
-            return declaration;
+            targets.Add(new(declaration.RouteId, 1, RouteCatalogCodec.ComputeDeclarationDigest(declaration), identity.AppId, method,
+                identity.ServiceVersion, declaration.CredentialKind, declaration.Operation, false, tenant, operation.Digest));
         }
     }
 

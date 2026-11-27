@@ -13,4 +13,7 @@ internal sealed record PreauthorizedRequestState(
 {
     /// <summary>Gets the task scope established by the outer protected-operation boundary.</summary>
     public string? TaskId { get; init; }
+
+    /// <summary>Gets whether the outer request validated the public Gateway query contract.</summary>
+    public bool UsesGatewayQueryContract { get; init; }
 }

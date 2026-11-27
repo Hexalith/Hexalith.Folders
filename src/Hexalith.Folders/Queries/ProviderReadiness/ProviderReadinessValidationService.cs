@@ -50,9 +50,19 @@ public sealed partial class ProviderReadinessValidationService(
         Message = "Provider binding private profile no longer matches retained authority.")]
     private static partial void ProfileDrift(ILogger logger);
 
-    public async Task<ProviderReadinessValidationResult> ValidateAsync(
+    public Task<ProviderReadinessValidationResult> ValidateAsync(
         ProviderReadinessValidationRequest request,
         CancellationToken cancellationToken = default)
+        => ValidateCoreAsync(request, requireExistingBinding: false, cancellationToken);
+
+    /// <summary>Validates an existing provider binding without recording evidence for a denied resource.</summary>
+    internal Task<ProviderReadinessValidationResult> ValidateExistingBindingAsync(
+        ProviderReadinessValidationRequest request,
+        CancellationToken cancellationToken)
+        => ValidateCoreAsync(request, requireExistingBinding: true, cancellationToken);
+
+    private async Task<ProviderReadinessValidationResult> ValidateCoreAsync(
+        ProviderReadinessValidationRequest request, bool requireExistingBinding, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.ClaimTransformEvidence);
@@ -140,7 +150,7 @@ public sealed partial class ProviderReadinessValidationService(
         catch (ProviderBindingProfileDriftException)
         {
             ProfileDrift(logger ?? NullLogger<ProviderReadinessValidationService>.Instance);
-            return Result(ProviderReadinessResultCode.Allowed, Failed,
+            return Result(requireExistingBinding ? ProviderReadinessResultCode.ReadModelUnavailable : ProviderReadinessResultCode.Allowed, Failed,
                 ProviderFailureCategory.ProviderConfigurationMissing, "provider_configuration_missing", false,
                 null, "fix_provider_configuration", correlationId, null, null, null, null,
                 Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: false));
@@ -170,6 +180,11 @@ public sealed partial class ProviderReadinessValidationService(
                 evidence: null,
                 Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: false));
 
+            if (requireExistingBinding)
+            {
+                return missing with { Code = ProviderReadinessResultCode.AuthorizationDenied };
+            }
+
             await StoreAsync(missing, managedTenantId, organizationId: null, providerFamily: null, providerKey: null, cancellationToken).ConfigureAwait(false);
             return missing;
         }
@@ -191,6 +206,11 @@ public sealed partial class ProviderReadinessValidationService(
                 capabilityProfileRef: null,
                 evidence: null,
                 Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: true));
+
+            if (requireExistingBinding)
+            {
+                return mismatched with { Code = ProviderReadinessResultCode.AuthorizationDenied };
+            }
 
             await StoreAsync(mismatched, managedTenantId, binding.OrganizationId, null, null, cancellationToken).ConfigureAwait(false);
             return mismatched;

@@ -17,6 +17,15 @@ public sealed class LayeredFolderAuthorizationService(
         CancellationToken cancellationToken = default)
         => AuthorizeCoreAsync(context, includeFolderAcl: true, cancellationToken);
 
+    /// <summary>Requires complete, current authority for a Gateway query before observation.</summary>
+    internal async Task<LayeredFolderAuthorizationResult> AuthorizeGatewayReadAsync(
+        LayeredFolderAuthorizationContext context, bool includeFolderAcl, CancellationToken cancellationToken)
+    {
+        using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        return await AuthorizeCoreAsync(context, includeFolderAcl, cancellationToken,
+            requireCompleteFreshness: true).ConfigureAwait(false);
+    }
+
     /// <summary>Evaluates strict metadata authority without reusing an ambient preauthorization receipt.</summary>
     public async Task<LayeredFolderAuthorizationResult> AuthorizeCurrentMetadataReadAsync(
         LayeredFolderAuthorizationContext context, CancellationToken cancellationToken = default)

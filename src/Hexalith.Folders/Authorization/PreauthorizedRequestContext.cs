@@ -58,6 +58,11 @@ internal static class PreauthorizedRequestContext
     public static bool IsCandidateOpaqueIdentifier(string? value)
         => StreamNameSegment.IsCandidateOpaqueIdentifier(value);
 
+    /// <summary>Accepts mixed-case identifiers only within a verified and validated Gateway query.</summary>
+    internal static bool IsGatewayQueryIdentifier(string value)
+        => Current?.UsesGatewayQueryContract == true
+            && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '.' or '_' or '-');
+
     private sealed class ReuseSuppressionScope : IDisposable
     {
         private bool _disposed;

@@ -183,7 +183,6 @@ public sealed class WorkspaceStatusQueryHandler(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Workspace status read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return SafeResult(
@@ -598,7 +597,8 @@ public sealed class WorkspaceStatusQueryHandler(
     private static bool IsCanonicalIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= 128
-        && value.All(static c => c is >= 'a' and <= 'z' or >= '0' and <= '9' or '.' or '_' or '-');
+        && (value.All(static c => c is >= 'a' and <= 'z' or >= '0' and <= '9' or '.' or '_' or '-')
+            || PreauthorizedRequestContext.IsGatewayQueryIdentifier(value));
 
     private static bool IsProviderCorrelationReference(string? value)
     {

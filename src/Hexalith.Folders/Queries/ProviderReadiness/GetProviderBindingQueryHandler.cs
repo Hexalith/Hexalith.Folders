@@ -103,7 +103,6 @@ public sealed partial class GetProviderBindingQueryHandler(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogWarning(
-                ex,
                 "Provider binding read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return Safe(GetProviderBindingQueryResultCode.ReadModelUnavailable, "read_model_unavailable", deniedFreshness, correlationId);

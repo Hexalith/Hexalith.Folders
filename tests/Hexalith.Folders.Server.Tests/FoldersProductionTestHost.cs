@@ -20,8 +20,10 @@ internal static class FoldersProductionTestHost
     /// <param name="settings">Optional non-secret settings applied before actual host registration.</param>
     /// <param name="environmentName">The environment used by the actual host.</param>
     /// <param name="useCallbackCatalog">Whether to install the immutable callback catalog for isolated component tests.</param>
+    /// <param name="callbackTenant">The tenant bound to the optional callback catalog.</param>
     /// <returns>A builder ready for pipeline composition and startup.</returns>
-    internal static WebApplicationBuilder CreateBuilder(IReadOnlyDictionary<string, string?>? settings = null, string environmentName = "Production", bool useCallbackCatalog = true)
+    internal static WebApplicationBuilder CreateBuilder(IReadOnlyDictionary<string, string?>? settings = null,
+        string environmentName = "Production", bool useCallbackCatalog = true, string callbackTenant = "tenant-a")
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -47,7 +49,7 @@ internal static class FoldersProductionTestHost
                 Convert.ToHexStringLower(SHA256.HashData("rsa-workload-callback-fixture"u8))));
             builder.Services.AddSingleton<FoldersCallbackRouteCatalog>(services => new(services,
                 () => services.GetRequiredService<EventStoreDomainServiceEndpointSource>().Endpoints!.DataSources
-                    .SelectMany(source => source.Endpoints)));
+                    .SelectMany(source => source.Endpoints), tenant: callbackTenant));
             builder.Services.AddSingleton<IRouteCatalogAuthority>(services => services.GetRequiredService<FoldersCallbackRouteCatalog>());
         }
         return builder;

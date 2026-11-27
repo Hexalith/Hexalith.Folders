@@ -141,6 +141,7 @@ public sealed class FoldersCallbackBoundaryTests
         if (scenario == "unknown-handler") query = query with { QueryType = "not-registered" };
         if (scenario == "unverified-caller") query = query with { CallerAuthority = new("delegated-owner-query", [], ["read_metadata"]) };
         using HttpRequestMessage request = CreateRequest(app, "/query", query, key, EventStoreWorkloadOperations.DomainServiceQuery);
+        if (scenario == "allowed") request.Headers.Add("Idempotency-Key", "legacy-owner-header");
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(expected);
         if (scenario == "unknown-handler")

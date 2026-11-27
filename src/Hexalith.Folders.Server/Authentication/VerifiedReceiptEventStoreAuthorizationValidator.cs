@@ -20,12 +20,12 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
         HumanAuthorityReceiptClaims? receipt =
             httpContext?.Items[HumanAuthorityReceiptVerifier.VerifiedClaimsItemKey]
                 as HumanAuthorityReceiptClaims;
-        VerifiedQueryCaller? caller = VerifiedQueryCaller.Get(httpContext);
-        bool verifiedRead = caller?.Query.CallerAuthority?.Origin == "delegated-owner-query"
-            && caller.Query.TenantId == request.SafeContext.AuthoritativeTenantId
-            && caller.Query.UserId == request.SafeContext.PrincipalId
-            && caller.Query.AggregateId == request.SafeContext.OperationScope
-            && caller.Query.CallerAuthority.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal);
+        bool verifiedRead = VerifiedQueryCaller.Get(httpContext)?.Query is { CallerAuthority: { } authority } query
+            && (authority.Origin == "delegated-owner-query" || authority.Origin == "authenticated-caller" && query.Domain == "folders")
+            && query.TenantId == request.SafeContext.AuthoritativeTenantId
+            && query.UserId == request.SafeContext.PrincipalId
+            && query.AggregateId == request.SafeContext.OperationScope
+            && authority.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal);
         bool allowed = request.OperationPolicyClass switch
         {
             "mutation" => (receipt is not null

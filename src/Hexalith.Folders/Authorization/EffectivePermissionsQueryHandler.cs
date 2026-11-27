@@ -13,9 +13,18 @@ public sealed class EffectivePermissionsQueryHandler(
     private const string DeniedSafeOutcome = "denied_safe";
     private const string ReadYourWrites = "read_your_writes";
 
-    public async Task<EffectivePermissionsQueryResult> HandleAsync(
+    public Task<EffectivePermissionsQueryResult> HandleAsync(
         EffectivePermissionsQuery query,
         CancellationToken cancellationToken = default)
+        => HandleCoreAsync(query, verifiedTaskActions: null, cancellationToken);
+
+    /// <summary>Limits the caller's exact folder ACL actions to the actions signed for an authorized task.</summary>
+    internal Task<EffectivePermissionsQueryResult> HandleVerifiedTaskAsync(EffectivePermissionsQuery query,
+        IReadOnlyList<string> verifiedTaskActions, CancellationToken cancellationToken)
+        => HandleCoreAsync(query, verifiedTaskActions, cancellationToken);
+
+    private async Task<EffectivePermissionsQueryResult> HandleCoreAsync(EffectivePermissionsQuery query,
+        IReadOnlyList<string>? verifiedTaskActions, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(query);
         cancellationToken.ThrowIfCancellationRequested();
@@ -86,7 +95,7 @@ public sealed class EffectivePermissionsQueryHandler(
                     query,
                     EffectivePermissionsFreshness.SafeUnavailable(clock.UtcNow, "projection_malformed")),
             EffectivePermissionsReadModelStatus.Available when readModelResult.Snapshot is not null =>
-                Compute(query, principalScopes, readModelResult.Snapshot),
+                Compute(query, principalScopes, readModelResult.Snapshot, verifiedTaskActions),
             EffectivePermissionsReadModelStatus.Stale =>
                 SafeResult(EffectivePermissionsResultCode.ProjectionStale, query.FolderId, query, readModelResult.Freshness with { Stale = true }),
             EffectivePermissionsReadModelStatus.Unavailable =>
@@ -111,7 +120,8 @@ public sealed class EffectivePermissionsQueryHandler(
     private static EffectivePermissionsQueryResult Compute(
         EffectivePermissionsQuery query,
         IReadOnlyList<EffectivePermissionPrincipal> principalScopes,
-        EffectivePermissionsReadModelSnapshot snapshot)
+        EffectivePermissionsReadModelSnapshot snapshot,
+        IReadOnlyList<string>? verifiedTaskActions)
     {
         if (snapshot.LifecycleState != EffectivePermissionsFolderLifecycleState.Active)
         {
@@ -181,8 +191,11 @@ public sealed class EffectivePermissionsQueryHandler(
             .OrderBy(static action => action, Comparer<string>.Create(EffectivePermissionsActionCatalog.CompareActions))
             .ToList();
 
-        EffectivePermissionsQueryResult? taskScopeResult = ApplyTaskScope(query, snapshot, allowedActions);
-        if (taskScopeResult is not null)
+        if (verifiedTaskActions is not null)
+        {
+            allowedActions.RemoveAll(action => !verifiedTaskActions.Contains(action, StringComparer.Ordinal));
+        }
+        else if (ApplyTaskScope(query, snapshot, allowedActions) is { } taskScopeResult)
         {
             return taskScopeResult;
         }
@@ -200,7 +213,7 @@ public sealed class EffectivePermissionsQueryHandler(
             snapshot.Freshness,
             query.CorrelationId,
             OperationId,
-            TaskContextId: null,
+            TaskContextId: verifiedTaskActions is null ? null : query.TaskContextId,
             WorkspaceContextId: null);
     }
 

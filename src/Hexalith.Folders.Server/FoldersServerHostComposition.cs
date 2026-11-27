@@ -37,6 +37,7 @@ public static class FoldersServerHostComposition
 
         builder.Services.AddFoldersServer();
         builder.Services.AddFoldersProvisioning();
+        builder.Services.AddFoldersGatewayQueryHandlers();
         builder.AddEventStoreDomainService(typeof(FoldersModule).Assembly);
         // The SDK owns exporters, HTTP instrumentation and Dapr-partitioned resilience.
         // Enroll only Folders' module signals and monitored readiness into those defaults.

@@ -14,7 +14,7 @@ namespace Hexalith.Folders.Queries.Folders;
 /// <summary>Reads committed operational metadata after the query layer has authorized the caller.</summary>
 public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCoordinator coordinator, IUtcClock clock,
     IOrganizationStreamSequenceReader sequenceReader, INativeSourceScanner? scanner) : IFolderLifecycleStatusReadModel, IWorkspaceLockStatusReadModel,
-    IWorkspaceStatusReadModel, IWorkspaceCleanupStatusReadModel, ITaskStatusReadModel
+    IWorkspaceStatusReadModel, IWorkspaceCleanupStatusReadModel, ITaskStatusReadModel, IBranchRefPolicyReadModel
 {
     /// <summary>Preserves the original constructor; historical reads without independent scan authority refuse safely.</summary>
     public EventStoreOperationalStatusReadModel(SharedProjectionEpochCoordinator coordinator, IUtcClock clock,
@@ -22,6 +22,81 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
 
     private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
     private static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(5);
+
+    /// <inheritdoc/>
+    public async Task<BranchRefPolicyReadModelResult> GetAsync(BranchRefPolicyReadModelRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        try
+        {
+            OperationalStatusCheckpoint? checkpoint = await ReadCurrentCheckpointAsync(
+                request.ManagedTenantId, request.FolderId, cancellationToken).ConfigureAwait(false);
+            FolderLifecycleFreshness freshness = new(request.ReadConsistency, checkpoint?.ObservedAt ?? clock.UtcNow,
+                checkpoint?.Sequence.ToString(CultureInfo.InvariantCulture), Stale: false, ReasonCode: null);
+            if (checkpoint?.State is not { IsCreated: true, BranchRefPolicy: { } policy })
+            {
+                return BranchRefPolicyReadModelResult.NotFound(freshness);
+            }
+
+            return BranchRefPolicyReadModelResult.Available(new BranchRefPolicyReadModelSnapshot(
+                request.ManagedTenantId, request.FolderId, policy.RepositoryBindingId, policy.PolicyRef,
+                policy.DefaultRef, policy.AllowedRefPatterns, policy.ProtectedRefPatterns, freshness,
+                new(request.ManagedTenantId, request.PrincipalId, request.ActionToken, request.TaskId,
+                    request.CorrelationId, request.AuthorizationWatermark)));
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            return BranchRefPolicyReadModelResult.Unavailable("read_model_unavailable", clock.UtcNow);
+        }
+    }
+
+    /// <summary>Checks the current workspace and, when supplied, the task and its owning principal.</summary>
+    internal async Task<bool> MatchesCurrentScopeAsync(string tenantId, string folderId, string principalId,
+        string? taskId, string? workspaceId, CancellationToken cancellationToken)
+    {
+        OperationalStatusCheckpoint? checkpoint = await ReadCurrentCheckpointAsync(
+            tenantId, folderId, cancellationToken).ConfigureAwait(false);
+        return checkpoint?.State is { IsCreated: true, WorkspaceId: not null } state
+            && (taskId is null || state.WorkspaceTaskId == taskId && state.WorkspaceActorPrincipalId == principalId)
+            && (workspaceId is null || state.WorkspaceId == workspaceId);
+    }
+
+    private async Task<OperationalStatusCheckpoint?> ReadCurrentCheckpointAsync(string tenantId, string folderId,
+        CancellationToken cancellationToken)
+    {
+        SharedProjectionScope scope = OperationalStatusGeneration.Scope(tenantId);
+        string key = OperationalStatusKeys.Checkpoint(tenantId, folderId);
+        SharedProjectionReadResult<IReadOnlyDictionary<string, JsonNode?>>? selected;
+        try
+        {
+            selected = await ReadSelectedAsync(scope, [key], key, cancellationToken).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException exception) when (exception.Message == "The shared projection has no epoch state.")
+        {
+            selected = null;
+        }
+
+        if (selected is not null && (!selected.IsAvailable || selected.IsStale || selected.IsDegraded || selected.Value is null))
+        {
+            throw new OperationalStatusUnavailableException();
+        }
+
+        OperationalStatusCheckpoint? checkpoint = selected?.Value?[key]?.Deserialize<OperationalStatusCheckpoint>(WireJson);
+        long head = await sequenceReader.GetCurrentSequenceAsync(tenantId, folderId, cancellationToken).ConfigureAwait(false);
+        if (checkpoint is null && head == 0)
+        {
+            return null;
+        }
+
+        if (checkpoint is null || !OperationalStatusFold.Valid(checkpoint, tenantId, folderId)
+            || checkpoint.Sequence != head || checkpoint.ObservedAt > clock.UtcNow)
+        {
+            throw new OperationalStatusUnavailableException();
+        }
+
+        return checkpoint;
+    }
 
     /// <inheritdoc/>
     public async Task<FolderLifecycleStatusReadModelResult> GetAsync(FolderLifecycleStatusReadModelRequest request,

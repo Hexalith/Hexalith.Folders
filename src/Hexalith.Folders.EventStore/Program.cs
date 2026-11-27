@@ -9,10 +9,23 @@ using Hexalith.EventStore.ServiceDefaults;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.EventStore.SignalRHub;
 using Hexalith.Folders.EventStore;
+using Hexalith.Folders.Server;
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+// EventStore captures and binds originating authority only for configured query wire types.
+// Derive the local Gateway enrollment from the public Folders route declarations.
+const string requiredFolderQueries = "Authentication:QueryAuthority:RequiredQueries:folders";
+string[] folderQueryTypes = builder.Configuration.GetSection(requiredFolderQueries).GetChildren()
+    .Select(child => child.Value).OfType<string>()
+    .Concat(FoldersRuntimeCatalogDeclarations.Routes
+        .Where(route => route is { Kind: "query", Execution.QueryKind: "projection" })
+        .Select(route => route.MessageType!))
+    .Distinct(StringComparer.Ordinal).ToArray();
+builder.Configuration.AddInMemoryCollection(folderQueryTypes.Select((queryType, index) =>
+    KeyValuePair.Create<string, string?>($"{requiredFolderQueries}:{index}", queryType)));
 
 builder.AddServiceDefaults();
 builder.Services.AddDaprClient();
