@@ -49,6 +49,116 @@ public sealed class Pd10V2GeneratorTests
         File.Exists(output).ShouldBeFalse();
     }
 
+    [Theory]
+    [InlineData("examples: [1, 2]", null)]
+    [InlineData("examples: [1, invalid]", "examples[1]")]
+    [InlineData("example: invalid", "example")]
+    public void GeneratorValidatesSchemaAnnotationsInTheirReferenceScope(string annotation, string? failure)
+    {
+        string source = NewTempPath("historical-v1.yaml");
+        string output = NewTempPath("candidate.yaml");
+        string text = File.ReadAllText(SourcePath);
+        const string existingSchema = "    OpaqueIdentifier:";
+        string probe = $$"""
+                ExampleScope:
+                  $id: scope/root.json
+                  properties:
+                    inner:
+                      $id: nested/schema.json
+                      $defs:
+                        Value:
+                          $anchor: value
+                          type: integer
+                      properties:
+                        payload:
+                          $ref: '#value'
+                ExampleReference:
+                  $ref: '#/components/schemas/ExampleScope/properties/inner/properties/payload'
+                  {{annotation}}
+                ExamplePayload:
+                  type: object
+                  examples:
+                    - properties: { embedded: { type: integer, example: ignored } }
+            """;
+        text.ShouldContain(existingSchema);
+        File.WriteAllText(source, text.Replace(existingSchema, probe + "\n" + existingSchema, StringComparison.Ordinal));
+
+        int exitCode = Run(source, MatrixPath, output, out string diagnostics);
+
+        if (failure is null)
+        {
+            exitCode.ShouldBe(0, diagnostics);
+            File.Exists(output).ShouldBeTrue();
+        }
+        else
+        {
+            exitCode.ShouldNotBe(0);
+            diagnostics.ShouldContain($"#/components/schemas/ExampleReference {failure} violates its bound schema at $ (type).");
+            File.Exists(output).ShouldBeFalse();
+        }
+    }
+
+    [Fact]
+    public void GeneratorRejectsAnInvalidExampleOnANestedSchema()
+    {
+        string source = NewTempPath("historical-v1.yaml");
+        string output = NewTempPath("candidate.yaml");
+        string text = File.ReadAllText(SourcePath);
+        const string existingSchema = "    OpaqueIdentifier:";
+        string probe = """
+                NestedExample:
+                  properties:
+                    "count/~":
+                      type: integer
+                      example: invalid
+            """;
+        text.ShouldContain(existingSchema);
+        File.WriteAllText(source, text.Replace(existingSchema, probe + "\n" + existingSchema, StringComparison.Ordinal));
+
+        Run(source, MatrixPath, output, out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain("#/components/schemas/NestedExample/properties/count~1~0 example violates its bound schema");
+        File.Exists(output).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorValidatesExamplesInCustomResponseHeaderSchemas()
+    {
+        string source = NewTempPath("historical-v1.yaml");
+        string output = NewTempPath("candidate.yaml");
+        string text = File.ReadAllText(SourcePath);
+        const string responses = "\n  responses:\n";
+        string probe = """
+                x-example-response:
+                  description: Synthetic response.
+                  headers:
+                    x-example-count:
+                      schema:
+                        type: integer
+                        examples: [invalid]
+            """;
+        text.ShouldContain(responses);
+        File.WriteAllText(source, text.Replace(responses, responses + probe + "\n", StringComparison.Ordinal));
+
+        Run(source, MatrixPath, output, out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain("#/components/responses/x-example-response/headers/x-example-count/schema examples[0] violates its bound schema");
+        File.Exists(output).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratorRejectsAnUnsupportedSchemaExampleDialect()
+    {
+        string source = NewTempPath("historical-v1.yaml");
+        string output = NewTempPath("candidate.yaml");
+        File.WriteAllText(source, "jsonSchemaDialect: http://json-schema.org/draft-07/schema#\n" + File.ReadAllText(SourcePath));
+
+        Run(source, MatrixPath, output, out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain("Schema examples require the OpenAPI 3.1 or JSON Schema Draft 2020-12 dialect.");
+        File.Exists(output).ShouldBeFalse();
+    }
+
     [Fact]
     public void GeneratorRejectsAnOutputAliasWithoutChangingHistoricalV1()
     {

@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 01292bbcb275b0815c24e20df2f3d64d6aa51b66f9b6fff6a640cf1b93cf3a88
+candidate_set_sha256: e32318b9a32bf64626e9c0ac3e1ab5ca0febc3fa2a55b606a59f78253fbb0196
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -102,8 +102,8 @@ artifacts:
     sha256: 9be8e942357177c29d9fb185cde3226926c7f429a8ee264c6c9d459baacfd27c
   - path: "scripts/generate-pd10-v2-contract.py"
     kind: file
-    bytes: 59106
-    sha256: 553e8db040e334b9f00f009f384af09ee4396ac5278b0a8b2ff25fd27e02a356
+    bytes: 65248
+    sha256: 721f5de3bbc6e8a8ac1a6ed647d13842cd867fe63762c4460d383322d1cea5e3
   - path: "scripts/generate-pd10-v2-runtime-catalog.py"
     kind: file
     bytes: 4534
@@ -4990,8 +4990,8 @@ artifacts:
     sha256: cb58eff8bd004c677c4f576118238b517a3c476138c72ad06c7d666af2ce81d6
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs"
     kind: file
-    bytes: 8298
-    sha256: 490ac904c21b98e20238221d5a51dc61a9402693291319515554a740fd46ef44
+    bytes: 12838
+    sha256: b003f0b204bdd566f7dfe36933a2de9078c2ade14bc71fd6a97fa4688978e1f1
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs"
     kind: file
     bytes: 15705

@@ -7,13 +7,17 @@ import argparse
 import copy
 import json
 import re
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import yaml
 from jsonschema import Draft202012Validator
-from referencing import Registry
+from jsonschema.exceptions import ValidationError
+from referencing import Registry, Specification
 from referencing.exceptions import Unresolvable
+from referencing.jsonschema import DRAFT202012
 
 
 HTTP_METHODS = {"delete", "get", "head", "options", "patch", "post", "put", "trace"}
@@ -1228,6 +1232,7 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
 
 
 def validate_declared_examples(contract: dict[str, Any]) -> None:
+    validate_schema_examples(contract)
     for path_item in contract["paths"].values():
         for method, operation in path_item.items():
             if method not in HTTP_METHODS or not isinstance(operation, dict):
@@ -1264,12 +1269,124 @@ def validate_media_examples(contract: dict[str, Any], media: dict[str, Any], lab
         raise ValueError(f"Example {label} {examples[0][0]} has no bound schema.")
     validator = Draft202012Validator({**contract, "allOf": [media["schema"]]}, registry=Registry())
     for name, value in examples:
-        try:
-            error = next(validator.iter_errors(value), None)
-        except Unresolvable:
-            raise ValueError(f"Example {label} {name} has an unresolvable schema reference.") from None
-        if error is not None:
-            raise ValueError(f"Example {label} {name} violates its bound schema at {error.json_path} ({error.validator}).")
+        validate_example(lambda: validator.iter_errors(value), f"{label} {name}")
+
+
+# OpenAPI object positions that can contain Schema Objects. Example values and
+# extension data are instance documents and are never traversed as schemas.
+OPENAPI_SCHEMA_CONTAINERS = {
+    "document": {"paths": "path*", "webhooks": "path*", "components": "components"},
+    "components": {
+        "schemas": "schema*", "parameters": "parameter*", "headers": "parameter*",
+        "requestBodies": "message*", "responses": "message*", "callbacks": "callback*",
+        "pathItems": "path*",
+    },
+    "path": {**dict.fromkeys(HTTP_METHODS, "operation"), "parameters": "parameter[]"},
+    "operation": {
+        "parameters": "parameter[]", "requestBody": "message", "responses": "message*",
+        "callbacks": "callback*",
+    },
+    "message": {"content": "media*", "headers": "parameter*"},
+    "parameter": {"schema": "schema", "content": "media*"},
+    "media": {"schema": "schema", "encoding": "message*"},
+}
+
+
+def schema_roots(node: Any, kind: str, path: tuple[str, ...]) -> Iterator[tuple[dict[str, Any], tuple[str, ...]]]:
+    if not isinstance(node, dict):
+        return
+    if kind == "schema":
+        yield node, path
+        return
+    positions = (
+        dict.fromkeys((key for key in node if not key.startswith("x-") and key != "$ref"), "path")
+        if kind == "callback" else OPENAPI_SCHEMA_CONTAINERS[kind]
+    )
+    for key, child_kind in positions.items():
+        child = node.get(key)
+        child_path = (*path, key)
+        if child_kind.endswith("*") and isinstance(child, dict):
+            for name, value in child.items():
+                if (key == "paths" or kind == "operation" and key == "responses") and str(name).startswith("x-"):
+                    continue
+                yield from schema_roots(value, child_kind[:-1], (*child_path, str(name)))
+        elif child_kind.endswith("[]") and isinstance(child, list):
+            for index, value in enumerate(child):
+                yield from schema_roots(value, child_kind[:-2], (*child_path, str(index)))
+        elif not child_kind.endswith(("*", "[]")):
+            yield from schema_roots(child, child_kind, child_path)
+
+
+def schema_nodes(schema: dict[str, Any], path: tuple[str, ...]) -> Iterator[tuple[dict[str, Any], tuple[str, ...]]]:
+    yield schema, path
+    for key in ("items", "contains", "additionalProperties", "propertyNames", "unevaluatedItems",
+                "unevaluatedProperties", "contentSchema", "not", "if", "then", "else"):
+        if isinstance(child := schema.get(key), dict):
+            yield from schema_nodes(child, (*path, key))
+    for key in ("properties", "patternProperties", "dependentSchemas", "$defs", "definitions"):
+        for name, child in schema.get(key, {}).items():
+            if isinstance(child, dict):
+                yield from schema_nodes(child, (*path, key, name))
+    for key in ("prefixItems", "allOf", "anyOf", "oneOf"):
+        for index, child in enumerate(schema.get(key, [])):
+            if isinstance(child, dict):
+                yield from schema_nodes(child, (*path, key, str(index)))
+
+
+def validate_schema_examples(contract: dict[str, Any]) -> None:
+    roots = list(schema_roots(contract, "document", ()))
+    nodes = [node for schema, path in roots for node in schema_nodes(schema, path)]
+    supported_dialects = (
+        "https://json-schema.org/draft/2020-12/schema",
+        "https://spec.openapis.org/oas/3.1/dialect/base",
+    )
+    if ("jsonSchemaDialect" in contract and contract["jsonSchemaDialect"] not in supported_dialects
+            or any("$schema" in schema and schema["$schema"] not in supported_dialects for schema, _ in nodes)):
+        raise ValueError("Schema examples require the OpenAPI 3.1 or JSON Schema Draft 2020-12 dialect.")
+    schema_ids = {id(schema) for schema, _ in nodes}
+
+    # The document is OpenAPI, while each embedded schema uses Draft 2020-12.
+    # Teach the offline registry where schema resources start so pointer lookups
+    # honor enclosing IDs and anchors even through OpenAPI's own containers.
+    def subresources(value):
+        if value is contract:
+            return (schema for schema, _ in roots)
+        return DRAFT202012.subresources_of(value) if id(value) in schema_ids else ()
+
+    specification = Specification(
+        name="OpenAPI schema document",
+        id_of=lambda value: DRAFT202012.id_of(value) if id(value) in schema_ids else None,
+        subresources_of=subresources,
+        anchors_in=lambda _, value: DRAFT202012.anchors_in(value) if id(value) in schema_ids else (),
+        maybe_in_subresource=lambda segments, resolver, subresource: (
+            resolver.in_subresource(subresource) if id(subresource.contents) in schema_ids else resolver
+        ),
+    )
+    document_uri = "https://openapi.invalid/contract"
+    registry = Registry().with_resource(document_uri, specification.create_resource(contract)).crawl()
+    document_resolver = registry.resolver(document_uri)
+    validator = Draft202012Validator({}, registry=registry)
+    for schema, path in nodes:
+        if "example" not in schema and "examples" not in schema:
+            continue
+        location = "#/" + "/".join(str(part).replace("~", "~0").replace("/", "~1") for part in path)
+        examples = [("example", schema["example"])] if "example" in schema else []
+        if "examples" in schema:
+            if not isinstance(schema["examples"], list):
+                raise ValueError(f"Schema {location} examples must be an array.")
+            examples.extend((f"examples[{index}]", value) for index, value in enumerate(schema["examples"]))
+        resolver = document_resolver.lookup(quote(location, safe="#/")).resolver
+        for name, value in examples:
+            validate_example(lambda: validator.descend(value, schema, resolver=resolver), f"{location} {name}")
+
+
+def validate_example(errors: Callable[[], Iterator[ValidationError]], label: str) -> None:
+    try:
+        error = next(errors(), None)
+    except Unresolvable:
+        raise ValueError(f"Example {label} has an unresolvable schema reference.") from None
+    if error is not None:
+        raise ValueError(f"Example {label} violates its bound schema at {error.json_path} ({error.validator}).")
 
 
 def validate_declared_statuses_have_runtime_tuples(contract: dict[str, Any]) -> None:

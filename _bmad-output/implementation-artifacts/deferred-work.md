@@ -3349,6 +3349,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-contract-fixture-verification.md`
   summary: Validate JSON Schema annotations that declare examples inside schema objects.
   evidence: The candidate generator now validates examples attached to file-context media types. Schema-level example annotations need traversal with each subschema's resolution scope and their own regression fixtures.
+  status: done 2026-11-27
+  resolution: The PD10 generator validates schema example annotations in their owning reference scope. Regression cases cover nested schemas, local references, response headers and unsupported dialects.
 
 - source_spec: `spec-five-deferred-audit-corpus-checks.md`
   summary: Scan decoded YAML artifact keys and values for audit leakage.
