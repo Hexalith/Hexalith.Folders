@@ -86,7 +86,7 @@ jobs:
           submodules: false
       - name: Prepare ordinary domain release
         id: prepare
-        uses: Hexalith/Hexalith.Builds/Github/prepare-domain-release@a1e0c310b1f1a50d78e6132890fae6bcba769f6d
+        uses: Hexalith/Hexalith.Builds/Github/prepare-domain-release@763fc0e937413cb44e533391e573c43640263b40
         with:
           solution: Hexalith.Folders.CI.slnx
           node-version: '26.13.1'
