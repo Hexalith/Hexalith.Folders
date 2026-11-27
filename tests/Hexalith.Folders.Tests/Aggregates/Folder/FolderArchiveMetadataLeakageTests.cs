@@ -111,23 +111,45 @@ public sealed class FolderArchiveMetadataLeakageTests
     [Fact]
     public void AcceptedArchiveEventShouldCarryOnlyMetadataEvidence()
     {
-        FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
-
-        FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
+        FolderArchived archived = AcceptArchive(FolderCommandFactory.Archive());
         AssertArchiveMetadataOnly(archived);
     }
 
     [Fact]
     public void ArchiveMetadataScanShouldDetectContaminatedFingerprintWithoutPrintingIt()
     {
-        FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
-        FolderArchived archived = result.Events.OfType<FolderArchived>().Single() with
+        FolderArchived archived = AcceptArchive(FolderCommandFactory.Archive()) with
         {
             IdempotencyFingerprint = "secret-fingerprint-control",
         };
         ShouldAssertException exception = Should.Throw<ShouldAssertException>(() => AssertArchiveMetadataOnly(archived));
         exception.Message.Contains(archived.IdempotencyFingerprint, StringComparison.Ordinal).ShouldBeFalse(
             "Negative-control assertions must not print the contaminated fingerprint.");
+    }
+
+    [Theory]
+    [InlineData(false, "An accepted archive must emit a FolderArchived event.")]
+    [InlineData(true, "An accepted archive must emit exactly one event.")]
+    public void ArchiveAcceptanceChecksShouldReportShapeWithoutPrintingEvents(bool includeArchive, string expectedDiagnostic)
+    {
+        const string diagnosticControl = "archive-diagnostic-control";
+        FolderResult creation = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+        FolderCreated unexpected = creation.Events.OfType<FolderCreated>().Single() with
+        {
+            Description = diagnosticControl,
+        };
+        FolderResult accepted = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
+        FolderResult invalidResult = accepted with
+        {
+            Events = includeArchive ? [unexpected, accepted.Events[0]] : [unexpected],
+        };
+
+        ShouldAssertException exception = Should.Throw<ShouldAssertException>(() => AssertAcceptedArchive(invalidResult));
+
+        exception.Message.Contains(expectedDiagnostic, StringComparison.Ordinal).ShouldBeTrue(
+            "A shape failure must identify the violated archive rule.");
+        exception.Message.Contains(diagnosticControl, StringComparison.Ordinal).ShouldBeFalse(
+            "A shape failure must omit event payloads.");
     }
 
     private static void AssertArchiveMetadataOnly(FolderArchived archived)
@@ -157,7 +179,7 @@ public sealed class FolderArchiveMetadataLeakageTests
         {
             [evidenceField] = sample.Value,
         }));
-        accepted.IdempotencyFingerprint.ShouldNotBe(baseline.IdempotencyFingerprint,
+        string.Equals(accepted.IdempotencyFingerprint, baseline.IdempotencyFingerprint, StringComparison.Ordinal).ShouldBeFalse(
             $"Archive fingerprint failed to bind sample '{sample.Id}'.");
 
         string control = JsonSerializer.Serialize(new { Evidence = sample.Value });
@@ -254,10 +276,16 @@ public sealed class FolderArchiveMetadataLeakageTests
     }
 
     private static FolderArchived AcceptArchive(ArchiveFolder command)
+        => AssertAcceptedArchive(FolderAggregate.Handle(CreatedState(), command));
+
+    private static FolderArchived AssertAcceptedArchive(FolderResult result)
     {
-        FolderResult result = FolderAggregate.Handle(CreatedState(), command);
         result.Code.ShouldBe(FolderResultCode.Accepted);
-        return result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+        // Count and type checks must never format the events because they precede the leakage scan.
+        result.Events.Count.ShouldBe(1, "An accepted archive must emit exactly one event.");
+        IFolderEvent emitted = result.Events[0];
+        (emitted is FolderArchived).ShouldBeTrue("An accepted archive must emit a FolderArchived event.");
+        return (FolderArchived)emitted;
     }
 
     private static IReadOnlyDictionary<string, string> AcceptedArchiveSurfaces(FolderArchived archived)

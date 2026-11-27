@@ -2310,7 +2310,8 @@ location: n/a
 source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
-status: open
+status: done 2026-11-27
+resolution: Independent follow-up verified archive event, REST, rejection and lifecycle projection coverage. Accepted-archive assertions report shape or fingerprint comparison failures without printing evidence values. Two controls exercise diagnostic redaction.
 
 ### DW-334: Make opted-in Aspire/Dapr behavioral probes fail closed and observe subscriber receipt instead of passing with skipped endpoint checks.
 
