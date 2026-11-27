@@ -8,7 +8,7 @@ public static class TestRequestHeaders
 
     public const string IdempotencyKey = "Idempotency-Key";
 
-    public const string TaskId = "X-Task-Id";
+    public const string TaskId = "X-Hexalith-Task-Id";
 
     public static IReadOnlyDictionary<string, string> FromFolderContext(TestFolderContext context)
     {

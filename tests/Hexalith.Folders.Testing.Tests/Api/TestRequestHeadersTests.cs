@@ -18,7 +18,7 @@ public sealed class TestRequestHeadersTests
 
         IReadOnlyDictionary<string, string> headers = TestRequestHeaders.FromFolderContext(context);
 
-        headers[TestRequestHeaders.TaskId].ShouldBe("task-001");
+        headers["X-Hexalith-Task-Id"].ShouldBe("task-001");
         headers[TestRequestHeaders.CorrelationId].ShouldBe("correlation-001");
         headers[TestRequestHeaders.IdempotencyKey].ShouldBe("idempotency-001");
     }

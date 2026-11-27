@@ -3361,6 +3361,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Align the fixture task header with the Folders HTTP contract.
   evidence: `TestRequestHeaders` emits `X-Task-Id`, but the OpenAPI `TaskId` parameter and Folders server routes use `X-Hexalith-Task-Id`. The fixture test uses the helper constant on both sides. Coordinate the public constant change with fixture consumers and assert the wire name.
+  status: done 2026-11-27
+  resolution: The HTTP fixture emits X-Hexalith-Task-Id and the test pins the literal wire name. The test guide records the rebuild requirement for direct constant consumers.
 
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Define how the HTTP fixture helper handles non-ASCII identifiers.

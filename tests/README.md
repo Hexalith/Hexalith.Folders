@@ -53,6 +53,9 @@ Run through the helper script:
 
 ## Debugging Tests
 
+The HTTP fixture helper emits the canonical `X-Hexalith-Task-Id` header. Rebuild test projects that use
+`TestRequestHeaders.TaskId` directly so the compiler embeds the new constant value.
+
 Use `--project` with the SDK pinned in `global.json` to run the core or server project independently.
 
 ```powershell
