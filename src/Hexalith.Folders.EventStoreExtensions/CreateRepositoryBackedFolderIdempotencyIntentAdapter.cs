@@ -32,6 +32,14 @@ internal sealed class CreateRepositoryBackedFolderIdempotencyIntentAdapter : IDe
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        using JsonDocument? normalized = FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root)
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(
+                root,
+                command.AggregateId,
+                stripFolderId: false,
+                includeNestedBranchPolicySchemaVersion: true,
+                promoteRepositoryBindingIdFromBranchPolicy: true)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
@@ -43,6 +51,7 @@ internal sealed class CreateRepositoryBackedFolderIdempotencyIntentAdapter : IDe
                 ["provider_binding_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "providerBindingRef"),
                 ["repository_profile_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "repositoryProfileRef"),
             },
-            credentialScope: FoldersCanonicalIntentBuilder.ReadCredentialScope(root));
+            credentialScope: FoldersCanonicalIntentBuilder.ReadCredentialScope(root),
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }

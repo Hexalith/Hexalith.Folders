@@ -32,13 +32,20 @@ internal sealed class CreateFolderIdempotencyIntentAdapter : IDeclaredIdempotenc
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        bool isDecoratedV2 = FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root);
+        using JsonDocument? normalized = isDecoratedV2
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(root, command.AggregateId, stripFolderId: false)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
             {
                 ["folder_metadata.display_name"] = FoldersCanonicalIntentBuilder.ReadString(root, "folderMetadata", "displayName"),
                 ["parent_folder_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "parentFolderId"),
-                ["request_schema_version"] = FoldersCanonicalIntentBuilder.ReadString(root, "requestSchemaVersion"),
-            });
+                ["request_schema_version"] = isDecoratedV2
+                    ? "v1"
+                    : FoldersCanonicalIntentBuilder.ReadString(root, "requestSchemaVersion"),
+            },
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }

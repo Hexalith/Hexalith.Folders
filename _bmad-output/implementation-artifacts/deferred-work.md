@@ -3434,3 +3434,16 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
   summary: Apply the single-attempt gateway command policy to hosts that register `AddEventStoreGatewayClient` without `AddEventStoreDomainService`.
   evidence: Only domain-service hosts receive the bounded gateway policy. The EventStore samples keep the inherited 10 s attempt and retries. They send no idempotency key today, so the Pending 202 cannot arise there, but resubmission remains possible.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-13-admit-and-authorize-gateway-dispatched-folders-commands.md`
+  summary: Reconcile ConfigureProviderBinding (C05) 16-128 char providerFamilyRef contract grammar with OrganizationProviderBindingCommandValidator.SupportedProviderKinds (6-12 chars).
+  evidence: Story 5.12 ConfigureProviderBinding.cs enforces OpaqueIdentifier (16..128) on providerFamilyRef while pre-existing OrganizationProviderBindingCommandValidator.SupportedProviderKinds only accepts short provider family tokens (github, forgejo, gitlab, bitbucket, azure-devops).
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-13-admit-and-authorize-gateway-dispatched-folders-commands.md`
+  summary: Add C05, C06, C08, and C13 to FolderDomainProcessor.CommandTypeClassification and FolderCommandRejected.NormalizeCommandTypeForRejection.
+  evidence: Pre-existing switch/whitelist tables in FolderDomainProcessor.cs:1642 and FolderCommandRejected.cs:135 omit ConfigureProviderBinding, CreateFolder, GrantFolderAccess, and RevokeFolderAccess, recording command.type=unsupported_command in process telemetry.
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-13-admit-and-authorize-gateway-dispatched-folders-commands.md`
+  summary: Reconcile FolderCommandValidator.MaxDisplayNameLength (128) with v2 Contracts FolderMetadata.DisplayName (160) and forward ParentFolderId, MetadataClass, and CommitWorkspace.AuditMetadataKeys into domain requests.
+  evidence: Pre-existing FolderCommandValidator.cs:16 enforces 128 chars for CreateFolder/CreateRepositoryBackedFolder while v2 Contracts allows 160 chars, and pre-existing FolderDomainProcessor calls omit ParentFolderId, MetadataClass, and AuditMetadataKeys when constructing domain service requests.
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-13-admit-and-authorize-gateway-dispatched-folders-commands.md`
+  summary: Address FolderAclContract.DeriveAclEntryId Base64Url length overflow (>128 chars) for valid 80-128 char opaque subjectRef values on GrantFolderAccess/RevokeFolderAccess.
+  evidence: Pre-existing FolderAclContract.DeriveAclEntryId encodes {kind}|{principalId}|{permissionLevel} with Base64Url, exceeding the 128-char AclEntryId contract bound when principalId is 80-128 chars.

@@ -256,19 +256,19 @@ public sealed class FoldersDomainServiceRequestHandler(
         };
 
     private static string? ValidateFolderAggregateId(string? aggregateId)
-        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(aggregateId) ? aggregateId : null;
+        => FolderCanonicalSegmentIdentifier.IsValid(aggregateId) ? aggregateId : null;
 
     private static bool TryValidateProcessEnvelope(CommandEnvelope command, out string? taskId)
     {
         taskId = null;
-        if (!FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.MessageId)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.CorrelationId)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.TenantId)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.AggregateId)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(command.UserId)
+        if (!FolderCanonicalSegmentIdentifier.IsValid(command.MessageId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(command.CorrelationId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(command.TenantId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(command.AggregateId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(command.UserId)
             || command.Extensions is null
             || !command.Extensions.TryGetValue("taskId", out string? extensionTaskId)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(extensionTaskId))
+            || !FolderCanonicalSegmentIdentifier.IsValid(extensionTaskId))
         {
             return false;
         }
@@ -312,7 +312,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     private static string? TryReadCanonicalTaskId(CommandEnvelope command)
         => command.Extensions is not null
         && command.Extensions.TryGetValue("taskId", out string? taskId)
-        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(taskId)
+        && FolderCanonicalSegmentIdentifier.IsValid(taskId)
             ? taskId
             : null;
 }

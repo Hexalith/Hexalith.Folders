@@ -32,6 +32,10 @@ internal sealed class CommitWorkspaceIdempotencyIntentAdapter : IDeclaredIdempot
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        string? taskScope = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root);
+        using JsonDocument? normalized = FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root)
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(root, command.AggregateId, stripFolderId: true)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
@@ -41,9 +45,10 @@ internal sealed class CommitWorkspaceIdempotencyIntentAdapter : IDeclaredIdempot
                 ["changed_path_metadata_digest"] = FoldersCanonicalIntentBuilder.ReadString(root, "changedPathMetadataDigest"),
                 ["commit_message_classification"] = FoldersCanonicalIntentBuilder.ReadString(root, "commitMessageClassification"),
                 ["operation_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "operationId"),
-                ["task_id"] = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root),
+                ["task_id"] = taskScope,
                 ["workspace_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "workspaceId"),
             },
-            delegatedTaskScope: FoldersCanonicalIntentBuilder.ReadTaskScope(command, root));
+            delegatedTaskScope: taskScope,
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }

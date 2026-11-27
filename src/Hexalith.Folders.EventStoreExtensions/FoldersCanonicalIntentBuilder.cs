@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.DomainService;
 
@@ -19,6 +20,8 @@ internal static class FoldersCanonicalIntentBuilder
 
     private static readonly IReadOnlySet<string> CanonicalSetArrayPaths = new HashSet<string>(StringComparer.Ordinal)
     {
+        "allowedRefPatterns",
+        "protectedRefPatterns",
         "branchRefPolicy.allowedRefPatterns",
         "branchRefPolicy.protectedRefPatterns",
         "auditMetadataKeys",
@@ -34,6 +37,7 @@ internal static class FoldersCanonicalIntentBuilder
         "providerBindingRef", "providerFamilyRef", "capabilityProfileRef",
         "nonSecretCredentialReference", "repositoryBindingId", "repositoryProfileRef",
         "externalRepositoryRef",
+        "policyRef", "defaultRef", "allowedRefPatterns", "protectedRefPatterns",
         "branchRefPolicy.requestSchemaVersion", "branchRefPolicy.repositoryBindingId",
         "branchRefPolicy.policyRef", "branchRefPolicy.defaultRef",
         "branchRefPolicy.allowedRefPatterns", "branchRefPolicy.protectedRefPatterns",
@@ -53,7 +57,8 @@ internal static class FoldersCanonicalIntentBuilder
         IdempotencyIntentCommand command,
         IReadOnlyDictionary<string, string?> semanticFields,
         string? delegatedTaskScope = null,
-        string? credentialScope = null)
+        string? credentialScope = null,
+        JsonElement? canonicalGuardRoot = null)
     {
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(semanticFields);
@@ -81,10 +86,103 @@ internal static class FoldersCanonicalIntentBuilder
         return new IdempotencyCanonicalIntent(
             $"{command.Tenant}/{command.Domain}/{command.AggregateId}",
             stream.ToArray(),
-            SemanticOptions: CanonicalPayloadGuard(command),
+            SemanticOptions: canonicalGuardRoot is { } guardRoot
+                ? CanonicalPayloadGuard(guardRoot)
+                : CanonicalPayloadGuard(command),
             PolicyVersion,
             delegatedTaskScope,
             credentialScope);
+    }
+
+    /// <summary>Returns whether the JSON root omits <c>requestSchemaVersion</c> (decorated v2 shape).</summary>
+    public static bool IsDecoratedV2Payload(JsonElement root)
+        => root.ValueKind == JsonValueKind.Object
+            && !root.TryGetProperty("requestSchemaVersion", out _);
+
+    /// <summary>
+    /// Verifies that an optional or required <c>folderId</c> property, when present, matches
+    /// <paramref name="expectedAggregateId"/>.
+    /// </summary>
+    public static void VerifyMatchingFolderIdIfPresent(JsonElement root, string expectedAggregateId)
+    {
+        if (!root.TryGetProperty("folderId", out JsonElement folderIdElement))
+        {
+            return;
+        }
+
+        if (folderIdElement.ValueKind != JsonValueKind.String
+            || !string.Equals(folderIdElement.GetString(), expectedAggregateId, StringComparison.Ordinal))
+        {
+            throw new JsonException("Payload folderId must match the command aggregate identifier.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a required <c>folderId</c> property is present and matches
+    /// <paramref name="expectedAggregateId"/>.
+    /// </summary>
+    public static void VerifyRequiredMatchingFolderId(JsonElement root, string expectedAggregateId)
+    {
+        if (!root.TryGetProperty("folderId", out JsonElement folderIdElement)
+            || folderIdElement.ValueKind != JsonValueKind.String
+            || !string.Equals(folderIdElement.GetString(), expectedAggregateId, StringComparison.Ordinal))
+        {
+            throw new JsonException("Payload folderId must be present and match the command aggregate identifier.");
+        }
+    }
+
+    /// <summary>
+    /// Normalizes a decorated v2 JSON object into its canonical v1-equivalent semantic document for
+    /// deterministic <c>semantic_payload_sha256</c> hashing, excluding transport/key noise.
+    /// </summary>
+    public static JsonDocument BuildNormalizedV2Guard(
+        JsonElement root,
+        string expectedAggregateId,
+        bool stripFolderId,
+        bool includeNestedBranchPolicySchemaVersion = false,
+        bool promoteRepositoryBindingIdFromBranchPolicy = false)
+    {
+        if (stripFolderId && root.TryGetProperty("idempotencyKey", out _))
+        {
+            VerifyRequiredMatchingFolderId(root, expectedAggregateId);
+        }
+        else
+        {
+            VerifyMatchingFolderIdIfPresent(root, expectedAggregateId);
+        }
+
+        if (promoteRepositoryBindingIdFromBranchPolicy && root.TryGetProperty("repositoryBindingId", out _))
+        {
+            throw new JsonException("Decorated payload must not include a root repositoryBindingId when promoted from branchRefPolicy.");
+        }
+
+        JsonObject normalized = JsonNode.Parse(root.GetRawText())?.AsObject()
+            ?? throw new JsonException("Canonical intent requires an object payload.");
+        _ = normalized.Remove("idempotencyKey");
+        if (stripFolderId)
+        {
+            _ = normalized.Remove("folderId");
+        }
+
+        normalized["requestSchemaVersion"] = "v1";
+
+        if (normalized["branchRefPolicy"] is JsonObject branchRefPolicy)
+        {
+            if (includeNestedBranchPolicySchemaVersion && !branchRefPolicy.ContainsKey("requestSchemaVersion"))
+            {
+                branchRefPolicy["requestSchemaVersion"] = "v1";
+            }
+
+            if (promoteRepositoryBindingIdFromBranchPolicy
+                && branchRefPolicy["repositoryBindingId"] is JsonValue bindingValue
+                && bindingValue.TryGetValue(out string? bindingId)
+                && !string.IsNullOrWhiteSpace(bindingId))
+            {
+                normalized["repositoryBindingId"] = bindingId;
+            }
+        }
+
+        return JsonDocument.Parse(normalized.ToJsonString());
     }
 
     public static JsonDocument ParsePayload(IdempotencyIntentCommand command)
@@ -310,10 +408,15 @@ internal static class FoldersCanonicalIntentBuilder
     private static IReadOnlyDictionary<string, string> CanonicalPayloadGuard(IdempotencyIntentCommand command)
     {
         using JsonDocument document = ParsePayload(command);
+        return CanonicalPayloadGuard(document.RootElement);
+    }
+
+    private static IReadOnlyDictionary<string, string> CanonicalPayloadGuard(JsonElement root)
+    {
         using MemoryStream stream = new();
         using (Utf8JsonWriter writer = new(stream))
         {
-            WriteSemanticValue(writer, document.RootElement, path: string.Empty);
+            WriteSemanticValue(writer, root, path: string.Empty);
         }
 
         return new Dictionary<string, string>(StringComparer.Ordinal)

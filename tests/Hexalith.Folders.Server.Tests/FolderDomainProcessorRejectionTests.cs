@@ -196,4 +196,120 @@ public sealed class FolderDomainProcessorRejectionTests
         rejection.OrganizationId.ShouldBeNull();
         rejection.FolderId.ShouldBeNull();
     }
+
+    [Theory]
+    [InlineData(FoldersServerModule.PrepareWorkspaceCommandType)]
+    [InlineData(FoldersServerModule.LockWorkspaceCommandType)]
+    [InlineData(FoldersServerModule.ReleaseWorkspaceLockCommandType)]
+    [InlineData(FoldersServerModule.MutateFilesCommandType)]
+    public async Task LegacyV1CommandsWithMismatchedPayloadTaskIdShouldRejectWithValidationFailed(string commandType)
+    {
+        WorkspaceContentProductionFixture fixture = await WorkspaceContentProductionFixture.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = fixture.ConfigureAwait(true);
+        using IServiceScope scope = fixture.Scope();
+        IServiceProvider services = scope.ServiceProvider;
+        FolderState state = fixture.State;
+        InMemoryFolderRepository repository = services.GetRequiredService<IFolderRepository>().ShouldBeOfType<InMemoryFolderRepository>();
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        repository.AppendIfFingerprintAbsent(stream, "seed-key", "seed-fingerprint", fixture.Gateway.Events)
+            .ShouldBe(FolderAppendOutcome.Appended);
+        FolderState before = repository.Load(stream);
+
+        string action = commandType switch
+        {
+            FoldersServerModule.PrepareWorkspaceCommandType => WorkspacePreparationService.ActionToken,
+            FoldersServerModule.LockWorkspaceCommandType => WorkspaceLockAcquisitionService.ActionToken,
+            FoldersServerModule.ReleaseWorkspaceLockCommandType => WorkspaceLockReleaseService.ActionToken,
+            FoldersServerModule.MutateFilesCommandType => WorkspaceFileMutationService.ActionToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(commandType)),
+        };
+
+        string proof = FolderCommandValidator.DeriveWorkspaceLockOwnershipProof(
+            "tenant-a", "folder-a", "workspace-a", "task-a", state.WorkspaceLockId!);
+
+        object payload = commandType switch
+        {
+            FoldersServerModule.PrepareWorkspaceCommandType => new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-a",
+                repositoryBindingId = "binding-a",
+                branchRefPolicyRef = "policy-a",
+                workspacePolicyRef = "workspace-policy-a",
+                taskId = "task-mismatch",
+            },
+            FoldersServerModule.LockWorkspaceCommandType => new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-a",
+                lockIntent = "exclusive_write",
+                requestedLeaseSeconds = 3600,
+                taskId = "task-mismatch",
+            },
+            FoldersServerModule.ReleaseWorkspaceLockCommandType => new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-a",
+                lockId = state.WorkspaceLockId,
+                lockOwnershipProof = proof,
+                releaseReasonCode = "caller_completed",
+                taskId = "task-mismatch",
+            },
+            FoldersServerModule.MutateFilesCommandType => new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-a",
+                operationId = "file-op-1",
+                fileOperationKind = "remove",
+                transportOperation = "metadataOnlyRemoval",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "content_allowed",
+                    unicodeNormalization = "NFC",
+                },
+                taskId = "task-mismatch",
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(commandType)),
+        };
+
+        CommandEnvelope command = new(
+            "v1-task-mismatch-key",
+            "tenant-a",
+            "folders",
+            "folder-a",
+            commandType,
+            JsonSerializer.SerializeToUtf8Bytes(payload),
+            "v1-task-mismatch-corr",
+            null,
+            "user-a",
+            new Dictionary<string, string> { ["taskId"] = "task-a" });
+
+        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", "folder-a", null, "tenant-a", action, action, null));
+        ILayeredFolderAuthorizationResultAccessor accessor = services.GetRequiredService<ILayeredFolderAuthorizationResultAccessor>();
+        try
+        {
+            LayeredFolderAuthorizationResult authorization = await services.GetRequiredService<LayeredFolderAuthorizationService>()
+                .AuthorizeAsync(new("tenant-a", "user-a", "user-a", action, LayeredFolderOperationPolicy.Mutation(),
+                    EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", [action]), "folder-a",
+                    "v1-task-mismatch-corr", "task-a", null, null), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            authorization.IsAllowed.ShouldBeTrue();
+            accessor.BeginScope(authorization);
+            FolderDomainProcessor processor = services.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single();
+
+            var result = await processor.ProcessAsync(command, null).ConfigureAwait(true);
+
+            result.IsRejection.ShouldBeTrue();
+            FolderCommandRejected rejection = result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderCommandRejected>();
+            rejection.Code.ShouldBe(nameof(FolderResultCode.ValidationFailed));
+            repository.EventsAppended.ShouldBe(5);
+            repository.Load(stream).ShouldBeSameAs(before);
+        }
+        finally
+        {
+            accessor.EndScope();
+            PreauthorizedRequestContext.End();
+        }
+    }
 }

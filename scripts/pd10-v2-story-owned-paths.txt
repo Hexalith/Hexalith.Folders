@@ -353,6 +353,7 @@ src/Hexalith.Folders.Server/FoldersServerJsonOptions.cs
 src/Hexalith.Folders.Server/FoldersServerModule.cs
 src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
 src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs
+src/Hexalith.Folders.Server/GatewayCommandPayloadTranslator.cs
 src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj
 src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs
 src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs
@@ -374,6 +375,7 @@ src/Hexalith.Folders.Server/Queries/FolderFileOwnerReadQueryHandler.cs
 src/Hexalith.Folders.Server/Queries/FolderFileReferenceReadQueryHandler.cs
 src/Hexalith.Folders.Server/Queries/FolderOwnerQueryBinding.cs
 src/Hexalith.Folders.Server/Queries/FolderOwnerReadQueryHandler.cs
+src/Hexalith.Folders.Server/TranslatedFileMutationItem.cs
 src/Hexalith.Folders.Server/WorkspaceTransitionInvalidRejected.cs
 src/Hexalith.Folders.ServiceDefaults/Extensions.cs
 src/Hexalith.Folders.ServiceDefaults/HealthyReadinessSnapshotSource.cs
@@ -1372,6 +1374,7 @@ tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticBackgroundService.cs
 tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticTestService.cs
 tests/Hexalith.Folders.Server.Tests/LifecycleUnsupportedProvider.cs
 tests/Hexalith.Folders.Server.Tests/LockedActorSequenceHandler.cs
+tests/Hexalith.Folders.Server.Tests/McpCliProcessAdmissionAndAuthorizationTests.cs
 tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs
 tests/Hexalith.Folders.Server.Tests/MutationEnvelopeEndpointMatrixTests.cs
 tests/Hexalith.Folders.Server.Tests/MutationSubmitEnvelopeAssertions.cs

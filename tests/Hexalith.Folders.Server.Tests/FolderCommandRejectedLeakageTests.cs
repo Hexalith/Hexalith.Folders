@@ -267,6 +267,21 @@ public sealed partial class FolderCommandRejectedLeakageTests
         rejected.IdempotencyKey.ShouldBe("idempotency-archive-a");
     }
 
+    [Theory]
+    [InlineData("ghp_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789")]
+    [InlineData("glpat-AbCdEfGhIjKlMnOpQrSt012345")]
+    [InlineData("PasswordValue_01ARZ3NDEKTSV4RR")]
+    [InlineData("SecretValue_01ARZ3NDEKTSV4RRFF")]
+    public void MixedCaseSensitiveOpaqueIdentifiersWithoutSyntheticMarkerAreDroppedToNull(string sensitiveOpaque)
+    {
+        FolderCommandRejected rejected = CreateWithIdentifier(sensitiveOpaque);
+
+        AssertEveryIdentifierIsNull(rejected);
+        string json = JsonSerializer.Serialize(rejected);
+        json.Contains(sensitiveOpaque, StringComparison.OrdinalIgnoreCase).ShouldBeFalse(
+            "Serialized rejection event must not echo a sensitive mixed-case opaque identifier.");
+    }
+
     // Mirrors the production CommandTypeRegex in FolderCommandRejected. Duplicated on
     // purpose: this suite characterizes the documented pass-through policy, so a production
     // change that diverges from this shape must surface as a failing row rather than pass

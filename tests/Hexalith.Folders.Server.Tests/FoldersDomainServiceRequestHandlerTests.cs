@@ -214,9 +214,8 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     }
 
     [Fact]
-    public async Task ProcessShouldRejectAnOpaqueTaskIdThatOnlyTheRestGrammarAcceptsBeforeDomainProcessor()
+    public async Task ProcessShouldAdmitCanonicalUppercaseUlidTaskIdAndOpaqueEnvelopeIdentifiers()
     {
-        // The REST segment grammar also admits mixed-case opaque identifiers; the /process task extension does not.
         const string opaqueTaskId = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
         FolderCanonicalSegmentIdentifier.IsValid(opaqueTaskId).ShouldBeTrue();
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
@@ -230,10 +229,8 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             CreateRequest("tenant-a", "user-a", taskIdOverride: opaqueTaskId),
             TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
-        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
-        problem.ProblemDetails.Extensions["code"].ShouldBe("validation_error");
-        processor.ProcessCalls.ShouldBe(0);
+        _ = result.ShouldBeOfType<Ok<DomainServiceWireResult>>();
+        processor.ProcessCalls.ShouldBe(1);
     }
 
     [Fact]

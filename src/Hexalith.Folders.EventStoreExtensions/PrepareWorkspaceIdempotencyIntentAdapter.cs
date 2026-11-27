@@ -32,6 +32,10 @@ internal sealed class PrepareWorkspaceIdempotencyIntentAdapter : IDeclaredIdempo
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        string? taskScope = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root);
+        using JsonDocument? normalized = FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root)
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(root, command.AggregateId, stripFolderId: true)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
@@ -39,10 +43,11 @@ internal sealed class PrepareWorkspaceIdempotencyIntentAdapter : IDeclaredIdempo
                 ["branch_ref_policy_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicyRef"),
                 ["folder_id"] = command.AggregateId,
                 ["repository_binding_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "repositoryBindingId"),
-                ["task_id"] = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root),
+                ["task_id"] = taskScope,
                 ["workspace_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "workspaceId"),
                 ["workspace_policy_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "workspacePolicyRef"),
             },
-            delegatedTaskScope: FoldersCanonicalIntentBuilder.ReadTaskScope(command, root));
+            delegatedTaskScope: taskScope,
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }

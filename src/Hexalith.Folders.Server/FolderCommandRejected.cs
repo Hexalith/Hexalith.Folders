@@ -167,9 +167,13 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     [GeneratedRegex("\\A[A-Za-z0-9._-]+\\z", RegexOptions.Compiled)]
     private static partial Regex CommandTypeRegex();
 
-    // Lowercase canonical form, shared with the /process boundary. The gateway-corrected echo at the REST surface
-    // may be uppercase (ULID-friendly) via IsSafeGatewayCorrelationId, but rejection event payloads must not weaken
-    // the canonical contract.
+    // Preserves canonical lowercase segments and non-sensitive uppercase ULIDs / opaque identifiers
+    // accepted at the /process boundary, while dropping secret-shaped or corpus-sentinel values to null.
     internal static string? CanonicalIdentifierOrNull(string? value)
-        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value) ? value : null;
+        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value)
+            || (FolderCanonicalSegmentIdentifier.IsValid(value)
+                && !FolderSensitiveDiagnosticDetector.IsSensitive(value!)
+                && FolderCommandValidator.IsSafeEvidenceIdentifier(value))
+            ? value
+            : null;
 }

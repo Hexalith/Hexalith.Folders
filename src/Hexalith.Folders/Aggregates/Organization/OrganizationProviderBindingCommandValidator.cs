@@ -108,7 +108,10 @@ public static partial class OrganizationProviderBindingCommandValidator
 
         foreach (KeyValuePair<string, string> entry in policy.Metadata)
         {
-            if (!IsSafePolicyKey(entry.Key) || !IsSafePolicyValue(entry.Value))
+            bool validValue = string.Equals(entry.Key, ProviderBindingProfileFingerprint.ProfileRefKey, StringComparison.Ordinal)
+                ? IsSafeIdentifier(entry.Value)
+                : IsSafePolicyValue(entry.Value);
+            if (!IsSafePolicyKey(entry.Key) || !validValue)
             {
                 return false;
             }

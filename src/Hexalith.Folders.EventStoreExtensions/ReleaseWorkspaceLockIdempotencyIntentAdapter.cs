@@ -32,6 +32,10 @@ internal sealed class ReleaseWorkspaceLockIdempotencyIntentAdapter : IDeclaredId
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        string? taskScope = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root);
+        using JsonDocument? normalized = FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root)
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(root, command.AggregateId, stripFolderId: true)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
@@ -39,9 +43,10 @@ internal sealed class ReleaseWorkspaceLockIdempotencyIntentAdapter : IDeclaredId
                 ["folder_id"] = command.AggregateId,
                 ["lock_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "lockId"),
                 ["lock_ownership_proof"] = FoldersCanonicalIntentBuilder.ReadString(root, "lockOwnershipProof"),
-                ["task_id"] = FoldersCanonicalIntentBuilder.ReadTaskScope(command, root),
+                ["task_id"] = taskScope,
                 ["workspace_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "workspaceId"),
             },
-            delegatedTaskScope: FoldersCanonicalIntentBuilder.ReadTaskScope(command, root));
+            delegatedTaskScope: taskScope,
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }

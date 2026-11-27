@@ -226,7 +226,7 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal))
         {
             if (httpContextAccessor?.HttpContext is { } context) context.Items["Folders:WorkspaceContentCommand"] = command.MessageId;
-            return await ProcessMutateFilesAsync(command).ConfigureAwait(false);
+            return await ProcessMutateFilesAsync(command, cancellationToken).ConfigureAwait(false);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.CommitWorkspaceCommandType, StringComparison.Ordinal))
@@ -388,13 +388,23 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessCreateFolderAsync(CommandEnvelope envelope)
     {
         CreateFolderPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<CreateFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateCreateFolder(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<CreateFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
@@ -460,13 +470,23 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessFolderAccessAsync(CommandEnvelope envelope, FolderAccessOperationIntent intent)
     {
         FolderAccessMutationPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2FolderAccessPayload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<FolderAccessMutationPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateFolderAccess(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<FolderAccessMutationPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null || payload.Operations is null || payload.Operations.Count == 0)
@@ -539,19 +559,30 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessConfigureProviderBindingAsync(CommandEnvelope envelope)
     {
         ConfigureProviderBindingPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<ConfigureProviderBindingPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateConfigureProviderBinding(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<ConfigureProviderBindingPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
             || string.IsNullOrWhiteSpace(payload.ProviderBindingRef)
             || string.IsNullOrWhiteSpace(payload.ProviderFamilyRef)
             || string.IsNullOrWhiteSpace(payload.NonSecretCredentialReference)
+            || string.Equals(envelope.AggregateId, envelope.TenantId, StringComparison.Ordinal)
             || !string.Equals(ProviderBindingActorId.Create(payload.ProviderBindingRef), envelope.AggregateId, StringComparison.Ordinal))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
@@ -620,9 +651,9 @@ public sealed partial class FolderDomainProcessor(
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == OrganizationProviderBindingResultCode.AlreadyApplied,
-            CorrelationId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.CorrelationId) ? result.CorrelationId : null,
-            TaskId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.IdempotencyKey) ? result.IdempotencyKey : null);
+            CorrelationId: FolderCanonicalSegmentIdentifier.IsValid(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: FolderCanonicalSegmentIdentifier.IsValid(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsValid(result.IdempotencyKey) ? result.IdempotencyKey : null);
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);
@@ -677,15 +708,25 @@ public sealed partial class FolderDomainProcessor(
         CancellationToken cancellationToken)
     {
         ArchiveFolderPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<ArchiveFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateArchiveFolder(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            // JsonException = malformed JSON / missing required field; NotSupportedException
-            // = type-system mismatch. Both fail closed to the same safe 400 category.
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<ArchiveFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                // JsonException = malformed JSON / missing required field; NotSupportedException
+                // = type-system mismatch. Both fail closed to the same safe 400 category.
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null)
@@ -787,13 +828,23 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessCreateRepositoryBackedFolderAsync(CommandEnvelope envelope)
     {
         CreateRepositoryBackedFolderPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<CreateRepositoryBackedFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateCreateRepositoryBackedFolder(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<CreateRepositoryBackedFolderPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
@@ -868,13 +919,23 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessBindRepositoryAsync(CommandEnvelope envelope)
     {
         BindRepositoryPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<BindRepositoryPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateBindRepository(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<BindRepositoryPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
@@ -942,13 +1003,23 @@ public sealed partial class FolderDomainProcessor(
     private async Task<DomainResult> ProcessConfigureBranchRefPolicyAsync(CommandEnvelope envelope)
     {
         BranchRefPolicyPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<BranchRefPolicyPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateConfigureBranchRefPolicy(envelope, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<BranchRefPolicyPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null || string.IsNullOrWhiteSpace(envelope.AggregateId))
@@ -1014,19 +1085,31 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessPrepareWorkspaceAsync(CommandEnvelope envelope)
     {
+        string taskId = ReadRequiredTaskId(envelope);
         PrepareWorkspacePayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<PrepareWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslatePrepareWorkspace(envelope, taskId, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<PrepareWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
-            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId)
+            || (payload.TaskId is not null && !string.Equals(payload.TaskId, taskId, StringComparison.Ordinal)))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1040,7 +1123,6 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -1088,19 +1170,31 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessLockWorkspaceAsync(CommandEnvelope envelope)
     {
+        string taskId = ReadRequiredTaskId(envelope);
         LockWorkspacePayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<LockWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateLockWorkspace(envelope, taskId, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<LockWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
-            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId)
+            || (payload.TaskId is not null && !string.Equals(payload.TaskId, taskId, StringComparison.Ordinal)))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1114,7 +1208,6 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -1158,21 +1251,33 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessReleaseWorkspaceLockAsync(CommandEnvelope envelope)
     {
+        string taskId = ReadRequiredTaskId(envelope);
         ReleaseWorkspaceLockPayload? payload;
-        try
+        if (GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload))
         {
-            payload = JsonSerializer.Deserialize<ReleaseWorkspaceLockPayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateReleaseWorkspaceLock(envelope, taskId, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<ReleaseWorkspaceLockPayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
             || string.IsNullOrWhiteSpace(payload.WorkspaceId)
             || string.IsNullOrWhiteSpace(payload.LockId)
-            || string.IsNullOrWhiteSpace(payload.LockOwnershipProof))
+            || string.IsNullOrWhiteSpace(payload.LockOwnershipProof)
+            || (payload.TaskId is not null && !string.Equals(payload.TaskId, taskId, StringComparison.Ordinal)))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1186,7 +1291,6 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -1229,7 +1333,7 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
-    private async Task<DomainResult> ProcessMutateFilesAsync(CommandEnvelope envelope)
+    private async Task<DomainResult> ProcessMutateFilesAsync(CommandEnvelope envelope, CancellationToken cancellationToken)
     {
         try
         {
@@ -1237,6 +1341,8 @@ public sealed partial class FolderDomainProcessor(
             if (document.RootElement.ValueKind != JsonValueKind.Object) return Rejection(envelope, FolderResultCode.ValidationFailed, null);
             if (document.RootElement.TryGetProperty("items", out JsonElement items))
                 return await ProcessContentBatchAsync(envelope, document.RootElement, items).ConfigureAwait(false);
+            if (!document.RootElement.TryGetProperty("requestSchemaVersion", out _))
+                return await ProcessDecoratedContentBatchAsync(envelope, cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException) { return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null); }
         return await ProcessSingleFileMutationAsync(envelope).ConfigureAwait(false);
@@ -1244,6 +1350,7 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessSingleFileMutationAsync(CommandEnvelope envelope)
     {
+        string taskId = ReadRequiredTaskId(envelope);
         FileMutationPayload? payload;
         try
         {
@@ -1257,7 +1364,8 @@ public sealed partial class FolderDomainProcessor(
         if (payload is null
             || payload.PathMetadata is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
-            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId)
+            || (payload.TaskId is not null && !string.Equals(payload.TaskId, taskId, StringComparison.Ordinal)))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1274,7 +1382,6 @@ public sealed partial class FolderDomainProcessor(
         if (payload.AcceptedSdkKey is { } sdkKey && httpContextAccessor?.HttpContext is { } nativeContext)
             nativeContext.Items["Folders:AcceptedSdkKey"] = sdkKey;
 
-        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -1366,19 +1473,32 @@ public sealed partial class FolderDomainProcessor(
 
     private async Task<DomainResult> ProcessCommitWorkspaceAsync(CommandEnvelope envelope)
     {
+        string taskId = ReadRequiredTaskId(envelope);
         CommitWorkspacePayload? payload;
-        try
+        bool isDecoratedV2 = GatewayCommandPayloadTranslator.IsDecoratedV2Payload(envelope.Payload);
+        if (isDecoratedV2)
         {
-            payload = JsonSerializer.Deserialize<CommitWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            if (!GatewayCommandPayloadTranslator.TryTranslateCommitWorkspace(envelope, taskId, out payload, out FolderResultCode translationFailure))
+            {
+                return Rejection(envelope, translationFailure, null);
+            }
         }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        else
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            try
+            {
+                payload = JsonSerializer.Deserialize<CommitWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
+            {
+                return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            }
         }
 
         if (payload is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
-            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId)
+            || !GatewayCommandPayloadTranslator.AreValidAuditMetadataKeys(payload.AuditMetadataKeys, allowEmpty: !isDecoratedV2))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1392,7 +1512,6 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = ReadRequiredTaskId(envelope);
         if (!string.Equals(payload.TaskId, taskId, StringComparison.Ordinal))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
@@ -1446,11 +1565,11 @@ public sealed partial class FolderDomainProcessor(
         => TryReadCanonicalExtension(envelope.Extensions, "taskId")!;
 
     private static bool IsValidProcessEnvelope(CommandEnvelope envelope)
-        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.MessageId)
-        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.CorrelationId)
-        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.TenantId)
-        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.AggregateId)
-        && FolderCanonicalSegmentIdentifier.IsLowercaseSegment(envelope.UserId)
+        => FolderCanonicalSegmentIdentifier.IsValid(envelope.MessageId)
+        && FolderCanonicalSegmentIdentifier.IsValid(envelope.CorrelationId)
+        && FolderCanonicalSegmentIdentifier.IsValid(envelope.TenantId)
+        && FolderCanonicalSegmentIdentifier.IsValid(envelope.AggregateId)
+        && FolderCanonicalSegmentIdentifier.IsValid(envelope.UserId)
         && TryReadCanonicalExtension(envelope.Extensions, "taskId") is not null;
 
     // Extension values arriving on the /process boundary are not validated by the REST endpoint, so the
@@ -1459,7 +1578,7 @@ public sealed partial class FolderDomainProcessor(
     {
         if (extensions is null
             || !extensions.TryGetValue(key, out string? value)
-            || !FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value))
+            || !FolderCanonicalSegmentIdentifier.IsValid(value))
         {
             return null;
         }
@@ -1597,9 +1716,9 @@ public sealed partial class FolderDomainProcessor(
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == FolderResultCode.IdempotentReplay,
-            CorrelationId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.CorrelationId) ? result.CorrelationId : null,
-            TaskId: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsLowercaseSegment(result.IdempotencyKey) ? result.IdempotencyKey : null,
+            CorrelationId: FolderCanonicalSegmentIdentifier.IsValid(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: FolderCanonicalSegmentIdentifier.IsValid(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsValid(result.IdempotencyKey) ? result.IdempotencyKey : null,
             FailureCode: result.IsAccepted ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),

@@ -25,9 +25,10 @@ internal static partial class FolderCanonicalSegmentIdentifier
             && PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
     /// <summary>
-    /// Returns whether <paramref name="value"/> matches the lowercase segment grammar without the opaque-identifier
-    /// allowance that <see cref="IsValid"/> grants. The <c>/process</c> boundary uses this stricter form for envelope
-    /// identifiers and the task extension, and rejection events use it for the identifiers they echo.
+    /// Returns whether <paramref name="value"/> matches the strict lowercase segment grammar without the
+    /// opaque-identifier allowance that <see cref="IsValid"/> grants. The <c>/process</c> boundary and
+    /// rejection events use <see cref="IsValid"/>; this stricter form remains for contexts that require
+    /// lowercase-only canonical segments.
     /// </summary>
     /// <param name="value">The candidate identifier.</param>
     /// <returns><see langword="true"/> when the value matches <c>^[a-z0-9._-]+$</c> and is at most 128 characters.</returns>

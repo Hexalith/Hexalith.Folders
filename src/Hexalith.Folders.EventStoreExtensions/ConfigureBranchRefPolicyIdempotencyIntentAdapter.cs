@@ -32,16 +32,34 @@ internal sealed class ConfigureBranchRefPolicyIdempotencyIntentAdapter : IDeclar
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        bool hasNestedPolicy = root.TryGetProperty("branchRefPolicy", out _);
+        if (hasNestedPolicy && FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root))
+        {
+            throw new JsonException("ConfigureBranchRefPolicy with nested branchRefPolicy requires requestSchemaVersion.");
+        }
+
+        using JsonDocument? normalized = !hasNestedPolicy && FoldersCanonicalIntentBuilder.IsDecoratedV2Payload(root)
+            ? FoldersCanonicalIntentBuilder.BuildNormalizedV2Guard(root, command.AggregateId, stripFolderId: true)
+            : null;
         return FoldersCanonicalIntentBuilder.Create(
             command,
             new Dictionary<string, string?>(StringComparer.Ordinal)
             {
-                ["branch_ref_policy.allowed_ref_patterns"] = FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "branchRefPolicy", "allowedRefPatterns"),
-                ["branch_ref_policy.default_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "defaultRef"),
-                ["branch_ref_policy.policy_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "policyRef"),
-                ["branch_ref_policy.protected_ref_patterns"] = FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "branchRefPolicy", "protectedRefPatterns"),
+                ["branch_ref_policy.allowed_ref_patterns"] = hasNestedPolicy
+                    ? FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "branchRefPolicy", "allowedRefPatterns")
+                    : FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "allowedRefPatterns"),
+                ["branch_ref_policy.default_ref"] = hasNestedPolicy
+                    ? FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "defaultRef")
+                    : FoldersCanonicalIntentBuilder.ReadString(root, "defaultRef"),
+                ["branch_ref_policy.policy_ref"] = hasNestedPolicy
+                    ? FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "policyRef")
+                    : FoldersCanonicalIntentBuilder.ReadString(root, "policyRef"),
+                ["branch_ref_policy.protected_ref_patterns"] = hasNestedPolicy
+                    ? FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "branchRefPolicy", "protectedRefPatterns")
+                    : FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "protectedRefPatterns"),
                 ["folder_id"] = command.AggregateId,
                 ["repository_binding_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "repositoryBindingId"),
-            });
+            },
+            canonicalGuardRoot: normalized?.RootElement);
     }
 }
