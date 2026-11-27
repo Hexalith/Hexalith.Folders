@@ -17,13 +17,13 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 4decd6f61c99865d8a479a8a8ba7987371758c89cb88960ba28a019b12ffd052
+candidate_set_sha256: 01292bbcb275b0815c24e20df2f3d64d6aa51b66f9b6fff6a640cf1b93cf3a88
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
     bytes: 8351
-    sha256: a065869023ef2c27b7ecaa3db4917893cb441890196d2b7a59acb33b537924dd
+    sha256: bbea6f91c8fbda534df98887ab0270c34e3c31c2a01e20683e554127a81b17be
   - path: ".github/workflows/contract-spine.yml"
     kind: file
     bytes: 3929
@@ -4859,7 +4859,7 @@ artifacts:
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/PinnedDomainCiWorkflow.cs"
     kind: file
     bytes: 426
-    sha256: 8269469d440d3c45fae6599045e1b3b029f9932346afed0a2f74e9b7655266f6
+    sha256: 2df65f30791c6f261b0edb278ec15b6890fe9f328298a89399260926f5e4a011
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProductionObservabilityConformanceTests.cs"
     kind: file
     bytes: 24482
