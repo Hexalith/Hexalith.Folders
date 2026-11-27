@@ -236,13 +236,68 @@
           "reopenBeforeReplay": false
         },
         "startup": {},
-        "criticalFlows": [],
+        "criticalFlows": [
+          {
+            "name": "folder-lifecycle",
+            "surface": "folders-domain",
+            "operations": [
+              "process",
+              "query",
+              "project",
+              "project-v2"
+            ]
+          }
+        ],
         "smokeSurfaces": [],
         "classification": {
           "changeClass": "additive",
           "reason": "Enroll the Folders domain and workers with the gateway extension package. Workers retain application-defined subscriptions for tenants.events and folders.events because the v2 topic inventory cannot name their dotted physical dead-letter topics."
         },
-        "recoveryInventory": []
+        "recoveryInventory": [
+          {
+            "name": "folder-tenant-access-projection",
+            "recoveryClass": "rebuild-only",
+            "owner": "folders",
+            "dependencies": [
+              "eventstore",
+              "tenants"
+            ]
+          },
+          {
+            "name": "folder-effective-permissions-projection",
+            "recoveryClass": "rebuild-only",
+            "owner": "folders",
+            "dependencies": [
+              "eventstore",
+              "tenants"
+            ]
+          },
+          {
+            "name": "folder-operational-status-projection",
+            "recoveryClass": "rebuild-only",
+            "owner": "folders",
+            "dependencies": [
+              "eventstore"
+            ]
+          },
+          {
+            "name": "folder-provider-binding-projection",
+            "recoveryClass": "rebuild-only",
+            "owner": "folders",
+            "dependencies": [
+              "eventstore"
+            ]
+          },
+          {
+            "name": "folder-semantic-indexing-bridge",
+            "recoveryClass": "rebuild-only",
+            "owner": "folders",
+            "dependencies": [
+              "eventstore",
+              "memories"
+            ]
+          }
+        ]
       }
     }
   ]

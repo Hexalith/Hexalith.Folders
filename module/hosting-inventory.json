@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "path": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "kind": "AppHost",
+      "owner": "@jpiquot",
+      "consumers": [
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj"
+      ],
+      "state": "frozen",
+      "replacementPlan": "Replace with producer-owned Platform composition (Platform Story 10.1) once Folders server/worker bindings, gateway extension packaging, and Platform Epics 2-6 are accepted.",
+      "retirementPlan": "Retain frozen until producer adoption, owner-reviewed source/package/deployed parity, and EventStore AD-22 exact-subject consumer-removal authority are recorded; inventory grants no retirement authority.",
+      "gates": {
+        "producerAdoption": "pending",
+        "ownerReviewedSourcePackageDeployedParity": "pending",
+        "eventStoreAd22ExactSubjectRemovalAuthority": "pending: obtain EventStore AD-22 exact-subject removal authority once Platform hosts the Folders topology"
+      }
+    },
+    {
+      "path": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
+      "kind": "Aspire",
+      "owner": "@jpiquot",
+      "consumers": [
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
+        "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj"
+      ],
+      "state": "frozen",
+      "replacementPlan": "Replace with Platform-composed module enrollment (Platform Story 10.1) and retire packaged Aspire helper after consumer parity is verified.",
+      "retirementPlan": "Retain frozen until every listed local and packaged consumer migrates and exact-subject removal authority is approved; inventory grants no retirement authority.",
+      "gates": {
+        "producerAdoption": "pending",
+        "ownerReviewedSourcePackageDeployedParity": "pending",
+        "eventStoreAd22ExactSubjectRemovalAuthority": "pending: confirm whether packaged Hexalith.Folders.Aspire consumers require AD-22 exact-subject removal authority"
+      }
+    },
+    {
+      "path": "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
+      "kind": "ServiceDefaults",
+      "owner": "@jpiquot",
+      "consumers": [
+        "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
+        "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"
+      ],
+      "state": "frozen",
+      "replacementPlan": "Retire in favor of shared EventStore/Commons ServiceDefaults under Story 11.9 once Server and Workers migrate their monitored readiness and probe helpers.",
+      "retirementPlan": "Retain frozen until Story 11.9 migrates Server and Workers and owner-reviewed parity passes; inventory grants no retirement authority.",
+      "gates": {
+        "producerAdoption": "pending",
+        "ownerReviewedSourcePackageDeployedParity": "pending",
+        "eventStoreAd22ExactSubjectRemovalAuthority": "not-applicable: internal non-packable project consumed only by Hexalith.Folders.Server and Hexalith.Folders.Workers (owner review pending)"
+      }
+    }
+  ]
+}
