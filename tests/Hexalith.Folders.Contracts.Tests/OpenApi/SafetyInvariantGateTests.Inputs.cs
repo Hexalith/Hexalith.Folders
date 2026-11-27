@@ -136,6 +136,9 @@ public sealed partial class SafetyInvariantGateTests
     private static YamlMappingNode LoadYamlMapping(string path) => ParseSafetyYaml(ReadRequiredFile(path));
 
     private static YamlMappingNode ParseSafetyYaml(string text)
+        => ParseSingleSafetyYamlDocument(text) as YamlMappingNode ?? throw InputDiagnostic();
+
+    private static YamlNode ParseSingleSafetyYamlDocument(string text)
     {
         ValidateInputSize(text);
         try
@@ -167,12 +170,12 @@ public sealed partial class SafetyInvariantGateTests
             using StringReader reader = new(text);
             YamlStream yaml = new();
             yaml.Load(reader);
-            if (yaml.Documents.Count != 1 || yaml.Documents[0].RootNode is not YamlMappingNode mapping)
+            if (yaml.Documents.Count != 1)
             {
                 throw InputDiagnostic();
             }
 
-            return mapping;
+            return yaml.Documents[0].RootNode;
         }
         catch (YamlException)
         {

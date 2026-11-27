@@ -5,6 +5,7 @@
   "include_roots": [
     "tests/fixtures/audit-leakage-corpus.json",
     "tests/fixtures/quarantine/safety-negative-controls.json",
+    "tests/fixtures/quarantine/safety-yaml-negative-controls.yaml",
     "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
     "src/Hexalith.Folders.Client/Generated",
     "tests/fixtures/parity-contract.yaml",
@@ -62,7 +63,8 @@
       "channel": "negative-control-quarantine",
       "owning_story": "1-15-wire-safety-invariant-ci-gates",
       "artifact_sources": [
-        "tests/fixtures/quarantine/safety-negative-controls.json"
+        "tests/fixtures/quarantine/safety-negative-controls.json",
+        "tests/fixtures/quarantine/safety-yaml-negative-controls.yaml"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",

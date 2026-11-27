@@ -15,6 +15,7 @@ public sealed partial class SafetyInvariantGateTests
 {
     private const string GateName = "safety-invariant";
     private const string OpenApiRelativePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml";
+    private const string YamlQuarantinePath = "tests/fixtures/quarantine/safety-yaml-negative-controls.yaml";
     private static readonly string _repositoryRootPath = FindRepositoryRoot();
     private static readonly string _corpusFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", AuditLeakageCorpus.CorpusFile);
     private static readonly string _inventoryFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "safety-channel-inventory.json");
@@ -357,6 +358,31 @@ public sealed partial class SafetyInvariantGateTests
         normalFindings.ShouldBeEmpty(string.Join(Environment.NewLine, normalFindings.Select(d => d.ToString())));
     }
 
+    [Theory]
+    [InlineData("openapi-examples", "file-content-marker", "secret-shaped-access-key")]
+    [InlineData("parity-artifacts", "generated-context-payload", "local-path-marker")]
+    public void SafetyScansDetectEscapedYamlKeysAndValues(string channel, string keySample, string valueSample)
+    {
+        JsonElement quarantine = InventoryChannel("negative-control-quarantine");
+        RequiredBoolean(quarantine, "opt_in_scan_forbidden_values").ShouldBeTrue();
+        RequiredArray(quarantine, "artifact_sources").SelectText().ShouldContain(YamlQuarantinePath);
+        IReadOnlyList<AuditLeakageSample> samples = LoadSentinelSamples();
+        string yaml = ReadRequiredFile(Path.Combine(_repositoryRootPath, YamlQuarantinePath));
+
+        ScanText(YamlQuarantinePath, channel, yaml, samples).ShouldBeEmpty();
+        SafetyScanDiagnostic[] findings = ScanArtifact(YamlQuarantinePath, channel, yaml, samples).ToArray();
+
+        findings.Select(finding => finding.SampleId).ShouldBe([keySample, valueSample], ignoreOrder: true);
+        foreach (SafetyScanDiagnostic finding in findings)
+        {
+            finding.RepositoryPath.ShouldBe(YamlQuarantinePath);
+            finding.OutputChannel.ShouldBe(channel);
+            AuditLeakageSample sample = samples.Single(candidate => candidate.Id == finding.SampleId);
+            AssertDoesNotContainForbiddenValue(finding.ToString(), sample, channel, YamlQuarantinePath);
+            AssertMetadataOnly(finding.ToString());
+        }
+    }
+
     [Fact]
     public void OpenApiExamplesAndContextQueriesRemainMetadataOnly()
     {
@@ -475,13 +501,33 @@ public sealed partial class SafetyInvariantGateTests
                 {
                     RegisterArtifactPath(portablePaths, file, channelName);
                     string text = ReadRequiredFile(Path.Combine(_repositoryRootPath, NormalizeForFileSystem(file)));
-                    diagnostics.UnionWith(ScanText(file, channelName, text, samples));
+                    diagnostics.UnionWith(ScanArtifact(file, channelName, text, samples));
                 }
             }
         }
 
         return diagnostics.ToArray();
     }
+
+    private static IEnumerable<SafetyScanDiagnostic> ScanArtifact(
+        string repositoryPath, string channel, string text, IReadOnlyList<AuditLeakageSample> samples)
+    {
+        IEnumerable<SafetyScanDiagnostic> findings = ScanText(repositoryPath, channel, text, samples);
+        return Path.GetExtension(repositoryPath).ToLowerInvariant() is ".yaml" or ".yml"
+            ? findings.Concat(EnumerateYamlScalars(ParseSingleSafetyYamlDocument(text))
+                .SelectMany(scalar => ScanText(repositoryPath, channel, scalar, samples)))
+            : findings;
+    }
+
+    private static IEnumerable<string> EnumerateYamlScalars(YamlNode node)
+        => node switch
+        {
+            YamlScalarNode { Value: string value } => [value],
+            YamlMappingNode mapping => mapping.Children.SelectMany(pair =>
+                EnumerateYamlScalars(pair.Key).Concat(EnumerateYamlScalars(pair.Value))),
+            YamlSequenceNode sequence => sequence.Children.SelectMany(EnumerateYamlScalars),
+            _ => [],
+        };
 
     private static SafetyScanDiagnostic[] ScanNegativeControls(IReadOnlyList<AuditLeakageSample> samples)
     {

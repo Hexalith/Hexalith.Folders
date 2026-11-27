@@ -3355,6 +3355,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-audit-corpus-checks.md`
   summary: Scan decoded YAML artifact keys and values for audit leakage.
   evidence: The existing artifact scan reads OpenAPI and parity YAML as text. Unicode escapes in a quoted YAML scalar need a decoded scan and a quarantined control.
+  status: done 2026-11-27
+  resolution: The manifest scan checks raw text and decoded YAML keys and scalar values. Quarantined escaped controls verify both OpenAPI and parity artifact channels with bounded diagnostics.
 
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Align the fixture task header with the Folders HTTP contract.

@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: e32318b9a32bf64626e9c0ac3e1ab5ca0febc3fa2a55b606a59f78253fbb0196
+candidate_set_sha256: 57111eb507f4231c079320e1afe180df60054e0bccc41a67cd9a982e9716391c
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -5006,8 +5006,8 @@ artifacts:
     sha256: b7289a8e65a9ae8c23ad138995696885fcc9e12cbeaf01554c4be312aa1e307e
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.Inputs.cs"
     kind: file
-    bytes: 7291
-    sha256: 1567f012ddeaf367be8f49161ec98bb48a33d9a1a577dece90f4ccea7145b4ef
+    bytes: 7415
+    sha256: 83373c16ee70a7adbb9f34377d9fd8419b071cd1de6974601326af165e23176c
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.RunnerTests.cs"
     kind: file
     bytes: 5314
@@ -5018,8 +5018,8 @@ artifacts:
     sha256: a90144b7b5f2914baa602e1d9132625a5b594c0598fbabd392437810d427787b
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"
     kind: file
-    bytes: 51064
-    sha256: eb03e79ac93d98d77d1c734ad4fdbdf4037e59691f7051c64bfdb113f5d73f15
+    bytes: 53724
+    sha256: d1831e8ccc29b889ebbddf3ebc55448e9d029eb859a7ef7d93d4d9f9c2c66be5
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs"
     kind: file
     bytes: 28078

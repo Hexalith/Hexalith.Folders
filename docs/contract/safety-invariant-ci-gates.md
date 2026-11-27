@@ -25,13 +25,14 @@ The existing `contract-spine-gates` workflow invokes `./tests/tools/run-safety-i
 - `tests/fixtures/audit-leakage-corpus.json`: authoritative sentinel vocabulary, classifications, forbidden surfaces, and allowed provenance-safe representations.
 - `tests/fixtures/safety-channel-inventory.json`: channel manifest with owner, artifact source, prerequisite status, safe absence diagnostic, coverage notes, absence reason where applicable, and scan flag.
 - `tests/fixtures/quarantine/safety-negative-controls.json`: opt-in contaminated controls used only to prove detection and sanitized failure output.
+- `tests/fixtures/quarantine/safety-yaml-negative-controls.yaml`: escaped synthetic keys and scalar values used to exercise decoded YAML scans.
 - `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`: OpenAPI and Problem Details examples.
 - `tests/fixtures/parity-contract.yaml` and `src/Hexalith.Folders.Client/Generated`: generated-artifact leakage checks only.
 - `docs/contract/*.md`, `.github/workflows/contract-spine.yml`, and `tests/tools/*.ps1`: developer and CI diagnostic surfaces.
 
 Inputs must be strict UTF-8, with an optional UTF-8 BOM, and no embedded NUL characters. Unsupported encodings, invalid bytes, missing or unreadable files, and inputs larger than 8 MiB fail with a fixed metadata-only prerequisite diagnostic. The gate does not guess alternative encodings or replace invalid bytes.
 
-JSON and YAML fixtures have a maximum collection depth of 64. JSON rejects duplicate decoded property names in every object, including objects inside arrays; names remain case-sensitive and independent objects may reuse them. YAML accepts exactly one mapping document, rejects aliases before constructing representation nodes, and permits at most 100,000 parsing events. Parser messages, input fragments, file paths, and inner exceptions are excluded from input-failure diagnostics.
+JSON and YAML fixtures have a maximum collection depth of 64. JSON rejects duplicate decoded property names in every object, including objects inside arrays. Names remain case-sensitive and independent objects may reuse them. YAML artifact scans require a single document, reject aliases before constructing representation nodes, and permit at most 100,000 parsing events. They scan both the source text and decoded keys and values. OpenAPI shape checks require a mapping root. Parser messages, input fragments, file paths, and inner exceptions are excluded from input-failure diagnostics.
 
 Scanned files and their parent directories must use a single case spelling across the inventory. Case collisions produce a bounded prerequisite diagnostic, including when the paths come from different channel declarations.
 
