@@ -3,8 +3,10 @@
   "isRoot": true,
   "tools": {
     "hexalith.builds.module.cli": {
-      "version": "6.7.0",
-      "commands": ["hexalith-module"],
+      "version": "6.9.0",
+      "commands": [
+        "hexalith-module"
+      ],
       "rollForward": false
     }
   }
