@@ -1,6 +1,16 @@
+using System.Security.Cryptography;
+using System.Text;
+
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
+
+using CommunityToolkit.Aspire.Hosting.Dapr;
+
+using Hexalith.Folders.Aspire;
+
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 
 using Xunit;
 
@@ -52,11 +62,14 @@ public sealed class AspireFoldersAppHostFixture : IAsyncLifetime
         "memories",
     ];
 
+    private const string MemoriesDiagnosticIssuer = "urn:hexalith:folders:topology-test";
+    private const string MemoriesDiagnosticAudience = "hexalith-memories-topology-test";
     private static readonly TimeSpan StartupTimeout = TimeSpan.FromMinutes(8);
 
     private readonly Dictionary<string, string?> _environmentSnapshot = new(StringComparer.Ordinal);
     private DistributedApplication? _app;
     private IDistributedApplicationTestingBuilder? _builder;
+    private string? _memoriesDiagnosticSigningKey;
 
     /// <summary>Gets a value indicating whether the topology was opted into and booted.</summary>
     public bool IsAvailable { get; private set; }
@@ -68,6 +81,39 @@ public sealed class AspireFoldersAppHostFixture : IAsyncLifetime
     public DistributedApplication App => _app ?? throw new InvalidOperationException(
         "The Aspire topology was not started. Call SkipIfUnavailable() first; the fixture only boots when " +
         $"{OptInEnvironmentVariable}=true on a DCP-capable host.");
+
+    /// <summary>Gets the running Dapr CLI resource name for an annotated topology project.</summary>
+    internal string DaprCliResourceName(string resourceName)
+    {
+        IDistributedApplicationTestingBuilder builder = _builder
+            ?? throw new InvalidOperationException("The Folders topology has not started.");
+        return builder.Resources.OfType<ProjectResource>().Single(resource => resource.Name == resourceName)
+            .Annotations.OfType<DaprSidecarAnnotation>().Single().Sidecar.Name + "-cli";
+    }
+
+    /// <summary>Creates a Memories client authorized to read the diagnostic index tenant.</summary>
+    internal HttpClient CreateMemoriesDiagnosticClient()
+    {
+        string signingKey = _memoriesDiagnosticSigningKey
+            ?? throw new InvalidOperationException("The diagnostic Memories issuer has not been configured.");
+        string token = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+        {
+            Issuer = MemoriesDiagnosticIssuer,
+            Audience = MemoriesDiagnosticAudience,
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            Claims = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                [JwtRegisteredClaimNames.Sub] = "folders-topology-diagnostic",
+                ["tenant_id"] = FoldersAspireModule.MemoriesIndexTenant,
+            },
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)), SecurityAlgorithms.HmacSha256),
+        });
+
+        HttpClient client = App.CreateHttpClient(FoldersAspireModule.MemoriesAppId);
+        client.DefaultRequestHeaders.Authorization = new("Bearer", token);
+        return client;
+    }
 
     /// <summary>Skips the current test when the topology was not opted into / could not boot.</summary>
     public void SkipIfUnavailable()
@@ -104,6 +150,7 @@ public sealed class AspireFoldersAppHostFixture : IAsyncLifetime
                 .CreateAsync<Projects.Hexalith_Folders_AppHost>([], startupCts.Token)
                 .ConfigureAwait(false);
 
+            ConfigureMemoriesDiagnosticIssuer(_builder);
             _app = await _builder.BuildAsync(startupCts.Token).ConfigureAwait(false);
             await _app.StartAsync(startupCts.Token).ConfigureAwait(false);
 
@@ -138,7 +185,25 @@ public sealed class AspireFoldersAppHostFixture : IAsyncLifetime
             _builder = null;
         }
 
+        _memoriesDiagnosticSigningKey = null;
         RestoreEnvironmentSnapshot();
+    }
+
+    private void ConfigureMemoriesDiagnosticIssuer(IDistributedApplicationTestingBuilder builder)
+    {
+        string signingKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        _memoriesDiagnosticSigningKey = signingKey;
+        var secret = builder.AddParameter("folders-memory-diagnostic-key", () => signingKey, secret: true);
+        ProjectResource memories = builder.Resources.OfType<ProjectResource>()
+            .Single(resource => resource.Name == FoldersAspireModule.MemoriesAppId);
+        // The owner test command store provides tenant bootstrap for the broker and index diagnostic.
+        builder.CreateResourceBuilder(memories)
+            .WithEnvironment("Memories__Testing__UseInMemoryCommandStore", "true")
+            .WithEnvironment("Authentication__JwtBearer__Authority", string.Empty)
+            .WithEnvironment("Authentication__JwtBearer__SigningKey", secret)
+            .WithEnvironment("Authentication__JwtBearer__Issuer", MemoriesDiagnosticIssuer)
+            .WithEnvironment("Authentication__JwtBearer__Audience", MemoriesDiagnosticAudience)
+            .WithEnvironment("Authentication__JwtBearer__TenantClaimName", "tenant_id");
     }
 
     private static bool OptInEnabled()

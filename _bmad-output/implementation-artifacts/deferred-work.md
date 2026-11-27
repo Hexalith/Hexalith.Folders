@@ -2317,7 +2317,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)"), 2026-09-01
 location: tests/Hexalith.Folders.AppHost.Tests/FoldersTopologyCrossProcessTests.cs:91,149,279
 reason: Both Debug/source and Release/package AppHost runs booted all six services, but `CreateDaprClient` converts unresolved Dapr sidecar HTTP endpoints into skipped tests and the publish probe does not assert that the worker received the event. Make the opted-in behavioral probes fail closed and observe subscriber receipt.
-status: open
+status: done 2026-11-27
+resolution: Opted-in probes require healthy Dapr sidecars. The publish probe verifies and removes the exact Workers receipt, and the seeded search probe uses authenticated access to the active routed index tenant.
 
 ### DW-335: Add the opted-in AppHost runtime suite to a regular automated DCP-capable CI lane.
 

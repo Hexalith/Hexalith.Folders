@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -6,8 +7,12 @@ using Aspire.Hosting.Testing;
 
 using Dapr.Client;
 
+using Hexalith.Commons.UniqueIds;
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
-using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.EventStore.Contracts.Serialization;
+using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aspire;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
@@ -17,10 +22,13 @@ using Xunit;
 
 // Alias the Memories contracts so this file does not import the V1 namespace (which also defines a Case type that
 // would collide with Shouldly.Case) wholesale.
+using MemoriesRoutes = Hexalith.Memories.Contracts.V1.MemoriesRoutes;
 using ScoredResult = Hexalith.Memories.Contracts.V1.ScoredResult;
 using SearchIndexEntryChanged = Hexalith.Memories.Contracts.V1.SearchIndexEntryChanged;
 using SearchIndexEntryRemoved = Hexalith.Memories.Contracts.V1.SearchIndexEntryRemoved;
 using SearchResult = Hexalith.Memories.Contracts.V1.SearchResult;
+using TenantInfo = Hexalith.Memories.Contracts.V1.TenantInfo;
+using TenantStatus = Hexalith.Memories.Contracts.V1.TenantStatus;
 
 namespace Hexalith.Folders.AppHost.Tests;
 
@@ -34,6 +42,10 @@ namespace Hexalith.Folders.AppHost.Tests;
 public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture fixture)
     : IClassFixture<AspireFoldersAppHostFixture>
 {
+    private const string StateStore = "statestore";
+    private static readonly TimeSpan ProbeTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan IndexReadinessTimeout = TimeSpan.FromMinutes(3);
+
     private readonly AspireFoldersAppHostFixture _fixture = fixture;
 
     [Fact]
@@ -77,11 +89,9 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
     }
 
     /// <summary>
-    /// Diagnostic (not Story 10.8 / FR58 acceptance): publishes an EventStore-shaped folder-domain envelope
-    /// through the live <c>folders.events</c> pub/sub route from the EventStore Dapr sidecar. This is the
-    /// cross-process smoke for the Story 10.3 D1 route itself: publisher sidecar → broker topic →
-    /// folders-workers subscriber endpoint. Hand-publishing <see cref="WorkspaceFileMutationAccepted"/> is
-    /// forbidden as FR58 evidence.
+    /// Publishes a synthetic organization event through the EventStore sidecar and verifies the
+    /// worker's durable receipt for that delivery. This diagnostic covers the Story 10.3 D1
+    /// pub/sub route. FR58 acceptance requires a public mutation followed by a public search.
     /// </summary>
     [Fact]
     public async Task EventStoreSidecarShouldPublishFolderEnvelopeToWorkerSubscriberTopic()
@@ -89,46 +99,68 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
         _fixture.SkipIfUnavailable();
 
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
-        using DaprClient dapr = CreateDaprClient("eventstore", "Could not resolve the eventstore Dapr sidecar HTTP endpoint for the folders.events publish probe.");
-        WorkspaceFileMutationAccepted mutation = new(
-            "tenant-a",
-            "organization-a",
-            "folder-a",
-            "workspace-a",
-            FolderWorkspaceLifecycleEvent.FileMutated,
-            "operation-cross-process-a",
-            "add",
-            "PutFileInline",
-            "tenant-sensitive",
-            "path-digest-cross-process-a",
-            "sha256:crossprocess",
-            128,
-            "text/plain",
-            "inline_decoded",
-            128,
-            "principal-a",
-            "correlation-cross-process-a",
-            "task-cross-process-a",
-            "idempotency-cross-process-a",
-            "fingerprint-cross-process-a",
-            DateTimeOffset.UtcNow);
+        using DaprClient publisher = await CreateDaprClientAsync(
+            FoldersAspireModule.EventStoreAppId, cancellationToken).ConfigureAwait(true);
+        using DaprClient workerSidecar = await CreateDaprClientAsync(
+            FoldersAspireModule.FoldersWorkersAppId, cancellationToken).ConfigureAwait(true);
+        DaprReadModelStore store = new(workerSidecar);
 
+        // The organization actor gives the probe one durable receipt row to observe and delete.
+        string tenantId = NewId();
+        string messageId = NewId();
+        string projectionKey = "projection:folders:organization-permissions:" + tenantId;
+        OrganizationAclBaselineInitialized initialized = new(tenantId, tenantId, NewId(), NewId(), NewId(), NewId());
         EventStoreDomainEventEnvelope envelope = new(
-            "message-cross-process-a",
-            "folder-a",
-            "tenant-a",
-            typeof(WorkspaceFileMutationAccepted).FullName!,
+            messageId,
+            tenantId,
+            tenantId,
+            typeof(OrganizationAclBaselineInitialized).FullName!,
             1,
             DateTimeOffset.UtcNow,
-            mutation.CorrelationId,
+            initialized.CorrelationId,
             "json",
-            JsonSerializer.SerializeToUtf8Bytes(mutation));
+            JsonSerializer.SerializeToUtf8Bytes(initialized, EventStorePayloadSerialization.Options))
+        {
+            Domain = "folders",
+        };
 
-        await dapr.PublishEventAsync(
-            FoldersSemanticIndexingDefaults.PubSubName,
-            FoldersAspireModule.FolderDomainEventsTopic,
-            envelope,
-            cancellationToken).ConfigureAwait(true);
+        bool receiptVerified = false;
+        try
+        {
+            using CancellationTokenSource delivery = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            delivery.CancelAfter(ProbeTimeout);
+            await publisher.PublishEventAsync(
+                FoldersSemanticIndexingDefaults.PubSubName,
+                FoldersAspireModule.FolderDomainEventsTopic,
+                envelope,
+                delivery.Token).ConfigureAwait(true);
+
+            OrganizationPermissionProjection receipt = await WaitForReceiptAsync(
+                store, projectionKey, delivery.Token).ConfigureAwait(true);
+            receipt.TenantId.ShouldBe(tenantId);
+            receipt.OrganizationId.ShouldBe(tenantId);
+            receipt.IsInitialized.ShouldBeTrue();
+            receipt.LastSequence.ShouldBe(envelope.SequenceNumber);
+            FolderProjectionMessage message = receipt.RecentMessages.ShouldNotBeNull().ShouldHaveSingleItem();
+            message.MessageId.ShouldBe(messageId);
+            message.Sequence.ShouldBe(envelope.SequenceNumber);
+            receiptVerified = true;
+        }
+        catch (OperationCanceledException exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException("The Workers did not persist the published folder-domain receipt within the probe budget.", exception);
+        }
+        finally
+        {
+            try
+            {
+                await EraseReceiptAsync(store, projectionKey, messageId).ConfigureAwait(true);
+            }
+            catch (Exception exception) when (!receiptVerified)
+            {
+                TestContext.Current.AddWarning($"Synthetic receipt cleanup also failed ({exception.GetType().Name}).");
+            }
+        }
     }
 
     /// <summary>
@@ -146,10 +178,10 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
         _fixture.SkipIfUnavailable();
 
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
-        using DaprClient dapr = CreateDaprClient(
-            FoldersAspireModule.FoldersWorkersAppId,
-            "Could not resolve a folders-workers Dapr sidecar HTTP endpoint for the AC9 round-trip seed on this host.");
-        using HttpClient memories = _fixture.App.CreateHttpClient(FoldersAspireModule.MemoriesAppId);
+        using DaprClient dapr = await CreateDaprClientAsync(
+            FoldersAspireModule.FoldersWorkersAppId, cancellationToken).ConfigureAwait(true);
+        using HttpClient memories = _fixture.CreateMemoriesDiagnosticClient();
+        await WaitForIndexTenantAsync(memories, cancellationToken).ConfigureAwait(true);
 
         const string query = "hexalithfoldersroundtripseed";
         const string aggregateId = "tenant-a/organization-a/folder-a/version-roundtrip";
@@ -231,6 +263,42 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
             ["cloudevent.source"] = FoldersSemanticIndexingDefaults.CloudEventsSource,
         };
 
+    private static async Task WaitForIndexTenantAsync(HttpClient memories, CancellationToken cancellationToken)
+    {
+        using CancellationTokenSource readiness = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        readiness.CancelAfter(IndexReadinessTimeout);
+        string path = MemoriesRoutes.TenantPath(FoldersAspireModule.MemoriesIndexTenant);
+        try
+        {
+            while (true)
+            {
+                using HttpResponseMessage response = await memories.GetAsync(path, readiness.Token).ConfigureAwait(false);
+                if (response.StatusCode != HttpStatusCode.NotFound)
+                {
+                    response.EnsureSuccessStatusCode();
+                    TenantInfo tenant = (await response.Content.ReadFromJsonAsync<TenantInfo>(readiness.Token).ConfigureAwait(false))
+                        .ShouldNotBeNull();
+                    tenant.Id.ShouldBe(FoldersAspireModule.MemoriesIndexTenant);
+                    if (tenant.Status == TenantStatus.Active)
+                    {
+                        return;
+                    }
+
+                    if (tenant.Status is TenantStatus.Failed or TenantStatus.CompensationFailed)
+                    {
+                        throw new InvalidOperationException("Provisioning the routed Memories index tenant failed.");
+                    }
+                }
+
+                await Task.Delay(TimeSpan.FromMilliseconds(500), readiness.Token).ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException("The routed Memories index tenant did not become active within the probe budget.", exception);
+        }
+    }
+
     // Search is eventually consistent (Dapr at-least-once delivery + RediSearch indexing), so poll until the expected
     // hit count is observed or the budget is exhausted; the final result is asserted by the caller.
     private static async Task<SearchResult> WaitForHitCountAsync(
@@ -257,10 +325,10 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
         CancellationToken cancellationToken)
     {
         string url =
-            $"/api/search?tenantId={FoldersAspireModule.MemoriesIndexTenant}&axis=syntactic&maxResults=10&query={Uri.EscapeDataString(query)}";
+            $"{MemoriesRoutes.Search}?tenantId={FoldersAspireModule.MemoriesIndexTenant}&axis=syntactic&maxResults=10&query={Uri.EscapeDataString(query)}";
         if (statusFilter is not null)
         {
-            // The Memories /api/search endpoint binds attribute filters ONLY from query keys prefixed "attribute."
+            // The Memories search endpoint binds attribute filters ONLY from query keys prefixed "attribute."
             // (ReadAttributeFilters strips that prefix to derive the attribute name). The remaining key must equal the
             // worker's upsert attribute key (folders.status), since index-time and query-time both run it through
             // SyntacticSearchService.BuildAttributeTag(key, value). An "attr:" prefix is silently dropped (no filtering).
@@ -273,34 +341,65 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
         return result.ShouldNotBeNull();
     }
 
-    // Builds a Dapr client bound to the running folders-workers sidecar's HTTP endpoint so the round-trip publishes a
-    // real CloudEvent through the same pub/sub component the worker uses. Skips cleanly when the sidecar endpoint
-    // cannot be resolved on the current host (the round-trip is BLOCKED-PENDING the DCP lane regardless).
-    private DaprClient CreateDaprClient(string resourceName, string skipReason)
-    {
-        Uri? endpoint = TryResolveDaprHttpEndpoint(resourceName);
-        if (endpoint is null)
-        {
-            Assert.Skip(skipReason);
-        }
+    private static string NewId() => UniqueIdHelper.GenerateSortableUniqueStringId().ToLowerInvariant();
 
-        return new DaprClientBuilder()
-            .UseHttpEndpoint(endpoint!.ToString())
-            .Build();
+    private static async Task<OrganizationPermissionProjection> WaitForReceiptAsync(
+        DaprReadModelStore store,
+        string projectionKey,
+        CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            ReadModelEntry<OrganizationPermissionProjection> entry =
+                await store.GetAsync<OrganizationPermissionProjection>(StateStore, projectionKey, cancellationToken).ConfigureAwait(false);
+            if (entry.Value is not null)
+            {
+                return entry.Value;
+            }
+
+            await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken).ConfigureAwait(false);
+        }
     }
 
-    private Uri? TryResolveDaprHttpEndpoint(string resourceName)
+    private static async Task EraseReceiptAsync(DaprReadModelStore store, string projectionKey, string messageId)
     {
-        // The Dapr sidecar HTTP endpoint lives on the CommunityToolkit `{appId}-dapr` DaprSidecar resource under the
-        // endpoint name "http" (the daprd process exposes it host-reachably), NOT on the project resource under
-        // "dapr-http". Resolve the sidecar resource so the round-trip can publish through the real sidecar.
+        using CancellationTokenSource cleanup = new(ProbeTimeout);
+        ReadModelEntry<OrganizationPermissionProjection> entry =
+            await store.GetAsync<OrganizationPermissionProjection>(StateStore, projectionKey, cleanup.Token).ConfigureAwait(false);
+        if (entry.Value?.RecentMessages?.Any(message => message.MessageId == messageId) == true)
+        {
+            string etag = entry.ETag.ShouldNotBeNull();
+            (await store.TryEraseAsync(StateStore, projectionKey, etag, cleanup.Token).ConfigureAwait(false))
+                .ShouldBeTrue("The topology probe must remove its synthetic receipt.");
+        }
+    }
+
+    private async Task<DaprClient> CreateDaprClientAsync(string resourceName, CancellationToken cancellationToken)
+    {
+        string sidecar = _fixture.DaprCliResourceName(resourceName);
+        using CancellationTokenSource ready = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        ready.CancelAfter(ProbeTimeout);
+
+        await _fixture.App.ResourceNotifications
+            .WaitForResourceAsync(sidecar, KnownResourceStates.Running, ready.Token).ConfigureAwait(false);
+        DaprClient client = new DaprClientBuilder()
+            .UseHttpEndpoint(_fixture.App.GetEndpoint(sidecar, "http").ToString())
+            .UseGrpcEndpoint(_fixture.App.GetEndpoint(sidecar, "grpc").ToString())
+            .Build();
         try
         {
-            return _fixture.App.GetEndpoint($"{resourceName}-dapr", "http");
+            await client.WaitForSidecarAsync(ready.Token).ConfigureAwait(false);
+            while (!await client.CheckHealthAsync(ready.Token).ConfigureAwait(false))
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(200), ready.Token).ConfigureAwait(false);
+            }
+
+            return client;
         }
-        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException)
+        catch
         {
-            return null;
+            client.Dispose();
+            throw;
         }
     }
 }

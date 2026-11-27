@@ -71,9 +71,13 @@ vocabulary (type class, fileVersionId, organizationId, folderId, size class).
 ## Running the harness
 
 These tests require a **DCP-capable host**: Docker running plus a Dapr runtime (`dapr init`). They are **opt-in**
-and skip everywhere else so the hermetic full-solution lane stays green without infrastructure:
+and skip everywhere else so the hermetic full-solution lane stays green without infrastructure.
+The source AppHost launches the pinned Memories server from its build output, so build it in a fresh
+checkout before running the opted-in tests:
 
 ```bash
+dotnet build references/Hexalith.Memories/src/Hexalith.Memories.Server/Hexalith.Memories.Server.csproj \
+  -c Debug -m:1 -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
 HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true \
   dotnet test --project tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj
 ```
@@ -85,9 +89,10 @@ Story 11.15 owns the dedicated DCP-capable verification lane.
 ## Diagnostic tests versus Story 10.8 / FR58 acceptance
 
 `EventStoreSidecarShouldPublishFolderEnvelopeToWorkerSubscriberTopic` and
-`SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` are **component diagnostics**. The first hand-publishes a
-`WorkspaceFileMutationAccepted` envelope. The second seeds `SearchIndexEntryChanged` and queries Memories
-directly. Neither is FR58 completion evidence.
+`SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` are **component diagnostics**. The first sends a
+synthetic `OrganizationAclBaselineInitialized` envelope through the EventStore sidecar, checks the worker's
+persisted receipt for that message, and deletes its synthetic projection. The second seeds
+`SearchIndexEntryChanged` and queries Memories directly. FR58 has its own acceptance scenario.
 
 Story 10.8 acceptance is `Fr58PublicMutationSearchRoundTripTests`: an authenticated public
 `AddWorkspaceFile` / `ChangeWorkspaceFile` call, then polling **only** public Folders search and indexing-status.
@@ -104,14 +109,16 @@ land independently.
 `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` proves the live publish → route → index → search → remove path
 against the real `folders-index` by **seeding** `SearchIndexEntryChanged` through the worker pub/sub component:
 
-1. a syntactic `GET /api/search?tenantId=folders-index&axis=syntactic&query=…` returns exactly one hit whose
+1. a syntactic `GET /api/v1/search?tenantId=folders-index&axis=syntactic&query=…` returns exactly one hit whose
    `ScoredResult.SourceUri` echoes the published `cloudevent.id`;
 2. after a `SearchIndexEntryRemoved`, the search returns zero hits (no stale entry);
 3. after a `SearchIndexEntryChanged{folders.status=archived}`, the document remains and is filterable as archived
    (and no longer matches the active filter).
 
-It runs **only** on a DCP-capable lane (it resolves the `folders-workers` Dapr sidecar to publish, and skips cleanly
-if that endpoint is unavailable).
+The test requires an opted-in DCP-capable lane. It fails if Aspire cannot resolve or start the Workers'
+Dapr sidecar. In this fixture, the Memories child uses its test command store for tenant bootstrap.
+The test sends a short-lived bearer for the indexed tenant and waits for that tenant to become active
+before publishing through the real broker and querying the real index.
 
 ## Extending
 
