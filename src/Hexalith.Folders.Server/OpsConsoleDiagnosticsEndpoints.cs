@@ -140,6 +140,7 @@ public static class OpsConsoleDiagnosticsEndpoints
             claimTransformEvidence.GetEvidence(TenantScopedDiagnosticsQueryHandler.ReadActionToken),
             correlationId,
             FolderClientIdentityValues.TenantIds(httpContext),
+            FolderClientIdentityValues.PrincipalIds(httpContext),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -168,6 +169,7 @@ public static class OpsConsoleDiagnosticsEndpoints
             claimTransformEvidence.GetEvidence(TenantScopedDiagnosticsQueryHandler.ReadActionToken),
             correlationId,
             FolderClientIdentityValues.TenantIds(httpContext),
+            FolderClientIdentityValues.PrincipalIds(httpContext),
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);

@@ -208,7 +208,10 @@ public static partial class FoldersDomainServiceEndpoints
                     correlationId,
                     TaskContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"),
                     WorkspaceContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Workspace-Id"),
-                    ClientControlledTenantIds: FolderClientIdentityValues.TenantIds(httpContext)),
+                    ClientControlledTenantIds: FolderClientIdentityValues.TenantIds(httpContext))
+                {
+                    ClientControlledPrincipalValues = FolderClientIdentityValues.PrincipalIds(httpContext),
+                },
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(result, correlationId);

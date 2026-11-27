@@ -184,8 +184,11 @@ public sealed class FolderLifecycleStatusEndpointTests
         json.ShouldContain("\"code\":\"unsupported_read_consistency\"");
     }
 
-    [Fact]
-    public async Task LifecycleStatusRouteShouldIgnorePrincipalQueryStringValue()
+    [Theory]
+    [InlineData("user-a", HttpStatusCode.OK)]
+    [InlineData("user-b", HttpStatusCode.Forbidden)]
+    [InlineData("", HttpStatusCode.Forbidden)]
+    public async Task LifecycleStatusRouteShouldCompareSuppliedPrincipalWithCaller(string principalId, HttpStatusCode expectedStatus)
     {
         WebApplication app = await BuildAppAsync(
             TenantStore("tenant-a", "user-a"),
@@ -197,22 +200,17 @@ public sealed class FolderLifecycleStatusEndpointTests
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
-        // Attacker passes a different principal in the query string; endpoint must ignore it
-        // and serve the legitimate principal from the authentication context.
         using HttpRequestMessage request = new(
             HttpMethod.Get,
-            "/api/v1/folders/folder-a/lifecycle-status?principalId=user-attacker");
-        // Correlation must match the snapshot's EvidenceScope ("corr-a") to satisfy the
-        // compatible-evidence-snapshot invariant; the focus of this test is the query-string
-        // principal value, not correlation drift.
+            $"/api/v1/folders/folder-a/lifecycle-status?principalId={principalId}");
         request.Headers.Add("X-Correlation-Id", "corr-a");
         request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
-        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
-        json.ShouldNotContain("user-attacker", Case.Sensitive);
+        response.StatusCode.ShouldBe(expectedStatus, json);
+        json.ShouldNotContain("user-b", Case.Sensitive);
     }
 
     [Fact]

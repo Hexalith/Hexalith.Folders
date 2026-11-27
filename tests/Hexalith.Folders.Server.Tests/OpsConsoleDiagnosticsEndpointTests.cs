@@ -255,19 +255,19 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
     }
 
     [Theory]
-    [InlineData(ReadinessPath)]
-    [InlineData(ProjectionFreshnessPath)]
-    public async Task TenantScopedDiagnosticsShouldDenySafeWhenClientControlledTenantMismatch(string path)
+    [InlineData(ReadinessPath, "tenantId=tenant-a&tenantId=tenant-b", "tenant-b")]
+    [InlineData(ReadinessPath, "principalId=user-b", "user-b")]
+    [InlineData(ProjectionFreshnessPath, "tenantId=tenant-a&tenantId=tenant-b", "tenant-b")]
+    [InlineData(ProjectionFreshnessPath, "principalId=user-b", "user-b")]
+    public async Task TenantScopedDiagnosticsShouldDenySafeWhenClientControlledIdentityMismatch(
+        string path, string query, string suppliedIdentity)
     {
-        // Authorization-before-observation: a client-supplied tenant override that disagrees with the
-        // authoritative tenant fails closed with a safe 403 that never reflects the attempted tenant id.
         await using WebApplication app = BuildApp(SeededReadModel());
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         using HttpClient client = app.GetTestClient();
-        using HttpRequestMessage request = new(HttpMethod.Get, path);
+        using HttpRequestMessage request = new(HttpMethod.Get, $"{path}?{query}");
         request.Headers.Add("X-Correlation-Id", "corr-a");
-        request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-impostor");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -275,7 +275,7 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden, json);
         json.ShouldContain("\"category\":\"authorization_denied\"");
         json.ShouldContain("\"code\":\"denied_safe\"");
-        json.ShouldNotContain("tenant-impostor", Case.Sensitive);
+        json.ShouldNotContain(suppliedIdentity, Case.Sensitive);
     }
 
     [Theory]

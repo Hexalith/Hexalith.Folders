@@ -69,6 +69,24 @@ public sealed class GetProviderBindingEndpointTests
     }
 
     [Fact]
+    public async Task GetProviderBindingShouldDenyClientPrincipalMismatch()
+    {
+        await using WebApplication app = BuildApp(Binding());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-bindings/binding-a?principalId=user-b");
+        request.Headers.Add("X-Correlation-Id", "corr-a");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        json.ShouldNotContain("binding-a", Case.Sensitive);
+        json.ShouldNotContain("user-b", Case.Sensitive);
+    }
+
+    [Fact]
     public async Task GetProviderBindingShouldRejectIdempotencyKey()
     {
         await using WebApplication app = BuildApp(Binding());

@@ -67,7 +67,8 @@ public sealed partial class GetProviderBindingQueryHandler(
         string managedTenantId = query.AuthoritativeTenantId.Trim();
         string principalId = query.PrincipalId.Trim();
         if (string.Equals(managedTenantId, "system", StringComparison.OrdinalIgnoreCase)
-            || HasClientControlledMismatch(managedTenantId, query.ClientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(managedTenantId, query.ClientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(principalId, query.ClientControlledPrincipalValues)
             || !IsClaimTransformEvidenceValid(query.ClaimTransformEvidence, managedTenantId, principalId))
         {
             return Safe(GetProviderBindingQueryResultCode.AuthorizationDenied, "provider_binding_read_denied", deniedFreshness, correlationId);
@@ -147,32 +148,6 @@ public sealed partial class GetProviderBindingQueryHandler(
             && string.Equals(evidence.TenantId?.Trim(), authoritativeTenantId, StringComparison.Ordinal)
             && string.Equals(evidence.PrincipalId?.Trim(), principalId, StringComparison.Ordinal)
             && evidence.HasPermissionFor(ReadActionToken);
-
-    private static bool HasClientControlledMismatch(
-        string authoritativeTenantId,
-        IReadOnlyDictionary<string, string?>? comparisonValues)
-    {
-        if (comparisonValues is null || comparisonValues.Count == 0)
-        {
-            return false;
-        }
-
-        foreach (KeyValuePair<string, string?> value in comparisonValues)
-        {
-            if (value.Value is null)
-            {
-                continue;
-            }
-
-            string trimmed = value.Value.Trim();
-            if (trimmed.Length == 0 || !string.Equals(trimmed, authoritativeTenantId, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private static string SafeCorrelationId(string? value)
         => !string.IsNullOrWhiteSpace(value) && CanonicalIdentifierPattern().IsMatch(value.Trim())

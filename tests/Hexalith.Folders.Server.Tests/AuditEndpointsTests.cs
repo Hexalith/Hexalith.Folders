@@ -228,7 +228,7 @@ public sealed class AuditEndpointsTests
     }
 
     [Fact]
-    public async Task ListAuditTrailWithTenantMismatchShouldEmitSafeAuthorizationDenial()
+    public async Task ListAuditTrailWithRepeatedTenantMismatchShouldEmitSafeAuthorizationDenial()
     {
         await using WebApplication app = BuildApp(
             tenantId: "tenant-a",
@@ -237,17 +237,16 @@ public sealed class AuditEndpointsTests
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
 
-        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-secret-victim/audit-trail");
-        request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-secret-victim");
-        request.Headers.Add("X-Correlation-Id", "corr-mismatch");
+        using HttpRequestMessage request = new(
+            HttpMethod.Get,
+            "/api/v1/folders/folder-a/audit-trail?tenantId=tenant-a&tenantId=tenant-b");
+        request.Headers.Add("X-Correlation-Id", "corr-a");
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
 
-        // Tenant authority comes from authentication context only. Path/header tenant hints don't
-        // change the answer. The mismatched payload tenant triggers a safe-denial envelope.
         response.StatusCode.ShouldBeOneOf(HttpStatusCode.Forbidden, HttpStatusCode.NotFound);
         string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        body.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
-        body.ShouldNotContain("folder-secret-victim", Case.Sensitive);
+        body.ShouldNotContain("tenant-b", Case.Sensitive);
+        body.ShouldNotContain("folder-a", Case.Sensitive);
     }
 
     [Fact]

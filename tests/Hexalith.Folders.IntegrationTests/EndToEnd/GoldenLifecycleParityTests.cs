@@ -268,9 +268,7 @@ public sealed class GoldenLifecycleParityTests
             SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", CandidateFolderA, correlationId: "corr_shared_123456");
 
-            // REST run — the lifecycle endpoint requires the request correlation to match the snapshot's
-            // EvidenceScope correlation (compatible-evidence-snapshot invariant — see
-            // FolderLifecycleStatusEndpointTests.LifecycleStatusRouteShouldIgnorePrincipalQueryStringValue).
+            // The lifecycle endpoint requires the request correlation to match the snapshot's evidence scope.
             const string sharedCorrelation = "corr_shared_123456";
             using HttpRequestMessage restRequest = new(HttpMethod.Get, $"/api/v1/folders/{CandidateFolderA}/lifecycle-status");
             restRequest.Headers.Add("X-Correlation-Id", sharedCorrelation);

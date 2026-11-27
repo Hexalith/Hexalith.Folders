@@ -4,7 +4,7 @@ namespace Hexalith.Folders.Server;
 
 /// <summary>
 /// Collects the client-controlled tenant and principal identity values that Server endpoints compare with the
-/// authenticated identity. Each value is keyed by its source so a mismatch can be reported without echoing it.
+/// authenticated identity. Indexed source keys retain every supplied value for comparison.
 /// </summary>
 internal static class FolderClientIdentityValues
 {
@@ -12,33 +12,31 @@ internal static class FolderClientIdentityValues
     /// Returns the tenant identity values the client supplied through the query string or request headers.
     /// </summary>
     /// <param name="httpContext">The current HTTP context.</param>
-    /// <returns>Every tenant source key, mapped to its first safe value or <see langword="null"/>.</returns>
+    /// <returns>The supplied tenant values with their indexed source keys.</returns>
     public static IReadOnlyDictionary<string, string?> TenantIds(HttpContext httpContext)
     {
         ArgumentNullException.ThrowIfNull(httpContext);
-        return new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
-        };
+        return HistoricalMutationAuthorization.ClientControlledValues(
+            httpContext,
+            ("query_tenant_id", false, "tenantId"),
+            ("query_managed_tenant_id", false, "managedTenantId"),
+            ("header_hexalith_tenant_id", true, "X-Hexalith-Tenant-Id"),
+            ("header_tenant_id", true, "X-Tenant-Id"),
+            ("forwarded_tenant_id", true, "X-Forwarded-Tenant"));
     }
 
     /// <summary>
-    /// Returns the principal identity values the client supplied through request headers. Principal identity is
-    /// header-only: query-string sources are not read, to reduce the attack surface.
+    /// Returns the principal identity values the client supplied through the query string or request headers.
     /// </summary>
     /// <param name="httpContext">The current HTTP context.</param>
-    /// <returns>Every principal source key, mapped to its first safe value or <see langword="null"/>.</returns>
+    /// <returns>The supplied principal values with their indexed source keys.</returns>
     public static IReadOnlyDictionary<string, string?> PrincipalIds(HttpContext httpContext)
     {
         ArgumentNullException.ThrowIfNull(httpContext);
-        return new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["header_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Principal-Id"),
-            ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
-        };
+        return HistoricalMutationAuthorization.ClientControlledValues(
+            httpContext,
+            ("query_principal_id", false, "principalId"),
+            ("header_principal_id", true, "X-Principal-Id"),
+            ("forwarded_principal_id", true, "X-Forwarded-Principal"));
     }
 }

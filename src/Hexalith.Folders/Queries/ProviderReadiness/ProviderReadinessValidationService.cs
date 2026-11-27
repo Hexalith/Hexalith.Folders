@@ -100,7 +100,8 @@ public sealed partial class ProviderReadinessValidationService(
         string managedTenantId = request.AuthoritativeTenantId.Trim();
         string principalId = request.PrincipalId.Trim();
         if (string.Equals(managedTenantId, "system", StringComparison.OrdinalIgnoreCase)
-            || HasClientControlledMismatch(managedTenantId, request.ClientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(managedTenantId, request.ClientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(principalId, request.ClientControlledPrincipalValues)
             || !IsClaimTransformEvidenceValid(request.ClaimTransformEvidence, managedTenantId, principalId))
         {
             return Result(
@@ -809,32 +810,6 @@ public sealed partial class ProviderReadinessValidationService(
             && string.Equals(evidence.TenantId?.Trim(), authoritativeTenantId, StringComparison.Ordinal)
             && string.Equals(evidence.PrincipalId?.Trim(), principalId, StringComparison.Ordinal)
             && evidence.HasPermissionFor(ReadActionToken);
-
-    private static bool HasClientControlledMismatch(
-        string authoritativeTenantId,
-        IReadOnlyDictionary<string, string?>? comparisonValues)
-    {
-        if (comparisonValues is null || comparisonValues.Count == 0)
-        {
-            return false;
-        }
-
-        foreach (KeyValuePair<string, string?> value in comparisonValues)
-        {
-            if (value.Value is null)
-            {
-                continue;
-            }
-
-            string trimmed = value.Value.Trim();
-            if (trimmed.Length == 0 || !string.Equals(trimmed, authoritativeTenantId, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private static void AddPolicyRef(Dictionary<string, string> metadata, string key, string? value)
     {

@@ -9,4 +9,8 @@ public sealed record ProviderSupportEvidenceQuery(
     string? CorrelationId,
     string? Cursor,
     int Limit,
-    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues);
+    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues)
+{
+    /// <summary>Client-supplied principal identifiers used for comparison with the authenticated caller.</summary>
+    internal IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues { get; init; }
+}

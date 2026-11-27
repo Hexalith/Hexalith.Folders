@@ -117,7 +117,10 @@ public static partial class ProviderReadinessEndpoints
                 claimTransformEvidence.GetEvidence(GetProviderBindingQueryHandler.ReadActionToken),
                 providerBindingRef,
                 correlationId,
-                FolderClientIdentityValues.TenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext))
+            {
+                ClientControlledPrincipalValues = FolderClientIdentityValues.PrincipalIds(httpContext),
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -217,7 +220,10 @@ public static partial class ProviderReadinessEndpoints
                 correlationId,
                 cursor,
                 limit,
-                FolderClientIdentityValues.TenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext))
+            {
+                ClientControlledPrincipalValues = FolderClientIdentityValues.PrincipalIds(httpContext),
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);
@@ -330,7 +336,10 @@ public static partial class ProviderReadinessEndpoints
                 requestedCapability,
                 correlationId,
                 claimTransformEvidence.GetEvidence(ProviderReadinessValidationService.ReadActionToken),
-                FolderClientIdentityValues.TenantIds(httpContext)),
+                FolderClientIdentityValues.TenantIds(httpContext))
+            {
+                ClientControlledPrincipalValues = FolderClientIdentityValues.PrincipalIds(httpContext),
+            },
             cancellationToken).ConfigureAwait(false);
 
         return ToHttpResult(httpContext, result);

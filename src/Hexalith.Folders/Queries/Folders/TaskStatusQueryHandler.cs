@@ -95,7 +95,8 @@ public sealed class TaskStatusQueryHandler(
             return SafeResult(TaskStatusQueryResultCode.AuthenticationRequired, deniedFreshness, query, null);
         }
 
-        if (HasClientControlledMismatch(query.AuthoritativeTenantId, query.ClientControlledTenantValues))
+        if (LayeredFolderAuthorizationService.HasClientControlledMismatch(query.AuthoritativeTenantId, query.ClientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(query.PrincipalId, query.ClientControlledPrincipalValues))
         {
             return SafeResult(TaskStatusQueryResultCode.AuthorizationDenied, deniedFreshness, query, null);
         }
@@ -326,14 +327,6 @@ public sealed class TaskStatusQueryHandler(
 
     private static bool HasValue(string? value)
         => !string.IsNullOrWhiteSpace(value);
-
-    private static bool HasClientControlledMismatch(
-        string authoritativeValue,
-        IReadOnlyDictionary<string, string?>? clientValues)
-        => clientValues is not null
-        && clientValues.Values.Any(value =>
-            !string.IsNullOrWhiteSpace(value)
-            && !string.Equals(value.Trim(), authoritativeValue, StringComparison.Ordinal));
 
     private static bool Matches(string? left, string? right)
         => string.Equals(left, right, StringComparison.Ordinal);

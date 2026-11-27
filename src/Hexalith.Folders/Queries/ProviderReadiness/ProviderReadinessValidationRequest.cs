@@ -11,6 +11,9 @@ public sealed record ProviderReadinessValidationRequest(
     EventStoreClaimTransformEvidence ClaimTransformEvidence,
     IReadOnlyDictionary<string, string?> ClientControlledTenantValues)
 {
+    /// <summary>Client-supplied principal identifiers used for comparison with the authenticated caller.</summary>
+    internal IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues { get; init; }
+
     /// <summary>The folder whose source fold established the repository binding.</summary>
     internal string? BoundFolderId { get; init; }
     /// <summary>The repository binding from that authorized source fold.</summary>

@@ -3393,6 +3393,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: Decide whether the Audit, Domain, provider-readiness and OpsConsole endpoints should flag every client-supplied identity value, as the mutation paths do.
   evidence: `FolderClientIdentityValues` keeps the old endpoint behavior: one value per source, the first safe one, and header-only principals. A second `X-Tenant-Id` line carrying a foreign tenant, a foreign value with a control character, or `?principalId=` is therefore never compared with the authenticated identity. `HistoricalMutationAuthorization.ClientControlledValues` records every value under an indexed key, so those requests are flagged there. Neither path takes authority from these values, so the difference only affects mismatch detection. Unverified medium; settle it by deciding the detection rule and checking the endpoint tests against both.
+  status: done 2026-11-27
+  resolution: Audit, Domain, provider-readiness and operations-console reads compare every supplied tenant and principal value with authenticated claims. Tests cover repeats, blanks, retained malformed values and task-status short-circuiting before tenant access.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: `Pd10V2CandidateCompatibilitySeam` keeps a private `ClientControlledValues` that appears to duplicate `HistoricalMutationAuthorization.ClientControlledValues`.

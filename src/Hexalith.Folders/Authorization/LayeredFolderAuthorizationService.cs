@@ -564,7 +564,11 @@ public sealed class LayeredFolderAuthorizationService(
             && evidence.HasPermissionFor(context.ActionToken);
     }
 
-    private static bool HasClientControlledMismatch(
+    /// <summary>Checks each supplied identity value against the authenticated identity.</summary>
+    /// <param name="authoritativeValue">The authenticated tenant or principal identifier.</param>
+    /// <param name="comparisonValues">The client-supplied values keyed by source.</param>
+    /// <returns>Whether a supplied value is blank or conflicts with the authenticated identity.</returns>
+    internal static bool HasClientControlledMismatch(
         string? authoritativeValue,
         IReadOnlyDictionary<string, string?>? comparisonValues)
     {

@@ -36,7 +36,8 @@ public sealed class EffectivePermissionsQueryHandler(
             return SafeResult(EffectivePermissionsResultCode.NotFoundSafe, null, query, deniedFreshness);
         }
 
-        if (HasClientTenantMismatch(query))
+        if (LayeredFolderAuthorizationService.HasClientControlledMismatch(query.AuthoritativeTenantId, query.ClientControlledTenantIds)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(query.PrincipalId, query.ClientControlledPrincipalValues))
         {
             return SafeResult(EffectivePermissionsResultCode.AuthorizationDenied, null, query, deniedFreshness);
         }
@@ -261,40 +262,6 @@ public sealed class EffectivePermissionsQueryHandler(
             OperationId,
             taskScope.OpaqueTaskId,
             taskScope.OpaqueWorkspaceId);
-    }
-
-    private static bool HasClientTenantMismatch(EffectivePermissionsQuery query)
-    {
-        if (query.ClientControlledTenantIds is null || query.ClientControlledTenantIds.Count == 0)
-        {
-            return false;
-        }
-
-        string authoritative = (query.AuthoritativeTenantId ?? string.Empty).Trim();
-        string? firstNonEmpty = null;
-
-        foreach (string? raw in query.ClientControlledTenantIds.Values)
-        {
-            string value = (raw ?? string.Empty).Trim();
-            if (value.Length == 0)
-            {
-                continue;
-            }
-
-            if (!string.Equals(value, authoritative, StringComparison.Ordinal))
-            {
-                return true;
-            }
-
-            if (firstNonEmpty is not null && !string.Equals(value, firstNonEmpty, StringComparison.Ordinal))
-            {
-                return true;
-            }
-
-            firstNonEmpty ??= value;
-        }
-
-        return false;
     }
 
     private static EffectivePermissionsResultCode MapTenantFailure(TenantAccessOutcome outcome)

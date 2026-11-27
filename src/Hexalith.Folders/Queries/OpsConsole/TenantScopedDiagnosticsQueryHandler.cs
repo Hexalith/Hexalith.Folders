@@ -27,16 +27,29 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
     private readonly ILogger<TenantScopedDiagnosticsQueryHandler> _logger = logger ?? NullLogger<TenantScopedDiagnosticsQueryHandler>.Instance;
 
     /// <summary>Reads readiness diagnostics for the authoritative tenant.</summary>
-    public async Task<OpsConsoleDiagnosticReadResult<ReadinessDiagnosticsView>> GetReadinessAsync(
+    public Task<OpsConsoleDiagnosticReadResult<ReadinessDiagnosticsView>> GetReadinessAsync(
         string? authoritativeTenantId,
         string? principalId,
         EventStoreClaimTransformEvidence claimTransformEvidence,
         string? correlationId,
         IReadOnlyDictionary<string, string?>? clientControlledTenantValues,
         CancellationToken cancellationToken = default)
+        => GetReadinessAsync(authoritativeTenantId, principalId, claimTransformEvidence, correlationId,
+            clientControlledTenantValues, clientControlledPrincipalValues: null, cancellationToken);
+
+    /// <summary>Reads readiness diagnostics after comparing all supplied tenant and principal values.</summary>
+    internal async Task<OpsConsoleDiagnosticReadResult<ReadinessDiagnosticsView>> GetReadinessAsync(
+        string? authoritativeTenantId,
+        string? principalId,
+        EventStoreClaimTransformEvidence claimTransformEvidence,
+        string? correlationId,
+        IReadOnlyDictionary<string, string?>? clientControlledTenantValues,
+        IReadOnlyDictionary<string, string?>? clientControlledPrincipalValues,
+        CancellationToken cancellationToken)
     {
         (DiagnosticAuthorization authorization, string safeCorrelationId) = await AuthorizeAsync(
-            authoritativeTenantId, principalId, claimTransformEvidence, correlationId, clientControlledTenantValues, cancellationToken).ConfigureAwait(false);
+            authoritativeTenantId, principalId, claimTransformEvidence, correlationId, clientControlledTenantValues,
+            clientControlledPrincipalValues, cancellationToken).ConfigureAwait(false);
 
         if (!authorization.Allowed)
         {
@@ -60,16 +73,29 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
     }
 
     /// <summary>Reads projection-freshness diagnostics for the authoritative tenant.</summary>
-    public async Task<OpsConsoleDiagnosticReadResult<ProjectionFreshnessDiagnosticsView>> GetProjectionFreshnessAsync(
+    public Task<OpsConsoleDiagnosticReadResult<ProjectionFreshnessDiagnosticsView>> GetProjectionFreshnessAsync(
         string? authoritativeTenantId,
         string? principalId,
         EventStoreClaimTransformEvidence claimTransformEvidence,
         string? correlationId,
         IReadOnlyDictionary<string, string?>? clientControlledTenantValues,
         CancellationToken cancellationToken = default)
+        => GetProjectionFreshnessAsync(authoritativeTenantId, principalId, claimTransformEvidence, correlationId,
+            clientControlledTenantValues, clientControlledPrincipalValues: null, cancellationToken);
+
+    /// <summary>Reads projection freshness after comparing all supplied tenant and principal values.</summary>
+    internal async Task<OpsConsoleDiagnosticReadResult<ProjectionFreshnessDiagnosticsView>> GetProjectionFreshnessAsync(
+        string? authoritativeTenantId,
+        string? principalId,
+        EventStoreClaimTransformEvidence claimTransformEvidence,
+        string? correlationId,
+        IReadOnlyDictionary<string, string?>? clientControlledTenantValues,
+        IReadOnlyDictionary<string, string?>? clientControlledPrincipalValues,
+        CancellationToken cancellationToken)
     {
         (DiagnosticAuthorization authorization, string safeCorrelationId) = await AuthorizeAsync(
-            authoritativeTenantId, principalId, claimTransformEvidence, correlationId, clientControlledTenantValues, cancellationToken).ConfigureAwait(false);
+            authoritativeTenantId, principalId, claimTransformEvidence, correlationId, clientControlledTenantValues,
+            clientControlledPrincipalValues, cancellationToken).ConfigureAwait(false);
 
         if (!authorization.Allowed)
         {
@@ -98,6 +124,7 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
         EventStoreClaimTransformEvidence claimTransformEvidence,
         string? correlationId,
         IReadOnlyDictionary<string, string?>? clientControlledTenantValues,
+        IReadOnlyDictionary<string, string?>? clientControlledPrincipalValues,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
@@ -113,7 +140,8 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
         string managedTenantId = authoritativeTenantId.Trim();
         string principal = principalId.Trim();
         if (string.Equals(managedTenantId, "system", StringComparison.OrdinalIgnoreCase)
-            || HasClientControlledMismatch(managedTenantId, clientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(managedTenantId, clientControlledTenantValues)
+            || LayeredFolderAuthorizationService.HasClientControlledMismatch(principal, clientControlledPrincipalValues)
             || !IsClaimTransformEvidenceValid(claimTransformEvidence, managedTenantId, principal))
         {
             return (DiagnosticAuthorization.Denied(DiagnosticReadResultCode.AuthorizationDenied), safeCorrelationId);
@@ -152,32 +180,6 @@ public sealed partial class TenantScopedDiagnosticsQueryHandler(
             && string.Equals(evidence.TenantId?.Trim(), authoritativeTenantId, StringComparison.Ordinal)
             && string.Equals(evidence.PrincipalId?.Trim(), principalId, StringComparison.Ordinal)
             && evidence.HasPermissionFor(ReadActionToken);
-
-    private static bool HasClientControlledMismatch(
-        string authoritativeTenantId,
-        IReadOnlyDictionary<string, string?>? comparisonValues)
-    {
-        if (comparisonValues is null || comparisonValues.Count == 0)
-        {
-            return false;
-        }
-
-        foreach (KeyValuePair<string, string?> value in comparisonValues)
-        {
-            if (value.Value is null)
-            {
-                continue;
-            }
-
-            string trimmed = value.Value.Trim();
-            if (trimmed.Length == 0 || !string.Equals(trimmed, authoritativeTenantId, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private static string SafeCorrelationId(string? value)
         => !string.IsNullOrWhiteSpace(value) && CanonicalIdentifierPattern().IsMatch(value.Trim())

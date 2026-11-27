@@ -17,4 +17,8 @@ public sealed record GetProviderBindingQuery(
     EventStoreClaimTransformEvidence ClaimTransformEvidence,
     string ProviderBindingRef,
     string? CorrelationId,
-    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues);
+    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues)
+{
+    /// <summary>Client-supplied principal identifiers used for comparison with the authenticated caller.</summary>
+    internal IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues { get; init; }
+}

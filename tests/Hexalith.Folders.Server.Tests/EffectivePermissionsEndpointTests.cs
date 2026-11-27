@@ -69,8 +69,10 @@ public sealed class EffectivePermissionsEndpointTests
         document.RootElement.GetProperty("freshness").GetProperty("stale").GetBoolean().ShouldBeFalse();
     }
 
-    [Fact]
-    public async Task EffectivePermissionsRouteShouldUseSafeDenialEnvelopeForTenantMismatch()
+    [Theory]
+    [InlineData("tenantId=tenant-a&tenantId=tenant-b", "tenant-b")]
+    [InlineData("principalId=user-b", "user-b")]
+    public async Task EffectivePermissionsRouteShouldUseSafeDenialEnvelopeForIdentityMismatch(string query, string suppliedIdentity)
     {
         await using WebApplication app = BuildApp(
             TenantStore("tenant-a", "user-a"),
@@ -81,8 +83,7 @@ public sealed class EffectivePermissionsEndpointTests
 
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
-        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-secret-victim/effective-permissions");
-        request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-secret-victim");
+        using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/folder-a/effective-permissions?{query}");
         request.Headers.Add("X-Correlation-Id", "corr-mismatch");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -95,8 +96,8 @@ public sealed class EffectivePermissionsEndpointTests
         json.ShouldContain("\"correlationId\":\"corr-mismatch\"");
         json.ShouldContain("\"message\":");
         json.ShouldContain("\"details\":");
-        json.ShouldNotContain("folder-secret-victim", Case.Sensitive);
-        json.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
+        json.ShouldNotContain("folder-a", Case.Sensitive);
+        json.ShouldNotContain(suppliedIdentity, Case.Sensitive);
     }
 
     [Fact]

@@ -174,6 +174,32 @@ public sealed class TaskStatusQueryHandlerTests
         readModel.Requests.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData("user-b")]
+    [InlineData("")]
+    public async Task ClientPrincipalMismatchShouldRejectBeforeTenantProjectionLookup(string clientPrincipal)
+    {
+        CountingTenantAccessProjectionStore tenantStore = new(
+            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        CountingTaskStatusReadModel readModel = new(TaskStatusReadModelResult.Available(Snapshot()));
+        TaskStatusQuery query = Query() with
+        {
+            ClientControlledPrincipalValues = new Dictionary<string, string?>
+            {
+                ["query_principal_id[0]"] = "user-a",
+                ["query_principal_id[1]"] = clientPrincipal,
+            },
+        };
+
+        TaskStatusQueryResult result = await Handler(tenantStore, readModel)
+            .HandleAsync(query, TestContext.Current.CancellationToken).ConfigureAwait(false);
+
+        result.Code.ShouldBe(TaskStatusQueryResultCode.AuthorizationDenied);
+        result.TaskId.ShouldBeNull();
+        tenantStore.Gets.ShouldBe(0);
+        readModel.Requests.ShouldBe(0);
+    }
+
     [Fact]
     public async Task ClaimTransformDenialShouldNotTouchTenantProjectionOrReadModel()
     {

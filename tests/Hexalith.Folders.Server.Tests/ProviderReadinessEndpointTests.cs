@@ -218,8 +218,10 @@ public sealed class ProviderReadinessEndpointTests
         response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe(document.RootElement.GetProperty("correlationId").GetString());
     }
 
-    [Fact]
-    public async Task ProviderReadinessRouteShouldDenyClientTenantMismatchBeforeObservation()
+    [Theory]
+    [InlineData("tenantId=tenant-a&tenantId=tenant-other", "tenant-other")]
+    [InlineData("principalId=user-other", "user-other")]
+    public async Task ProviderReadinessRouteShouldDenyClientIdentityMismatchBeforeObservation(string query, string suppliedIdentity)
     {
         RecordingProviderReadinessBindingReader bindingReader = new(Binding());
         await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
@@ -227,7 +229,7 @@ public sealed class ProviderReadinessEndpointTests
         await app.StartAsync(TestContext.Current.CancellationToken);
         using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-tenant-mismatch");
-        request.RequestUri = new Uri("/api/v1/provider-readiness/validations?tenantId=tenant-other", UriKind.Relative);
+        request.RequestUri = new Uri($"/api/v1/provider-readiness/validations?{query}", UriKind.Relative);
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -235,7 +237,7 @@ public sealed class ProviderReadinessEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
         json.ShouldContain("\"category\":\"authorization_denied\"");
         json.ShouldContain("\"code\":\"provider_readiness_read_denied\"");
-        json.ShouldNotContain("tenant-other", Case.Sensitive);
+        json.ShouldNotContain(suppliedIdentity, Case.Sensitive);
         bindingReader.Calls.ShouldBe(0);
     }
 
@@ -442,6 +444,26 @@ public sealed class ProviderReadinessEndpointTests
         json.ShouldContain("\"category\":\"authorization_denied\"");
         json.ShouldContain("\"code\":\"provider_support_read_denied\"");
         json.ShouldNotContain("binding-a", Case.Sensitive);
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldDenyClientPrincipalMismatchBeforeObservation()
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), supportReadModel: readModel);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence?principalId=user-b");
+        request.Headers.Add("X-Correlation-Id", "corr-support-denied");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        json.ShouldContain("\"code\":\"provider_support_read_denied\"");
+        json.ShouldNotContain("user-b", Case.Sensitive);
         readModel.Calls.ShouldBe(0);
     }
 

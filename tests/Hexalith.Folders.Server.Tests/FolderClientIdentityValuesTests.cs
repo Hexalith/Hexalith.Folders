@@ -13,34 +13,33 @@ public sealed class FolderClientIdentityValuesTests
     public void TenantIdsShouldMapEveryQueryAndHeaderSource()
     {
         DefaultHttpContext context = new();
-        context.Request.QueryString = new QueryString("?tenantId=query-tenant&managedTenantId=query-managed");
+        context.Request.QueryString = new QueryString("?tenantId=query-tenant&tenantId=second-query-tenant&managedTenantId=query-managed");
         context.Request.Headers["X-Hexalith-Tenant-Id"] = "hexalith-tenant";
-        context.Request.Headers["X-Tenant-Id"] = "header-tenant";
+        context.Request.Headers["X-Tenant-Id"] = new StringValues(["header-tenant", "second-header-tenant"]);
         context.Request.Headers["X-Forwarded-Tenant"] = "forwarded-tenant";
 
         Render(FolderClientIdentityValues.TenantIds(context)).ShouldBe(
         [
-            "forwarded_tenant_id=forwarded-tenant",
-            "header_hexalith_tenant_id=hexalith-tenant",
-            "header_tenant_id=header-tenant",
-            "query_managed_tenant_id=query-managed",
-            "query_tenant_id=query-tenant",
+            "forwarded_tenant_id[0]=forwarded-tenant",
+            "header_hexalith_tenant_id[0]=hexalith-tenant",
+            "header_tenant_id[0]=header-tenant",
+            "header_tenant_id[1]=second-header-tenant",
+            "query_managed_tenant_id[0]=query-managed",
+            "query_tenant_id[0]=query-tenant",
+            "query_tenant_id[1]=second-query-tenant",
         ]);
     }
 
     [Fact]
-    public void TenantIdsShouldKeepEverySourceKeyWhenNoValueIsSupplied()
-        => Render(FolderClientIdentityValues.TenantIds(new DefaultHttpContext())).ShouldBe(
-        [
-            "forwarded_tenant_id=",
-            "header_hexalith_tenant_id=",
-            "header_tenant_id=",
-            "query_managed_tenant_id=",
-            "query_tenant_id=",
-        ]);
+    public void IdentityValuesShouldOmitAbsentSources()
+    {
+        DefaultHttpContext context = new();
+        FolderClientIdentityValues.TenantIds(context).ShouldBeEmpty();
+        FolderClientIdentityValues.PrincipalIds(context).ShouldBeEmpty();
+    }
 
     [Fact]
-    public void PrincipalIdsShouldReadHeadersOnly()
+    public void PrincipalIdsShouldReadQueriesAndHeaders()
     {
         DefaultHttpContext context = new();
         context.Request.QueryString = new QueryString("?principalId=query-principal");
@@ -49,20 +48,26 @@ public sealed class FolderClientIdentityValuesTests
 
         Render(FolderClientIdentityValues.PrincipalIds(context)).ShouldBe(
         [
-            "forwarded_principal_id=forwarded-principal",
-            "header_principal_id=header-principal",
+            "forwarded_principal_id[0]=forwarded-principal",
+            "header_principal_id[0]=header-principal",
+            "query_principal_id[0]=query-principal",
         ]);
     }
 
     [Fact]
-    public void IdentityValuesShouldSkipBlankAndControlCharacterValues()
+    public void IdentityValuesShouldRetainBlankAndMalformedValuesForComparison()
     {
+        const string malformedTenant = "bad\u0007tenant";
         DefaultHttpContext context = new();
-        context.Request.Headers["X-Tenant-Id"] = new StringValues([" ", "bad\u0007tenant", " good-tenant "]);
-        context.Request.Headers["X-Principal-Id"] = new StringValues(["bad\r\nprincipal"]);
+        context.Request.QueryString = new QueryString("?principalId=");
+        context.Request.Headers["X-Tenant-Id"] = new StringValues([" ", malformedTenant, " tenant-a "]);
 
-        FolderClientIdentityValues.TenantIds(context)["header_tenant_id"].ShouldBe("good-tenant");
-        FolderClientIdentityValues.PrincipalIds(context)["header_principal_id"].ShouldBeNull();
+        IReadOnlyDictionary<string, string?> values = FolderClientIdentityValues.TenantIds(context);
+        values["header_tenant_id[0]"].ShouldBe(" ");
+        string.Equals(values["header_tenant_id[1]"], malformedTenant, StringComparison.Ordinal)
+            .ShouldBeTrue("The collector must retain a malformed value for comparison.");
+        values["header_tenant_id[2]"].ShouldBe(" tenant-a ");
+        FolderClientIdentityValues.PrincipalIds(context)["query_principal_id[0]"].ShouldBe(string.Empty);
     }
 
     [Fact]
