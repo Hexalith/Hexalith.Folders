@@ -66,7 +66,9 @@ try {
     foreach ($version in @('16.0.3', '15.0.7')) {
         $containerName = "hxf-forgejo-smoke-$version-$runId"
         $containers.Add($containerName)
-        Invoke-Checked 'docker' @('pull', "codeberg.org/forgejo/forgejo:$version")
+        # Forgejo's mirror retains the Linux AMD64 manifest missing from Codeberg for 16.0.3.
+        $image = "code.forgejo.org/forgejo/forgejo:$version"
+        Invoke-Checked 'docker' @('pull', $image)
         Invoke-Checked 'docker' @(
             'run', '--detach',
             '--name', $containerName,
@@ -84,7 +86,7 @@ try {
             '--env', 'FORGEJO__server__HTTP_PORT=3000',
             '--env', 'FORGEJO__server__DISABLE_SSH=true',
             '--env', 'FORGEJO__security__INSTALL_LOCK=true',
-            "codeberg.org/forgejo/forgejo:$version")
+            $image)
 
         $started = $false
         for ($attempt = 0; $attempt -lt 60; $attempt++) {
