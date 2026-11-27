@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 9afe7791444b9b9207bb6b264e985147212c77e5a0302e4d953a43b91489af12
+candidate_set_sha256: 55d04705c3bee13734d06103c8a6f33789933048cad31224d77f4fbccab15a5d
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -6278,8 +6278,8 @@ artifacts:
     sha256: d2e2df0919f9511ee2ffbf601a65f6973bedf658c432824b2b2e88a9fec0a48a
   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs"
     kind: file
-    bytes: 20143
-    sha256: 067fa2b103abff7cee54395ea2a86ca07e6f220465fa6a95e00aef00633e5edb
+    bytes: 21627
+    sha256: 75d6463721510248feef1ae8035ceb1840330db736c6003b6c0f5bb8414a615c
   - path: "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs"
     kind: file
     bytes: 6828
@@ -6750,8 +6750,8 @@ artifacts:
     sha256: b3175d1385ffddb4ea294ddf548e2a3c0cb88aac5fa170a982f6be4772ae0b29
   - path: "tests/shared/OperationalStatus/OperationalStatusReadObserver.cs"
     kind: file
-    bytes: 1496
-    sha256: 073310a65fdb2b8d5ee0372494722a2594ea5bde5c353521ad429ec2a341bdd4
+    bytes: 1621
+    sha256: 2af599ac79ae5ce7437783319d4d2e7001bddcaad39cec98db14b7246fab8c4f
   - path: "tests/shared/OperationalStatus/OperationalStatusSequenceReader.cs"
     kind: file
     bytes: 480

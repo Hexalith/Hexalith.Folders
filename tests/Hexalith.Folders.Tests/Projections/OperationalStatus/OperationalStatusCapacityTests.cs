@@ -1,9 +1,11 @@
 using System.Text;
 using System.Text.Json;
 
+using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.Folders;
+using Hexalith.Folders.Server;
 using Hexalith.Folders.Tests.OperationalStatus;
 
 using Shouldly;
@@ -72,11 +74,33 @@ public sealed class OperationalStatusCapacityTests
             (await writer.ApplyAsync("tenant-a", "folder-a", "duplicate-" + index, [sources[index]], token)).IsSuccess.ShouldBeTrue();
         var growth = Rejection(sources[0], count + 1);
         growth = OperationalStatusTestData.Stored(growth.Source! with { GlobalPosition = count + 2 });
-        var concurrent = await Task.WhenAll(
-            new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "catch-up-a", [growth], token),
-            new OperationalStatusProjectionWriter(store, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner).ApplyAsync("tenant-a", "folder-a", "catch-up-b", [growth], token));
-        concurrent.Any(result => result.IsSuccess).ShouldBeTrue();
-        (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up-settled", [growth], token)).IsSuccess.ShouldBeTrue();
+        string lifecycleKey = store.PhysicalKey(OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"));
+        bool competingWriterCompleted = false;
+        OperationalStatusReadObserver racingStore = new(store, beforeRead: async key =>
+        {
+            if (key != lifecycleKey || competingWriterCompleted
+                || (await coordinator.GetStatusAsync(scope, token).ConfigureAwait(true)).PendingDeliveryCount == 0)
+                return;
+
+            // Replica A has read the old checkpoint during catch-up. Replica B drains its
+            // journal entry before A reads the updated lifecycle row.
+            (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up-b", [growth], token).ConfigureAwait(true)).IsSuccess.ShouldBeTrue();
+            competingWriterCompleted = true;
+        });
+        OperationalStatusProjectionHandler racingHandler = new(
+            new(racingStore, store, store, scanner: Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Scanner));
+        ProjectionRequest growthRequest = new("tenant-a", "folders", "folder-a", [growth.Source!]);
+        var raced = await racingHandler.ProjectAsync(growthRequest, "catch-up-a", token);
+        competingWriterCompleted.ShouldBeTrue();
+        raced.Status.ShouldBe(ProjectionDispatchStatus.Indeterminate);
+        raced.ReasonCode.ShouldBe("operational_store_unavailable");
+        (await racingHandler.ProjectAsync(growthRequest, "catch-up-a", token)).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
+        (await coordinator.GetStatusAsync(scope, token)).PendingDeliveryCount.ShouldBe(0);
+        (await coordinator.GetCheckpointAsync(scope, "folder-a", token))!.OwnerSequenceNumber.ShouldBe(count + 1);
+        var grownCheckpoint = (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value!;
+        grownCheckpoint.Sequence.ShouldBe(count + 1);
+        grownCheckpoint.SourceDigest.ShouldBe(OperationalStatusKeys.Digest(checkpoint.SourceDigest, growth.Digest));
         sources.Add(growth);
         sequence.Head++;
         (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "grown-rebuild", sources,

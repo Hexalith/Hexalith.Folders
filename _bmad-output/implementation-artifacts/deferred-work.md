@@ -3409,6 +3409,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25-3.md`
   summary: Make the operational-status capacity regression deterministic during concurrent catch-up.
   evidence: The complete core run failed the 10,001-position case once with OperationalStatusUnavailableException from RequireCurrentViewsAsync while two writers caught up the same rejection. A serialized rerun of OperationalStatusCapacityTests passed all nine cases. Reproduce the checkpoint and lifecycle-view read interleaving under two authorized writers before changing the SDK or the fail-closed contract.
+  status: done 2026-11-27
+  resolution: A competing writer completes the pending rejection between the first writer’s checkpoint and lifecycle reads. The test verifies an indeterminate result, successful same-dispatch redelivery, an empty journal and one durable checkpoint advance.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md`
   summary: Translate Polly `TimeoutRejectedException` from the bounded gateway client into the documented 503 `gateway-timeout` `EventStoreGatewayException`.

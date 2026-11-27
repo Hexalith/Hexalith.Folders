@@ -3,7 +3,8 @@ using Hexalith.EventStore.Client.Projections;
 namespace Hexalith.Folders.Tests.OperationalStatus;
 
 /// <summary>Observes store access while delegating persistence to the existing platform harness.</summary>
-internal sealed class OperationalStatusReadObserver(IReadModelStore inner, Func<string, Task>? afterRead = null) : IReadModelStore
+internal sealed class OperationalStatusReadObserver(
+    IReadModelStore inner, Func<string, Task>? afterRead = null, Func<string, Task>? beforeRead = null) : IReadModelStore
 {
     /// <summary>Gets the number of store observations.</summary>
     public int Observations { get; private set; }
@@ -13,6 +14,7 @@ internal sealed class OperationalStatusReadObserver(IReadModelStore inner, Func<
         where TValue : class
     {
         Observations++;
+        if (beforeRead is not null) await beforeRead(key).ConfigureAwait(false);
         var row = await inner.GetAsync<TValue>(storeName, key, cancellationToken).ConfigureAwait(false);
         if (afterRead is not null) await afterRead(key).ConfigureAwait(false);
         return row;
