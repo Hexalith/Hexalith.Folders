@@ -266,7 +266,9 @@ public sealed partial class AdrRunbookDocsConformanceTests
             "diagnostic_policy",
             "metadata-only",
             ManifestMarker,
-            $"FullyQualifiedName~{ConformanceFqn}",
+            $"{ConformanceFqn}",
+            "--filter-class $testClass",
+            "--report-xunit-trx --report-xunit-trx-filename $trxName",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

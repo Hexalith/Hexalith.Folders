@@ -12,11 +12,10 @@ Run the focused gate from the repository root:
 pwsh ./tests/tools/run-production-observability-gates.ps1
 ```
 
-The gate restores and builds `Hexalith.Folders.slnx`, runs the
-`ProductionObservabilityConformanceTests`, and writes a metadata-only report to
-`_bmad-output/gates/production-observability/latest.json`. Pass `-SkipRestoreBuild` (alias `-NoRestore`)
-when the shared restore/build lane already ran. If the sandbox denies VSTest socket creation, the gate
-falls back to the xUnit v3 in-process runner and still enforces the non-vacuous test-count guard.
+The gate builds the Contracts test project, runs `ProductionObservabilityConformanceTests`
+through Microsoft.Testing.Platform, and verifies the required test results in the xUnit TRX report.
+It writes a metadata-only summary to `_bmad-output/gates/production-observability/latest.json`.
+Pass `-SkipRestoreBuild` (alias `-NoRestore`) when the shared restore/build lane already ran.
 
 If submodule working trees are missing, initialize only the root-level modules:
 

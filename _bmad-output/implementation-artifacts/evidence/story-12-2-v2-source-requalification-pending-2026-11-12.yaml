@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 57111eb507f4231c079320e1afe180df60054e0bccc41a67cd9a982e9716391c
+candidate_set_sha256: f539c45b134ea33980f6f93f9bc0fe384ae3ce170eb7437a2cade8b6f4f5ad0a
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -4810,8 +4810,8 @@ artifacts:
     sha256: 9e3ec77a51b7da58776692704f65ab7aa972c1cbe1d8f99ff42e1da4b68c852a
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/AdrRunbookDocsConformanceTests.cs"
     kind: file
-    bytes: 30107
-    sha256: 3d26a9b45a0ac712eb770290efbb10f727728ccde08ead34b20580d750703682
+    bytes: 30200
+    sha256: 66b5117281f345fea2f96b69c0a6e06152cee71a2bd8e46e11367792d17c79c2
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/AppHostPlatformCompositionConformanceTests.cs"
     kind: file
     bytes: 15284
@@ -4830,8 +4830,8 @@ artifacts:
     sha256: 64181a0dedd6d6bed8decc3038ed66d83351921ac931fc5fb180e9cac9c2ad8c
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ConsumerDocsConformanceTests.cs"
     kind: file
-    bytes: 50626
-    sha256: 7be93eb88c2dcfb7e85ba86b3f1708c8dd987a6c1cfb4ad1211aa823269a0c94
+    bytes: 50719
+    sha256: 0d2256b119e31eaf2ceaf3e08c415d94db8f4e3f6066c8192bb6d0e7e98cb8b2
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ContainerImageConformanceTests.cs"
     kind: file
     bytes: 18305
@@ -4854,20 +4854,20 @@ artifacts:
     sha256: 704855d01dbc51f52815ef038c653b67b4fe98180279cd3258ef3c4ec290ec02
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/OperationsAuditDocsConformanceTests.cs"
     kind: file
-    bytes: 36138
-    sha256: 222fa94e43d3fda3471aac8b78f3349e1a08c7416a91bece5a7c5496315ba195
+    bytes: 36231
+    sha256: ac41c55b59347c8e91ec74d39028bd9025053cec9584a087f5a19de2ad1ac998
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/PinnedDomainCiWorkflow.cs"
     kind: file
     bytes: 426
     sha256: 2df65f30791c6f261b0edb278ec15b6890fe9f328298a89399260926f5e4a011
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProductionObservabilityConformanceTests.cs"
     kind: file
-    bytes: 24482
-    sha256: 3ad7aaa28d1882124fabd5e5d3ac55803690696e4766a5524d8c26053b4073ef
+    bytes: 24575
+    sha256: dec3403868256a9a6c5deaeb6aadf9496876f14130584e73f387a5c556207271
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs"
     kind: file
-    bytes: 32447
-    sha256: 3abcf3bf86a14bc209e362ea5323cf63797c590cb6bbc6e97c45f3ba51772696
+    bytes: 32540
+    sha256: f991f395112882d0a1e3dd5d4a96757a08452068286911261bdfbf2dd7fc1927
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs"
     kind: file
     bytes: 10347
@@ -4938,8 +4938,8 @@ artifacts:
     sha256: debbb3f78f3f02e20465522bdb073032d4aebcadf6fd3d2fdbbb76e79b6189ff
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs"
     kind: file
-    bytes: 49116
-    sha256: d39d3de2b5e2506533502219046f94a404d37895d752b3a22c932632c9b861db
+    bytes: 49272
+    sha256: fc59afcc7cc7ac9f143e7dd3c759d27b9d9466a47893fbd910bdfc107087e1ed
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs"
     kind: file
     bytes: 69037
@@ -6842,12 +6842,12 @@ artifacts:
     sha256: 29b66b3326598be83906c8b34afb85197170ab28ce73da1ca017629d7336cdbb
   - path: "tests/tools/run-adr-runbook-docs-gates.ps1"
     kind: file
-    bytes: 10769
-    sha256: 35c9abcc1f88452da1dae99f7f9f12c1ec81c011af94175a43462382f2c1953f
+    bytes: 9137
+    sha256: dc94735ff77f8c55e6a4d9d6f2cd30f39ecf129c478b8cbd0ed5dc4b2784304d
   - path: "tests/tools/run-consumer-docs-gates.ps1"
     kind: file
-    bytes: 10831
-    sha256: a8afc8b7b136495a3be0f1c98bf658ff46c9f788e750be6050922becf13845eb
+    bytes: 9062
+    sha256: bd8be55954aaaa6a587bacfe6f8eb7cd741f0969c07f8982f22d400e329ec288
   - path: "tests/tools/run-contract-parity-ci-gates.ps1"
     kind: file
     bytes: 19314
@@ -6858,21 +6858,21 @@ artifacts:
     sha256: 0a589be5dd1959141465d0e4556ef2210abfd2abf6510a6d94a96fcc63f38eb9
   - path: "tests/tools/run-dapr-policy-conformance-gates.ps1"
     kind: file
-    bytes: 7824
-    sha256: b28e3bf27fc2d4857e9006b75dfd9aa3883046e7f01593dc789f619bbcdaad6a
+    bytes: 6024
+    sha256: fee869153bbc42a2729a1faba48c7d6ec7a7be968a5d769f482d58421a03d233
   - path: "tests/tools/run-governance-completeness-gates.ps1"
     kind: file
     bytes: 7226
     sha256: 8a6f2e3a07f08aed69104e34ed052346d2ebbce4abacad57c761d3833ce88f71
   - path: "tests/tools/run-operations-audit-docs-gates.ps1"
     kind: file
-    bytes: 11239
-    sha256: 419504b11abed473d2de1b4e0712926ed297ee51ee3ca64b54bf489782d239fe
+    bytes: 9374
+    sha256: a714bc25906a5a495f35c3c1d8221fd282f829c5fbbe2ee9d1bdf0ce5f81eecb
   - path: "tests/tools/run-production-observability-gates.ps1"
     kind: file
-    bytes: 10167
-    sha256: 1b6f4221574a2680c145e26ff168c879c0e908c6813f98a50f35affad681c296
+    bytes: 8289
+    sha256: 3120a1fe48b10424a9387ba9104d6eeaf1fb2550ce1fc08d47f1b415cb143638
   - path: "tests/tools/run-provider-error-docs-gates.ps1"
     kind: file
-    bytes: 12035
-    sha256: da625eb8f23c2d0dbaea7d7246a9c43608482e4e619f6e2afe4aab239b10ae83
+    bytes: 10148
+    sha256: b949bd04eb454056dedb6c56b96d92da50043962297b52ebd809d821d3df6fdd

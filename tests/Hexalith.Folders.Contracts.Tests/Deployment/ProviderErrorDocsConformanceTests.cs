@@ -356,7 +356,9 @@ public sealed partial class ProviderErrorDocsConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "xunit",
-            $"FullyQualifiedName~{ConformanceFqn}",
+            $"{ConformanceFqn}",
+            "--filter-class $testClass",
+            "--report-xunit-trx --report-xunit-trx-filename $trxName",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

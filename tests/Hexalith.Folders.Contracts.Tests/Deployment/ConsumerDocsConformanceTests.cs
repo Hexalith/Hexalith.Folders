@@ -205,7 +205,9 @@ public sealed partial class ConsumerDocsConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "xunit",
-            "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
+            "Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
+            "--filter-class $testClass",
+            "--report-xunit-trx --report-xunit-trx-filename $trxName",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

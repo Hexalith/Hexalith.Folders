@@ -398,7 +398,9 @@ public sealed partial class OperationsAuditDocsConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "xunit",
-            $"FullyQualifiedName~{ConformanceFqn}",
+            $"{ConformanceFqn}",
+            "--filter-class $testClass",
+            "--report-xunit-trx --report-xunit-trx-filename $trxName",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

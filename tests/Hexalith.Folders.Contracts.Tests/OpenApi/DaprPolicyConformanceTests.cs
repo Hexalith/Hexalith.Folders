@@ -489,7 +489,9 @@ public sealed class DaprPolicyConformanceTests
 
         script.ShouldContain("#Requires -Version 7");
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
-        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance");
+        script.ShouldContain("Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests");
+        script.ShouldContain("--filter-class $testClass");
+        script.ShouldContain("--report-xunit-trx --report-xunit-trx-filename $trxName");
         script.ShouldContain("deploy/dapr/production/pubsub.yaml");
         script.ShouldContain("deploy/dapr/production/sidecar-config-bindings.yaml");
         script.ShouldContain("$LASTEXITCODE");

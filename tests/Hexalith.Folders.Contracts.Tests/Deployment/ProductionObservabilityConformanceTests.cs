@@ -217,7 +217,9 @@ public sealed partial class ProductionObservabilityConformanceTests
             "GATE-VACUOUS",
             "xunit",
             LiveAlertEvidence,
-            "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+            "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+            "--filter-class $testClass",
+            "--report-xunit-trx --report-xunit-trx-filename $trxName",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

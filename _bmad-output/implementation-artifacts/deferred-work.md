@@ -3373,6 +3373,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Migrate specialized conformance scripts to native Microsoft.Testing.Platform project options.
   evidence: The docs and Dapr policy gates still pass the VSTest logger option. The pinned runner rejects it before execution, so these scripts depend on an extensionless xUnit apphost fallback. Use native result reporting and check the Windows path when migrating the gates.
+  status: done 2026-11-27
+  resolution: Six gates select their test class through Microsoft.Testing.Platform and require passing named methods from the native xUnit TRX report. Reports use per-run temporary paths and the scripts no longer depend on a platform-specific executable.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: Authorization matrix gap G4 still says the action catalog maps 22 actions; it now maps 24.
