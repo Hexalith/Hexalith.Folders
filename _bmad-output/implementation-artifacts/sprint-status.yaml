@@ -1,6 +1,7 @@
 # generated: 2026-05-12T07:11:18+02:00
 # historical_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
-# last_updated: 2026-11-27 (Story 5.14 review corrections moved to review. All 20 source-review action items were verified. Independent review fixes passed, five pre-existing findings were deferred, and the original test and artifact review chunks are pending.)
+# last_updated: 2026-11-28 (Story 5.14 review corrections code review via bmad-code-review [4 layers, none failed; diff 65a0291b..b2e41ee4, 38 files; 23 raw findings verified against FolderSensitiveDiagnosticDetector, GatewayQueryExecutionSupport, GatewayQueryHandler, EventStoreOperationalStatusReadModel, ContextSearchQueryHandler, sibling Core handlers, SharedProjectionEpochCoordinator, and v2 Contract Spine] -> in-progress. 0 decisions, 10 patch action items left in spec-5-14-gateway-query-review-corrections.md; 1 pre-existing defer [sibling operational handler clock-skew tolerance] appended to deferred-work.md; 6 rejected. Original Story 5.14 test and artifact review chunks remain pending. Spec frontmatter status left as-is [spec-kernel owned].)
+# previous_update_2026_11_27_corrections: 2026-11-27 (Story 5.14 review corrections moved to review. All 20 source-review action items were verified. Independent review fixes passed, five pre-existing findings were deferred, and the original test and artifact review chunks are pending.)
 # previous_update_2026_11_26: 2026-11-26 (Story 12.2 Platform prerequisite accepted for disposable source qualification)
 # previous_update_2026_11_21: release repairs, SDK isolation, preserved story keys and Forgejo selection in ../planning-artifacts/sprint-change-proposal-2026-11-21.md
 # previous_update_2026_11_20: repository audit applied to existing stories and open maintenance items; see sprint-change-proposal-2026-11-20.md
@@ -44,7 +45,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '05-12-2026 07:11'
-last_updated: '11-27-2026 22:51'
+last_updated: '11-28-2026 00:44'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -179,7 +180,7 @@ development_status:
   5-11-prove-four-surface-parity-and-mixed-surface-handoff-through: backlog
   5-12-declare-folders-operations-in-decorated-mcpcli-contracts: done
   5-13-admit-and-authorize-gateway-dispatched-folders-commands: review
-  5-14-serve-folders-reads-through-gateway-query-handlers: review
+  5-14-serve-folders-reads-through-gateway-query-handlers: in-progress
   5-15-retire-hexalith-folders-cli-and-hexalith-folders-mcp: backlog
   epic-5-retrospective: done
 

@@ -3495,3 +3495,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
   summary: Sanitize transport failure logs in the production Memories search source.
   evidence: The pre-existing `MemoriesFolderSearchSource` submits the full remote exception object to its warning logger before the query handler receives a closed unavailable result.
+
+## Deferred from: code review of spec-5-14-gateway-query-review-corrections (2026-11-28)
+
+- Align sibling operational query handlers (`FolderLifecycleStatusQueryHandler.cs:109-111`, `WorkspaceLockStatusQueryHandler.cs:164`, `WorkspaceStatusQueryHandler.cs:391,439,522`, `WorkspaceCleanupStatusQueryHandler.cs:305-306,332`) with `EventStoreOperationalStatusReadModel.ClockSkewTolerance` (5 minutes): `EventStoreOperationalStatusReadModel.ReadAsync` (`:372,396`) accepts observations up to 5 minutes ahead of `clock.UtcNow` and `OperationalStatusFold` propagates the monotonic maximum `ObservedAt` across a folder stream, so a single event with in-tolerance future skew lets `GetBranchRefPolicy` succeed while the other nine operational queries fail with `ReadModelUnavailable` (`freshness_observed_in_future`). Pre-existing outside the Q02 scope of Story 5.14's review corrections.
