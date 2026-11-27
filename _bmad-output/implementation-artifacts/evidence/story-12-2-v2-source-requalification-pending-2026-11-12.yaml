@@ -17,8 +17,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: cd9fe41f250f800ad4fa00f5828f5ae756766813d80ad4b56234b4b9d21ad6a0
-artifact_count: 1714
+candidate_set_sha256: 03087f5cec86ad296dbb06b79cc057c21901aa8e6162ae2407e77dd0f37ef990
+artifact_count: 1715
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -118,8 +118,8 @@ artifacts:
     sha256: 58a40a8e1ac985408e1c1c801b4d96f39ad3d63df1bca0de48060ddeab3a5db7
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 123343
-    sha256: 446168818b4adb5062c0a4ac46404838d92b0554f6fd2b0a744738479f0f81f2
+    bytes: 123429
+    sha256: 405943805b67ec1085b000d9a55255e18da51b95f677bd9b19a93097d5f296bb
   - path: "scripts/prepare-ci-topology-projects.sh"
     kind: file
     bytes: 12269
@@ -4170,8 +4170,8 @@ artifacts:
     sha256: d1d7550d27e6ab1daa5c3cecd9fd7bd144bc50a1e25cbd862354b3adb593c171
   - path: "src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs"
     kind: file
-    bytes: 18119
-    sha256: 291f2da583669b9744bcb5e92cec2cf90b2825a79efffaf2eea88b7006067f0b
+    bytes: 18099
+    sha256: 0fdf246369126e0bed040abd662d94b2de2252bf61f7b1e21910ccc8e1395a51
   - path: "src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryResult.cs"
     kind: file
     bytes: 519
@@ -6566,8 +6566,12 @@ artifacts:
     sha256: aefab81ce0f1e5c42e7c7ee57649bd07946f8ffcb4c910f9a1b1c4edc591d2fc
   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs"
     kind: file
-    bytes: 10258
-    sha256: 07c96e2a1312db1b7d08b831d8bd900f315774d32e259bfa975968a2d201ba22
+    bytes: 10561
+    sha256: 2a4388ee4908f1203847f5b1307cacb61d81d7dcea88d5bfa30bafd84c498cfe
+  - path: "tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusDiagnosticLogger.cs"
+    kind: file
+    bytes: 1307
+    sha256: f02dde2ee16d937c7e5eada2fc265cc53c688e6f6ec119b7b006e03174d3f478
   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs"
     kind: file
     bytes: 3735
@@ -6582,8 +6586,8 @@ artifacts:
     sha256: a9f8e43da5b2a7e211fdfc1904c419da6907a3253465960fd08d31f110b27c8c
   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs"
     kind: file
-    bytes: 8891
-    sha256: 29fa186241470d4b94a94e5426010c3fcef6aaef1328b0a5dfdfefb836e0b730
+    bytes: 9015
+    sha256: d957b4c150921a20f990869d44758b1dfa2b0aeaf204da80950ef6bf8e6a5762
   - path: "tests/Hexalith.Folders.Tests/Queries/Folders/TaskStatusDiagnosticLogger.cs"
     kind: file
     bytes: 1431

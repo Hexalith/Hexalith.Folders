@@ -1635,6 +1635,7 @@ tests/Hexalith.Folders.Tests/Queries/FileContext/WorkspaceFileContextQueryHandle
 tests/Hexalith.Folders.Tests/Queries/FileContext/WorkspaceFilePolicySnapshotTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleFreshnessTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs
+tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusDiagnosticLogger.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusNoFallbackTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs

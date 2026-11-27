@@ -184,7 +184,8 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
         CountingTenantAccessProjectionStore tenantStore = new(
             FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
         ThrowingLifecycleStatusReadModel readModel = new();
-        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
+        FolderLifecycleStatusDiagnosticLogger logger = new();
+        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel, logger: logger);
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
@@ -200,6 +201,9 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
         result.Freshness.ReasonCode.ShouldBe("read_model_unavailable");
         tenantStore.Gets.ShouldBe(1);
         readModel.Requests.ShouldBe(1);
+        logger.Fields.Count.ShouldBe(2); // ExceptionType and the static message template.
+        logger.Fields["ExceptionType"].ShouldBe(typeof(InvalidOperationException).FullName);
+        logger.Exception.ShouldBeNull();
     }
 }
 #pragma warning restore xUnit1030

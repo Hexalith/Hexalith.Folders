@@ -2361,7 +2361,8 @@ location: n/a
 source_spec: `spec-lifecycle-result-normalization.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260901-122019-16be; this entry preserves the lingering recommendation for a deliberate later review.
-status: open
+status: done 2026-11-27
+resolution: Independent follow-up verified lifecycle normalization and found the read-model warning passed an exception object to logging providers. The warning now reports its type only, and the lifecycle test checks the exception argument separately.
 
 ### DW-340: Four local lifecycle-area query fixtures still synthesize allowed claim evidence from nullable authority values.
 

@@ -96,7 +96,6 @@ public sealed class FolderLifecycleStatusQueryHandler(
             // Metadata-only logging: capture exception type to aid diagnostics without leaking
             // payloads, identifiers, or provider details through structured logs.
             _logger.LogWarning(
-                ex,
                 "Folder lifecycle-status read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
                 ex.GetType().FullName);
             return SafeResult(

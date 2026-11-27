@@ -2,6 +2,8 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 
+using Microsoft.Extensions.Logging;
+
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
 internal static class FolderLifecycleStatusTestSupport
@@ -19,7 +21,8 @@ internal static class FolderLifecycleStatusTestSupport
         IFolderLifecycleStatusReadModel lifecycleReadModel,
         RecordingFolderPermissionEvidenceProvider? folderEvidence = null,
         RecordingEventStoreAuthorizationValidator? validator = null,
-        RecordingDaprPolicyEvidenceProvider? dapr = null)
+        RecordingDaprPolicyEvidenceProvider? dapr = null,
+        ILogger<FolderLifecycleStatusQueryHandler>? logger = null)
     {
         LayeredFolderAuthorizationService authorization = new(
             new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
@@ -31,7 +34,8 @@ internal static class FolderLifecycleStatusTestSupport
         return new FolderLifecycleStatusQueryHandler(
             authorization,
             lifecycleReadModel,
-            new FixedUtcClock(Now));
+            new FixedUtcClock(Now),
+            logger);
     }
 
     internal static FolderLifecycleStatusQuery Query(
