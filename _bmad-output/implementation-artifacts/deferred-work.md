@@ -3473,3 +3473,7 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-5-14-serve-folders-reads-through-gateway-query-handlers.md`
   summary: Map ReadModelUnavailable to retryable query transport errors in EventStore.
   evidence: The installed SubmitQueryHandler maps the callback sentinel to a generic internal error. The Folders Gateway handles the exact Folders sentinel locally, while shared Platform Gateway hosts need the owner-provided mapping.
+
+## Deferred from: code review of spec-5-14-serve-folders-reads-through-gateway-query-handlers (2026-11-27)
+
+- Public EventStore Gateway ingress drops incoming `Idempotency-Key` header before calling `/query` (`src/Hexalith.Folders.Server/Queries/GatewayQueryExecutionSupport.cs:108-109`): `Hexalith.EventStore`'s `QueriesController` constructs a separate Dapr `/query` callback without forwarding or rejecting incoming `Idempotency-Key` headers; owned by `references/Hexalith.EventStore` (out of scope under Spec Never #1, confirming the existing Story 5.14 EventStore ingress deferral above).
