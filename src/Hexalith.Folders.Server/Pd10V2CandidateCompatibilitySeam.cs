@@ -1976,7 +1976,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             ? value.GetString() : null;
 
     private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext context)
-        => ClientControlledValues(
+        => HistoricalMutationAuthorization.ClientControlledValues(
             context,
             ("query_tenant_id", false, "tenantId"),
             ("query_managed_tenant_id", false, "managedTenantId"),
@@ -1985,32 +1985,11 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             ("forwarded_tenant_id", true, "X-Forwarded-Tenant"));
 
     private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext context)
-        => ClientControlledValues(
+        => HistoricalMutationAuthorization.ClientControlledValues(
             context,
             ("query_principal_id", false, "principalId"),
             ("header_principal_id", true, "X-Principal-Id"),
             ("forwarded_principal_id", true, "X-Forwarded-Principal"));
-
-    private static IReadOnlyDictionary<string, string?> ClientControlledValues(
-        HttpContext context,
-        params (string Source, bool IsHeader, string Name)[] sources)
-    {
-        Dictionary<string, string?> values = new(StringComparer.Ordinal);
-        foreach ((string source, bool isHeader, string name) in sources)
-        {
-            IEnumerable<string?> supplied = isHeader
-                ? context.Request.Headers[name]
-                : context.Request.Query[name];
-            int index = 0;
-            foreach (string? value in supplied)
-            {
-                values[$"{source}[{index}]"] = value;
-                index++;
-            }
-        }
-
-        return values;
-    }
 
     private sealed class Pd10RequestValidationException : Exception;
 }

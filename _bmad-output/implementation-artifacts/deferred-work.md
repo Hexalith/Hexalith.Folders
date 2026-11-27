@@ -3399,6 +3399,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: `Pd10V2CandidateCompatibilitySeam` keeps a private `ClientControlledValues` that appears to duplicate `HistoricalMutationAuthorization.ClientControlledValues`.
   evidence: Both build `{source}[{index}]` keys over every header or query value for the same source tuples. `WorkspaceOperationEvidence` already calls the `HistoricalMutationAuthorization` copy. The seam could do the same once a diff confirms the bodies match.
+  status: done 2026-11-27
+  resolution: The v2 seam uses the existing mutation comparison collector. Eight integration cases verify repeated identities across folder- and tenant-scoped operations.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Compare production tenant-access projection sizes and event growth with the deployed Dapr and state-store limits.

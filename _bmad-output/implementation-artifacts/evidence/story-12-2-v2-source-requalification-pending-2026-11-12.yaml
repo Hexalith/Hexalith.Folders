@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 272dad3c84917f0597ba7dabb8c0a6e29edd3c0d661d9947e37d765fe975d0ea
+candidate_set_sha256: 9afe7791444b9b9207bb6b264e985147212c77e5a0302e4d953a43b91489af12
 artifact_count: 1714
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -1470,8 +1470,8 @@ artifacts:
     sha256: 12c85e937bf12f8ff90bb98aff4d04393033ef1e0cdd55e185e6631d32ce7706
   - path: "src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs"
     kind: file
-    bytes: 86295
-    sha256: d01dff9ebc1c61217435de9ae68f6e8c8a842500f09f1c4b93178c6a7dd1c1db
+    bytes: 85646
+    sha256: c1ea6e146b9ddb7a99f110e239f3b134a71c78f8fa96baba4eacb6e1ff2182e2
   - path: "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs"
     kind: file
     bytes: 57074
