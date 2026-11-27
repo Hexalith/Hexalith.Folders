@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   ci:
-    uses: Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@7afc4981e21bc2fcce687199a3fd2c61fe87336e
+    uses: Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@763fc0e937413cb44e533391e573c43640263b40
     with:
       solution: Hexalith.Folders.CI.slnx
       # Explicit Keycloak/Platform proof cases run only through their separate component verifier.
