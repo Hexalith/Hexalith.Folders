@@ -61,6 +61,18 @@ public sealed class FolderNavigationInteractionTests : IClassFixture<Interactive
         response.ShouldNotBeNull();
         response.Status.ShouldBeInRange(200, 399);
 
+        bool shellStylesLoaded = await _page.EvaluateAsync<bool>("""
+            () => {
+                const appStyles = [...document.styleSheets].find(
+                    sheet => sheet.href && new URL(sheet.href).pathname === '/Hexalith.Folders.UI.styles.css');
+                return !!appStyles && [...appStyles.cssRules].some(rule =>
+                    rule instanceof CSSImportRule &&
+                    rule.href.startsWith('_content/Hexalith.FrontComposer.Shell/') &&
+                    rule.styleSheet?.cssRules.length > 0);
+            }
+            """);
+        shellStylesLoaded.ShouldBeTrue("the console stylesheet must load the FrontComposer Shell rules");
+
         await _page.Locator("[data-testid=\"console-page-folders-id-input\"]").FillAsync(FolderId);
         await _page.Locator("[data-testid=\"console-page-folders-open\"]").ClickAsync();
 

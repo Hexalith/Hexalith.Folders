@@ -3387,6 +3387,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: The console's `App.razor` links `_content/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.styles.css`, which does not exist, so FrontComposer Shell scoped styles may never load.
   evidence: With static web assets served, the E2E host answers that link with 404. The library publishes its scoped bundle as `_content/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.bundle.scp.css`, and `App.razor` links neither that file nor the app bundle `Hexalith.Folders.UI.styles.css` that would import it. Unverified in a deployed console: check the browser network log of the running app, then link the app bundle.
+  status: done 2026-11-27
+  resolution: The console links its generated scoped CSS bundle. The interactive Chromium test confirms that the imported FrontComposer Shell CSS rules load.
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-next-seven-deferred-work-items-2026-11-25.md`
   summary: Decide whether the Audit, Domain, provider-readiness and OpsConsole endpoints should flag every client-supplied identity value, as the mutation paths do.
