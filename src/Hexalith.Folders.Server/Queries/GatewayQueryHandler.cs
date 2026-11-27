@@ -64,7 +64,7 @@ internal abstract class GatewayQueryHandler<T>(GatewayQueryExecutionSupport supp
         }
 
         return await support.ReadAsync(query, aggregate(payload), action, historicalAction ?? action, providerScope,
-            TaskScope(payload), WorkspaceScope(payload), RequiresCurrentTask, RequiresCurrentWorkspace,
+            TaskScope(payload), WorkspaceScope(payload), SecondaryEntity(payload), RequiresCurrentTask, RequiresCurrentWorkspace,
             () => ReadAsync(query, payload, page, cancellationToken),
             cancellationToken).ConfigureAwait(false);
     }
@@ -74,6 +74,9 @@ internal abstract class GatewayQueryHandler<T>(GatewayQueryExecutionSupport supp
 
     /// <summary>Returns the workspace addressed by the typed payload, when present.</summary>
     protected virtual string? WorkspaceScope(T payload) => null;
+
+    /// <summary>Returns the exact secondary identifier addressed by the typed payload, when present.</summary>
+    protected virtual string? SecondaryEntity(T payload) => null;
 
     /// <summary>Whether a supplied task must match the current caller-owned workspace task.</summary>
     protected virtual bool RequiresCurrentTask => true;

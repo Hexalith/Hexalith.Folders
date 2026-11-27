@@ -21,7 +21,9 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         IOrganizationStreamSequenceReader sequenceReader) : this(coordinator, clock, sequenceReader, null) { }
 
     private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
-    private static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(5);
+
+    /// <summary>The maximum future clock skew accepted for operational projection observations.</summary>
+    internal static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(5);
 
     /// <inheritdoc/>
     public async Task<BranchRefPolicyReadModelResult> GetAsync(BranchRefPolicyReadModelRequest request,
@@ -30,10 +32,16 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         ArgumentNullException.ThrowIfNull(request);
         try
         {
-            OperationalStatusCheckpoint? checkpoint = await ReadCurrentCheckpointAsync(
+            (OperationalStatusCheckpoint? checkpoint, bool stale) = await ReadCurrentCheckpointAsync(
                 request.ManagedTenantId, request.FolderId, cancellationToken).ConfigureAwait(false);
             FolderLifecycleFreshness freshness = new(request.ReadConsistency, checkpoint?.ObservedAt ?? clock.UtcNow,
-                checkpoint?.Sequence.ToString(CultureInfo.InvariantCulture), Stale: false, ReasonCode: null);
+                stale ? null : checkpoint?.Sequence.ToString(CultureInfo.InvariantCulture),
+                Stale: stale, ReasonCode: stale ? "projection_stale" : null);
+            if (stale)
+            {
+                return new(BranchRefPolicyReadModelStatus.Stale, null, freshness);
+            }
+
             if (checkpoint?.State is not { IsCreated: true, BranchRefPolicy: { } policy })
             {
                 return BranchRefPolicyReadModelResult.NotFound(freshness);
@@ -55,14 +63,19 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
     internal async Task<bool> MatchesCurrentScopeAsync(string tenantId, string folderId, string principalId,
         string? taskId, string? workspaceId, CancellationToken cancellationToken)
     {
-        OperationalStatusCheckpoint? checkpoint = await ReadCurrentCheckpointAsync(
+        (OperationalStatusCheckpoint? checkpoint, bool stale) = await ReadCurrentCheckpointAsync(
             tenantId, folderId, cancellationToken).ConfigureAwait(false);
+        if (stale)
+        {
+            throw new OperationalStatusUnavailableException();
+        }
+
         return checkpoint?.State is { IsCreated: true, WorkspaceId: not null } state
             && (taskId is null || state.WorkspaceTaskId == taskId && state.WorkspaceActorPrincipalId == principalId)
             && (workspaceId is null || state.WorkspaceId == workspaceId);
     }
 
-    private async Task<OperationalStatusCheckpoint?> ReadCurrentCheckpointAsync(string tenantId, string folderId,
+    private async Task<(OperationalStatusCheckpoint? Checkpoint, bool Stale)> ReadCurrentCheckpointAsync(string tenantId, string folderId,
         CancellationToken cancellationToken)
     {
         SharedProjectionScope scope = OperationalStatusGeneration.Scope(tenantId);
@@ -84,18 +97,13 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
 
         OperationalStatusCheckpoint? checkpoint = selected?.Value?[key]?.Deserialize<OperationalStatusCheckpoint>(WireJson);
         long head = await sequenceReader.GetCurrentSequenceAsync(tenantId, folderId, cancellationToken).ConfigureAwait(false);
-        if (checkpoint is null && head == 0)
-        {
-            return null;
-        }
-
-        if (checkpoint is null || !OperationalStatusFold.Valid(checkpoint, tenantId, folderId)
-            || checkpoint.Sequence != head || checkpoint.ObservedAt > clock.UtcNow)
+        if (head < 0 || (checkpoint is not null && (!OperationalStatusFold.Valid(checkpoint, tenantId, folderId)
+            || head < checkpoint.Sequence || checkpoint.ObservedAt - clock.UtcNow > ClockSkewTolerance)))
         {
             throw new OperationalStatusUnavailableException();
         }
 
-        return checkpoint;
+        return (checkpoint, head > (checkpoint?.Sequence ?? 0));
     }
 
     /// <inheritdoc/>

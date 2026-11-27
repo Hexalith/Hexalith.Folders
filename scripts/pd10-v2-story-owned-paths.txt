@@ -1394,11 +1394,15 @@ tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticBackgroundService.cs
 tests/Hexalith.Folders.Server.Tests/LifecycleDiagnosticTestService.cs
 tests/Hexalith.Folders.Server.Tests/LifecycleUnsupportedProvider.cs
 tests/Hexalith.Folders.Server.Tests/LockedActorSequenceHandler.cs
+tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryBindingReader.cs
+tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryFailureLoggerProvider.cs
 tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryFixture.cs
 tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryHandlersTests.cs
+tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryOversizedBridge.cs
 tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryReadModelStore.cs
 tests/Hexalith.Folders.Server.Tests/McpCliGatewayQuerySearchSource.cs
 tests/Hexalith.Folders.Server.Tests/McpCliGatewayQuerySequenceReader.cs
+tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryThrowingReadModels.cs
 tests/Hexalith.Folders.Server.Tests/McpCliProcessAdmissionAndAuthorizationTests.cs
 tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs
 tests/Hexalith.Folders.Server.Tests/MutationEnvelopeEndpointMatrixTests.cs

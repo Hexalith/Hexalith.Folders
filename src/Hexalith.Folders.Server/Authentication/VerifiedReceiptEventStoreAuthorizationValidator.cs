@@ -21,7 +21,9 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
             httpContext?.Items[HumanAuthorityReceiptVerifier.VerifiedClaimsItemKey]
                 as HumanAuthorityReceiptClaims;
         bool verifiedRead = VerifiedQueryCaller.Get(httpContext)?.Query is { CallerAuthority: { } authority } query
-            && (authority.Origin == "delegated-owner-query" || authority.Origin == "authenticated-caller" && query.Domain == "folders")
+            && (authority.Origin == "delegated-owner-query"
+                || authority.Origin == "authenticated-caller" && query.Domain == "folders"
+                    && !query.IsDelegated && query.DelegationId is null)
             && query.TenantId == request.SafeContext.AuthoritativeTenantId
             && query.UserId == request.SafeContext.PrincipalId
             && query.AggregateId == request.SafeContext.OperationScope

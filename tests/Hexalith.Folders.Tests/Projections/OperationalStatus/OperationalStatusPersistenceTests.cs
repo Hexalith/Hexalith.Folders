@@ -461,6 +461,50 @@ public sealed class OperationalStatusPersistenceTests
     }
 
     [Fact]
+    public async Task BranchPolicyRequiresCurrentConsistentCheckpointEvidence()
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        OperationalStatusTestStore store = new();
+        OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddMinutes(-5) };
+        OperationalStatusSequenceReader sequence = new() { Head = 0 };
+        var writer = new OperationalStatusProjectionWriter(store, store, store, scanner: OperationalStatusTestData.Scanner);
+        var reader = new EventStoreOperationalStatusReadModel(new(store, store), clock, sequence);
+        BranchRefPolicyReadModelRequest request = new(
+            "tenant-a", "folder-a", "reader-b", "read_branch_ref_policy", null, "request-correlation", "authority-2", "eventually_consistent");
+
+        (await reader.GetAsync(request, token)).Status.ShouldBe(BranchRefPolicyReadModelStatus.NotFound);
+        sequence.Head = 1;
+        (await reader.GetAsync(request, token)).Status.ShouldBe(BranchRefPolicyReadModelStatus.Stale);
+
+        OperationalStatusEvent[] events = OperationalStatusTestData.Sources(
+            OperationalStatusTestData.LockedPrefix(OperationalStatusTestData.Now).Take(4));
+        (await writer.ApplyAsync("tenant-a", "folder-a", "without-policy", events[..3], token)).IsSuccess.ShouldBeTrue();
+        sequence.Head = 3;
+        (await reader.GetAsync(request, token)).Status.ShouldBe(BranchRefPolicyReadModelStatus.NotFound);
+
+        (await writer.ApplyAsync("tenant-a", "folder-a", "with-policy", [events[3]], token)).IsSuccess.ShouldBeTrue();
+        sequence.Head = 4;
+        var current = await reader.GetAsync(request, token);
+        current.Status.ShouldBe(BranchRefPolicyReadModelStatus.Available);
+        current.Freshness.ObservedAt.ShouldBe(OperationalStatusTestData.Now);
+        current.Freshness.ProjectionWatermark.ShouldBe("4");
+        current.Snapshot.ShouldNotBeNull().PolicyRef.ShouldBe("branch-policy-a");
+        store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName,
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.State.BranchRefPolicy.ShouldNotBeNull();
+
+        sequence.Head = 5;
+        var lagging = await reader.GetAsync(request, token);
+        lagging.Status.ShouldBe(BranchRefPolicyReadModelStatus.Stale);
+        lagging.Snapshot.ShouldBeNull();
+        lagging.Freshness.Stale.ShouldBeTrue();
+        sequence.Head = 3;
+        (await reader.GetAsync(request, token)).Status.ShouldBe(BranchRefPolicyReadModelStatus.Unavailable);
+        sequence.Head = 4;
+        clock.UtcNow = clock.UtcNow.AddTicks(-1);
+        (await reader.GetAsync(request, token)).Status.ShouldBe(BranchRefPolicyReadModelStatus.Unavailable);
+    }
+
+    [Fact]
     public async Task InvalidDeliveryCannotAdvancePersistedCheckpoint()
     {
         OperationalStatusTestStore store = new();

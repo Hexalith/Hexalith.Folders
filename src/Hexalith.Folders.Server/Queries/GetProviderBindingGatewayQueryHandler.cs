@@ -13,6 +13,9 @@ internal sealed class GetProviderBindingGatewayQueryHandler(GatewayQueryExecutio
         GetProviderBindingQueryHandler.ReadActionToken, static payload => payload.ProviderBindingRef, providerScope: true)
 {
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(GetProviderBinding payload) => payload.ProviderBindingRef;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, GetProviderBinding payload,
         GatewayQueryPage page, CancellationToken token)
     {

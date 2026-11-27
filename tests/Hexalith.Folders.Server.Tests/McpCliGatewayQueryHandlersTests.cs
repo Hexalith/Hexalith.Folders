@@ -4,9 +4,16 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Queries.ContextSearch;
+using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.Gateway;
 using Hexalith.Folders.Queries.ProviderReadiness;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
@@ -37,15 +44,20 @@ public sealed class McpCliGatewayQueryHandlersTests
         (QueryEnvelope Query, string Projection, string Freshness, string Field, string? Value)[] cases =
         [
             (Query("GetBranchRefPolicy", "read_branch_ref_policy", folder), "get-branch-ref-policy", "eventually_consistent", "policyRef", "branch_policy_gateway"),
-            (Query("GetCommitEvidence", "query_status", commit), "get-commit-evidence", "eventually_consistent", "operationId", CommitOperation),
-            (Query("GetEffectivePermissions", "read_metadata", indexing), "get-effective-permissions", "read_your_writes", "folderId", Folder),
+            (Query("GetCommitEvidence", "query_status", commit) with { EntityId = CommitOperation },
+                "get-commit-evidence", "eventually_consistent", "operationId", CommitOperation),
+            (Query("GetEffectivePermissions", "read_metadata", indexing) with { EntityId = TaskId },
+                "get-effective-permissions", "read_your_writes", "folderId", Folder),
             (Query("GetFolderIndexingStatus", "read_context_search", indexing), "get-folder-indexing-status", "eventually_consistent", "items", null),
             (Query("GetFolderLifecycleStatus", "read_metadata", folder), "get-folder-lifecycle-status", "eventually_consistent", "folderId", Folder),
-            (Query("GetProviderBinding", "tenant-context-and-provider-binding-read", providerBinding, actor), "get-provider-binding", "eventually_consistent", "providerBindingRef", ProviderBinding),
-            (Query("GetProviderOutcome", "query_status", commit), "get-provider-outcome", "eventually_consistent", "operationId", CommitOperation),
-            (Query("GetReconciliationStatus", "query_status", new { folderId = Folder, workspaceId = Workspace, reconciliationId = Reconciliation }),
+            (Query("GetProviderBinding", "tenant-context-and-provider-binding-read", providerBinding, actor) with { EntityId = ProviderBinding },
+                "get-provider-binding", "eventually_consistent", "providerBindingRef", ProviderBinding),
+            (Query("GetProviderOutcome", "query_status", commit) with { EntityId = CommitOperation },
+                "get-provider-outcome", "eventually_consistent", "operationId", CommitOperation),
+            (Query("GetReconciliationStatus", "query_status", new { folderId = Folder, workspaceId = Workspace, reconciliationId = Reconciliation })
+                with { EntityId = Reconciliation },
                 "get-reconciliation-status", "eventually_consistent", "reconciliationId", Reconciliation),
-            (Query("GetRepositoryBinding", "read_metadata", new { folderId = Folder, repositoryBindingId = Binding }),
+            (Query("GetRepositoryBinding", "read_metadata", new { folderId = Folder, repositoryBindingId = Binding }) with { EntityId = Binding },
                 "get-repository-binding", "eventually_consistent", "repositoryBindingId", Binding),
             (Query("GetTaskStatus", "query_status", indexing), "get-task-status", "eventually_consistent", "taskId", TaskId),
             (Query("GetWorkspaceCleanupStatus", "read_workspace_cleanup_status", taskWorkspace),
@@ -57,7 +69,8 @@ public sealed class McpCliGatewayQueryHandlersTests
                 "get-workspace-status", "read_your_writes", "workspaceId", Workspace),
             (Query("ListFolderAclEntries", "manage_folder_access", folder), "list-folder-acl-entries", "eventually_consistent", "items", null),
             (Query("SearchFolderIndexedFiles", "read_context_search", search), "search-folder-indexed-files", "eventually_consistent", "items", null),
-            (Query("ValidateProviderReadiness", "create_folder", readiness, actor), "validate-provider-readiness", "snapshot_per_task", "providerBindingRef", ProviderBinding),
+            (Query("ValidateProviderReadiness", "create_folder", readiness, actor) with { EntityId = ProviderBinding },
+                "validate-provider-readiness", "snapshot_per_task", "providerBindingRef", ProviderBinding),
         ];
         foreach (var item in cases)
         {
@@ -66,7 +79,9 @@ public sealed class McpCliGatewayQueryHandlersTests
             result.Metadata.ShouldNotBeNull().Provenance.ShouldBe(QueryResponseProvenance.ProjectionBacked);
             result.Metadata.IsStale.ShouldBe(false);
             JsonElement payload = result.GetPayload();
-            payload.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe(item.Freshness);
+            JsonElement freshness = payload.GetProperty("freshness");
+            AssertFreshness(freshness, item.Freshness);
+            result.Metadata.ServedAt.ShouldBe(freshness.GetProperty("observedAt").GetDateTimeOffset());
             JsonElement field = payload.GetProperty(item.Field);
             if (item.Value is not null)
             {
@@ -87,10 +102,20 @@ public sealed class McpCliGatewayQueryHandlersTests
         var commitEvidence = await SuccessAsync(fixture, cases[1].Query with { EntityId = Workspace }, token);
         commitEvidence.GetPayload().GetProperty("changedPathMetadataDigest").GetString().ShouldBe("digest_path_metadata");
         var workspaceStatus = await SuccessAsync(fixture, cases[13].Query, token);
+        workspaceStatus.Metadata.ShouldNotBeNull().ServedAt.ShouldBe(fixture.SourceObservedAt);
         JsonElement outcome = workspaceStatus.GetPayload().GetProperty("providerOutcome");
+        AssertFreshness(outcome.GetProperty("freshness"), "read_your_writes");
         outcome.TryGetProperty("changedPathMetadataDigest", out _).ShouldBeFalse();
         outcome.TryGetProperty("commitReferenceClassification", out _).ShouldBeFalse();
         outcome.TryGetProperty("reconciliationReference", out _).ShouldBeFalse();
+
+        JsonElement workspaceLock = (await SuccessAsync(fixture, cases[11].Query, token)).GetPayload();
+        workspaceLock.GetProperty("workspaceReference").GetProperty("classification").GetString().ShouldBe("operator_sanitized");
+        AssertFreshness(workspaceLock.GetProperty("retryEligibility").GetProperty("freshness"), "read_your_writes");
+        JsonElement retry = (await SuccessAsync(fixture, cases[12].Query with { CorrelationId = "request-correlation" }, token)).GetPayload();
+        retry.GetProperty("correlationId").GetString().ShouldBe(Correlation);
+        JsonElement branchPolicy = (await SuccessAsync(fixture, cases[0].Query with { EntityId = Folder }, token)).GetPayload();
+        branchPolicy.TryGetProperty("protectedRefPatterns", out _).ShouldBeFalse();
 
         var historicalTask = await SuccessAsync(fixture, Query("GetTaskStatus", "query_status",
             new { folderId = Folder, taskId = HistoricalTaskId }) with { EntityId = HistoricalTaskId }, token);
@@ -118,6 +143,7 @@ public sealed class McpCliGatewayQueryHandlersTests
             CallerAuthority = new("authenticated-caller", [], ["read_metadata", "manage_folder_access"]),
         }, token);
         matchingAction.GetPayload().GetProperty("permissions").EnumerateArray().Select(level => level.GetString()).ShouldBe(["read", "administer"]);
+        matchingAction.GetPayload().TryGetProperty("taskId", out _).ShouldBeFalse();
 
         QueryEnvelope lifecycle = cases[4].Query;
         QueryEnvelope searchQuery = cases[15].Query;
@@ -136,6 +162,11 @@ public sealed class McpCliGatewayQueryHandlersTests
         {
             CallerAuthority = new("authenticated-caller", [], ["provider_readiness_read"]),
         }, token)).ShouldBe(denied);
+        fixture.Store.Reads.ShouldBeEmpty();
+        foreach (QueryEnvelope input in new[] { lifecycle, cases[2].Query, searchQuery })
+        {
+            (await DenialAsync(fixture, input with { AggregateId = OtherFolder }, token)).ShouldBe(denied);
+        }
         fixture.Store.Reads.ShouldBeEmpty();
         foreach (QueryEnvelope input in new[]
         {
@@ -164,6 +195,10 @@ public sealed class McpCliGatewayQueryHandlersTests
             lifecycle with { Payload = JsonSerializer.SerializeToUtf8Bytes(new { folderId = Folder, unsupported = true }) },
             lifecycle with { Payload = JsonSerializer.SerializeToUtf8Bytes(new { folderId = Folder, freshness = "read_your_writes" }) },
             lifecycle with { Paging = new() },
+            lifecycle with { EntityId = OtherFolder },
+            cases[2].Query with { EntityId = ForeignTaskId },
+            cases[13].Query with { EntityId = "opaque_ForeignWorkspace00" },
+            providerQuery with { EntityId = "opaque_UnrelatedProvider" },
             Query("GetTaskStatus", "query_status", folder),
             Query("GetTaskStatus", "query_status", new { folderId = Folder, taskId = "short" }),
             providerQuery with { AggregateId = Tenant },
@@ -179,6 +214,19 @@ public sealed class McpCliGatewayQueryHandlersTests
         }
         await FailureAsync(fixture, lifecycle, HttpStatusCode.BadRequest, QueryAdapterFailureReason.InvalidEnvelope, token, withIdempotency: true);
         fixture.Store.Reads.ShouldBeEmpty();
+
+        const string wrong = "opaque_UnrelatedEvidence";
+        object wrongOperation = new { folderId = Folder, workspaceId = Workspace, operationId = wrong };
+        foreach (QueryEnvelope input in new[]
+        {
+            Query("GetCommitEvidence", "query_status", wrongOperation),
+            Query("GetProviderOutcome", "query_status", wrongOperation),
+            Query("GetReconciliationStatus", "query_status", new { folderId = Folder, workspaceId = Workspace, reconciliationId = wrong }),
+            Query("GetRepositoryBinding", "read_metadata", new { folderId = Folder, repositoryBindingId = wrong }),
+        })
+        {
+            (await DenialAsync(fixture, input with { EntityId = wrong }, token)).ShouldBe(denied);
+        }
 
         (await DenialAsync(fixture, Query("GetFolderIndexingStatus", "read_context_search",
             new { folderId = Folder, taskId = "opaque_ForeignTask00" }), token)).ShouldBe(denied);
@@ -221,6 +269,8 @@ public sealed class McpCliGatewayQueryHandlersTests
         QueryResult aclMatch = await SuccessAsync(fixture, Query("ListFolderAclEntries", "manage_folder_access",
             new { folderId = Folder, cursor, limit = 1 }, paging: new(PageSize: 1, Cursor: cursor)), token);
         aclMatch.GetPayload().GetProperty("items").GetRawText().ShouldBe(aclNext.GetPayload().GetProperty("items").GetRawText());
+        await FailureAsync(fixture, aclPage with { Paging = new(Cursor: "opaque_TamperedAclCursor") },
+            HttpStatusCode.BadRequest, QueryAdapterFailureReason.InvalidCursor, token);
 
         QueryResult searchPage = await SuccessAsync(fixture, searchQuery with { Paging = new(PageSize: 1) }, token);
         searchPage.GetPayload().GetProperty("items")[0].GetProperty("fileVersionReference").GetString().ShouldBe(fixture.FileVersion);
@@ -252,6 +302,14 @@ public sealed class McpCliGatewayQueryHandlersTests
         }, token);
         equalSearchPage.GetPayload().GetProperty("items").GetRawText()
             .ShouldBe(searchNext.GetPayload().GetProperty("items").GetRawText());
+
+        fixture.SearchContinuationStatus = FolderSearchSourceStatus.Timeout;
+        await FailureAsync(fixture, searchQuery with { Paging = new(PageSize: 1) }, HttpStatusCode.OK,
+            QueryAdapterFailureReason.ReadModelUnavailable, token);
+        fixture.SearchContinuationStatus = FolderSearchSourceStatus.Unavailable;
+        await FailureAsync(fixture, searchQuery with { Paging = new(PageSize: 1) }, HttpStatusCode.OK,
+            QueryAdapterFailureReason.ReadModelUnavailable, token);
+        fixture.SearchContinuationStatus = FolderSearchSourceStatus.Available;
 
         foreach ((QueryEnvelope input, string reason) in new (QueryEnvelope, string)[]
         {
@@ -289,6 +347,183 @@ public sealed class McpCliGatewayQueryHandlersTests
         await FailureAsync(fixture, lifecycle, HttpStatusCode.OK, unavailable, token);
     }
 
+    /// <summary>Closes the callback before provider egress if retained binding scope cannot be used.</summary>
+    [Theory]
+    [InlineData("profile-drift", HttpStatusCode.OK, QueryAdapterFailureReason.ReadModelUnavailable)]
+    [InlineData("tenant-mismatch", HttpStatusCode.NotFound, "safe-denial")]
+    [InlineData("reference-mismatch", HttpStatusCode.NotFound, "safe-denial")]
+    public async Task SignedProviderReadinessRejectsUnusableBinding(string scenario, HttpStatusCode status, string reason)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token, bindingReader: new McpCliGatewayQueryBindingReader(scenario));
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+        int evidenceCount = fixture.ReadinessEvidenceCount;
+
+        await FailureAsync(fixture, ReadinessQuery(), status, reason, token);
+
+        fixture.ProviderCalls.ShouldBe(0);
+        fixture.ReadinessEvidenceCount.ShouldBe(evidenceCount);
+    }
+
+    /// <summary>Maps each transient provider outcome to the retryable callback sentinel.</summary>
+    [Theory]
+    [InlineData(ProviderFailureCategory.ProviderUnavailable)]
+    [InlineData(ProviderFailureCategory.ProviderTransientFailure)]
+    [InlineData(ProviderFailureCategory.ProviderRateLimited)]
+    public async Task SignedProviderReadinessReturnsRetryableSentinel(ProviderFailureCategory category)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token, providerFailure: category);
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+
+        await FailureAsync(fixture, ReadinessQuery(), HttpStatusCode.OK, QueryAdapterFailureReason.ReadModelUnavailable, token);
+
+        fixture.ProviderCalls.ShouldBe(1);
+    }
+
+    /// <summary>Preserves the invalid-input callback classification of a search response over budget.</summary>
+    [Fact]
+    public async Task SignedSearchReturnsInvalidEnvelopeForAnOversizedResponse()
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token, oversizedBridge: new());
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+        QueryEnvelope query = Query("SearchFolderIndexedFiles", "read_context_search", new
+        {
+            folderId = Folder,
+            workspaceId = Workspace,
+            queryFamily = "semantic_reference_pending",
+            queryText = "needle",
+        });
+
+        await FailureAsync(fixture, query, HttpStatusCode.BadRequest, QueryAdapterFailureReason.InvalidEnvelope, token);
+    }
+
+    /// <summary>Checks that read failures record their type without logging private exception contents.</summary>
+    [Fact]
+    public async Task SignedQueryFailuresLogOnlyTheExceptionType()
+    {
+        const string privateMessage = "private provider evidence must never be logged";
+        using McpCliGatewayQueryFailureLoggerProvider logger = new();
+        using ILoggerFactory diagnostics = LoggerFactory.Create(logging => logging.AddProvider(logger));
+        McpCliGatewayQueryThrowingReadModels reads = new(privateMessage);
+        CancellationToken token = TestContext.Current.CancellationToken;
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token, configure: builder =>
+        {
+            // EventStore filters request diagnostics at the receiver. Capture the eight handlers' original
+            // logger arguments in isolation, before that filter could hide a regression.
+            _ = builder.Services.AddSingleton(diagnostics.CreateLogger<ContextSearchQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<FolderIndexingStatusQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<ListFolderAclEntriesQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<BranchRefPolicyQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<WorkspaceCleanupStatusQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<WorkspaceLockStatusQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<WorkspaceStatusQueryHandler>())
+                .AddSingleton(diagnostics.CreateLogger<GetProviderBindingQueryHandler>());
+            _ = builder.Services.AddSingleton<IFolderSearchSource>(reads)
+                .AddSingleton<ISemanticIndexingBridgeReadModel>(reads)
+                .AddSingleton<IFolderAclReadModel>(reads)
+                .AddSingleton<IBranchRefPolicyReadModel>(reads)
+                .AddSingleton<IWorkspaceCleanupStatusReadModel>(reads)
+                .AddSingleton<IWorkspaceLockStatusReadModel>(reads)
+                .AddSingleton<IWorkspaceStatusReadModel>(reads)
+                .AddSingleton<IProviderReadinessBindingReader>(reads);
+        });
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+        object folder = new { folderId = Folder };
+        object workspace = new { folderId = Folder, workspaceId = Workspace };
+        QueryEnvelope[] queries =
+        [
+            Query("SearchFolderIndexedFiles", "read_context_search", new
+            {
+                folderId = Folder, workspaceId = Workspace, queryFamily = "semantic_reference_pending", queryText = "needle",
+            }),
+            Query("GetFolderIndexingStatus", "read_context_search", folder),
+            Query("ListFolderAclEntries", "manage_folder_access", folder),
+            Query("GetBranchRefPolicy", "read_branch_ref_policy", folder),
+            Query("GetWorkspaceCleanupStatus", "read_workspace_cleanup_status", workspace),
+            Query("GetWorkspaceLock", "read_workspace_lock", workspace),
+            Query("GetWorkspaceStatus", "read_workspace_status", workspace),
+            Query("GetProviderBinding", "tenant-context-and-provider-binding-read",
+                new { providerBindingRef = ProviderBinding }, ProviderBindingActorId.Create(ProviderBinding)),
+        ];
+        foreach (QueryEnvelope query in queries)
+        {
+            logger.Entries.Clear();
+            int calls = reads.Calls;
+            await FailureAsync(fixture, query, HttpStatusCode.OK, QueryAdapterFailureReason.ReadModelUnavailable, token);
+            reads.Calls.ShouldBe(calls + 1, query.QueryType);
+            var entry = logger.Entries.ShouldHaveSingleItem(query.QueryType);
+            entry.Type.ShouldBe(typeof(InvalidOperationException).FullName);
+            entry.Exception.ShouldBeNull();
+            entry.Message.ShouldContain(nameof(InvalidOperationException));
+            entry.Message.ShouldNotContain(privateMessage);
+        }
+    }
+
+    private static QueryEnvelope ReadinessQuery()
+        => Query("ValidateProviderReadiness", "create_folder", new
+        {
+            providerBindingRef = ProviderBinding,
+            requestedCapability = "repository_creation",
+        }, ProviderBindingActorId.Create(ProviderBinding)) with { EntityId = ProviderBinding };
+
+    /// <summary>Returns the committed policy and its optional protected patterns within the projection's skew allowance.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SignedBranchPolicyAcceptsFutureCheckpointWithinClockTolerance(bool hasProtectedPatterns)
+    {
+        CancellationToken token = TestContext.Current.CancellationToken;
+        TimeSpan clockSkew = TimeSpan.FromMinutes(2);
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token, configureBranchPolicy: policy => policy with
+        {
+            OccurredAt = policy.OccurredAt + clockSkew,
+            ProtectedRefPatterns = hasProtectedPatterns ? ["refs/heads/main"] : [],
+        });
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+        DateTimeOffset observedAt = fixture.SourceObservedAt + clockSkew;
+        observedAt.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
+
+        QueryResult result = await SuccessAsync(fixture,
+            Query("GetBranchRefPolicy", "read_branch_ref_policy", new { folderId = Folder }), token);
+
+        JsonElement body = result.GetPayload();
+        body.GetProperty("policyRef").GetString().ShouldBe("branch_policy_gateway");
+        result.Metadata.ShouldNotBeNull().ServedAt.ShouldBe(observedAt);
+        body.GetProperty("freshness").GetProperty("observedAt").GetDateTimeOffset().ShouldBe(observedAt);
+        body.TryGetProperty("protectedRefPatterns", out JsonElement patterns).ShouldBe(hasProtectedPatterns);
+        if (hasProtectedPatterns)
+        {
+            patterns.EnumerateArray().Select(pattern => pattern.GetString()).ShouldBe(["refs/heads/main"]);
+        }
+    }
+
+    /// <summary>Uses the safe correlation produced by readiness validation even when the signed input looks like a credential.</summary>
+    [Fact]
+    public async Task SignedProviderReadinessUsesSanitizedCorrelation()
+    {
+        const string jwt = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0In0.exampleSignature";
+        CancellationToken token = TestContext.Current.CancellationToken;
+        var fixture = await McpCliGatewayQueryFixture.CreateAsync(token);
+        await using var fixtureLifetime = fixture.ConfigureAwait(true);
+
+        QueryResult result = await SuccessAsync(fixture, ReadinessQuery() with { CorrelationId = jwt }, token);
+
+        JsonElement body = result.GetPayload();
+        body.GetProperty("correlationId").GetString().ShouldStartWith("correlation_");
+        body.GetRawText().ShouldNotContain(jwt);
+    }
+
+    private static void AssertFreshness(JsonElement freshness, string consistency)
+    {
+        freshness.GetProperty("readConsistency").GetString().ShouldBe(consistency);
+        freshness.GetProperty("observedAt").GetDateTimeOffset().ShouldNotBe(default);
+        freshness.GetProperty("stale").GetBoolean().ShouldBeFalse();
+        string[] fields = ["readConsistency", "observedAt", "projectionWatermark", "stale"];
+        freshness.EnumerateObject().Select(property => property.Name).ShouldAllBe(name => fields.Contains(name));
+    }
+
     /// <summary>Checks nested metadata scrubbing independently of each domain DTO's allowlist.</summary>
     [Fact]
     public void ResponseRedactionRemovesProtectedFieldsAtAnyDepth()
@@ -301,12 +536,37 @@ public sealed class McpCliGatewayQueryHandlersTests
                 {
                     inlineContent = "fixture-body", contentBytes = "fixture-bytes", streamDescriptor = new { id = "fixture-stream" },
                     rawPath = "fixture-path", credentialRef = "fixture-credential", secret = "fixture-secret", fileVersionRef = "safe-opaque-handle",
+                    fingerprint = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0In0.exampleSignature",
+                    metadata = new[]
+                    {
+                        "ghp_abcdefghijklmnopqrstuvwxyz1234567890",
+                        string.Concat("glpat-", "AbCdEfGh0123456789xy"),
+                        "-----BEGIN OPENSSH PRIVATE KEY-----",
+                        "Authorization: Bearer credential-sentinel",
+                        "Proxy-Authorization: Basic credential-sentinel",
+                        "Bearer credential-sentinel",
+                        "Bearer a",
+                        "Basic eA==",
+                        "https://user:pass@example.test/resource",
+                        "https://example.test/resource?view=summary&access_token=credential-sentinel",
+                        "https://storage.googleapis.com/my-bucket/document?X-Goog-Signature=abc",
+                        "https://storage.googleapis.com/my-bucket/document?X-Goog-Credential=abc",
+                        "https://example.test/resource?access%5F%74oken=credential-sentinel",
+                        "https://example.test/resource#view=summary&refresh_token=credential-sentinel",
+                        "https://example.test/repository?view=summary",
+                        "https://example.test/repository?view=access_token#token-renewal",
+                        "repository_credential_rotation_pending",
+                        "refs/heads/token-renewal",
+                    },
                 }
             },
         }, "search-folder-indexed-files", "eventually_consistent",
             new FolderLifecycleFreshness("eventually_consistent", DateTimeOffset.UtcNow, "2", false, null));
         JsonElement item = result.GetPayload().GetProperty("items")[0];
-        item.EnumerateObject().Select(p => p.Name).ShouldBe(["fileVersionRef"]);
+        item.EnumerateObject().Select(p => p.Name).ShouldBe(["fileVersionRef", "metadata"]);
+        item.GetProperty("metadata").EnumerateArray().Select(value => value.GetString()).ShouldBe(
+            ["https://example.test/repository?view=summary", "https://example.test/repository?view=access_token#token-renewal",
+                "repository_credential_rotation_pending", "refs/heads/token-renewal"]);
     }
 
     private static async Task<QueryResult> SuccessAsync(McpCliGatewayQueryFixture fixture, QueryEnvelope input, CancellationToken token)

@@ -28,17 +28,32 @@ internal sealed class GetWorkspaceLockGatewayQueryHandler(GatewayQueryExecutionS
                 ? Unavailable : Denied;
         }
 
+        if (string.IsNullOrWhiteSpace(result.WorkspaceId))
+        {
+            return Unavailable;
+        }
+
+        WorkspaceLockRetryEligibility retry = result.RetryEligibility;
         return Success(new
         {
             workspaceReference = new
             {
                 value = result.WorkspaceId,
-                classification = "tenant_sensitive",
+                classification = "operator_sanitized",
                 redaction = new { visibility = "metadata_only", reasonCode = "not_redacted" },
             },
             result.LockState,
             result.Lease,
-            result.RetryEligibility,
+            retryEligibility = new
+            {
+                retry.Retryable,
+                retry.RetryAfterSeconds,
+                retry.ReasonCode,
+                retry.CorrelationId,
+                retry.TaskId,
+                retry.CurrentState,
+                freshness = ProjectFreshness(retry.Freshness, ReadYourWrites),
+            },
         }, result.Freshness);
     }
 }

@@ -134,7 +134,7 @@ public sealed class BranchRefPolicyQueryHandler(
         LayeredFolderAuthorizationAllowedContext allowed,
         BranchRefPolicyReadModelSnapshot snapshot)
     {
-        if (snapshot.Freshness.ObservedAt > clock.UtcNow)
+        if (snapshot.Freshness.ObservedAt - clock.UtcNow > EventStoreOperationalStatusReadModel.ClockSkewTolerance)
         {
             return Unavailable(query, snapshot.Freshness, "freshness_observed_in_future");
         }

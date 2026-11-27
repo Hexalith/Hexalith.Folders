@@ -586,6 +586,110 @@ public sealed class ContextSearchQueryHandlerTests
         result.Limits.ActualBytes.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData("missing", 1, false, 2)]
+    [InlineData("stale", 1, false, 2)]
+    [InlineData("duplicate", 1, false, 1)]
+    [InlineData("foreign-hydration", 1, false, 2)]
+    [InlineData("miskeyed-tenant", 1, false, 2)]
+    [InlineData("miskeyed-folder", 1, false, 2)]
+    [InlineData("miskeyed-version", 1, false, 2)]
+    [InlineData("visible", 1, true, 2)]
+    [InlineData("visible", 2, true, 2)]
+    [InlineData("partial", 2, false, 1)]
+    public async Task GatewayContinuationRequiresAFullWindowAndADistinctVisibleTail(
+        string scenario, int limit, bool hasMore, int bridgeReads)
+    {
+        string tail = scenario == "duplicate" ? "fv-first" : "fv-tail";
+        FolderSearchSourceHit[] first = scenario == "partial"
+            ? [Hit("fv-first"), Hit("foreign", tenantId: "tenant-b")]
+            : [.. Enumerable.Repeat(Hit("fv-first"), limit)];
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = first,
+            TotalCount = limit + 1,
+            Continuation = (_, _) => Task.FromResult(new FolderSearchSourceResult(
+                FolderSearchSourceStatus.Available, [Hit(tail)], limit + 1, 1)),
+        };
+        List<SemanticIndexingBridgeEntry> entries = [Entry("fv-first")];
+        if (scenario == "stale") entries.Add(Entry(tail, SemanticIndexingBridgeStatus.Stale));
+        if (scenario == "foreign-hydration") entries.Add(Entry(tail, workspaceId: "workspace-b"));
+        if (scenario == "visible") entries.Add(Entry(tail));
+        SemanticIndexingBridgeEntry? miskeyed = scenario switch
+        {
+            "miskeyed-tenant" => Entry(tail, tenantId: "tenant-b"),
+            "miskeyed-folder" => Entry(tail, folderId: "folder-b"),
+            "miskeyed-version" => Entry("fv-other"),
+            _ => null,
+        };
+        StubBridgeReadModel bridge = new(entries)
+        {
+            HydrateById = fileVersionId => fileVersionId == tail && miskeyed is not null
+                ? Task.FromResult<SemanticIndexingBridgeEntry?>(miskeyed) : null,
+        };
+
+        ContextSearchQueryResult result = await Handler(source, bridge).HandleGatewayAsync(Query(limit: limit),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        result.Items.ShouldHaveSingleItem();
+        result.NextCursor.ShouldBe(hasMore ? $"memories-search:{limit}" : null);
+        result.Limits.IsTruncated.ShouldBe(hasMore);
+        source.Requests.Select(request => request.Offset).ShouldBe(scenario == "partial" ? [0] : [0, limit]);
+        bridge.ByIdReads.ShouldBe(bridgeReads);
+    }
+
+    [Theory]
+    [InlineData("status-unavailable", ContextSearchResultCode.ReadModelUnavailable)]
+    [InlineData("status-degraded", ContextSearchResultCode.ReadModelUnavailable)]
+    [InlineData("status-timeout", ContextSearchResultCode.QueryTimeout)]
+    [InlineData("timeout-exception", ContextSearchResultCode.QueryTimeout)]
+    [InlineData("deadline", ContextSearchResultCode.QueryTimeout)]
+    [InlineData("hydration-deadline", ContextSearchResultCode.QueryTimeout)]
+    [InlineData("exception", ContextSearchResultCode.ReadModelUnavailable)]
+    public async Task GatewayContinuationFailureDoesNotReturnAPartialSuccess(string scenario, ContextSearchResultCode expected)
+    {
+        TaskCompletionSource<FolderSearchSourceResult> pending = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<SemanticIndexingBridgeEntry?> pendingHydration = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-first")],
+            TotalCount = 2,
+            Continuation = (_, _) => scenario switch
+            {
+                "status-unavailable" => Task.FromResult(FolderSearchSourceResult.Unavailable()),
+                "status-degraded" => Task.FromResult(new FolderSearchSourceResult(FolderSearchSourceStatus.Degraded, [], 0, 0)),
+                "status-timeout" => Task.FromResult(new FolderSearchSourceResult(FolderSearchSourceStatus.Timeout, [], 0, 0)),
+                "timeout-exception" => throw new TimeoutException("private timeout details"),
+                "deadline" => pending.Task,
+                "hydration-deadline" => Task.FromResult(new FolderSearchSourceResult(
+                    FolderSearchSourceStatus.Available, [Hit("fv-tail")], 2, 1)),
+                _ => throw new InvalidOperationException("private source details"),
+            },
+        };
+        StubBridgeReadModel bridge = new([Entry("fv-first")])
+        {
+            HydrateById = fileVersionId => fileVersionId == "fv-tail" ? pendingHydration.Task : null,
+        };
+        CancellationToken token = TestContext.Current.CancellationToken;
+        try
+        {
+            ContextSearchQueryResult result = await Handler(source, bridge).HandleGatewayAsync(Query(limit: 1), token)
+                .WaitAsync(TimeSpan.FromSeconds(10), token);
+
+            result.Code.ShouldBe(expected);
+            result.Items.ShouldBeEmpty();
+            result.NextCursor.ShouldBeNull();
+            source.Requests.Select(request => request.Offset).ShouldBe([0, 1]);
+            bridge.ByIdReads.ShouldBe(scenario == "hydration-deadline" ? 2 : 1);
+        }
+        finally
+        {
+            pending.TrySetResult(FolderSearchSourceResult.Unavailable());
+            pendingHydration.TrySetResult(null);
+        }
+    }
+
     private static ContextSearchQueryHandler Handler(
         IFolderSearchSource source,
         ISemanticIndexingBridgeReadModel bridge,
@@ -691,11 +795,18 @@ public sealed class ContextSearchQueryHandlerTests
 
         public int? RawCount { get; init; }
 
+        public Func<FolderSearchSourceRequest, CancellationToken, Task<FolderSearchSourceResult>>? Continuation { get; init; }
+
         public Task<FolderSearchSourceResult> SearchAsync(
             FolderSearchSourceRequest request,
             CancellationToken cancellationToken = default)
         {
             Requests.Add(request);
+            if (request.Offset > 0 && Continuation is not null)
+            {
+                return Continuation(request, cancellationToken);
+            }
+
             return Task.FromResult(new FolderSearchSourceResult(
                 Status,
                 Hits,
@@ -741,6 +852,8 @@ public sealed class ContextSearchQueryHandlerTests
 
         public int ByIdReads { get; private set; }
 
+        public Func<string, Task<SemanticIndexingBridgeEntry?>?>? HydrateById { get; init; }
+
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,
             CancellationToken cancellationToken = default)
@@ -753,7 +866,7 @@ public sealed class ContextSearchQueryHandlerTests
             CancellationToken cancellationToken = default)
         {
             ByIdReads++;
-            return Task.FromResult(entries.FirstOrDefault(e =>
+            return HydrateById?.Invoke(fileVersionId) ?? Task.FromResult(entries.FirstOrDefault(e =>
                 string.Equals(e.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
                 && string.Equals(e.Identity.FolderId, folderId, StringComparison.Ordinal)
                 && string.Equals(e.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)));

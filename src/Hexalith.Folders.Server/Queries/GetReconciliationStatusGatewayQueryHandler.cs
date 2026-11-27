@@ -17,6 +17,9 @@ internal sealed class GetReconciliationStatusGatewayQueryHandler(GatewayQueryExe
     protected override string? WorkspaceScope(GetReconciliationStatus payload) => payload.WorkspaceId;
 
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(GetReconciliationStatus payload) => payload.ReconciliationId;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, GetReconciliationStatus payload,
         GatewayQueryPage page, CancellationToken token)
     {

@@ -14,6 +14,9 @@ internal sealed class ValidateProviderReadinessGatewayQueryHandler(GatewayQueryE
         historicalAction: ProviderReadinessValidationService.ReadActionToken, providerScope: true)
 {
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(ValidateProviderReadiness payload) => payload.ProviderBindingRef;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, ValidateProviderReadiness payload,
         GatewayQueryPage page, CancellationToken token)
     {
@@ -53,7 +56,7 @@ internal sealed class ValidateProviderReadinessGatewayQueryHandler(GatewayQueryE
             retryAfterSeconds = result.RetryAfter is null ? (long?)null : (long)Math.Ceiling(result.RetryAfter.Value.TotalSeconds),
             result.RemediationCategory,
             result.ProviderReference,
-            query.CorrelationId,
+            result.CorrelationId,
         }, Freshness(result.Freshness));
     }
 }

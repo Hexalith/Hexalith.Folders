@@ -1,13 +1,17 @@
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Commands;
+using Hexalith.EventStore.Contracts.Queries;
+using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
 using Xunit;
@@ -140,5 +144,52 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
                 new Claim("eventstore:permission", "read_metadata")], "Bearer"));
         (await validator.ValidateAsync(new(safe, "strict_read"), TestContext.Current.CancellationToken))
             .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Denied);
+    }
+
+    /// <summary>Validates the dispatched caller proof with each public delegation marker and the internal owner origin.</summary>
+    [Theory]
+    [InlineData("authenticated-caller", false, null, true)]
+    [InlineData("authenticated-caller", true, null, false)]
+    [InlineData("authenticated-caller", false, "delegate-a", false)]
+    [InlineData("delegated-owner-query", true, "delegate-a", true)]
+    public async Task VerifiedQueryAuthorityRequiresUndelegatedPublicCaller(string origin, bool isDelegated, string? delegationId, bool expected)
+    {
+        const string action = "read_metadata";
+        DefaultHttpContext context = new();
+        IHttpContextAccessor accessor = new HttpContextAccessor { HttpContext = context };
+        VerifiedReceiptEventStoreAuthorizationValidator validator = new(accessor);
+        LayeredFolderAuthorizationAllowedContext safe = new("tenant-a", "user-a", action, "folder-a", null, null, null, [])
+        {
+            PrincipalId = "user-a",
+        };
+        CallbackQueryResultHandler handler = new(async (query, token) =>
+        {
+            VerifiedQueryCaller.Get(context).ShouldNotBeNull().Query.ShouldBeSameAs(query);
+            EventStoreAuthorizationValidationResult result = await validator.ValidateAsync(new(safe, "strict_read"), token).ConfigureAwait(true);
+            return QueryResult.FromPayload(
+                JsonSerializer.SerializeToElement(result.Status == EventStoreAuthorizationValidationStatus.Allowed), "validation-probe");
+        });
+        QueryEnvelope envelope = new("tenant-a", "folders", "folder-a", handler.QueryType, "{}"u8.ToArray(), "correlation-a", "user-a")
+        {
+            OriginalActorId = "user-a",
+            CallerAuthority = new(origin, [], [action]),
+            IsDelegated = isDelegated,
+            DelegationId = delegationId,
+        };
+        // Supply the minimal authenticated workload identity and exact digest consumed by the SDK dispatcher.
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType, "eventstore"),
+            new Claim(EventStoreWorkloadAuthenticationDefaults.OperationClaimType, EventStoreWorkloadOperations.DomainServiceQuery),
+            .. QueryCallerAuthorityBinding.Bind(envelope).Select(binding => new Claim(binding.Key, binding.Value)),
+        ], "EventStoreWorkload"));
+        using ServiceProvider services = new ServiceCollection().AddSingleton(accessor)
+            .AddSingleton<IDomainQueryHandler>(handler).BuildServiceProvider();
+
+        QueryResult response = await DomainQueryDispatcher.ExecuteAsync(services, envelope, TestContext.Current.CancellationToken);
+
+        response.Success.ShouldBeTrue();
+        response.GetPayload().GetBoolean().ShouldBe(expected);
+        handler.Calls.ShouldBe(1);
     }
 }

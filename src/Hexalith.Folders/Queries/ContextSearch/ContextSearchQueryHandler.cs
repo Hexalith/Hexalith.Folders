@@ -228,11 +228,18 @@ public sealed class ContextSearchQueryHandler(
             : offset + rawRowsAdvanced;
         // A duplicate of an emitted item hides nothing from the caller, so it counts toward a full page. Rows dropped
         // by trimming or hydration do not, which keeps their existence out of the pagination metadata.
-        bool hasRawTail = nextOffset > offset && sourceResult.TotalCount > nextOffset;
-        bool hasMore = hasRawTail && (verifyContinuation
-            ? await HasVisibleNextPageAsync(sourceRequest with { Offset = nextOffset }, emittedFileVersions,
-                _gatewaySearchBudget - stopwatch.Elapsed, cancellationToken).ConfigureAwait(false)
-            : items.Count + duplicateRows >= limit);
+        bool hasMore = nextOffset > offset && sourceResult.TotalCount > nextOffset
+            && items.Count + duplicateRows >= limit;
+        if (verifyContinuation && hasMore)
+        {
+            (ContextSearchResultCode code, hasMore) = await ProbeContinuationAsync(
+                sourceRequest with { Offset = nextOffset }, emittedFileVersions,
+                _gatewaySearchBudget - stopwatch.Elapsed, cancellationToken).ConfigureAwait(false);
+            if (code != ContextSearchResultCode.Allowed)
+            {
+                return SafeResult(code, query);
+            }
+        }
         stopwatch.Stop();
         string? nextCursor = hasMore ? BuildCursor(nextOffset) : null;
         DateTimeOffset observedAt = _clock.UtcNow;
@@ -273,12 +280,13 @@ public sealed class ContextSearchQueryHandler(
             AuthorizationDenial: null);
     }
 
-    private async Task<bool> HasVisibleNextPageAsync(FolderSearchSourceRequest request, HashSet<string> emitted,
-        TimeSpan remaining, CancellationToken cancellationToken)
+    private async Task<(ContextSearchResultCode Code, bool HasMore)> ProbeContinuationAsync(
+        FolderSearchSourceRequest request, HashSet<string> emitted, TimeSpan remaining, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (remaining <= TimeSpan.Zero)
         {
-            return false;
+            return (ContextSearchResultCode.QueryTimeout, false);
         }
 
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -286,29 +294,36 @@ public sealed class ContextSearchQueryHandler(
         try
         {
             // Verify the same bounded raw window a following request will read. Raw totals never authorize a cursor.
-            FolderSearchSourceResult page = await _source.SearchAsync(request, deadline.Token).ConfigureAwait(false);
+            FolderSearchSourceResult page = await _source.SearchAsync(request, deadline.Token)
+                .WaitAsync(deadline.Token).ConfigureAwait(false);
+            deadline.Token.ThrowIfCancellationRequested();
             if (page.Status != FolderSearchSourceStatus.Available)
             {
-                return false;
+                return (page.Status == FolderSearchSourceStatus.Timeout
+                    ? ContextSearchResultCode.QueryTimeout : ContextSearchResultCode.ReadModelUnavailable, false);
             }
 
             HashSet<string> seen = new(emitted, StringComparer.Ordinal);
             foreach (FolderSearchSourceHit hit in page.Hits.Take(request.Limit))
             {
                 if (MatchesScope(hit, request) && seen.Add(hit.FileVersionId)
-                    && await HydrateAsync(hit, request, deadline.Token).ConfigureAwait(false) is not null)
+                    && await HydrateAsync(hit, request, deadline.Token)
+                        .WaitAsync(deadline.Token).ConfigureAwait(false) is not null)
                 {
-                    return !deadline.IsCancellationRequested;
+                    deadline.Token.ThrowIfCancellationRequested();
+                    return (ContextSearchResultCode.Allowed, true);
                 }
             }
 
-            return false;
+            deadline.Token.ThrowIfCancellationRequested();
+            return (ContextSearchResultCode.Allowed, false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
         {
             cancellationToken.ThrowIfCancellationRequested();
             _logger.LogWarning("Context search continuation could not be verified. Exception type: {ExceptionType}", ex.GetType().FullName);
-            return false;
+            return (deadline.IsCancellationRequested || ex is TimeoutException
+                ? ContextSearchResultCode.QueryTimeout : ContextSearchResultCode.ReadModelUnavailable, false);
         }
     }
 
@@ -321,8 +336,10 @@ public sealed class ContextSearchQueryHandler(
     {
         SemanticIndexingBridgeEntry? entry = await _bridgeReadModel.GetFileVersionByIdAsync(
             request.ManagedTenantId, request.FolderId, hit.FileVersionId, cancellationToken).ConfigureAwait(false);
-        return entry is not null && IsVisible(entry.Status) && entry.Identity.OrganizationId == request.OrganizationId
-            && entry.Identity.WorkspaceId == request.WorkspaceId ? MapItem(hit, entry) : null;
+        return entry is not null && IsVisible(entry.Status) && entry.Identity.ManagedTenantId == request.ManagedTenantId
+            && entry.Identity.OrganizationId == request.OrganizationId && entry.Identity.FolderId == request.FolderId
+            && entry.Identity.WorkspaceId == request.WorkspaceId && entry.Identity.FileVersionId == hit.FileVersionId
+            ? MapItem(hit, entry) : null;
     }
 
     private static ContextSearchResultCode? ValidateC4Bounds(ContextSearchQuery query)

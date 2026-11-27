@@ -697,6 +697,57 @@ public sealed class ProviderReadinessValidationServiceTests
         if (!drift) result.ReasonCode.ShouldBe("provider_binding_authority_unavailable");
     }
 
+    [Theory]
+    [InlineData("profile-drift", ProviderReadinessResultCode.ReadModelUnavailable, ProviderFailureCategory.ProviderConfigurationMissing)]
+    [InlineData("tenant-mismatch", ProviderReadinessResultCode.AuthorizationDenied, ProviderFailureCategory.ReconciliationRequired)]
+    [InlineData("reference-mismatch", ProviderReadinessResultCode.AuthorizationDenied, ProviderFailureCategory.ReconciliationRequired)]
+    public async Task ValidateExistingBindingDisposesOfUnusableAuthorityBeforeProviderOrEvidence(
+        string scenario, ProviderReadinessResultCode code, ProviderFailureCategory category)
+    {
+        OrganizationProviderBinding binding = scenario switch
+        {
+            "tenant-mismatch" => Binding(managedTenantId: "tenant-b"),
+            "reference-mismatch" => Binding() with { ProviderBindingRef = "binding-b" },
+            _ => Binding(),
+        };
+        RecordingProviderReadinessBindingReader reader = new(binding)
+        {
+            Failure = scenario == "profile-drift" ? new ProviderBindingProfileDriftException() : null,
+        };
+        RecordingProviderReadinessEvidenceStore evidence = new();
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
+        var service = Service(reader, evidence, RecordingProviderCapabilityAuthorizer.Allowed("authz"),
+            resolver, new RecordingProviderCapabilityEvidenceStore());
+
+        var result = await service.ValidateExistingBindingAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(code);
+        result.FailureCategory.ShouldBe(category);
+        result.Retryable.ShouldBeFalse();
+        result.Evidence.ShouldBeNull();
+        reader.Calls.ShouldBe(1);
+        resolver.Calls.ShouldBe(0);
+        evidence.Calls.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(ProviderFailureCategory.ProviderUnavailable)]
+    [InlineData(ProviderFailureCategory.ProviderTransientFailure)]
+    [InlineData(ProviderFailureCategory.ProviderRateLimited)]
+    public async Task ValidateExistingBindingPreservesTransientProviderDisposition(ProviderFailureCategory category)
+    {
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.Failing(category));
+        var service = Service(new RecordingProviderReadinessBindingReader(Binding()), new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz"), resolver, new RecordingProviderCapabilityEvidenceStore());
+
+        var result = await service.ValidateExistingBindingAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ProviderReadinessResultCode.Allowed);
+        result.CategoryCode.ShouldBe(category.ToCategoryCode());
+        result.Retryable.ShouldBeTrue();
+        resolver.ProviderCalls.ShouldBe(1);
+    }
+
     private static ProviderReadinessValidationService Service(
         IProviderReadinessBindingReader bindingReader,
         IProviderReadinessEvidenceStore readinessStore,

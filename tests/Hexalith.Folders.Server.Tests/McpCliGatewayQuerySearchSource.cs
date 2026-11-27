@@ -20,11 +20,19 @@ internal sealed class McpCliGatewayQuerySearchSource : IFolderSearchSource
     /// <summary>Whether a second indexed file is visible to the caller.</summary>
     internal bool IncludeVisibleTail { get; set; }
 
+    /// <summary>Gets or sets the failure, if any, returned at the continuation offset.</summary>
+    internal FolderSearchSourceStatus ContinuationStatus { get; set; } = FolderSearchSourceStatus.Available;
+
     /// <inheritdoc/>
     public Task<FolderSearchSourceResult> SearchAsync(FolderSearchSourceRequest request, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Calls++;
+        if (request.Offset > 0 && ContinuationStatus != FolderSearchSourceStatus.Available)
+        {
+            return Task.FromResult(new FolderSearchSourceResult(ContinuationStatus, [], 0, 0));
+        }
+
         List<FolderSearchSourceHit> hits =
         [
             new(request.ManagedTenantId, request.OrganizationId, request.FolderId, request.WorkspaceId,

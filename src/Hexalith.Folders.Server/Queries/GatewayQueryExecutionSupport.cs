@@ -8,7 +8,6 @@ using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
-using Hexalith.Folders.Observability;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
@@ -126,7 +125,8 @@ internal sealed partial class GatewayQueryExecutionSupport(
 
     /// <summary>Enforces the declared resource scope and verifies fresh ACL authority before the protected read.</summary>
     internal async Task<QueryResult> ReadAsync(QueryEnvelope query, string target, string action, string historicalAction,
-        bool providerScope, string? taskId, string? workspaceId, bool requiresCurrentTask, bool requiresCurrentWorkspace,
+        bool providerScope, string? taskId, string? workspaceId, string? secondaryEntity,
+        bool requiresCurrentTask, bool requiresCurrentWorkspace,
         Func<Task<QueryResult>> read, CancellationToken token)
     {
         if (providerScope)
@@ -143,7 +143,8 @@ internal sealed partial class GatewayQueryExecutionSupport(
             return Denied;
         }
 
-        if (query.EntityId is { } entity && entity != query.AggregateId && entity != workspaceId && entity != taskId)
+        if (query.EntityId is { } entity && entity != query.AggregateId && entity != workspaceId
+            && entity != taskId && entity != secondaryEntity)
         {
             return InvalidEnvelope;
         }
@@ -198,12 +199,12 @@ internal sealed partial class GatewayQueryExecutionSupport(
         }
 
         var payload = (JsonObject)JsonSerializer.SerializeToNode(value, _responseJson)!;
-        payload["freshness"] = JsonSerializer.SerializeToNode(freshness with { ReadConsistency = consistency }, _responseJson);
-        Redact(payload, consistency);
+        payload["freshness"] = JsonSerializer.SerializeToNode(ProjectFreshness(freshness, consistency), _responseJson);
+        Redact(payload);
         string? projectionVersion = payload["freshness"]?["projectionWatermark"]?.GetValue<string>();
 
         return QueryResult.FromPayload(JsonSerializer.SerializeToElement(payload), projectionType,
-            new QueryResponseMetadata(IsStale: false, ProjectionVersion: projectionVersion, Paging: paging)
+            new QueryResponseMetadata(IsStale: false, ServedAt: freshness.ObservedAt, ProjectionVersion: projectionVersion, Paging: paging)
             {
                 Provenance = QueryResponseProvenance.ProjectionBacked,
             });
@@ -217,29 +218,34 @@ internal sealed partial class GatewayQueryExecutionSupport(
     internal static FolderLifecycleFreshness Freshness(ProviderReadinessFreshness value)
         => new(value.ReadConsistency, value.ObservedAt, value.ProjectionWatermark, value.Stale, null);
 
+    /// <summary>Projects the closed Gateway freshness schema.</summary>
+    internal static object ProjectFreshness(FolderLifecycleFreshness freshness, string consistency)
+        => new
+        {
+            readConsistency = consistency,
+            freshness.ObservedAt,
+            freshness.ProjectionWatermark,
+            freshness.Stale,
+        };
+
     private static bool ContainsNull(JsonElement value)
         => value.ValueKind == JsonValueKind.Null
             || value.ValueKind == JsonValueKind.Object && value.EnumerateObject().Any(property => ContainsNull(property.Value))
             || value.ValueKind == JsonValueKind.Array && value.EnumerateArray().Any(ContainsNull);
 
-    private static void Redact(JsonNode? value, string consistency)
+    private static void Redact(JsonNode? value)
     {
         if (value is JsonObject obj)
         {
             foreach ((string key, JsonNode? member) in obj.ToArray())
             {
-                if (IsProtectedMember(key) || member is JsonValue scalar && scalar.TryGetValue(out string? text)
-                    && text is not null && FolderAuditSanitizer.ContainsProviderCredential(text))
+                if (IsProtectedMember(key) || IsSecretValue(member))
                 {
                     _ = obj.Remove(key);
                 }
-                else if (string.Equals(key, "readConsistency", StringComparison.OrdinalIgnoreCase))
-                {
-                    obj[key] = consistency;
-                }
                 else
                 {
-                    Redact(member, consistency);
+                    Redact(member);
                 }
             }
         }
@@ -248,18 +254,21 @@ internal sealed partial class GatewayQueryExecutionSupport(
             for (int index = array.Count - 1; index >= 0; index--)
             {
                 JsonNode? member = array[index];
-                if (member is JsonValue scalar && scalar.TryGetValue(out string? text)
-                    && text is not null && FolderAuditSanitizer.ContainsProviderCredential(text))
+                if (IsSecretValue(member))
                 {
                     array.RemoveAt(index);
                 }
                 else
                 {
-                    Redact(member, consistency);
+                    Redact(member);
                 }
             }
         }
     }
+
+    private static bool IsSecretValue(JsonNode? member)
+        => member is JsonValue scalar && scalar.TryGetValue(out string? value)
+            && value is not null && FolderSensitiveDiagnosticDetector.ContainsSecret(value);
 
     private static bool IsProtectedMember(string key)
     {

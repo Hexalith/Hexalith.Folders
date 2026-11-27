@@ -16,6 +16,9 @@ internal sealed class GetProviderOutcomeGatewayQueryHandler(GatewayQueryExecutio
     protected override string? WorkspaceScope(GetProviderOutcome payload) => payload.WorkspaceId;
 
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(GetProviderOutcome payload) => payload.OperationId;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, GetProviderOutcome payload,
         GatewayQueryPage page, CancellationToken token)
     {

@@ -17,6 +17,9 @@ internal sealed class GetCommitEvidenceGatewayQueryHandler(GatewayQueryExecution
     protected override string? WorkspaceScope(GetCommitEvidence payload) => payload.WorkspaceId;
 
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(GetCommitEvidence payload) => payload.OperationId;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, GetCommitEvidence payload,
         GatewayQueryPage page, CancellationToken token)
     {

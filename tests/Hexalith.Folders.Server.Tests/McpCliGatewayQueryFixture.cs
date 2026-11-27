@@ -87,6 +87,15 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
     /// <summary>Gets the other file retained by the actual bridge.</summary>
     internal string NextFileVersion => search.NextFileVersion;
 
+    /// <summary>Gets the observation time persisted for the operational projection.</summary>
+    internal DateTimeOffset SourceObservedAt => now;
+
+    /// <summary>Controls the continuation request's source outcome.</summary>
+    internal FolderSearchSourceStatus SearchContinuationStatus
+    {
+        set => search.ContinuationStatus = value;
+    }
+
     /// <summary>Controls which visible and foreign tail rows the external search test source serves.</summary>
     internal void SetSearchTail(bool foreign, bool visible)
     {
@@ -95,7 +104,10 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
     }
 
     /// <summary>Starts a host and folds exact stored events into SDK persistence before testing reads.</summary>
-    internal static async Task<McpCliGatewayQueryFixture> CreateAsync(CancellationToken token)
+    internal static async Task<McpCliGatewayQueryFixture> CreateAsync(CancellationToken token,
+        ProviderFailureCategory? providerFailure = null, IProviderReadinessBindingReader? bindingReader = null,
+        McpCliGatewayQueryOversizedBridge? oversizedBridge = null, Action<WebApplicationBuilder>? configure = null,
+        Func<BranchRefPolicyConfigured, BranchRefPolicyConfigured>? configureBranchPolicy = null)
     {
         RSA rsa = RSA.Create(2048);
         RsaSecurityKey key = new(rsa) { KeyId = "gateway-query" };
@@ -120,9 +132,21 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
         McpCliGatewayQuerySearchSource search = new();
         builder.Services.RemoveAll<IFolderSearchSource>();
         builder.Services.AddSingleton<IFolderSearchSource>(search);
-        RecordingProviderCapabilityResolver provider = new(FakeGitProvider.GitHubLike());
+        if (oversizedBridge is not null)
+        {
+            builder.Services.RemoveAll<ISemanticIndexingBridgeReadModel>();
+            builder.Services.AddSingleton<ISemanticIndexingBridgeReadModel>(oversizedBridge);
+        }
+        RecordingProviderCapabilityResolver provider = new(providerFailure is { } category
+            ? FakeGitProvider.Failing(category) : FakeGitProvider.GitHubLike());
         builder.Services.RemoveAll<IProviderCapabilityResolver>();
         builder.Services.AddSingleton<IProviderCapabilityResolver>(provider);
+        if (bindingReader is not null)
+        {
+            builder.Services.RemoveAll<IProviderReadinessBindingReader>();
+            builder.Services.AddSingleton(bindingReader);
+        }
+        configure?.Invoke(builder);
         WebApplication app = builder.Build();
         app.UseFoldersServerPipeline();
         await app.StartAsync(token).ConfigureAwait(false);
@@ -130,7 +154,12 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
         var fixture = new McpCliGatewayQueryFixture(app, rsa, key, source, search, provider, DateTimeOffset.UtcNow);
         try
         {
-            await fixture.SeedAsync(token).ConfigureAwait(false);
+            await fixture.SeedAsync(configureBranchPolicy, token).ConfigureAwait(false);
+            if (oversizedBridge is not null)
+            {
+                search.FileVersion = oversizedBridge.FileVersion;
+                search.IncludeForeignTail = false;
+            }
             return fixture;
         }
         catch
@@ -224,12 +253,15 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
         rsa.Dispose();
     }
 
-    private async Task SeedAsync(CancellationToken token)
+    private async Task SeedAsync(Func<BranchRefPolicyConfigured, BranchRefPolicyConfigured>? configureBranchPolicy,
+        CancellationToken token)
     {
         await SetTenantFreshnessAsync(stale: false, token).ConfigureAwait(false);
         WorkspaceFileMutationAccepted file = new(Tenant, Tenant, Folder, Workspace, FolderWorkspaceLifecycleEvent.FileMutated,
             "opaque_FileOperationGateway", "add", "add", "tenant_sensitive_document", "digest_file_metadata",
             "hash_metadata", 15, "text/plain", "inline", 15, User, Correlation, TaskId, "key-file", "fingerprint-file", now);
+        BranchRefPolicyConfigured policy = new(Tenant, Tenant, Folder, Binding, "branch_policy_gateway", "refs/heads/main",
+            ["refs/heads/*"], [], User, Correlation, TaskId, "key-policy", "fingerprint-policy", now);
         List<IFolderEvent> history =
         [
             new FolderCreated(Tenant, Tenant, Folder, "Gateway Folder", null, null, [], FolderLifecycleState.Active,
@@ -238,8 +270,7 @@ internal sealed class McpCliGatewayQueryFixture(WebApplication app, RSA rsa, Rsa
                 User, Correlation, HistoricalTaskId, "key-binding", "fingerprint-binding", now),
             new RepositoryBound(Tenant, Tenant, Folder, Binding, ProviderBinding, Correlation, HistoricalTaskId,
                 "key-bound", "fingerprint-bound", now),
-            new BranchRefPolicyConfigured(Tenant, Tenant, Folder, Binding, "branch_policy_gateway", "refs/heads/main",
-                ["refs/heads/*"], ["refs/heads/main"], User, Correlation, TaskId, "key-policy", "fingerprint-policy", now),
+            configureBranchPolicy?.Invoke(policy) ?? policy,
             new WorkspacePreparationRequested(Tenant, Tenant, Folder, Workspace, Binding, "branch_policy_gateway", "workspace-policy",
                 User, Correlation, TaskId, "prepare-key", "prepare-fingerprint", now),
             new FolderWorkspaceLifecycleEventRecorded(Tenant, Tenant, Folder, Workspace, FolderWorkspaceLifecycleEvent.WorkspacePrepared,

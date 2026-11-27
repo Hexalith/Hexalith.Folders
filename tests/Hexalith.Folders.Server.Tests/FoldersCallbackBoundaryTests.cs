@@ -99,7 +99,7 @@ public sealed class FoldersCallbackBoundaryTests
     [InlineData(QueryAdapterFailureReason.InvalidPage, HttpStatusCode.BadRequest)]
     // These stable wire values span the released API and renamed source constants.
     [InlineData("actor-exception", HttpStatusCode.NotFound)]
-    [InlineData("actor-not-found-infrastructure", HttpStatusCode.NotFound)]
+    [InlineData(QueryAdapterFailureReason.ReadModelUnavailable, HttpStatusCode.NotFound)]
     [InlineData(QueryAdapterFailureReason.SerializationFailure, HttpStatusCode.NotFound)]
     [InlineData(QueryAdapterFailureReason.MissingPayload, HttpStatusCode.NotFound)]
     [InlineData(QueryAdapterFailureReason.Forbidden, HttpStatusCode.NotFound)]

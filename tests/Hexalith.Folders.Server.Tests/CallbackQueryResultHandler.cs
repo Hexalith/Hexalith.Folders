@@ -6,9 +6,12 @@ using Hexalith.EventStore.DomainService;
 namespace Hexalith.Folders.Server.Tests;
 
 /// <summary>Supplies controlled dispatcher results through the production callback route.</summary>
-/// <param name="result">The result returned by the registered test query.</param>
-internal sealed class CallbackQueryResultHandler(QueryResult result) : IDomainQueryHandler
+/// <param name="execute">The callback used by the registered test query.</param>
+internal sealed class CallbackQueryResultHandler(Func<QueryEnvelope, CancellationToken, Task<QueryResult>> execute) : IDomainQueryHandler
 {
+    /// <summary>Creates a handler that returns a fixed result for the dispatched query.</summary>
+    internal CallbackQueryResultHandler(QueryResult result) : this((_, _) => Task.FromResult(result)) { }
+
     /// <inheritdoc/>
     public string Domain => "folders";
 
@@ -28,6 +31,6 @@ internal sealed class CallbackQueryResultHandler(QueryResult result) : IDomainQu
     {
         cancellationToken.ThrowIfCancellationRequested();
         Calls++;
-        return Task.FromResult(result);
+        return execute(query, cancellationToken);
     }
 }

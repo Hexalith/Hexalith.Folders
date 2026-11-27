@@ -39,8 +39,12 @@ internal sealed class SearchFolderIndexedFilesGatewayQueryHandler(GatewayQueryEx
             query.CorrelationId, payload.TaskId, null, null, payload.QueryText, page.Limit, page.Cursor), token).ConfigureAwait(false);
         if (result.Code != ContextSearchResultCode.Allowed)
         {
-            return result.Code is ContextSearchResultCode.QueryTimeout or ContextSearchResultCode.ReadModelUnavailable
-                ? Unavailable : Denied;
+            return result.Code switch
+            {
+                ContextSearchResultCode.QueryTimeout or ContextSearchResultCode.ReadModelUnavailable => Unavailable,
+                ContextSearchResultCode.ResponseLimitExceeded => InvalidEnvelope,
+                _ => Denied,
+            };
         }
 
         return Success(new { result.Items, result.NextCursor, result.Limits }, result.Freshness,

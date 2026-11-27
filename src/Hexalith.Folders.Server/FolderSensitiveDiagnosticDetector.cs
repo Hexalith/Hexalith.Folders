@@ -37,6 +37,54 @@ internal static partial class FolderSensitiveDiagnosticDetector
             || PemPattern().IsMatch(value);
     }
 
+    /// <summary>Detects credential-shaped values in ordinary query metadata.</summary>
+    internal static bool ContainsSecret(string value)
+        => FolderAuditSanitizer.ContainsProviderCredential(value)
+            || JwtPattern().IsMatch(value)
+            || PemPattern().IsMatch(value)
+            || AuthorizationHeaderPattern().IsMatch(value)
+            || ContainsCredentialUrl(value);
+
+    private static bool ContainsCredentialUrl(string value)
+    {
+        foreach (Match match in UrlPattern().Matches(value))
+        {
+            if (Uri.TryCreate(match.Value, UriKind.Absolute, out Uri? url)
+                && (url.UserInfo.Length != 0 || HasCredentialParameter(url.Query) || HasCredentialParameter(url.Fragment)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasCredentialParameter(string parameters)
+    {
+        foreach (string parameter in parameters.TrimStart('?', '#').Split('&'))
+        {
+            int separator = parameter.IndexOf('=');
+            if (separator > 0 && separator < parameter.Length - 1
+                && CredentialParameterPattern().IsMatch(Uri.UnescapeDataString(parameter[..separator])))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    [GeneratedRegex(@"\b(?:proxy-)?authorization[ \t]*:[ \t]*\S|\A[ \t]*(?:bearer|basic)[ \t]+[a-z0-9._~+/-]+=*[ \t]*\z",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex AuthorizationHeaderPattern();
+
+    [GeneratedRegex("""\b[a-z][a-z0-9+.\-]*://[^\s<>"']+""", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex UrlPattern();
+
+    [GeneratedRegex(@"\A(?:(?:access|id|refresh)[_-]?token|api[_-]?key|client[_-]?secret|credential|password|secret|signature|sig|token|googleaccessid|x-(?:amz|goog)-(?:credential|security-token|signature))\z",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex CredentialParameterPattern();
+
     [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
     private static partial Regex JwtPattern();
 

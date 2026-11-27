@@ -14,6 +14,9 @@ internal sealed class GetRepositoryBindingGatewayQueryHandler(GatewayQueryExecut
         "read_metadata", static payload => payload.FolderId)
 {
     /// <inheritdoc/>
+    protected override string? SecondaryEntity(GetRepositoryBinding payload) => payload.RepositoryBindingId;
+
+    /// <inheritdoc/>
     protected override async Task<QueryResult> ReadAsync(QueryEnvelope query, GetRepositoryBinding payload,
         GatewayQueryPage page, CancellationToken token)
     {

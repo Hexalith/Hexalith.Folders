@@ -25,7 +25,8 @@ internal sealed class GetBranchRefPolicyGatewayQueryHandler(GatewayQueryExecutio
                 ? Unavailable : Denied;
         }
 
-        if (string.IsNullOrWhiteSpace(result.RepositoryBindingId) || string.IsNullOrWhiteSpace(result.PolicyRef)
+        if (string.IsNullOrWhiteSpace(result.FolderId) || string.IsNullOrWhiteSpace(result.RepositoryBindingId)
+            || string.IsNullOrWhiteSpace(result.PolicyRef)
             || string.IsNullOrWhiteSpace(result.DefaultRef) || result.AllowedRefPatterns.Count == 0)
         {
             return Unavailable;
@@ -38,7 +39,7 @@ internal sealed class GetBranchRefPolicyGatewayQueryHandler(GatewayQueryExecutio
             result.PolicyRef,
             result.DefaultRef,
             result.AllowedRefPatterns,
-            result.ProtectedRefPatterns,
+            protectedRefPatterns = result.ProtectedRefPatterns.Count == 0 ? null : result.ProtectedRefPatterns,
         }, result.Freshness);
     }
 }

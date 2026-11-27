@@ -35,7 +35,6 @@ internal sealed class GetEffectivePermissionsGatewayQueryHandler(GatewayQueryExe
             result.FolderId,
             permissions = result.Permissions.Select(FoldersDomainServiceEndpoints.PermissionToken),
             result.AuthorizationOutcome,
-            taskId = result.TaskContextId,
         }, Freshness(result.Freshness));
     }
 }

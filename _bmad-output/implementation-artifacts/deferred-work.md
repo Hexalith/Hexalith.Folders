@@ -3477,3 +3477,21 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 ## Deferred from: code review of spec-5-14-serve-folders-reads-through-gateway-query-handlers (2026-11-27)
 
 - Public EventStore Gateway ingress drops incoming `Idempotency-Key` header before calling `/query` (`src/Hexalith.Folders.Server/Queries/GatewayQueryExecutionSupport.cs:108-109`): `Hexalith.EventStore`'s `QueriesController` constructs a separate Dapr `/query` callback without forwarding or rejecting incoming `Idempotency-Key` headers; owned by `references/Hexalith.EventStore` (out of scope under Spec Never #1, confirming the existing Story 5.14 EventStore ingress deferral above).
+
+## Deferred from Story 5.14 Gateway query review corrections
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
+  summary: Bound initial Gateway context-search hydration to the same budget as continuation probing.
+  evidence: The original `ContextSearchQueryHandler.HandleCoreAsync` uses the request token for first-page hydration. A slow first-page bridge can outlast the context-search budget before the continuation deadline is evaluated.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
+  summary: Measure Q34 byte limits against its final serialized callback payload.
+  evidence: The original `EstimateResponseBytes` measures the core shape before Gateway JSON omission and redaction. Near the one-megabyte boundary the reported size and rejection threshold can differ from the emitted wire shape.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
+  summary: Define a contract-valid public projection watermark for retained operational sequences.
+  evidence: `OperationalStatusFold` and the branch policy reader supply decimal sequences while the v2 freshness contract references `OpaqueIdentifier`. The existing callback exposes those values, including sequences shorter than 16 characters.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
+  summary: Define how Q02 represents retained legacy Git refs under the v2 branch-policy contract.
+  evidence: The existing branch policy projection retains raw Git refs and the Gateway mapper emits them. The v2 schema describes the affected values with `branch_ref_` identifier patterns.
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-14-gateway-query-review-corrections.md`
+  summary: Sanitize transport failure logs in the production Memories search source.
+  evidence: The pre-existing `MemoriesFolderSearchSource` submits the full remote exception object to its warning logger before the query handler receives a closed unavailable result.

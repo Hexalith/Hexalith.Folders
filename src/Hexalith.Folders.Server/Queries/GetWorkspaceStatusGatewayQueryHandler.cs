@@ -28,7 +28,8 @@ internal sealed class GetWorkspaceStatusGatewayQueryHandler(GatewayQueryExecutio
                 ? Unavailable : Denied;
         }
 
-        if (result.ProviderOutcome is not { } outcome)
+        if (string.IsNullOrWhiteSpace(result.FolderId) || string.IsNullOrWhiteSpace(result.WorkspaceId)
+            || result.ProjectedState is null || result.ProviderOutcome is not { } outcome)
         {
             return Unavailable;
         }
@@ -48,7 +49,7 @@ internal sealed class GetWorkspaceStatusGatewayQueryHandler(GatewayQueryExecutio
                 outcome.ProviderCorrelationReference,
                 outcome.RetryEligibility,
                 outcome.RetryAfter,
-                outcome.Freshness,
+                freshness = ProjectFreshness(outcome.Freshness, ReadYourWrites),
             },
             result.RetryEligibility,
             result.RetryAfter,

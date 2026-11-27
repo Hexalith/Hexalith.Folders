@@ -32,12 +32,17 @@ internal sealed class GetWorkspaceRetryEligibilityGatewayQueryHandler(GatewayQue
         }
 
         WorkspaceLockRetryEligibility retry = result.RetryEligibility;
+        if (string.IsNullOrWhiteSpace(retry.CurrentState) || string.IsNullOrWhiteSpace(retry.ReasonCode))
+        {
+            return Unavailable;
+        }
+
         return Success(new
         {
             retry.Retryable,
             retry.RetryAfterSeconds,
             retry.ReasonCode,
-            query.CorrelationId,
+            correlationId = retry.CorrelationId ?? query.CorrelationId,
             taskId = retry.TaskId ?? payload.TaskId,
             retry.CurrentState,
         }, retry.Freshness);
