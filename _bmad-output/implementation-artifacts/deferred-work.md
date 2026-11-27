@@ -3367,6 +3367,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Define how the HTTP fixture helper handles non-ASCII identifiers.
   evidence: The existing fixture validation accepts non-ASCII identifiers. The default HTTP client rejects them during send. Set the wire validation at the HTTP boundary so fixture contexts can also serve non-HTTP tests.
+  status: done 2026-11-27
+  resolution: HTTP header conversion rejects non-ASCII task, correlation and idempotency identifiers with a value-free diagnostic. Non-HTTP fixtures may still use them.
 
 - source_spec: `spec-five-deferred-test-harness.md`
   summary: Migrate specialized conformance scripts to native Microsoft.Testing.Platform project options.

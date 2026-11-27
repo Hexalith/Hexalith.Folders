@@ -14,11 +14,21 @@ public static class TestRequestHeaders
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        Dictionary<string, string> headers = new(StringComparer.OrdinalIgnoreCase)
         {
             [CorrelationId] = context.CorrelationId,
             [IdempotencyKey] = context.IdempotencyKey,
             [TaskId] = context.TaskId
         };
+
+        foreach ((string header, string value) in headers)
+        {
+            if (value.Any(character => !char.IsAscii(character)))
+            {
+                throw new ArgumentException($"The {header} header value must contain only ASCII characters.", nameof(context));
+            }
+        }
+
+        return headers;
     }
 }
