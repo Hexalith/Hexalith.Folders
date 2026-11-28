@@ -17,7 +17,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 58bedc6182ffad68648d3dc8fbf9d5b5358da89c0bf675ff4993d471969586de
+candidate_set_sha256: 9e8c34267f110d9e056f099688c6d41f2b8d7e0bba97e60225f6aa7d62cf6ddc
 artifact_count: 1750
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -5630,8 +5630,8 @@ artifacts:
     sha256: 852eb5afb75f0b0f0fc9cdc753a66e4e70b206ab81ddc49a40540969a3239351
   - path: "tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryHandlersTests.cs"
     kind: file
-    bytes: 39483
-    sha256: 6a534082bd3e8f4a32104d092b8a15384411b33c978c845bde7aa74309839419
+    bytes: 39595
+    sha256: 2cc028dff3aaa3a9456690ed33227e27216a5344223001feca5a458fa133db26
   - path: "tests/Hexalith.Folders.Server.Tests/McpCliGatewayQueryOversizedBridge.cs"
     kind: file
     bytes: 2151
@@ -5654,8 +5654,8 @@ artifacts:
     sha256: 77d28f2f2eaadfd30fdf448992589d52435f558ac5e7d64a0a7254b2fb1a35a6
   - path: "tests/Hexalith.Folders.Server.Tests/McpCliProcessAdmissionAndAuthorizationTests.cs"
     kind: file
-    bytes: 113219
-    sha256: 634d1f07c323c073d5de9a1b977f096f38f28cf5ec3d405737e2b8d8f1225684
+    bytes: 113227
+    sha256: 9844c67e4fb31d3e92a305b99459ffc92b3bb8f1f9774de71f4fd149bb7ce648
   - path: "tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs"
     kind: file
     bytes: 10877
