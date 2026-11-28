@@ -1,0 +1,247 @@
+{
+  "story": "12.2",
+  "status": "in-progress",
+  "scope": "Debug/source qualification of the existing bounded SM4 candidate",
+  "source_revisions": {
+    ".": "057f7c1c868ff0b26662b7a1fe0527572fbbaa9e",
+    "references/Hexalith.AI.Tools": "f4c12476ace1c4f10b423c9ac9181882c9f47c3c",
+    "references/Hexalith.Builds": "aebabdadadffa108801992253c7910f37437b115",
+    "references/Hexalith.CiCd": "1678c158d7f72994bd95650a234c9c5762a8d627",
+    "references/Hexalith.Commons": "881ab57961de99ee129dd03a61d4a53d537af59d",
+    "references/Hexalith.EventStore": "4505d0688c4f191fe480d10f6accf6be7644c8c0",
+    "references/Hexalith.FrontComposer": "1df797a868fc6c5fe29c6610ae91d1e1f6cd234d",
+    "references/Hexalith.McpCli": "4d69f7d7d0a33bcd1a9e18a4a676645ef93dda50",
+    "references/Hexalith.Memories": "3b72746d2ca431b52791d9e4c5c0f93f92cf704d",
+    "references/Hexalith.Parties": "11f8a6cba608ef79a5c8fe96c789c3fe6ab66b05",
+    "references/Hexalith.Platform": "7b7cb4aad9ff20a419df46b25e7862585bab4cc9",
+    "references/Hexalith.PolymorphicSerializations": "693237318be0c52e22fd5c77569b195327495b9a",
+    "references/Hexalith.Projects": "e2490842fffba312e1d6caf13cc883ce4e828bde",
+    "references/Hexalith.Tenants": "b5cce6f814e692f41c7c91ff6adbe6626d19fb38"
+  },
+  "candidate_patch_evidence": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-sm4-remediation-20261128.json",
+    "sha256": "fdc40855529e0c5193f128bd7d976ec5cef7066a13f708925ec99037e932aa11"
+  },
+  "matched_source_snapshots": true,
+  "protected_acceptance_sha256": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "pd10_candidate": {
+    "artifact_count": 1752,
+    "sha256": "f782b4b4e83d835c9070342631f9e9bee47195a05ef3a650910e92778b2d3d0b",
+    "approval": "pending-a6b"
+  },
+  "build_warning": "CS0618 from the legacy AddProject<TProject> API in Tenants Aspire composition",
+  "focused_tests": {
+    "Hexalith.Folders.Tests": {
+      "passed": 233,
+      "failed": 0,
+      "skipped": 0,
+      "assembly_sha256": "adba20f9eb9b625e1f83a44f530ab5e5fdf5f87851793d1072b7d5b0d194def9",
+      "class_filters": [
+        "*OperationalStatus*",
+        "*ProcessInitialAuthorizationScopeTests",
+        "*ProviderReadinessValidationServiceTests",
+        "*RepositoryBindingServiceTests"
+      ]
+    },
+    "Hexalith.Folders.Server.Tests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0,
+      "assembly_sha256": "7cc8813bdd9766a9f8391b34d9dbf6755a77bf880d8527b39c2b69ef0e9b5b31",
+      "class_filters": [
+        "*FoldersDomainServiceRequestHandlerTests",
+        "*FoldersServerHostCompositionTests"
+      ]
+    },
+    "Hexalith.Folders.Contracts.Tests": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "assembly_sha256": "6b3180a8c2af21844a0d74777e58c6dec433932058eb5df9f234297333b8a175",
+      "class_filters": [
+        "*Pd10ConformanceSetTests",
+        "*Pd10V2ContractTests"
+      ]
+    }
+  },
+  "focused_test_receipt": {
+    "path": ".artifacts/story-12-2-sm4-current-Vgj3eL2b/focused-results.json",
+    "sha256": "4a67206256161ac28bc451e20909e8ebc32eae0e8241190bf7873c2749770ed7"
+  },
+  "frozen_matrix_component_cases_passed": {
+    "delivery_and_replay": [
+      "OperationalStatusFoldTests.ExactDuplicatesCannotAdvanceCheckpointAndDifferentBytesCannotReplaceThem",
+      "OperationalStatusPersistenceTests.FreshRebuildRepairsMissingViewsAndRepeatedEmptyCheckpoints"
+    ],
+    "task_closure": [
+      "OperationalStatusCorrectionTests.EarliestTaskClosureSurvivesEverySliceJsonRestartAndLaterBindingClosure"
+    ],
+    "conflict_and_crash": [
+      "OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+      "OperationalStatusNativeSourceAuthorityTests.ConflictingOriginalPositionCannotPassNativeIdentityBeforeAdmissionOrExpiredReplay"
+    ],
+    "denial_and_storage": [
+      "OperationalStatusFoldTests.ForeignIdentityAndCorruptCheckpointFailBeforeCandidates",
+      "OperationalStatusPersistenceTests.ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence"
+    ],
+    "retention": [
+      "OperationalStatusRetentionTests.BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+      "OperationalStatusNativeSourceAuthorityTests.ExpiredIdentityIsIndependentlyCheckedBeforeJournalAndNewIdentityRemainsLawful"
+    ]
+  },
+  "capacity_component_positions_passed": [
+    10001,
+    32769
+  ],
+  "live_test": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+  "live_runs": [
+    {
+      "command": "run-with-temp .artifacts/story-12-2-sm4-current-Vgj3eL2b/run-sm4.sh",
+      "utc_start": "2026-11-28T12:59:37.979268+00:00",
+      "utc_end": "2026-11-28T13:02:11.150473+00:00",
+      "exit_code": 1,
+      "results": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0
+      },
+      "test_assembly_seconds": 102.042,
+      "disposition": "Authenticated CreateTenant returned 500 unavailable after the configured five-second Tenants domain service timeout. The run exited during fixture initialization and emitted no p95. Six remaining containers carried Platform G4 run labels.",
+      "one_minute_host_load": {
+        "samples": 10,
+        "min": 14.19,
+        "max": 52.4,
+        "mean": 29.48
+      },
+      "builds": {
+        "sm4-build": {
+          "warnings": 1,
+          "errors": 0
+        },
+        "sm4-memories": {
+          "warnings": 0,
+          "errors": 0
+        },
+        "sm4-observer": {
+          "warnings": 0,
+          "errors": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "runtime_module_observations": 112,
+      "fixture_module_observations": 46,
+      "cleanup_remaining": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 6,
+        "remaining_observed_directories": 0
+      },
+      "disposable_workspace_removed": true,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-current-Vgj3eL2b/current-candidate-receipt.json",
+        "sha256": "7e69b2445aa8f0180ff47a6b8a9dd78471fbb5566d69d68f26ac86aed8ee518e"
+      }
+    },
+    {
+      "command": "run-with-temp .artifacts/story-12-2-sm4-retry-llTxbK7v/run-sm4.sh",
+      "utc_start": "2026-11-28T13:08:18.272192+00:00",
+      "utc_end": "2026-11-28T13:17:01.487406+00:00",
+      "exit_code": 0,
+      "results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "test_assembly_seconds": 487.09,
+      "disposition": "Passed real-provider task closure, restart, complete rebuild, concurrent Workers delivery, interrupted generation recovery, retention, and safe-failure assertions.",
+      "one_minute_host_load": {
+        "samples": 35,
+        "min": 10.83,
+        "max": 20.16,
+        "mean": 15.0
+      },
+      "builds": {
+        "sm4-build": {
+          "warnings": 1,
+          "errors": 0
+        },
+        "sm4-memories": {
+          "warnings": 0,
+          "errors": 0
+        },
+        "sm4-observer": {
+          "warnings": 0,
+          "errors": 0
+        }
+      },
+      "source_or_head_drift": [],
+      "runtime_file_drift": [],
+      "runtime_module_observations": 272,
+      "fixture_module_observations": 355,
+      "cleanup_remaining": {
+        "remaining_observed_descendants": 0,
+        "remaining_owned_containers": 0,
+        "remaining_unattributed_containers": 0,
+        "remaining_observed_directories": 0
+      },
+      "disposable_workspace_removed": true,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-retry-llTxbK7v/current-retry-receipt.json",
+        "sha256": "a319b2da7c148abd0ea4f385056b4794fa97d297efd496153da514e309ce1476"
+      }
+    }
+  ],
+  "p95_measurements": {
+    "command_acknowledgement": {
+      "count": 10,
+      "p50_ms": 6990.642,
+      "p95_ms": 8839.905,
+      "p95_budget_ms": 1000.0,
+      "over_budget": true
+    },
+    "workers_operational_delivery": {
+      "count": 26,
+      "p50_ms": 2235.16,
+      "p95_ms": 3726.146,
+      "p95_budget_ms": 1000.0,
+      "over_budget": true
+    },
+    "status_read": {
+      "count": 12,
+      "p50_ms": 464.353,
+      "p95_ms": 1119.183,
+      "p95_budget_ms": 500.0,
+      "over_budget": true
+    }
+  },
+  "representative_trace_ms": {
+    "bind_repository_elapsed": 8254,
+    "bind_repository_execution_fence_observations": [
+      386,
+      697,
+      369,
+      525,
+      449,
+      494
+    ],
+    "bind_repository_execution_fence_total": 2920,
+    "lifecycle_read_elapsed": 1129,
+    "lifecycle_read_parallel_acl_metadata": [
+      559,
+      563
+    ],
+    "lifecycle_read_fresh_metadata": 372
+  },
+  "open_gates": [
+    "SM4 command acknowledgement and status reads exceed their existing p95 targets",
+    "Platform owner decision on default route-catalog and execution-fence validation frequency",
+    "A6b, publication, staging and deployed-consumer evidence, and independent whole-story acceptance"
+  ]
+}

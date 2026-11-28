@@ -22,6 +22,7 @@ public sealed class LayeredFolderAuthorizationService(
         LayeredFolderAuthorizationContext context, bool includeFolderAcl, CancellationToken cancellationToken)
     {
         using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        using IDisposable processSuppression = ProcessInitialAuthorizationScope.Suppress();
         return await AuthorizeCoreAsync(context, includeFolderAcl, cancellationToken,
             requireCompleteFreshness: true).ConfigureAwait(false);
     }
@@ -32,6 +33,7 @@ public sealed class LayeredFolderAuthorizationService(
     {
         ArgumentNullException.ThrowIfNull(context);
         using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        using IDisposable processSuppression = ProcessInitialAuthorizationScope.Suppress();
         return await AuthorizeCoreAsync(context with { OperationPolicy = LayeredFolderOperationPolicy.StrictRead() },
             includeFolderAcl: true, cancellationToken).ConfigureAwait(false);
     }
@@ -156,6 +158,16 @@ public sealed class LayeredFolderAuthorizationService(
                 context,
                 actorSafeIdentifier,
                 evaluatedLayers);
+        }
+
+        if (includeFolderAcl
+            && !requireCompleteFreshness
+            && preauthorized is null
+            && context.OperationPolicy == LayeredFolderOperationPolicy.Mutation()
+            && ProcessInitialAuthorizationScope.TryConsume(context, out LayeredFolderAuthorizationResult? consumed)
+            && consumed is not null)
+        {
+            return consumed;
         }
 
         evaluatedLayers.Add(AuthorizationLayer.TenantAccessFreshness);
@@ -422,6 +434,8 @@ public sealed class LayeredFolderAuthorizationService(
         bool requireCompleteFreshness = false)
     {
         ArgumentNullException.ThrowIfNull(context);
+        ProcessInitialAuthorizationScope.InvalidateCurrent();
+        using IDisposable processSuppression = ProcessInitialAuthorizationScope.Suppress();
         LayeredFolderAuthorizationContext freshContext = includeFolderAcl
             ? context
             : context with { OperationScope = null };

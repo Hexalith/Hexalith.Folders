@@ -1,0 +1,179 @@
+{
+  "story": "12.2",
+  "status": "in-progress",
+  "scope": "Platform-approved 1A+2A+3A SM4 remediation layered onto pulled upstream EventStore 821b779d6 (including e1acce882) with Builds pinned to Folders 5.6.0 cohort (aebabdad)",
+  "date": "2026-11-28",
+  "source_revisions": {
+    ".": "057f7c1c868ff0b26662b7a1fe0527572fbbaa9e",
+    "references/Hexalith.AI.Tools": "f4c12476ace1c4f10b423c9ac9181882c9f47c3c",
+    "references/Hexalith.Builds": "aebabdadadffa108801992253c7910f37437b115",
+    "references/Hexalith.CiCd": "95deeacbb6601f67d8f78d2bcded6392fd1cbba4",
+    "references/Hexalith.Commons": "881ab57961de99ee129dd03a61d4a53d537af59d",
+    "references/Hexalith.EventStore": "821b779d69149123a01ecc5032f6eb53a066f2c2",
+    "references/Hexalith.FrontComposer": "1df797a868fc6c5fe29c6610ae91d1e1f6cd234d",
+    "references/Hexalith.McpCli": "d8f36fe933e12b605144e6c6e12cf4faaec38cc3",
+    "references/Hexalith.Memories": "860a9622559a7fdaac2838250cc504b9cc39303c",
+    "references/Hexalith.Parties": "11f8a6cba608ef79a5c8fe96c789c3fe6ab66b05",
+    "references/Hexalith.Platform": "5b2102ec4cb11b008ab904cb26c8deb550f5c62c",
+    "references/Hexalith.PolymorphicSerializations": "693237318be0c52e22fd5c77569b195327495b9a",
+    "references/Hexalith.Projects": "aacb60f028548f768db15c6821cdd80a5ae8e588",
+    "references/Hexalith.Tenants": "b5cce6f814e692f41c7c91ff6adbe6626d19fb38"
+  },
+  "protected_acceptance_sha256": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "focused_tests": {
+    "Hexalith.EventStore.Server.Tests (SM4, lease borrowing, fence consolidation, diagnostics, memo)": {
+      "passed": 187,
+      "failed": 0,
+      "skipped": 0
+    },
+    "Hexalith.EventStore.Contracts.Tests (Routing)": {
+      "passed": 234,
+      "failed": 0,
+      "skipped": 0
+    },
+    "Hexalith.EventStore.Server.Tests (full Routing namespace)": {
+      "passed": 1581,
+      "failed": 1,
+      "skipped": 0,
+      "note": "Single failure is PublishedTenantQuerySelectorAbiTests local NuGet archive SHA-256 mismatch on published-tenants-7.0.0/Hexalith.Tenants.Contracts.7.0.0.nupkg, unrelated to SM4 changes."
+    },
+    "Hexalith.Folders.Tests (OperationalStatus, ProcessInitialAuthorizationScope, ProviderReadiness, RepositoryBinding)": {
+      "passed": 233,
+      "failed": 0,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Server.Tests (FoldersDomainServiceRequestHandlerTests, FoldersServerHostCompositionTests)": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0
+    },
+    "Hexalith.Folders.Contracts.Tests (Pd10ConformanceSetTests, Pd10V2ContractTests)": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "live_test": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+  "live_run": {
+    "command": "run-with-temp .artifacts/story-12-2-sm4-1a2a3a-20261128/run-sm4.sh",
+    "utc_start": "2026-11-28T15:09:23.047403+00:00",
+    "utc_end": "2026-11-28T15:15:10.950710+00:00",
+    "exit_code": 0,
+    "results": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "test_assembly_seconds": 315.041,
+    "test_method_seconds": 232.25,
+    "one_minute_host_load": {
+      "samples": 26,
+      "min": 9.0,
+      "max": 22.28,
+      "mean": 15.45
+    },
+    "source_or_head_drift": [],
+    "runtime_file_drift": [],
+    "runtime_module_observations": 272,
+    "fixture_module_observations": 337,
+    "cleanup_remaining": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 0,
+      "remaining_observed_directories": 0
+    },
+    "receipt": {
+      "path": ".artifacts/story-12-2-sm4-1a2a3a-20261128/candidate-1a2a3a-receipt.json",
+      "sha256": "d658d999dce8eb4ea5c2be5c8e9cca8db97240872d6528536dd7edc80cbd934f"
+    },
+    "measurements_receipt": {
+      "path": ".artifacts/story-12-2-sm4-1a2a3a-20261128/candidate-1a2a3a-measurements.json",
+      "sha256": "7b48d82e0e66d7bafb36794d4315d574bca5a811f08585813f83e2765cf83b9e"
+    }
+  },
+  "p95_measurements": {
+    "command_acknowledgement": {
+      "count": 10,
+      "p50_ms": 1993.929,
+      "p95_ms": 3072.568,
+      "p95_budget_ms": 1000.0,
+      "over_budget": true,
+      "baseline_p95_ms": 8839.905,
+      "delta_percent": -65.2
+    },
+    "workers_operational_delivery": {
+      "count": 26,
+      "p50_ms": 1095.664,
+      "p95_ms": 1817.041,
+      "p95_budget_ms": 1000.0,
+      "over_budget": true,
+      "baseline_p95_ms": 3726.146,
+      "delta_percent": -51.2
+    },
+    "status_read": {
+      "count": 12,
+      "p50_ms": 308.44,
+      "p95_ms": 385.674,
+      "p95_budget_ms": 500.0,
+      "over_budget": false,
+      "baseline_p95_ms": 1119.183,
+      "delta_percent": -65.5
+    }
+  },
+  "representative_trace_ms": {
+    "bind_repository_elapsed": 2853,
+    "bind_repository_submit_acquire": 0,
+    "bind_repository_admission": 483,
+    "bind_repository_execution_begin": 105,
+    "bind_repository_router_acquire": 0,
+    "bind_repository_fenced_actor_rpc": 1869,
+    "bind_repository_execution_fence": 115,
+    "bind_repository_admission_completion": 120,
+    "bind_repository_overlapping_eventstore_catalog_http": {
+      "GET": 186,
+      "POST": 118
+    },
+    "steady_lifecycle_read_elapsed_range": [
+      172,
+      384
+    ]
+  },
+  "open_gates": [
+    "SM4 command acknowledgement p95 (3,072.568 ms) remains above 1,000 ms budget due to per-actor-RPC CAS lease mutations in TechnicalHttpRouteCatalogReceiver.InvokeNativeAsync (Axis 3B candidate); status read p95 (385.674 ms) now passes its 500 ms budget",
+    "Hexalith.FrontComposer qualification for EventStore 5.7.0 (Builds 1b494f9b) remains separate upstream work",
+    "A6b, publication, staging and deployed-consumer evidence, and independent whole-story acceptance"
+  ],
+  "post_review": {
+    "layers": [
+      "blind-hunter",
+      "edge-case-hunter",
+      "verification-gap"
+    ],
+    "raw_findings": 24,
+    "patched_groups": 8,
+    "rejected_false": 5,
+    "deferred": 0,
+    "post_patch_verification": {
+      "Hexalith.EventStore.Server.Tests (SM4, borrowing, fence consolidation, receivers, diagnostics, memo)": {
+        "passed": 232,
+        "failed": 0,
+        "skipped": 0,
+        "build_warnings": 0,
+        "build_errors": 0
+      },
+      "Hexalith.EventStore.Contracts.Tests (Routing)": {
+        "passed": 234,
+        "failed": 0,
+        "skipped": 0,
+        "build_warnings": 0,
+        "build_errors": 0
+      }
+    },
+    "note": "Live SM4 qualification ran prior to the Step 4 hardening patches (removing GetStreamMetadataAsync/ReadEventsRangeAsync from read-only allowlist, adding RouteValues/PUT/Gateway checks, adding AcquireReadOnlyAsync post-validation TOCTOU/cancellation/lease-cap guards, and locking _cachedSnapshot disposal)."
+  }
+}

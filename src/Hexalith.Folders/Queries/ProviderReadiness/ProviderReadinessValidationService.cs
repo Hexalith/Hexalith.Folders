@@ -249,6 +249,7 @@ public sealed partial class ProviderReadinessValidationService(
 
         ProviderReadinessValidationResult result = discovery.IsSuccess
             ? MapProfile(discovery.Profile!, request.RequestedCapability, correlationId, tenantAccess.ProjectionWatermark)
+                .WithResolvedBinding(binding)
             : MapFailure(discovery, providerBindingRef, tenantAccess.ProjectionWatermark);
 
         await StoreAsync(

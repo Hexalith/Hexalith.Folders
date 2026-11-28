@@ -699,6 +699,7 @@ src/Hexalith.Folders/Authorization/PermissionProjectionCatchUp.cs
 src/Hexalith.Folders/Authorization/PermissionProjectionConcurrencyException.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestContext.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestState.cs
+src/Hexalith.Folders/Authorization/ProcessInitialAuthorizationScope.cs
 src/Hexalith.Folders/Authorization/TenantAccessAuthorizationContext.cs
 src/Hexalith.Folders/Authorization/TenantAccessAuthorizationResult.cs
 src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs
@@ -1578,6 +1579,7 @@ tests/Hexalith.Folders.Tests/Authorization/GatewayOrganizationStreamSequenceRead
 tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
 tests/Hexalith.Folders.Tests/Authorization/OwnerMetadataReaderStub.cs
 tests/Hexalith.Folders.Tests/Authorization/PermissionProjectionDeadlineCleanupTests.cs
+tests/Hexalith.Folders.Tests/Authorization/ProcessInitialAuthorizationScopeTests.cs
 tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
 tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs

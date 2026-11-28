@@ -1,0 +1,204 @@
+{
+  "story": "12.2",
+  "scope": "Local source qualification — SM4 bounded remediation (Folders /process auth/binding deduplication + EventStore route-catalog & projection activation backoff)",
+  "date": "2026-11-28",
+  "status": "in-progress",
+  "sm4": "open",
+  "revisions": {
+    ".": "20a351a391670639395a513134f4b110174d111a",
+    "references/Hexalith.AI.Tools": "f4c12476ace1c4f10b423c9ac9181882c9f47c3c",
+    "references/Hexalith.Builds": "aebabdadadffa108801992253c7910f37437b115",
+    "references/Hexalith.CiCd": "1678c158d7f72994bd95650a234c9c5762a8d627",
+    "references/Hexalith.Commons": "881ab57961de99ee129dd03a61d4a53d537af59d",
+    "references/Hexalith.EventStore": "4505d0688c4f191fe480d10f6accf6be7644c8c0",
+    "references/Hexalith.FrontComposer": "1df797a868fc6c5fe29c6610ae91d1e1f6cd234d",
+    "references/Hexalith.McpCli": "4d69f7d7d0a33bcd1a9e18a4a676645ef93dda50",
+    "references/Hexalith.Memories": "3b72746d2ca431b52791d9e4c5c0f39f92cf704d",
+    "references/Hexalith.Parties": "11f8a6cba608ef79a5c8fe96c789c3fe6ab66b05",
+    "references/Hexalith.Platform": "7b7cb4aad9ff20a419df46b25e7862585bab4cc9",
+    "references/Hexalith.PolymorphicSerializations": "693237318be0c52e22fd5c77569b195327495b9a",
+    "references/Hexalith.Projects": "e2490842fffba312e1d6caf13cc883ce4e828bde",
+    "references/Hexalith.Tenants": "b5cce6f814e692f41c7c91ff6adbe6626d19fb38"
+  },
+  "candidate_changes": {
+    "folders": {
+      "summary": "Eliminate redundant back-to-back initial mutation AuthorizeAsync inside FoldersDomainServiceRequestHandler -> domain service via single-use ProcessInitialAuthorizationScope (matching tenant, trimmed principal, SafeActor, action, scope, correlation, task, and policy; entered inside try/finally; permanently invalidated on reauthorization; suppressed for strict/gateway reads; enforced after JWT/tenant/claim-transform checks), and attach verified OrganizationProviderBinding to successful ProviderReadinessValidationResult via ConditionalWeakTable (preserving record Equals/GetHashCode/ToString and avoiding credential leakage) for reuse in RepositoryBindingService when ManagedTenantId and ProviderBindingRef match.",
+      "sha256": {
+        "src/Hexalith.Folders/Authorization/ProcessInitialAuthorizationScope.cs": "4a35a142be3b76ddf1fbc3536c0098e0988a843e1437da4d387738a7de152cc2",
+        "src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs": "463bd24be9dd036724f56b332f18a1420908285b1aabe62dc264b59f53091e28",
+        "src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs": "e8f05eca4350730599405313fd8917ac70e04163b9c23bebcb95bc669b0e914b",
+        "src/Hexalith.Folders/Queries/ProviderReadiness/ProviderReadinessValidationResult.cs": "b02a9663034eaa2a619ad3cf856a05b24829c4ea419e65e39f44f6e738e87d6d",
+        "src/Hexalith.Folders/Queries/ProviderReadiness/ProviderReadinessValidationService.cs": "398e40a5f2f50b09092beed049af4296bec071b7f0754be37b49569860c49e11",
+        "src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs": "74f08a572d62dc3902f4dbbb1446748b945f159ef1ca9fee357fa728a2f2f996",
+        "tests/Hexalith.Folders.Tests/Authorization/ProcessInitialAuthorizationScopeTests.cs": "22d6abcde81531b5c89dbc8f0a9304f39f46352d26a67d40acce357b54708297",
+        "tests/Hexalith.Folders.Tests/Providers/Readiness/ProviderReadinessValidationServiceTests.cs": "62df8fa143c294ddc0bd786f2f1b05333512698434c20020d79bef36c17c9ccb",
+        "tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs": "fdd086652299254bf57928e38178ee360698a33c1e7e05ead93d22b5701f0f59",
+        "scripts/pd10-v2-story-owned-paths.txt": "7f14d03d34f436c0a5cb1b93409b448a1ba8cb18dcd2713a9775e672c3f1a59c"
+      }
+    },
+    "eventstore": {
+      "summary": "Cache Profile on ValidatedRouteCatalogEncoding for default-mode RouteCatalogCodec.ReadProfile after exact-byte and root-digest match (single owned copy via DecodeCoreOwned); hash MemoryStream buffer directly via TryGetBuffer in RouteCatalogCodec.Hash<T>; single-pass v2 serialization and auxiliary.Count > 1 short-circuit in RouteCatalogActivationBinding; reuse and hex-validate binding digest in ObservedRouteCatalogHost.ObserveWithValidatedBindingAsync, CommittedRouteCatalogSnapshot, and RouteCatalogAuthority (freezing lifecycle activations before validation); apply overflow-free integer exponential backoff in ProjectionActivationWorker.",
+      "sha256": {
+        "src/Hexalith.EventStore.Contracts/Routing/ValidatedRouteCatalogEncoding.cs": "5d281c283de3658dcfc22097054bab85afd71a9b8a3ff06ef5cf59d960598f58",
+        "src/Hexalith.EventStore.Contracts/Routing/RouteCatalogCodec.cs": "f5f186da5727ff53295e7fc1350919b22d43ff6261be1b907bdc449c9e1e24c4",
+        "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogActivationBinding.cs": "452ee388bda93fc90c6c1b87c7954be76dab6814bad1a7d44357212bd119940e",
+        "src/Hexalith.EventStore.ServiceDefaults/Routing/ObservedRouteCatalogHost.cs": "fe1a4c4b161101f58ebde359cac72dd21dcb981a5bd5abf731fc9497d5cf2703",
+        "src/Hexalith.EventStore.ServiceDefaults/Routing/CommittedRouteCatalogSnapshot.cs": "4c4499679a5a0687ac59868d51a8f9f18c03d506c0dfe4c8b642196dfb747088",
+        "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "9f62092f1ae9364031ad42dd53de215751b9f0fc2bdd99717c49a90839f5b1cb",
+        "src/Hexalith.EventStore.Server/Projections/ProjectionActivationWorker.cs": "bde978b037b4a2db84deed7826aa34e7cc61e9dd0bd1486c1eab654cec841119",
+        "tests/Hexalith.EventStore.Server.Tests/Routing/Sm4RouteCatalogOptimizationTests.cs": "6791e323cb4f2b2e27da0e7d43d0d50936a4cf5325d756960980f8003dafb122"
+      }
+    }
+  },
+  "component_verification": {
+    "build_warnings": 0,
+    "build_errors": 0,
+    "pre_review_full_baselines": {
+      "Hexalith.Folders.Server.Tests (full)": {
+        "executed": 1625,
+        "passed": 1625,
+        "failed": 0,
+        "skipped": 0,
+        "not_run_explicit": 11
+      },
+      "Hexalith.Folders.Contracts.Tests (full)": {
+        "executed": 789,
+        "passed": 789,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "post_review_focused_suites": {
+      "Hexalith.Folders.Tests (Authorization, Aggregates.Folder, Providers.Readiness, OperationalStatus)": {
+        "executed": 994,
+        "passed": 994,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Hexalith.Folders.Server.Tests (FoldersDomainServiceRequestHandlerTests, FoldersServerHostCompositionTests)": {
+        "executed": 50,
+        "passed": 50,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Hexalith.Folders.Contracts.Tests (Pd10ConformanceSetTests, Pd10V2ContractTests)": {
+        "executed": 27,
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Hexalith.EventStore.Contracts.Tests (Routing)": {
+        "executed": 234,
+        "passed": 234,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Hexalith.EventStore.Server.Tests (SM4 + routing + projection + submit-command)": {
+        "executed": 175,
+        "passed": 175,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "pd10": {
+    "manifest": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+    "artifact_count": 1752,
+    "candidate_set_sha256": "f782b4b4e83d835c9070342631f9e9bee47195a05ef3a650910e92778b2d3d0b",
+    "approval_status": "pending-a6b",
+    "production_exposure": "disabled"
+  },
+  "live_runs": [
+    {
+      "label": "candidate-1",
+      "test_class": "OperationalStatusDurabilityAcceptanceTests",
+      "exit_code": 1,
+      "utc_start": "2026-11-28T11:18:31.932431+00:00",
+      "utc_end": "2026-11-28T11:27:10.414353+00:00",
+      "load_average_1m": {
+        "samples": 40,
+        "min_1m": 29.15,
+        "max_1m": 46.63,
+        "mean_1m": 36.9
+      },
+      "runtime_modules": 117,
+      "fixture_modules": 46,
+      "source_drift": [],
+      "cleanup_remaining_owned": {
+        "descendants": 0,
+        "containers": 0,
+        "directories": 0
+      },
+      "receipt": {
+        "path": ".artifacts/sm4-remediation-20261128/candidate-1-receipt.json",
+        "sha256": "5fdef95dcdd5f8a0a767162b5c812a9d46f9322008469919ca5ebcbc65d712f9"
+      },
+      "observed_traces_ms": {
+        "create_folder_endpoint_ms": 15337,
+        "create_folder_eventstore_outside_actor_rpc_ms": 10331,
+        "create_folder_fenced_actor_rpc_ms": 4360,
+        "create_folder_overlapping_eventstore_catalog_http": {
+          "GET": 369,
+          "POST": 245
+        },
+        "repository_bindings_endpoint_ms": 19898,
+        "repository_bindings_eventstore_outside_actor_rpc_ms": 11090,
+        "repository_bindings_fenced_actor_rpc_ms": 7925,
+        "repository_bindings_native_source_metadata_calls": 5,
+        "lifecycle_status_endpoint_ms": [
+          1617,
+          2489
+        ],
+        "activation_delivery_pending_events": 141
+      },
+      "disposition": "Passed provider-binding rebuild, provider readiness, CreateFolder, lifecycle-status, and BindRepository (confirming BindRepository NativeSourceMetadata calls dropped from 7 to 5 and zero transport resubmissions). Failed later on authenticated UpdateTenant (HTTP 500 unavailable) due to a 5 s DaprDomainServiceInvoker timeout to tenants under host load average 29-47."
+    },
+    {
+      "label": "candidate-2",
+      "test_class": "OperationalStatusDurabilityAcceptanceTests",
+      "exit_code": 1,
+      "utc_start": "2026-11-28T11:27:49.225393+00:00",
+      "utc_end": "2026-11-28T11:34:47.369125+00:00",
+      "load_average_1m": {
+        "samples": 31,
+        "min_1m": 28.79,
+        "max_1m": 55.74,
+        "mean_1m": 44.2
+      },
+      "runtime_modules": 116,
+      "fixture_modules": 46,
+      "source_drift": [],
+      "cleanup_remaining_owned": {
+        "descendants": 0,
+        "containers": 0,
+        "directories": 0
+      },
+      "receipt": {
+        "path": ".artifacts/sm4-remediation-20261128/candidate-2-receipt.json",
+        "sha256": "03e6dbf4c607459c4be4b2bd7d16adbe9c9ebb301e9a6cd5c08aa926a4d1153d"
+      },
+      "disposition": "Failed on provider-binding complete-prefix rebuild (HTTP 401 unavailable) while concurrent host sessions pushed 1-minute load average to 55.74."
+    }
+  ],
+  "p95": {
+    "command_acknowledgement_ms": null,
+    "status_read_ms": null,
+    "workers_operational_delivery_ms": null,
+    "note": "Neither live run reached whole-test percentile emission under host load average 29-56. Live runs executed before the post-review hardening patches; a matched quiet-host rerun on the patched working tree is required before any final latency conclusion. Even excluding Folders /process, default-mode EventStore RouteCatalogAuthority and six ExecutionFence validations spent 10.3-11.1 s per command under load (6-7 s on prior quiet-host runs). Reaching the unchanged 1,000 ms command and 500 ms status-read p95 budgets requires a matched quiet-host rerun and a platform-owner decision on default-mode RouteCatalogAuthority / execution-fence cardinality."
+  },
+  "post_review": {
+    "layers": [
+      "blind-hunter",
+      "edge-case-hunter",
+      "verification-gap"
+    ],
+    "total_findings": 26,
+    "patched": 24,
+    "rejected_false": 1,
+    "deferred": 0,
+    "status_restored_in_progress": true,
+    "summary": "All verified defects and verification gaps patched (ConditionalWeakTable binding attachment preserving record Equals/GetHashCode/ToString, ActorSafeIdentifier/PrincipalId matching and reauth invalidation, handler try/finally scope ordering, RouteCatalogCodec single-copy and TryGetBuffer, validated hex digest checks and lifecycle activation freezing, overflow-free integer exponential backoff, and targeted handler/readiness/backoff/binding tests). All five post-review verification suites pass with 0 warnings and 0 errors."
+  },
+  "protected_bodies_unchanged": true,
+  "rerun_command": "run-with-temp .artifacts/sm4-remediation-20261128/run-sm4.sh"
+}

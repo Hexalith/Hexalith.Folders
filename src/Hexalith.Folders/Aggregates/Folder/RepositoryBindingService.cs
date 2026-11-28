@@ -135,9 +135,13 @@ public sealed class RepositoryBindingService(
             return FolderResult.Rejected(command, MapReadiness(readiness));
         }
 
-        OrganizationProviderBinding? binding = await _bindingReader.GetAsync(
-            new ProviderReadinessBindingReadRequest(command.ManagedTenantId, command.ProviderBindingRef, command.CorrelationId),
-            cancellationToken).ConfigureAwait(false);
+        OrganizationProviderBinding? binding = readiness.TryGetResolvedBinding() is { } resolvedBinding
+            && string.Equals(resolvedBinding.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
+            && string.Equals(resolvedBinding.ProviderBindingRef, command.ProviderBindingRef, StringComparison.Ordinal)
+            ? resolvedBinding
+            : await _bindingReader.GetAsync(
+                new ProviderReadinessBindingReadRequest(command.ManagedTenantId, command.ProviderBindingRef, command.CorrelationId),
+                cancellationToken).ConfigureAwait(false);
         if (binding is null || !string.Equals(binding.OrganizationId, command.OrganizationId, StringComparison.Ordinal))
         {
             return FolderResult.Rejected(command, FolderResultCode.ProviderReadinessFailed);

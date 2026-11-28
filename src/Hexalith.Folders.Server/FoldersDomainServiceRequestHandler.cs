@@ -206,6 +206,12 @@ public sealed class FoldersDomainServiceRequestHandler(
         authorizationResultAccessor.BeginScope(authorization);
         try
         {
+            using IDisposable? initialAuthorizationScope = !initializingAcl
+                && PreauthorizedRequestContext.Current is null
+                && authorization.IsAllowed
+                && authorization.AllowedContext is not null
+                ? ProcessInitialAuthorizationScope.Enter(authorizationContext, authorization)
+                : null;
             IDomainProcessor processor = processorList[0];
             DomainResult result = processor is IAsyncDomainProcessor asyncProcessor
                 ? await asyncProcessor.ProcessAsync(request.Command, request.CurrentState, cancellationToken).ConfigureAwait(false)

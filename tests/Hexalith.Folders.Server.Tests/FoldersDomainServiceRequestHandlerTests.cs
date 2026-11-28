@@ -367,6 +367,107 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         processor.ProcessCalls.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task ProcessEntersSingleUseInitialScopeAndReauthorizesLiveWhileRespectingGuards()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingFolderPermissionEvidenceProvider permissions = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store, permissions);
+        AuthorizingProbeDomainProcessor processor = new(authorizer);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([processor], authorizer, tenantContext);
+
+        IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+
+        result.ShouldBeOfType<Ok<DomainServiceWireResult>>();
+        // Handler initial AuthorizeAsync = 1; processor initial AuthorizeAsync reuses scope (still 1);
+        // processor ReauthorizeMutationAsync runs live = 2.
+        permissions.Calls.ShouldBe(2);
+        processor.InitialAllowed.ShouldBeTrue();
+        processor.ReauthorizedAllowed.ShouldBeTrue();
+
+        // Scope must be torn down after ProcessAsync returns.
+        LayeredFolderAuthorizationResult postRequest = await authorizer.AuthorizeAsync(
+            processor.LastContext!, TestContext.Current.CancellationToken);
+        postRequest.IsAllowed.ShouldBeTrue();
+        permissions.Calls.ShouldBe(3);
+
+        // When PreauthorizedRequestContext is already active, ProcessInitialAuthorizationScope is not entered.
+        PreauthorizedRequestContext.Begin(new PreauthorizedRequestState(
+            "tenant-a", "user-a", "organization_baseline", "wm-pre", "tenant-a", "create_folder", "create_folder", null));
+        try
+        {
+            bool sawScopeDuringPreauthorized = false;
+            CapturingScopeProbeProcessor preauthProbe = new(() =>
+                sawScopeDuringPreauthorized = ProcessInitialAuthorizationScope.TryConsume(processor.LastContext!, out _));
+            FoldersDomainServiceRequestHandler preauthHandler = CreateHandler([preauthProbe], authorizer, tenantContext);
+            IResult preauthResult = await preauthHandler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+            preauthResult.ShouldBeOfType<Ok<DomainServiceWireResult>>();
+            sawScopeDuringPreauthorized.ShouldBeFalse();
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
+    private sealed class CountingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public int Calls { get; private set; }
+
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return Task.FromResult(FolderPermissionEvidenceResult.Allowed($"wm-{Calls}", organizationId: "tenant-a"));
+        }
+    }
+
+    private sealed class AuthorizingProbeDomainProcessor(LayeredFolderAuthorizationService authorizer) : IDomainProcessor, IAsyncDomainProcessor
+    {
+        public bool InitialAllowed { get; private set; }
+
+        public bool ReauthorizedAllowed { get; private set; }
+
+        public LayeredFolderAuthorizationContext? LastContext { get; private set; }
+
+        public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+            => ProcessAsync(command, currentState, CancellationToken.None);
+
+        public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState, CancellationToken cancellationToken)
+        {
+            LayeredFolderAuthorizationContext context = new(
+                "tenant-a",
+                "user-a",
+                "user-a",
+                FolderCreationService.ActionToken,
+                LayeredFolderOperationPolicy.Mutation(),
+                EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", [FolderCreationService.ActionToken]),
+                "organization_baseline",
+                command.CorrelationId,
+                "task-a",
+                new Dictionary<string, string?>(StringComparer.Ordinal),
+                new Dictionary<string, string?>(StringComparer.Ordinal));
+            LastContext = context;
+            LayeredFolderAuthorizationResult initial = await authorizer.AuthorizeAsync(context, cancellationToken).ConfigureAwait(false);
+            InitialAllowed = initial.IsAllowed;
+            LayeredFolderAuthorizationResult reauth = await authorizer.ReauthorizeMutationAsync(context, includeFolderAcl: true, cancellationToken).ConfigureAwait(false);
+            ReauthorizedAllowed = reauth.IsAllowed;
+            return DomainResult.NoOp();
+        }
+    }
+
+    private sealed class CapturingScopeProbeProcessor(Action probe) : IDomainProcessor
+    {
+        public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+        {
+            probe();
+            return Task.FromResult(DomainResult.NoOp());
+        }
+    }
+
     private static ProblemHttpResult SafeDenialProblem(IResult result)
         => result.ShouldBeOfType<AuthorizationDenialTransportResult>()
             .InnerResult.ShouldBeOfType<ProblemHttpResult>();

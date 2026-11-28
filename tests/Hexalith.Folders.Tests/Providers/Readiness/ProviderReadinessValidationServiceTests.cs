@@ -19,7 +19,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldReturnReadyOnlyWhenAllRequiredCreationCapabilitiesAreSupported()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityEvidenceStore capabilityEvidence = new();
@@ -55,6 +56,7 @@ public sealed class ProviderReadinessValidationServiceTests
         result.Freshness.ReadConsistency.ShouldBe("snapshot_per_task");
         result.Evidence.ShouldNotBeNull().RepositoryCreation.ShouldBe("supported");
         result.Evidence.ExistingRepositoryBinding.ShouldBe("supported");
+        result.TryGetResolvedBinding().ShouldBeSameAs(expectedBinding);
         bindingReader.Calls.ShouldBe(1);
         capabilityAuthorizer.Calls.ShouldBe(1);
         resolver.Calls.ShouldBe(1);
@@ -137,7 +139,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldDegradeWhenARequiredCapabilityIsPartialAndPreserveSafeMetadata()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.WithOperationRows(
@@ -291,7 +294,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldPreserveDiscoveryFailureDiagnosticsWithoutRetryingPermanentCategories()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.Failing(ProviderFailureCategory.UnsupportedProviderCapability));
@@ -319,7 +323,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldKeepProviderRateLimitRetryHintOnlyWhenDiscoveryMarksItSafe()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.Failing(ProviderFailureCategory.ProviderRateLimited));
@@ -390,7 +395,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [InlineData(TenantAccessOutcome.ReplayConflict)]
     public async Task ValidateAsync_ShouldDenyBeforeBindingProviderOrEvidenceObservation(TenantAccessOutcome outcome)
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
@@ -423,7 +429,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldDenyMissingReadPermissionBeforeBindingObservation()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
@@ -450,7 +457,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldDenyBoundedStaleTenantEvidenceBeforeBindingObservation()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
@@ -480,7 +488,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldDenyReservedSystemTenantBeforeObservation()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
@@ -513,7 +522,8 @@ public sealed class ProviderReadinessValidationServiceTests
     [Fact]
     public async Task ValidateAsync_ShouldRejectMalformedRequestBeforeAnyObservation()
     {
-        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        OrganizationProviderBinding expectedBinding = Binding();
+        RecordingProviderReadinessBindingReader bindingReader = new(expectedBinding);
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
         RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
