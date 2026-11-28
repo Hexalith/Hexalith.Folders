@@ -4,7 +4,7 @@ set -euo pipefail
 version="${1:-}"
 phase="${2:-}"
 expected_builds_sha="6ad5854aa14a9950e1fbfc32d7e27953a1c4b82b"
-expected_package_count=5
+expected_package_count=6
 manifest="${HEXALITH_RELEASE_PACKAGE_MANIFEST:-}"
 source_sha="${GITHUB_SHA:-}"
 
@@ -20,14 +20,14 @@ fail() {
 [[ "${HEXALITH_RELEASE_SOURCE_BRANCH:-}" = "main" ]] || fail "The release source branch must be exactly main."
 [[ "${HEXALITH_RELEASE_SOURCE_CI_WORKFLOW:-}" = "ci.yml" ]] || fail "The exact-source proof must use ci.yml."
 [[ "${HEXALITH_RELEASE_ENVIRONMENT:-}" = "production" ]] || fail "The protected release environment must be production."
-[[ "${HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT:-}" = "$expected_package_count" ]] || fail "The caller-declared package count must be exactly five."
+[[ "${HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT:-}" = "$expected_package_count" ]] || fail "The caller-declared package count must be exactly six."
 [[ "${HEXALITH_RELEASE_REQUIRE_AUTHORITY:-}" = "false" ]] || fail "Folders releases use protected-environment approval as publication authority; the caller-owned job authority mode must be explicit."
 [[ "$manifest" = "tools/release-packages.json" && -f "$manifest" ]] || fail "The authoritative package manifest is unavailable."
 [[ -n "${GITHUB_TOKEN:-}" ]] || fail "GITHUB_TOKEN is required for exact-source revalidation."
 [[ -n "${GITHUB_REPOSITORY:-}" ]] || fail "GITHUB_REPOSITORY is required for exact-source revalidation."
 
 manifest_count="$(jq -er '.packages | if type == "array" then length else error("packages must be an array") end' "$manifest")"
-[[ "$manifest_count" = "$expected_package_count" ]] || fail "The package manifest does not contain exactly five packages."
+[[ "$manifest_count" = "$expected_package_count" ]] || fail "The package manifest does not contain exactly six packages."
 jq -e --argjson count "$expected_package_count" '
   .packages | all(.[]; (.id | type == "string" and test("^[A-Za-z0-9][A-Za-z0-9._-]*$")) and
     (.project | type == "string" and test("^[A-Za-z0-9_./-]+\\.csproj$") and

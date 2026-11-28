@@ -4,17 +4,20 @@ Folders uses the shared Hexalith manual semantic-release path with NuGet trusted
 
 ## Package Inventory
 
-`tools/release-packages.json` is the single source of truth for the exact five-package release set:
+`tools/release-packages.json` is the single source of truth for the exact six-package release set:
 
 | Package | Project |
 | --- | --- |
 | `Hexalith.Folders.Contracts` | `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` |
+| `Hexalith.Folders.EventStoreExtensions` | `src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj` |
 | `Hexalith.Folders` | `src/Hexalith.Folders/Hexalith.Folders.csproj` |
 | `Hexalith.Folders.Client` | `src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj` |
 | `Hexalith.Folders.Aspire` | `src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj` |
 | `Hexalith.Folders.Testing` | `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj` |
 
 `deploy/nuget/release-packages.yaml` is the deployment policy and points to that JSON inventory; it does not repeat the package list. `Hexalith.Folders.Cli` and `Hexalith.Folders.ServiceDefaults` remain outside the public inventory. Adding either requires a separate product decision.
+
+`Hexalith.Folders.EventStoreExtensions` carries the module manifest at `build/hexalith.module-manifest.v2.json` inside the NuGet archive. The gateway supplies the EventStore extension SDK at runtime.
 
 ## Release Preconditions
 
@@ -26,7 +29,7 @@ The release fails closed unless all of these conditions hold:
 - the protected `production` environment grants operator approval;
 - the effective `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` value supplied to preparation is exactly the lowercase string `true`;
 - a matching trusted publishing policy is registered in the individual creator's NuGet account, and repository variable `NUGET_USER` names that creator;
-- the caller declares exactly five packages and `tools/release-packages.json` still contains exactly five unique IDs/projects;
+- the caller declares exactly six packages and `tools/release-packages.json` contains exactly six unique IDs and projects;
 - NuGet.org does not already contain the proposed version for any package.
 
 The protected environment is the publication authority for this repository. The caller-owned publication job therefore supplies `HEXALITH_RELEASE_REQUIRE_AUTHORITY: 'false'` explicitly; partial or accidental use of the separate issue-comment authority mode is rejected by the local preflight.
@@ -50,24 +53,24 @@ The Folders workflow resolves `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` and passes
 | Workflow file | `release.yml` |
 | Environment | `production` |
 | Scope | `PackagePushVersion` (push new versions of existing packages) |
-| Glob Patterns and Packages | The five exact package IDs from the inventory table, one per line; no wildcard |
+| Glob Patterns and Packages | The six exact package IDs from the inventory table, one per line |
 
-The individual NuGet policy creator `jpiquot` differs from the package owner `Hexalith` and the GitHub actor. Repository variable `NUGET_USER` must equal `jpiquot`, whose account must register the policy through legitimate authenticated access. The policy grants new-version publication only to the five existing package IDs. Keep normal reviewer approval on the `production` environment and set `HEXALITH_RELEASE_PUBLISH_ENABLED` explicitly at repository scope when publication is authorized.
+The individual NuGet policy creator `jpiquot` differs from the package owner `Hexalith` and the GitHub actor. Repository variable `NUGET_USER` must equal `jpiquot`, whose account must register the policy through legitimate authenticated access. Before the first release that includes `Hexalith.Folders.EventStoreExtensions`, authorize that exact ID for initial publication in the protected workflow. Subsequent releases need only new-version publication for the six IDs. [NuGet trusted publishing scopes](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#select-scopes). Keep normal reviewer approval on the `production` environment and set `HEXALITH_RELEASE_PUBLISH_ENABLED` explicitly at repository scope when publication is authorized.
 
 When selecting `Hexalith` as a NuGet organization owner, `jpiquot` must be an active member of that organization. Removing the creator from the organization makes the policy inactive; restoring their membership reactivates it. Confirm active membership and policy status before dispatching an enabled release. See [NuGet policy ownership requirements](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#policy-ownership-warnings).
 
 The pinned `NuGet/login` action requests GitHub OIDC and exchanges it for a temporary NuGet key immediately before semantic-release. The same Folders job has `id-token: write`, `actions: read`, and only the semantic-release `contents`, `issues`, and `pull-requests` write permissions. The publication step's `NUGET_API_KEY` environment value comes exclusively from `steps.nuget-login.outputs.NUGET_API_KEY`; never map a stored `NUGET_API_KEY` secret, transfer the temporary key across jobs, or print it.
 
-Registration status: `NUGET_USER=jpiquot` is configured in the GitHub repository. On 2026-10-02 the `jpiquot` account registered the `folders-production` policy on NuGet.org with exactly the fields above. NuGet lists it as active and bound to GitHub repository ID `1229485448` and owner ID `80614290`. Release run `37001706122` then authenticated through `NuGet/login` and published `1.1.1`. If the YAML definition changes, update the registered policy in the same account; the file itself never updates NuGet.org.
+Registration status: `NUGET_USER=jpiquot` is configured in the GitHub repository. On 2026-10-02 the `jpiquot` account registered the `folders-production` policy on NuGet.org for the five package IDs released at the time. NuGet lists it as active and bound to GitHub repository ID `1229485448` and owner ID `80614290`. Release run `37001706122` then authenticated through `NuGet/login` and published `1.1.1`. If the YAML definition changes, update the registered policy in the same account; the file itself never updates NuGet.org.
 
 ## Semantic Release Lifecycle
 
 Conventional Commits determine the next version and release notes. Commit messages and prospective squash titles are checked by `.github/workflows/commitlint.yml`. Semantic Release uses `v<version>` tags and runs these phases:
 
 1. Before the lifecycle begins, shared preparation re-proves live `main` and successful exact-source push CI, then NuGet login mints the temporary credential in the protected Folders job. `verifyRelease` verifies its presence and repeats source proof, immutable shared action identity, protected-environment mode, manifest count, and destination absence.
-2. `prepare` invokes `tests/tools/run-release-package-gates.ps1` to pack and seal all five Release/package-mode packages.
+2. `prepare` invokes `tests/tools/run-release-package-gates.ps1` to pack and seal all six Release/package-mode packages.
 3. `publish` repeats the external preflight immediately before the first write, then publishes the prepared packages to NuGet.org.
-4. `@semantic-release/github` creates the GitHub Release and attaches all five `.nupkg`/`.snupkg` pairs.
+4. `@semantic-release/github` creates the GitHub Release and attaches all six `.nupkg`/`.snupkg` pairs.
 
 The publisher deliberately does not use `--skip-duplicate`. An occupied version is immutable evidence of a release collision, so publication stops instead of skipping or overwriting it. GitHub Packages is not a publication destination.
 
@@ -87,7 +90,7 @@ The gate delegates packing and validation to:
 - `scripts/validate-nuget-packages.py` for exact inventory, metadata, symbols, archive safety, and dependency closure;
 - `scripts/validate-consumer-package-references.py` for isolated package-only consumer restore/build validation.
 
-Exactly five `.nupkg` and five `.snupkg` files are written to `nupkgs/`. The metadata-only report is `_bmad-output/gates/release-packages/latest.json`.
+Exactly six `.nupkg` and six `.snupkg` files are written to `nupkgs/`. The metadata-only report is `_bmad-output/gates/release-packages/latest.json`.
 
 ## Read-only Verification on 2026-10-08
 
@@ -169,7 +172,7 @@ NuGet audit stays enabled. Dependabot covers NuGet, npm, and GitHub Actions; Cod
 - A missing environment, exact publication variable, creator variable, or registered matching policy prevents publication. Do not rotate or reintroduce a long-lived key to bypass a trusted publishing failure.
 - Any manifest, package metadata, symbols, archive, dependency closure, or consumer validation drift stops before publication.
 - Any existing NuGet.org version stops the release; do not add `--skip-duplicate` or move an existing tag to bypass the collision.
-- NuGet.org has no atomic multi-package transaction. If a transient service failure occurs after one or more packages were accepted, stop the run and treat the version as an immutable partial-publication incident. Do not retry or skip the occupied packages. Record the accepted package IDs, deprecate the incomplete version where possible, create a corrective Conventional Commit so semantic-release calculates a new version, and publish the complete five-package set under that new version.
+- NuGet.org has no atomic multi-package transaction. If a transient service failure occurs after one or more packages were accepted, stop the run and treat the version as an immutable partial-publication incident. Do not retry or skip the occupied packages. Record the accepted package IDs, deprecate the incomplete version where possible, create a corrective Conventional Commit so semantic-release calculates a new version, and publish the complete package set under that new version.
 - If `main` advances while a release is pending, shared preparation and the local preflight fail it as stale. Run CI for the new tip before dispatching again.
 - Release run `36973683976` packed the five `1.1.0` packages but failed on the first NuGet upload with HTTP 403. Its immutable `v1.1.0` tag remains untouched. A subsequent corrective Conventional Commit can produce `1.1.1`; do not move or delete the failed tag, skip duplicates, or alter dependency versions to recover. After account setup and exact-source CI, dispatch Release from current `main`, obtain normal production approval, and verify all five NuGet version archives and ten GitHub package/symbol assets. Recovery completed on 2026-10-02 in release run `37001706122`, which tagged `v1.1.1` at `d5f49e96dfab10bf2839ec263a343a6a4c13b06f`. NuGet accepted all ten package and symbol pushes, and the GitHub Release carries all ten assets. Runs `36985567814` and `36992233355` had failed earlier at OIDC token exchange (HTTP 401) because no Folders policy was registered yet, so they created no tag and published nothing.
 

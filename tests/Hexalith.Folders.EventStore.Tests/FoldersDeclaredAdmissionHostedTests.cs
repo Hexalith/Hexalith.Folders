@@ -52,9 +52,9 @@ public sealed class FoldersDeclaredAdmissionHostedTests
         {
             ServiceDescriptor registration = builder.Services.Single(descriptor =>
                 descriptor.ServiceType == typeof(IIdempotencyIntentAdapter)
-                && descriptor.ImplementationType == typeof(CreateFolderIdempotencyIntentAdapter));
+                && descriptor.ImplementationInstance is CreateFolderIdempotencyIntentAdapter);
             builder.Services.Remove(registration);
-            IDeclaredIdempotencyIntentAdapter original = new CreateFolderIdempotencyIntentAdapter();
+            var original = (CreateFolderIdempotencyIntentAdapter)registration.ImplementationInstance!;
             if (mismatch == "undeclared")
             {
                 builder.Services.AddSingleton<IIdempotencyIntentAdapter>(new UndeclaredFoldersIntentAdapter(original));

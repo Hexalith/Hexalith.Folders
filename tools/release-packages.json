@@ -5,6 +5,10 @@
       "project": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
     },
     {
+      "id": "Hexalith.Folders.EventStoreExtensions",
+      "project": "src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj"
+    },
+    {
       "id": "Hexalith.Folders",
       "project": "src/Hexalith.Folders/Hexalith.Folders.csproj"
     },

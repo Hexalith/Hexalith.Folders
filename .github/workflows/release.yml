@@ -95,7 +95,7 @@ jobs:
           source-branch: main
           source-ci-workflow: ci.yml
           package-manifest: tools/release-packages.json
-          expected-package-count: 5
+          expected-package-count: 6
           publication-flag: ${{ vars.HEXALITH_RELEASE_PUBLISH_ENABLED }}
           nuget-user: ${{ vars.NUGET_USER }}
       - name: Authenticate NuGet trusted publishing
@@ -115,7 +115,7 @@ jobs:
           HEXALITH_RELEASE_SOURCE_BRANCH: main
           HEXALITH_RELEASE_SOURCE_CI_WORKFLOW: ci.yml
           HEXALITH_RELEASE_PACKAGE_MANIFEST: tools/release-packages.json
-          HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT: '5'
+          HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT: '6'
           HEXALITH_RELEASE_REQUIRE_AUTHORITY: 'false'
         run: npm exec --no -- semantic-release
       - name: Retain failed release package report

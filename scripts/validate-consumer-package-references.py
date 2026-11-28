@@ -4,14 +4,29 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import pathlib
 import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as element_tree
+import zipfile
 
 from release_package_contract import validate_packages
+
+EXTENSION_PACKAGE = "Hexalith.Folders.EventStoreExtensions"
+EXTENSION_CONSUMER_PACKAGES = {
+    name.casefold()
+    for name in (
+        EXTENSION_PACKAGE,
+        "Hexalith.Folders.Contracts",
+        "Hexalith.EventStore.Contracts",
+        "Hexalith.McpCli.Abstractions",
+        "Hexalith.Commons.UniqueIds",
+        "ByteAether.Ulid",
+    )
+}
 
 
 def write_consumer(root: pathlib.Path, name: str, packages: list[str], version: str) -> pathlib.Path:
@@ -32,6 +47,21 @@ def write_consumer(root: pathlib.Path, name: str, packages: list[str], version: 
     element_tree.ElementTree(root_element).write(project, encoding="utf-8", xml_declaration=False)
     (directory / "Consumer.cs").write_text("public sealed class Consumer { }\n", encoding="utf-8")
     return project
+
+
+def validate_extension_consumer(project: pathlib.Path, package_directory: pathlib.Path, version: str) -> None:
+    """Check the published package and a consumer's isolated restore graph."""
+    assets = json.loads((project.parent / "obj" / "project.assets.json").read_text(encoding="utf-8"))
+    for library in assets["libraries"]:
+        dependency = library.split("/", 1)[0]
+        if dependency.casefold() not in EXTENSION_CONSUMER_PACKAGES:
+            raise ValueError(f"{EXTENSION_PACKAGE} brought unexpected dependency {dependency} into its consumer.")
+
+    with zipfile.ZipFile(package_directory / f"{EXTENSION_PACKAGE}.{version}.nupkg") as package:
+        manifest_path = "build/hexalith.module-manifest.v2.json"
+        source_manifest = pathlib.Path(__file__).resolve().parent.parent / "module" / "hexalith.module-manifest.v2.json"
+        if package.read(manifest_path) != source_manifest.read_bytes():
+            raise ValueError(f"{EXTENSION_PACKAGE} packaged a different manifest from {source_manifest.name}.")
 
 
 def main() -> int:
@@ -66,9 +96,11 @@ def main() -> int:
             encoding="utf-8",
         )
         split = max(1, (len(package_ids) + 1) // 2)
+        extension_consumer = write_consumer(root, "EventStoreExtensionConsumer", [EXTENSION_PACKAGE], version)
         projects = [
             write_consumer(root, "PrimaryPackagesConsumer", package_ids[:split], version),
             write_consumer(root, "ExtendedPackagesConsumer", package_ids[split:], version),
+            extension_consumer,
         ]
         environment = os.environ.copy()
         environment["NUGET_PACKAGES"] = str(root / ".nuget" / "packages")
@@ -87,7 +119,9 @@ def main() -> int:
                 check=True,
             )
 
-    print(f"Validated two package-only consumers for all {len(package_ids)} packages at {version}.")
+        validate_extension_consumer(extension_consumer, package_directory, version)
+
+    print(f"Validated three package-only consumers for all {len(package_ids)} packages at {version}.")
     return 0
 
 

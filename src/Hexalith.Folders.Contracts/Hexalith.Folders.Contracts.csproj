@@ -1,12 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <IsPackable>true</IsPackable>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <DefineConstants>$(DefineConstants);FOLDERS_CONTRACT_PAYLOADS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.Contracts" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <ProjectReference Include="$(HexalithMcpCliRoot)/src/Hexalith.McpCli.Abstractions/Hexalith.McpCli.Abstractions.csproj" Condition="'$(HexalithMcpCliFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.McpCli.Abstractions" Condition="'$(HexalithMcpCliFromSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Server" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />
     <InternalsVisibleTo Include="Hexalith.Folders.Contracts.Tests" />
   </ItemGroup>
 </Project>

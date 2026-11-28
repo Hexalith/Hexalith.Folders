@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.McpCli;
 public sealed class PackedContractsClosureTests
 {
     [Fact]
-    public async Task ReleasePackageDependsOnlyOnMcpCliAbstractionsAndTheNetRuntimeAsync()
+    public async Task ReleasePackageKeepsAProviderFreeContractsClosureAsync()
     {
         string output = Path.Combine(Path.GetTempPath(), "folders-contracts-closure-" + Guid.NewGuid().ToString("N"));
         string artifacts = Path.Combine(output, "artifacts");
@@ -60,8 +60,9 @@ public sealed class PackedContractsClosureTests
             using Stream stream = nuspec.Open();
             XDocument manifest = XDocument.Load(stream);
             manifest.Descendants().Where(node => node.Name.LocalName == "dependency")
-                .Select(node => ((string)node.Attribute("id")!, (string)node.Attribute("version")!))
-                .ShouldBe([("Hexalith.McpCli.Abstractions", "3.0.0")]);
+                .Select(node => (string)node.Attribute("id")!)
+                .Order(StringComparer.Ordinal)
+                .ShouldBe(["Hexalith.EventStore.Contracts", "Hexalith.McpCli.Abstractions"]);
             manifest.Descendants().Where(node => node.Name.LocalName is "frameworkReference" or "frameworkAssembly")
                 .Select(node => (string?)node.Attribute("name") ?? (string?)node.Attribute("assemblyName"))
                 .ShouldAllBe(name => name == "Microsoft.NETCore.App");
@@ -70,8 +71,8 @@ public sealed class PackedContractsClosureTests
                 "project.assets.json", SearchOption.AllDirectories).Single()))!;
             assets["project"]!["frameworks"]!["net11.0"]!["frameworkReferences"]!.AsObject()
                 .Select(item => item.Key).ShouldBe(["Microsoft.NETCore.App"]);
-            assets["libraries"]!.AsObject().Select(item => item.Key)
-                .ShouldBe(["Hexalith.McpCli.Abstractions/3.0.0"]);
+            assets["libraries"]!.AsObject().Select(item => item.Key.Split('/')[0]).Order(StringComparer.Ordinal)
+                .ShouldBe(["ByteAether.Ulid", "Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Contracts", "Hexalith.McpCli.Abstractions"]);
             ZipArchiveEntry assembly = package.GetEntry("lib/net11.0/Hexalith.Folders.Contracts.dll")!;
             assembly.ShouldNotBeNull();
             using Stream assemblyStream = assembly.Open();
@@ -82,7 +83,8 @@ public sealed class PackedContractsClosureTests
             MetadataReader metadata = reader.GetMetadataReader();
             metadata.AssemblyReferences.Select(handle => metadata.GetString(metadata.GetAssemblyReference(handle).Name))
                 .Where(name => !name.StartsWith("System.", StringComparison.Ordinal) && name != "System")
-                .ShouldBe(["Hexalith.McpCli.Abstractions"]);
+                .Order(StringComparer.Ordinal)
+                .ShouldBe(["Hexalith.EventStore.Contracts", "Hexalith.McpCli.Abstractions"]);
         }
         finally
         {

@@ -1,0 +1,249 @@
+{
+  "schema": "hexalith.module-manifest.v2",
+  "modules": [
+    {
+      "identity": {
+        "moduleId": "folders",
+        "servers": [
+          {
+            "id": "domain",
+            "appId": "folders",
+            "resourceId": "folders",
+            "enabled": true,
+            "required": true
+          },
+          {
+            "id": "workers",
+            "appId": "folders-workers",
+            "resourceId": "folders-workers",
+            "enabled": true,
+            "required": true
+          }
+        ],
+        "dependencies": [
+          "eventstore",
+          "tenants",
+          "memories"
+        ]
+      },
+      "runtime": {
+        "dapr": [
+          {
+            "role": "state",
+            "capability": "state",
+            "recoveryClass": "authoritative-restore",
+            "configurationKey": "EventStore:CommandStatus:StateStoreName",
+            "servers": [
+              "domain"
+            ]
+          },
+          {
+            "role": "state",
+            "capability": "state",
+            "recoveryClass": "authoritative-restore",
+            "configurationKey": "EventStore:DataProtection:StateStoreName",
+            "servers": [
+              "domain"
+            ]
+          },
+          {
+            "role": "state",
+            "capability": "state",
+            "recoveryClass": "authoritative-restore",
+            "configurationKey": "EventStore:Projections:ReadModelStateStoreName",
+            "servers": [
+              "domain",
+              "workers"
+            ]
+          },
+          {
+            "role": "events",
+            "capability": "pubsub",
+            "recoveryClass": "rebuild-only",
+            "configurationKey": "EventStore:ProjectionChanges:PubSubName",
+            "servers": [
+              "domain"
+            ]
+          },
+          {
+            "role": "worker-inbound-events",
+            "capability": "pubsub",
+            "recoveryClass": "rebuild-only",
+            "configurationKey": "Folders:Workers:PubSubName",
+            "servers": [
+              "workers"
+            ]
+          },
+          {
+            "role": "events",
+            "capability": "pubsub",
+            "recoveryClass": "rebuild-only",
+            "configurationKey": "Folders:Workers:MemoriesPubSubName",
+            "servers": [
+              "workers"
+            ]
+          }
+        ],
+        "extensions": [],
+        "resources": [],
+        "eventStoreExtensions": [
+          {
+            "packageId": "Hexalith.Folders.EventStoreExtensions",
+            "extensionId": "folders",
+            "extensionApiMajor": 1,
+            "configurationInputs": []
+          }
+        ]
+      },
+      "surfaces": {
+        "interfaces": [
+          {
+            "name": "folders-domain",
+            "server": "domain",
+            "protocol": "http",
+            "routePrefix": "/",
+            "exposure": "internal-only",
+            "surfaceClass": "service",
+            "authorization": {
+              "policy": "EventStoreWorkload:any",
+              "permissions": []
+            },
+            "callers": [
+              "eventstore"
+            ],
+            "operations": [
+              {
+                "name": "process",
+                "kind": "command",
+                "authorizationPolicy": "EventStoreWorkload:domain-service:process"
+              },
+              {
+                "name": "query",
+                "kind": "query",
+                "authorizationPolicy": "EventStoreWorkload:domain-service:query"
+              },
+              {
+                "name": "project",
+                "kind": "command",
+                "authorizationPolicy": "EventStoreWorkload:domain-service:project"
+              },
+              {
+                "name": "project-v2",
+                "kind": "command",
+                "authorizationPolicy": "EventStoreWorkload:domain-service:project"
+              },
+              {
+                "name": "operational-index-metadata",
+                "kind": "administration",
+                "authorizationPolicy": "EventStoreWorkload:domain-service:metadata"
+              }
+            ],
+            "invocationRules": [
+              {
+                "caller": "eventstore",
+                "path": "/process",
+                "verbs": [
+                  "POST"
+                ]
+              },
+              {
+                "caller": "eventstore",
+                "path": "/query",
+                "verbs": [
+                  "POST"
+                ]
+              },
+              {
+                "caller": "eventstore",
+                "path": "/project",
+                "verbs": [
+                  "POST"
+                ]
+              },
+              {
+                "caller": "eventstore",
+                "path": "/project/v2",
+                "verbs": [
+                  "POST"
+                ]
+              },
+              {
+                "caller": "eventstore",
+                "path": "/admin/operational-index-metadata",
+                "verbs": [
+                  "POST"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "integration": {
+        "topics": [
+          {
+            "name": "tenant-events-domain",
+            "role": "events",
+            "deadLetter": {
+              "strategy": "none"
+            },
+            "subscription": {
+              "server": "domain",
+              "route": "/tenants/events",
+              "topic": "tenants.events"
+            }
+          },
+          {
+            "name": "memories-events",
+            "role": "events",
+            "deadLetter": {
+              "strategy": "none"
+            }
+          }
+        ],
+        "secrets": [
+          {
+            "name": "app-channel-token",
+            "configurationKey": "APP_API_TOKEN"
+          },
+          {
+            "name": "workload-client-secret",
+            "configurationKey": "Authentication:WorkloadIssuer:ClientSecret"
+          }
+        ],
+        "dynamicSecretNamespaces": [],
+        "identityNeeds": [],
+        "egress": [],
+        "providers": [],
+        "workers": []
+      },
+      "lifecycle": {
+        "readiness": [
+          {
+            "server": "domain",
+            "kind": "http",
+            "endpoint": "/ready"
+          },
+          {
+            "server": "workers",
+            "kind": "http",
+            "endpoint": "/ready"
+          }
+        ],
+        "tasks": [],
+        "recoveryHooks": [],
+        "fenceHooks": [],
+        "replay": {
+          "reopenBeforeReplay": false
+        },
+        "startup": {},
+        "criticalFlows": [],
+        "smokeSurfaces": [],
+        "classification": {
+          "changeClass": "additive",
+          "reason": "Enroll the Folders domain and workers with the gateway extension package. Workers retain application-defined subscriptions for tenants.events and folders.events because the v2 topic inventory cannot name their dotted physical dead-letter topics."
+        },
+        "recoveryInventory": []
+      }
+    }
+  ]
+}

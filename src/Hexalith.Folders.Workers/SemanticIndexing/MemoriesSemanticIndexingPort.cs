@@ -6,6 +6,8 @@ using Dapr.Client;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Memories.Contracts.V1;
 
+using Microsoft.Extensions.Configuration;
+
 namespace Hexalith.Folders.Workers.SemanticIndexing;
 
 /// <summary>
@@ -21,12 +23,20 @@ namespace Hexalith.Folders.Workers.SemanticIndexing;
 /// </summary>
 internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
 {
-    private readonly DaprClient _daprClient;
+    /// <summary>The configuration key for the shared component that publishes to Memories.</summary>
+    internal const string PubSubConfigurationKey = "Folders:Workers:MemoriesPubSubName";
 
-    public MemoriesSemanticIndexingPort(DaprClient daprClient)
+    private readonly DaprClient _daprClient;
+    private readonly string _pubSubName;
+
+    public MemoriesSemanticIndexingPort(DaprClient daprClient, IConfiguration? configuration = null)
     {
         ArgumentNullException.ThrowIfNull(daprClient);
         _daprClient = daprClient;
+        string? configuredPubSub = configuration?[PubSubConfigurationKey];
+        _pubSubName = string.IsNullOrWhiteSpace(configuredPubSub)
+            ? FoldersSemanticIndexingDefaults.PubSubName
+            : configuredPubSub;
     }
 
     public async ValueTask<SemanticIndexingResult> IndexFileVersionAsync(
@@ -57,7 +67,7 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
         try
         {
             await _daprClient.PublishEventAsync(
-                FoldersSemanticIndexingDefaults.PubSubName,
+                _pubSubName,
                 FoldersSemanticIndexingDefaults.EventsTopicName,
                 entry,
                 metadata,
@@ -112,7 +122,7 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
         try
         {
             await _daprClient.PublishEventAsync(
-                FoldersSemanticIndexingDefaults.PubSubName,
+                _pubSubName,
                 FoldersSemanticIndexingDefaults.EventsTopicName,
                 removed,
                 metadata,
@@ -168,7 +178,7 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
         try
         {
             await _daprClient.PublishEventAsync(
-                FoldersSemanticIndexingDefaults.PubSubName,
+                _pubSubName,
                 FoldersSemanticIndexingDefaults.EventsTopicName,
                 entry,
                 metadata,

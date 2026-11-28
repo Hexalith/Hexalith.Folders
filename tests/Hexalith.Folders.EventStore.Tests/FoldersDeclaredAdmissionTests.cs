@@ -266,7 +266,7 @@ public sealed class FoldersDeclaredAdmissionTests
         response.StatusCode.ShouldBe(503);
         // Compiled operation metadata does not promote a historical schema-two authority to public discovery.
         CompiledRouteCatalogDeclarations.ReadOperations(
-            [typeof(FolderDomainProcessor).Assembly, typeof(FoldersCommandIntentDeclarations).Assembly]).ShouldNotBeEmpty();
+            [typeof(FoldersRuntimeCatalogDeclarations).Assembly]).ShouldNotBeEmpty();
         (await fixture.Store.ReadAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).State.Leases.ShouldBeEmpty();
     }
 

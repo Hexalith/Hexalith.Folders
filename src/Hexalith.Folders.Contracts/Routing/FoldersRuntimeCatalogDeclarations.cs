@@ -26,7 +26,7 @@ public static class FoldersRuntimeCatalogDeclarations
         Query<FolderFileReferenceReadQuery>("resolve-folder-file-reference", FolderFileReferenceReadQuery.QueryType),
         new("folders-legacy-projection", "projection", "folders", null, "folders", "v1", null,
             "workload", EventStoreOperationIdentifiers.DomainServiceProject, null, [],
-            new(typeof(FolderDomainProjectionHandler).FullName!, "exact", ["folders"], "domain-service", null,
+            new("Hexalith.Folders.Server.FolderDomainProjectionHandler", "exact", ["folders"], "domain-service", null,
                 ["folder-state", "organization-provider-binding"])),
     ];
 
@@ -38,8 +38,7 @@ public static class FoldersRuntimeCatalogDeclarations
     public static IReadOnlyList<RouteOperationContract> Operations => Routes.Select(route =>
     {
         Type request = route.Kind == "projection" ? typeof(ProjectionRequest)
-            : typeof(FolderDomainProcessor).Assembly.GetType(route.Execution!.HandlerType)
-                ?? typeof(FolderOwnerReadQuery).Assembly.GetType(route.Execution.HandlerType, throwOnError: true)!;
+            : ResolveRequestType(route.Execution!.HandlerType);
         Type response = route.Kind switch
         {
             "command" => typeof(SubmitCommandResponse),
@@ -51,6 +50,16 @@ public static class FoldersRuntimeCatalogDeclarations
         return RouteOperationSchema.Create(route, request, response,
             route.Kind == "command" ? "public" : "internal", "agent-eligible", JsonSerializerOptions.Web);
     }).ToArray();
+
+    private static Type ResolveRequestType(string handlerType)
+    {
+        const string processorPayload = "Hexalith.Folders.Server.FolderDomainProcessor+";
+        return handlerType.StartsWith(processorPayload, StringComparison.Ordinal)
+            ? typeof(FoldersCommandPayloads).GetNestedType(handlerType[processorPayload.Length..],
+                System.Reflection.BindingFlags.NonPublic)
+                ?? throw new InvalidOperationException($"Unknown Folders command payload '{handlerType}'.")
+            : typeof(FoldersRuntimeCatalogDeclarations).Assembly.GetType(handlerType, throwOnError: true)!;
+    }
 
     private static RouteContractDeclaration Query<T>(string route, string discriminator) => new("folders-" + route,
         "query", "folders", discriminator, null, "v1", null, "workload", EventStoreOperationIdentifiers.DomainServiceQuery,

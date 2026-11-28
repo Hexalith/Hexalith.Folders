@@ -1,5 +1,7 @@
 using System.Threading;
 
+using Hexalith.Folders.Aggregates;
+
 namespace Hexalith.Folders.Authorization;
 
 /// <summary>
@@ -52,16 +54,9 @@ internal static class PreauthorizedRequestContext
         => Covers(tenantId, principalId, folderId)
             && string.Equals(CurrentState.Value?.HistoricalActionToken, actionToken, StringComparison.Ordinal);
 
-    /// <summary>
-    /// Returns whether a value uses the uppercase-capable v2 opaque-identifier grammar.
-    /// The grammar is part of the identifier, including after compatibility seam state ends, so stream names,
-    /// command validation, and projection rebuild accept the same value that a candidate request accepted.
-    /// </summary>
+    /// <summary>Returns whether a value uses the v2 opaque identifier grammar.</summary>
     public static bool IsCandidateOpaqueIdentifier(string? value)
-        => value is not null
-            && value.Length is >= 16 and <= 128
-            && char.IsAsciiLetterOrDigit(value[0])
-            && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-');
+        => StreamNameSegment.IsCandidateOpaqueIdentifier(value);
 
     private sealed class ReuseSuppressionScope : IDisposable
     {

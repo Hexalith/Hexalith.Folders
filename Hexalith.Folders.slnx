@@ -23,6 +23,7 @@
     <Project Path="src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj" />
     <Project Path="src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj" />
     <Project Path="src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj" />
+    <Project Path="src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj" />
     <Project Path="src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj" />
     <Project Path="src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj" />
     <Project Path="src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj" />

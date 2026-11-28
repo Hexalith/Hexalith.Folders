@@ -13,9 +13,11 @@ publisher:
 profile:
   creator: jpiquot
   creatorRepositoryVariable: NUGET_USER
+# The initial release of a package ID also requires authorization to push a new package.
 scope: PackagePushVersion
 packages:
   - Hexalith.Folders.Contracts
+  - Hexalith.Folders.EventStoreExtensions
   - Hexalith.Folders
   - Hexalith.Folders.Client
   - Hexalith.Folders.Aspire

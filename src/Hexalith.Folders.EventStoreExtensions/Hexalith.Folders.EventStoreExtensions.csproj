@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <Description>Folders' idempotency intent policies for the Hexalith EventStore extension API.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj" />
+    <!-- The gateway supplies the SDK at runtime. Do not export its Dapr dependencies. -->
+    <ProjectReference Include="$(HexalithEventStoreRoot)/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj"
+                      Condition="'$(HexalithEventStoreFromSource)' == 'true'" PrivateAssets="all" />
+    <PackageReference Include="Hexalith.EventStore.DomainService"
+                      Condition="'$(HexalithEventStoreFromSource)' != 'true'" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.EventStore" />
+    <InternalsVisibleTo Include="Hexalith.Folders.EventStore.Tests" />
+    <None Include="../../module/hexalith.module-manifest.v2.json" Pack="true" PackagePath="build/hexalith.module-manifest.v2.json" />
+  </ItemGroup>
+</Project>

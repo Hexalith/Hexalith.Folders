@@ -69,6 +69,22 @@ public sealed partial class ContainerImageConformanceTests
     }
 
     [Fact]
+    public void NoFoldersProjectBuildsTheEventStoreImage()
+    {
+        string[] projectDirectories = ["src", "samples", "tests"];
+        foreach (string path in projectDirectories.SelectMany(directory =>
+            Directory.EnumerateFiles(RepositoryPath(directory), "*.csproj", SearchOption.AllDirectories)))
+        {
+            XDocument.Load(path).Descendants("ContainerRepository")
+                .ShouldNotContain(element => string.Equals(element.Value.Trim(), "eventstore", StringComparison.OrdinalIgnoreCase), path);
+        }
+
+        XDocument host = XDocument.Load(RepositoryPath("src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj"));
+        GetProperty(host, "IsPublishable").ShouldBe("false");
+        host.Descendants("EnableContainer").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void ProductionServiceImageBindingsShouldMapRepositoriesToStableDaprAppIds()
     {
         YamlMappingNode document = LoadSingleYamlDocument(ServiceImagesPath);

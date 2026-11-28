@@ -9,5 +9,5 @@ public static class FolderServerCatalogAdapterSource
 {
     /// <summary>Returns the same module adapter implementation used by the existing Folders command gateway.</summary>
     public static IReadOnlyList<IDeclaredIdempotencyIntentAdapter> Create()
-        => Hexalith.Folders.EventStore.FoldersCatalogAdapters.Create();
+        => Hexalith.Folders.EventStore.FoldersCatalogAdapterSource.Create();
 }

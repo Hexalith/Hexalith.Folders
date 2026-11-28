@@ -1,5 +1,6 @@
 using Hexalith.EventStore.DomainService;
 
+[assembly: EventStoreExtension("folders", 1)]
 [assembly: RouteCatalogAdapterSource(typeof(Hexalith.Folders.EventStore.FoldersCatalogAdapterSource))]
 
 namespace Hexalith.Folders.EventStore;
