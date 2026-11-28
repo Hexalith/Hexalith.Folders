@@ -45,8 +45,9 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
             envelope.SchemaVersion.ShouldBe(3);
             envelope.Idempotency.Count(entry => entry.Domain == "folders").ShouldBe(19);
             envelope.Idempotency.ShouldContain(entry => entry.Domain == "folders" && entry.OperationId == "provision-folder");
-            envelope.Idempotency.Count(entry => entry.Domain != "folders").ShouldBe(13);
+            envelope.Idempotency.Count(entry => entry.Domain != "folders").ShouldBe(14);
             envelope.Idempotency.ShouldContain(entry => entry.Domain == "tenants" && entry.OperationId == "tenants:refresh-tenant-access");
+            envelope.Idempotency.ShouldContain(entry => entry.Domain == "tenants" && entry.OperationId == "tenants:create-synthetic-tenant");
             envelope.Routes.Where(route => route.RouteId.StartsWith("folders-", StringComparison.Ordinal)).ShouldAllBe(route => route.AppId == "folders-selected");
             envelope.Idempotency.ShouldAllBe(entry => entry.ConsumerAppId == "eventstore-selected");
             envelope.Idempotency.Single(entry => entry.OperationId == "commit-workspace").RetentionTier.ShouldBe("commit");
@@ -56,8 +57,14 @@ public sealed class FoldersDevelopmentCatalogCompositionTests
             folderCommands.Single(operation => operation.RouteId == "folders-provision-folder").Ingress.ShouldBe("internal");
             folderCommands.Where(operation => operation.RouteId != "folders-provision-folder")
                 .ShouldAllBe(operation => operation.Ingress == "public" && operation.Eligibility == "agent-eligible");
-            folderOperations.Where(operation => operation.Kind != "command").Count().ShouldBe(5);
-            folderOperations.Where(operation => operation.Kind != "command").ShouldAllBe(operation => operation.Ingress == "internal");
+            var nonCommandFolderOperations = folderOperations.Where(operation => operation.Kind != "command").ToArray();
+            nonCommandFolderOperations.Length.ShouldBe(22);
+            nonCommandFolderOperations.Count(operation => operation.Ingress == "internal").ShouldBe(5);
+            nonCommandFolderOperations.Where(operation => operation.Ingress == "internal")
+                .ShouldAllBe(operation => operation.Kind == "query" || operation.Kind == "projection");
+            nonCommandFolderOperations.Count(operation => operation.Ingress == "public").ShouldBe(17);
+            nonCommandFolderOperations.Where(operation => operation.Ingress == "public")
+                .ShouldAllBe(operation => operation.Kind == "query");
             folderOperations.ShouldAllBe(operation => operation.ContractVersion == "v1");
             using JsonDocument acl = JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(catalog.Directory, "folders.configuration.json"), TestContext.Current.CancellationToken).ConfigureAwait(true));
             acl.RootElement.GetProperty("spec").GetProperty("accessControl").GetProperty("defaultAction").GetString().ShouldBe("deny");
