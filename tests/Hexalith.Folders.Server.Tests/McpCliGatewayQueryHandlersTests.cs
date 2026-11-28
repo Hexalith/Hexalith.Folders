@@ -118,7 +118,8 @@ public sealed class McpCliGatewayQueryHandlersTests
         branchPolicy.TryGetProperty("protectedRefPatterns", out _).ShouldBeFalse();
 
         var historicalTask = await SuccessAsync(fixture, Query("GetTaskStatus", "query_status",
-            new { folderId = Folder, taskId = HistoricalTaskId }) with { EntityId = HistoricalTaskId }, token);
+            new { folderId = Folder, taskId = HistoricalTaskId }) with
+        { EntityId = HistoricalTaskId }, token);
         historicalTask.GetPayload().GetProperty("taskId").GetString().ShouldBe(HistoricalTaskId);
 
         string tenantBindingActor = ProviderBindingActorId.Create(Tenant);
@@ -245,7 +246,10 @@ public sealed class McpCliGatewayQueryHandlersTests
         fixture.Store.Reads.ShouldNotContain(key => key.Contains(":semantic-indexing:", StringComparison.Ordinal));
         (await DenialAsync(fixture, Query("SearchFolderIndexedFiles", "read_context_search", new
         {
-            folderId = Folder, workspaceId = "opaque_ForeignWorkspace00", queryFamily = "semantic_reference_pending", queryText = "needle",
+            folderId = Folder,
+            workspaceId = "opaque_ForeignWorkspace00",
+            queryFamily = "semantic_reference_pending",
+            queryText = "needle",
         }), token)).ShouldBe(denied);
 
         string missingBinding = "opaque_MissingProvider";
@@ -293,8 +297,13 @@ public sealed class McpCliGatewayQueryHandlersTests
         searchNext.Metadata.ShouldNotBeNull().Paging.ShouldNotBeNull().HasMore.ShouldBe(false);
         QueryEnvelope typedSearchPage = Query("SearchFolderIndexedFiles", "read_context_search", new
         {
-            folderId = Folder, workspaceId = Workspace, taskId = TaskId, queryFamily = "semantic_reference_pending",
-            queryText = "private raw query", limit = 1, cursor = searchPaging.NextCursor,
+            folderId = Folder,
+            workspaceId = Workspace,
+            taskId = TaskId,
+            queryFamily = "semantic_reference_pending",
+            queryText = "private raw query",
+            limit = 1,
+            cursor = searchPaging.NextCursor,
         });
         QueryResult equalSearchPage = await SuccessAsync(fixture, typedSearchPage with
         {
@@ -466,7 +475,8 @@ public sealed class McpCliGatewayQueryHandlersTests
         {
             providerBindingRef = ProviderBinding,
             requestedCapability = "repository_creation",
-        }, ProviderBindingActorId.Create(ProviderBinding)) with { EntityId = ProviderBinding };
+        }, ProviderBindingActorId.Create(ProviderBinding)) with
+        { EntityId = ProviderBinding };
 
     /// <summary>Returns the committed policy and its optional protected patterns within the projection's skew allowance.</summary>
     [Theory]

@@ -1056,6 +1056,7 @@ public sealed class McpCliCommandAdmissionTests
         public void Advance(TimeSpan delta) => _now = _now.Add(delta);
     }
 
+    // CACHE-NON-TENANT: this in-memory actor state manager is a test double, not a tenant data cache.
     private sealed class InMemoryActorStateManager : IActorStateManager
     {
         private readonly Dictionary<string, object?> _store = new(StringComparer.Ordinal);

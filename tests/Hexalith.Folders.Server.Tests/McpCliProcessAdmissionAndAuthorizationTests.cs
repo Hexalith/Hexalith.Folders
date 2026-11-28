@@ -1282,7 +1282,8 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
         const string SensitiveShape = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789";
         CommandEnvelope command = ProcessHarness.CreateEnvelope(OpaqueFolderId, FoldersServerModule.CreateFolderCommandType,
             SerializeDecorated(new ContractsCreateFolder(new FolderMetadata("Folder", SensitiveMetadataTier.TenantSensitive),
-                OpaqueIdempotencyKey, OpaqueFolderId)), "01ARZ3NDEKTSV4RRFFQ69G5F02") with { CorrelationId = SensitiveShape };
+                OpaqueIdempotencyKey, OpaqueFolderId)), "01ARZ3NDEKTSV4RRFFQ69G5F02") with
+        { CorrelationId = SensitiveShape };
         using HttpResponseMessage response = await harness.PostProcessAsync(command, [], ["create_folder"]).ConfigureAwait(true);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
