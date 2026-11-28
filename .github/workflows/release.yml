@@ -91,7 +91,7 @@ jobs:
           solution: Hexalith.Folders.CI.slnx
           node-version: '26.13.1'
           package-prepare-script: scripts/prepare-ci-topology-projects.sh
-          builds-execution-sha: a1e0c310b1f1a50d78e6132890fae6bcba769f6d
+          builds-execution-sha: 763fc0e937413cb44e533391e573c43640263b40
           source-branch: main
           source-ci-workflow: ci.yml
           package-manifest: tools/release-packages.json
@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-          HEXALITH_BUILDS_EXECUTION_SHA: a1e0c310b1f1a50d78e6132890fae6bcba769f6d
+          HEXALITH_BUILDS_EXECUTION_SHA: 763fc0e937413cb44e533391e573c43640263b40
           HEXALITH_RELEASE_ENVIRONMENT: production
           HEXALITH_RELEASE_SOURCE_BRANCH: main
           HEXALITH_RELEASE_SOURCE_CI_WORKFLOW: ci.yml
