@@ -44,6 +44,7 @@ internal sealed class WorkspaceContentPathEvidenceProvider(IAuthoritativeContent
                 : new(WorkspacePathPolicyEvidenceDecision.Unavailable);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+        catch (UnauthorizedAccessException) { throw; }
         catch (Exception) { return new(WorkspacePathPolicyEvidenceDecision.Unavailable); }
     }
 }

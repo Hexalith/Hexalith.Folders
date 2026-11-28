@@ -16,21 +16,31 @@ public sealed partial class FolderDomainProcessor
     private async Task<DomainResult> ProcessDecoratedContentBatchAsync(CommandEnvelope envelope, CancellationToken cancellationToken)
     {
         string taskId = ReadRequiredTaskId(envelope);
-        if (!GatewayCommandPayloadTranslator.TryTranslateMutateFilesBatch(
+        bool translated = GatewayCommandPayloadTranslator.TryTranslateMutateFilesBatch(
                 envelope,
                 taskId,
                 out string? workspaceId,
                 out string? acceptedIdempotencyKey,
                 out IReadOnlyList<TranslatedFileMutationItem>? items,
-                out FolderResultCode translationFailure))
+                out FolderResultCode translationFailure);
+        bool safeCallerKey = FolderCanonicalSegmentIdentifier.IsProcessEvidence(acceptedIdempotencyKey)
+            && FolderCommandValidator.IsSafeEvidenceIdentifier(acceptedIdempotencyKey);
+        string callerKey = safeCallerKey ? acceptedIdempotencyKey! : string.Empty;
+        DomainResult Reject(FolderResultCode code) => Rejection(envelope, code, null, callerKey);
+
+        if (!translated)
         {
-            return Rejection(envelope, translationFailure, null);
+            if (GatewayCommandPayloadTranslator.TryReadDecoratedCallerKey(envelope.Payload, out string? rejectedKey))
+            {
+                callerKey = rejectedKey ?? string.Empty;
+            }
+
+            return Reject(translationFailure);
         }
 
-        if (!FolderCommandValidator.IsSafeEvidenceIdentifier(envelope.MessageId)
-            || !FolderCommandValidator.IsSafeEvidenceIdentifier(acceptedIdempotencyKey))
+        if (!FolderCommandValidator.IsSafeEvidenceIdentifier(envelope.MessageId) || !safeCallerKey)
         {
-            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+            return Reject(FolderResultCode.MalformedEvidence);
         }
 
         if (_actorFolderRepository is not ActorFoldedFolderRepository
@@ -38,41 +48,46 @@ public sealed partial class FolderDomainProcessor
             || authoritativeContent is null
             || httpContextAccessor?.HttpContext is not { } httpContext)
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
 
         FolderState initialState = _actorFolderRepository.Load(
             FolderStreamName.Create(envelope.TenantId, envelope.AggregateId));
         if (!initialState.IsCreated)
         {
-            return Rejection(envelope, FolderResultCode.FolderNotFound, null);
+            return Reject(FolderResultCode.FolderNotFound);
         }
 
         if (initialState.LifecycleState != FolderLifecycleState.Active)
         {
-            return Rejection(envelope, FolderResultCode.AlreadyArchived, null);
+            return Reject(FolderResultCode.AlreadyArchived);
+        }
+
+        if (initialState.RepositoryBindingState != FolderRepositoryBindingState.Bound
+            || initialState.WorkspaceLifecycleState is not (FolderWorkspaceLifecycleState.Locked or FolderWorkspaceLifecycleState.ChangesStaged))
+        {
+            return Reject(FolderResultCode.StateTransitionInvalid);
         }
 
         TimeProvider clock = httpContext.RequestServices.GetRequiredService<TimeProvider>();
-        if (!string.Equals(initialState.WorkspaceId, workspaceId, StringComparison.Ordinal)
+        if (string.IsNullOrWhiteSpace(initialState.WorkspaceLockId)
+            || !string.Equals(initialState.WorkspaceId, workspaceId, StringComparison.Ordinal)
             || !string.Equals(initialState.WorkspaceLockHolderTaskId, taskId, StringComparison.Ordinal)
             || initialState.IsTaskClosed(workspaceId!, taskId))
         {
-            return Rejection(envelope, FolderResultCode.LockNotOwned, null);
+            return Reject(FolderResultCode.LockNotOwned);
         }
 
         if (initialState.WorkspaceLockExpiresAt is null
             || initialState.WorkspaceLockExpiresAt <= clock.GetUtcNow())
         {
-            return Rejection(envelope, FolderResultCode.LockExpired, null);
+            return Reject(FolderResultCode.LockExpired);
         }
 
-        foreach (TranslatedFileMutationItem item in items!)
+        IReadOnlyList<TranslatedFileMutationItem> changes = items!;
+        if (changes.Any(item => item.ExpectedLockFence != initialState.WorkspaceLockFence))
         {
-            if (item.ExpectedLockFence != initialState.WorkspaceLockFence)
-            {
-                return Rejection(envelope, FolderResultCode.AppendConflict, null);
-            }
+            return Reject(FolderResultCode.AppendConflict);
         }
 
         IWorkspaceFilePolicySource policySource = httpContext.RequestServices.GetRequiredService<IWorkspaceFilePolicySource>();
@@ -83,73 +98,102 @@ public sealed partial class FolderDomainProcessor
         }
         catch (InvalidOperationException)
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
 
         if (!string.Equals(initialPolicy.ProtectionMode, "non_confidential", StringComparison.Ordinal))
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
-        }
-
-        foreach (TranslatedFileMutationItem item in items!)
-        {
-            PathMetadata path = new(
-                item.PathMetadata.NormalizedPath ?? string.Empty,
-                item.PathMetadata.DisplayName ?? string.Empty,
-                item.PathMetadata.PathPolicyClass ?? string.Empty,
-                item.PathMetadata.UnicodeNormalization ?? string.Empty);
-            if (initialPolicy.Classify(path) is "excluded" or "restricted")
-            {
-                return Rejection(envelope, FolderResultCode.PathPolicyDenied, null);
-            }
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
 
         httpContext.Items[WorkspaceContentAuthority.ActionItem] = "mutate_files";
         ContentScope scope = new(envelope.TenantId, FoldersServerModule.DomainName, envelope.AggregateId, workspaceId!);
-        List<byte[]> payloads = new(items.Count);
+        List<byte[]> payloads = new(changes.Count);
 
         try
         {
-            foreach (TranslatedFileMutationItem item in items)
+            IWorkspacePathPolicyEvidenceProvider pathEvidence = httpContext.RequestServices
+                .GetRequiredService<IWorkspacePathPolicyEvidenceProvider>();
+            foreach (TranslatedFileMutationItem item in changes)
             {
-                string? receiptId = null;
-                if (item.FileOperationKind is "add" or "change")
+                PathMetadata path = new(
+                    item.PathMetadata.NormalizedPath!,
+                    item.PathMetadata.DisplayName!,
+                    item.PathMetadata.PathPolicyClass!,
+                    item.PathMetadata.UnicodeNormalization!);
+                if (initialPolicy.Classify(path) is "excluded" or "restricted")
                 {
-                    ContentReceipt receipt;
-                    if (string.Equals(item.TransportOperation, "PutFileInline", StringComparison.Ordinal))
+                    return Reject(FolderResultCode.PathPolicyDenied);
+                }
+
+                WorkspaceContentBinding? existing = WorkspaceContentAuthority.ValidateIngress(initialState, scope, taskId, item.OperationId,
+                    item.FileOperationKind, path, item.ContentHashReference, item.ByteLength, item.MediaType,
+                    item.ExpectedLockFence, item.ExpectedFileVersion, item.OwnerFileId, clock.GetUtcNow());
+                if (existing is not null)
+                {
+                    // Gateway replay returns before dispatch. A new batch cannot reuse a published operation.
+                    return Reject(FolderResultCode.AppendConflict);
+                }
+
+                WorkspacePathPolicyEvidenceResult evidence = await pathEvidence.GetEvidenceAsync(
+                    new WorkspacePathPolicyEvidenceRequest(scope.TenantId, scope.AggregateId, scope.WorkspaceId,
+                        taskId, item.OperationId, WorkspacePathPolicyValidator.ComputePathMetadataDigest(path), path.PathPolicyClass)
+                    { PathMetadata = path }, cancellationToken).ConfigureAwait(false);
+                if (evidence.Decision != WorkspacePathPolicyEvidenceDecision.NoEscape)
+                {
+                    return Reject(evidence.Decision == WorkspacePathPolicyEvidenceDecision.Unavailable
+                        ? FolderResultCode.PolicyEvidenceUnavailable
+                        : FolderResultCode.PathPolicyDenied);
+                }
+
+                if (evidence.PolicyVersion != initialPolicy.Version || evidence.PolicyDigest != initialPolicy.Digest)
+                {
+                    return Reject(FolderResultCode.PolicyEvidenceUnavailable);
+                }
+            }
+
+            ContentReceipt?[] stagedReceipts = new ContentReceipt?[changes.Count];
+            for (int index = 0; index < changes.Count; index++)
+            {
+                TranslatedFileMutationItem item = changes[index];
+                if (item.StagingReference is { } stagingReference)
+                {
+                    ContentReceipt receipt = await authoritativeContent.VerifyUploadAsync(
+                        httpContext.User, new ContentUploadVerification(scope, taskId, stagingReference),
+                        cancellationToken).ConfigureAwait(false);
+                    if (!MatchesContentEvidence(receipt, item, taskId))
                     {
-                        using MemoryStream contentStream = new(item.DecodedInlineBytes!, writable: false);
-                        receipt = await authoritativeContent.UploadAsync(
-                            httpContext.User,
-                            new ContentUploadRequest(
-                                scope,
-                                taskId,
-                                item.ContentHashReference![8..],
-                                item.DecodedInlineBytes!.LongLength,
-                                item.MediaType!,
-                                item.OperationId)
-                            {
-                                LeaseFence = item.ExpectedLockFence,
-                            },
-                            contentStream,
-                            cancellationToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        receipt = await authoritativeContent.VerifyUploadAsync(
-                            httpContext.User,
-                            new ContentUploadVerification(scope, taskId, item.StagingReference!),
-                            cancellationToken).ConfigureAwait(false);
+                        return Reject(FolderResultCode.ValidationFailed);
                     }
 
-                    if (!string.Equals("hashref_" + receipt.Sha256, item.ContentHashReference, StringComparison.Ordinal)
-                        || receipt.ByteLength != item.ByteLength
-                        || !string.Equals(receipt.MediaType, item.MediaType, StringComparison.Ordinal))
-                    {
-                        return Rejection(envelope, FolderResultCode.ValidationFailed, null);
-                    }
+                    stagedReceipts[index] = receipt;
+                }
+            }
 
-                    receiptId = receipt.Id;
+            if (!policySource.IsCurrent(initialPolicy))
+            {
+                return Reject(FolderResultCode.PolicyEvidenceUnavailable);
+            }
+
+            for (int index = 0; index < changes.Count; index++)
+            {
+                TranslatedFileMutationItem item = changes[index];
+                ContentReceipt? receipt = stagedReceipts[index];
+                if (item.DecodedInlineBytes is { } inlineBytes)
+                {
+                    using MemoryStream contentStream = new(inlineBytes, writable: false);
+                    receipt = await authoritativeContent.UploadAsync(
+                        httpContext.User,
+                        new ContentUploadRequest(scope, taskId, item.ContentHashReference![8..],
+                            inlineBytes.LongLength, item.MediaType!, item.OperationId)
+                        {
+                            LeaseFence = item.ExpectedLockFence,
+                        },
+                        contentStream, cancellationToken).ConfigureAwait(false);
+                    if (!MatchesContentEvidence(receipt, item, taskId))
+                    {
+                        return Reject(FolderResultCode.ValidationFailed);
+                    }
                 }
 
                 FileMutationPayload translatedPayload = new(
@@ -166,8 +210,8 @@ public sealed partial class FolderDomainProcessor
                     ObservedByteLength: item.ObservedByteLength,
                     TaskId: taskId)
                 {
-                    AcceptedSdkKey = acceptedIdempotencyKey,
-                    ContentReceiptId = receiptId,
+                    AcceptedSdkKey = callerKey,
+                    ContentReceiptId = receipt?.Id,
                     ExpectedFileVersion = item.ExpectedFileVersion,
                     ExpectedLockFence = item.ExpectedLockFence,
                     OwnerFileId = item.OwnerFileId,
@@ -177,20 +221,20 @@ public sealed partial class FolderDomainProcessor
         }
         catch (ContentConflictException)
         {
-            return Rejection(envelope, FolderResultCode.AppendConflict, null);
+            return Reject(FolderResultCode.AppendConflict);
         }
         catch (UnauthorizedAccessException)
         {
-            return Rejection(envelope, FolderResultCode.FolderAclDenied, null);
+            return Reject(FolderResultCode.FolderAclDenied);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
 
         if (!policySource.IsCurrent(initialPolicy))
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
 
         contentBatch.Begin();
@@ -199,13 +243,13 @@ public sealed partial class FolderDomainProcessor
             List<IEventPayload> events = [];
             for (int index = 0; index < payloads.Count; index++)
             {
-                string operationId = items[index].OperationId;
+                string operationId = changes[index].OperationId;
                 CommandEnvelope single = envelope with
                 {
                     MessageId = WorkspaceContentBinding.BatchItemKey(envelope.MessageId, operationId),
                     Payload = payloads[index],
                 };
-                DomainResult result = await ProcessSingleFileMutationAsync(single).ConfigureAwait(false);
+                DomainResult result = await ProcessSingleFileMutationAsync(single, cancellationToken, callerKey).ConfigureAwait(false);
                 if (!result.IsSuccess)
                 {
                     return result;
@@ -217,7 +261,7 @@ public sealed partial class FolderDomainProcessor
             ContentPublicationRequest publication = contentBatch.Complete();
             if (publication.Changes.Count != payloads.Count)
             {
-                return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+                return Reject(FolderResultCode.ValidationFailed);
             }
 
             await authoritativeContent.PrepareAsync(httpContext.User, publication, cancellationToken).ConfigureAwait(false);
@@ -226,7 +270,7 @@ public sealed partial class FolderDomainProcessor
             if (publication.Changes.Any(change => change.ResourceMetadata?.GetValueOrDefault("policyDigest") != finalPolicy.Digest)
                 || !policySource.IsCurrent(finalPolicy))
             {
-                return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+                return Reject(FolderResultCode.PolicyEvidenceUnavailable);
             }
 
             FolderState finalState = _actorFolderRepository.Load(
@@ -235,13 +279,13 @@ public sealed partial class FolderDomainProcessor
                 || finalState.WorkspaceLockHolderTaskId != publication.TaskId
                 || finalState.IsTaskClosed(publication.Scope.WorkspaceId, publication.TaskId))
             {
-                return Rejection(envelope, FolderResultCode.LockNotOwned, null);
+                return Reject(FolderResultCode.LockNotOwned);
             }
 
             if (finalState.WorkspaceLockExpiresAt is null
                 || finalState.WorkspaceLockExpiresAt <= clock.GetUtcNow())
             {
-                return Rejection(envelope, FolderResultCode.LockExpired, null);
+                return Reject(FolderResultCode.LockExpired);
             }
 
             FolderProcessResultPayload responsePayload = new(
@@ -249,28 +293,33 @@ public sealed partial class FolderDomainProcessor
                 IdempotentReplay: false,
                 CorrelationId: FolderCanonicalSegmentIdentifier.IsValid(envelope.CorrelationId) ? envelope.CorrelationId : null,
                 TaskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null,
-                IdempotencyKey: FolderCanonicalSegmentIdentifier.IsValid(envelope.MessageId) ? envelope.MessageId : null);
+                IdempotencyKey: callerKey);
 
             // EventStore appends the complete actor decision transactionally. No preparation is visible beforehand.
             return new PayloadDomainResult(JsonSerializer.Serialize(responsePayload, PayloadJsonOptions), events);
         }
         catch (ContentConflictException)
         {
-            return Rejection(envelope, FolderResultCode.AppendConflict, null);
+            return Reject(FolderResultCode.AppendConflict);
         }
         catch (UnauthorizedAccessException)
         {
-            return Rejection(envelope, FolderResultCode.FolderAclDenied, null);
+            return Reject(FolderResultCode.FolderAclDenied);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+            return Reject(FolderResultCode.PolicyEvidenceUnavailable);
         }
         finally
         {
             contentBatch.End();
         }
     }
+
+    private static bool MatchesContentEvidence(ContentReceipt receipt, TranslatedFileMutationItem item, string taskId)
+        => string.Equals("hashref_" + receipt.Sha256, item.ContentHashReference, StringComparison.Ordinal)
+            && receipt.ByteLength == item.ByteLength && string.Equals(receipt.MediaType, item.MediaType, StringComparison.Ordinal)
+            && string.Equals(receipt.TaskId, taskId, StringComparison.Ordinal);
 
     private async Task<DomainResult> ProcessContentBatchAsync(CommandEnvelope envelope, JsonElement root, JsonElement items)
     {
@@ -326,7 +375,7 @@ public sealed partial class FolderDomainProcessor
                 using JsonDocument item = JsonDocument.Parse(payloads[index]);
                 string operationId = item.RootElement.GetProperty("operationId").GetString()!;
                 var single = envelope with { MessageId = WorkspaceContentBinding.BatchItemKey(envelope.MessageId, operationId), Payload = payloads[index] };
-                DomainResult result = await ProcessSingleFileMutationAsync(single).ConfigureAwait(false);
+                DomainResult result = await ProcessSingleFileMutationAsync(single, CancellationToken.None).ConfigureAwait(false);
                 if (!result.IsSuccess) return Rejection(envelope, FolderResultCode.ValidationFailed, null);
                 events.AddRange(result.Events);
             }

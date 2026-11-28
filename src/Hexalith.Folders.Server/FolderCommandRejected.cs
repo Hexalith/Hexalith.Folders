@@ -170,10 +170,10 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     // Preserves canonical lowercase segments and non-sensitive uppercase ULIDs / opaque identifiers
     // accepted at the /process boundary, while dropping secret-shaped or corpus-sentinel values to null.
     internal static string? CanonicalIdentifierOrNull(string? value)
-        => FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value)
-            || (FolderCanonicalSegmentIdentifier.IsValid(value)
-                && !FolderSensitiveDiagnosticDetector.IsSensitive(value!)
-                && FolderCommandValidator.IsSafeEvidenceIdentifier(value))
+        => FolderCanonicalSegmentIdentifier.IsProcessEvidence(value)
+            && (FolderCanonicalSegmentIdentifier.IsLowercaseSegment(value)
+                || (!FolderSensitiveDiagnosticDetector.IsSensitive(value!)
+                    && FolderCommandValidator.IsSafeEvidenceIdentifier(value)))
             ? value
             : null;
 }

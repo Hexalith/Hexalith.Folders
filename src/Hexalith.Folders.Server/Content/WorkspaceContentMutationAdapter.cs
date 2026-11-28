@@ -31,6 +31,7 @@ internal sealed class WorkspaceContentMutationAdapter(IAuthoritativeContentStore
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch (ContentConflictException) { return Failed(FolderResultCode.AppendConflict); }
+        catch (UnauthorizedAccessException) { return Failed(FolderResultCode.FolderAclDenied); }
         catch (Exception) { return Failed(FolderResultCode.PolicyEvidenceUnavailable); }
     }
 
@@ -47,6 +48,7 @@ internal sealed class WorkspaceContentMutationAdapter(IAuthoritativeContentStore
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch (ContentConflictException) { return WorkspaceFileDeleteOperationStoreResult.Failed with { FailureCode = FolderResultCode.AppendConflict }; }
+        catch (UnauthorizedAccessException) { return WorkspaceFileDeleteOperationStoreResult.Failed with { FailureCode = FolderResultCode.FolderAclDenied }; }
         catch (Exception) { return WorkspaceFileDeleteOperationStoreResult.Failed with { FailureCode = FolderResultCode.PolicyEvidenceUnavailable }; }
     }
 

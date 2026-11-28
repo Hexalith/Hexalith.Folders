@@ -30,7 +30,15 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
         string? ownerFileId, CancellationToken token)
     {
         var current = await source.ReadAsync(scope, token).ConfigureAwait(false);
-        var state = current.State;
+        return ValidateIngress(current.State, scope, taskId, operationId, kind, path, hash, length, mediaType,
+            fence, expectedVersion, ownerFileId, clock.GetUtcNow());
+    }
+
+    /// <summary>Checks file identity, version, and lease evidence against an authorized retained state.</summary>
+    internal static WorkspaceContentBinding? ValidateIngress(FolderState state, ContentScope scope, string taskId,
+        string operationId, string kind, PathMetadata path, string? hash, long? length, string? mediaType,
+        long fence, long expectedVersion, string? ownerFileId, DateTimeOffset now)
+    {
         var replay = state.ContentPublications.Values.SingleOrDefault(binding => binding.OperationId == operationId);
         if (replay is not null)
         {
@@ -44,7 +52,7 @@ internal sealed class WorkspaceContentAuthority(LayeredFolderAuthorizationServic
         if (state.LifecycleState != FolderLifecycleState.Active || state.WorkspaceId != scope.WorkspaceId
             || state.WorkspaceLockHolderTaskId != taskId || state.WorkspaceLockFence != fence
             || state.IsTaskClosed(scope.WorkspaceId, taskId) || state.WorkspaceLockExpiresAt is null
-            || state.WorkspaceLockExpiresAt <= clock.GetUtcNow()) throw new ContentConflictException();
+            || state.WorkspaceLockExpiresAt <= now) throw new ContentConflictException();
         string target = WorkspacePathPolicyValidator.ComputeMutationTargetDigest(scope.WorkspaceId, path);
         var file = state.FileIdentities.Values.SingleOrDefault(identity => identity.Active && identity.MutationTargetDigest == target);
         if (kind == "add")

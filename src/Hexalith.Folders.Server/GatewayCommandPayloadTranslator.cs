@@ -1,14 +1,13 @@
 using System.Collections.Frozen;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Contracts.Commands.Models;
+using Hexalith.Folders.EventStore;
 
 using AggPathMetadata = Hexalith.Folders.Aggregates.Folder.PathMetadata;
 
@@ -18,15 +17,9 @@ namespace Hexalith.Folders.Server;
 /// Translates and strictly validates Gateway-dispatched decorated McpCli v2 command payloads (C01–C13)
 /// into the domain payload records consumed by <see cref="FolderDomainProcessor"/>.
 /// </summary>
-internal static partial class GatewayCommandPayloadTranslator
+internal static class GatewayCommandPayloadTranslator
 {
-    private const int InlineContentByteLimit = 262_144;
-    private const int StreamContentMinimumBytes = 262_145;
-    private const int MaximumFileBytes = 1_048_576;
-    private const long MaximumBatchBytes = 10_485_760;
-    private const int MaximumInlineBase64Length = 349_528;
     private const int MaximumAuditMetadataKeys = 24;
-    private const int MaximumFileBatchItems = 100;
     private const string DomainAcceptedSchemaVersion = "v1";
     private const string FixedCredentialScopeClass = "provider_binding";
 
@@ -146,6 +139,34 @@ internal static partial class GatewayCommandPayloadTranslator
         }
     }
 
+    /// <summary>Reads a safe decorated caller key for result metadata.</summary>
+    internal static bool TryReadDecoratedCallerKey(ReadOnlyMemory<byte> rawPayload, out string? callerKey)
+    {
+        callerKey = null;
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(rawPayload);
+            JsonElement root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object || root.TryGetProperty("requestSchemaVersion", out _)
+                || !root.TryGetProperty("idempotencyKey", out _))
+            {
+                return false;
+            }
+
+            if (root.EnumerateObject().Count(static property => property.Name.Equals("idempotencyKey", StringComparison.OrdinalIgnoreCase)) == 1
+                && TryReadRequiredIdempotencyKey(root, out string? key, out _))
+            {
+                callerKey = key;
+            }
+
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
     /// <summary>
     /// Determines whether a C08/C13 folder-access payload is a decorated v2 payload rather than a legacy v1
     /// <c>operations[]</c> payload (which may omit <c>requestSchemaVersion</c>).
@@ -172,21 +193,10 @@ internal static partial class GatewayCommandPayloadTranslator
     /// vocabulary, count (1..24), and uniqueness constraints.
     /// </summary>
     /// <param name="auditMetadataKeys">The audit metadata keys to validate.</param>
-    /// <param name="allowEmpty">Whether an empty array is permitted (legacy v1 compatibility only).</param>
     /// <returns><see langword="true"/> when valid.</returns>
-    internal static bool AreValidAuditMetadataKeys(IReadOnlyList<string>? auditMetadataKeys, bool allowEmpty)
+    private static bool AreValidAuditMetadataKeys(IReadOnlyList<string>? auditMetadataKeys)
     {
-        if (auditMetadataKeys is null)
-        {
-            return false;
-        }
-
-        if (auditMetadataKeys.Count == 0)
-        {
-            return allowEmpty;
-        }
-
-        if (auditMetadataKeys.Count > MaximumAuditMetadataKeys)
+        if (auditMetadataKeys is null || auditMetadataKeys.Count is < 1 or > MaximumAuditMetadataKeys)
         {
             return false;
         }
@@ -304,7 +314,7 @@ internal static partial class GatewayCommandPayloadTranslator
                 return false;
             }
 
-            if (!AreValidAuditMetadataKeys(auditMetadataKeys, allowEmpty: false))
+            if (!AreValidAuditMetadataKeys(auditMetadataKeys))
             {
                 failureCode = FolderResultCode.ValidationFailed;
                 return false;
@@ -688,7 +698,7 @@ internal static partial class GatewayCommandPayloadTranslator
             }
 
             int changeCount = changesElement.GetArrayLength();
-            if (changeCount is < 1 or > MaximumFileBatchItems)
+            if (changeCount is < 1 or > DecoratedCommandContentEvidence.MaximumBatchItems)
             {
                 failureCode = FolderResultCode.ValidationFailed;
                 return false;
@@ -716,7 +726,7 @@ internal static partial class GatewayCommandPayloadTranslator
                 if (item.FileOperationKind is "add" or "change")
                 {
                     long itemBytes = item.ByteLength ?? -1;
-                    if (itemBytes < 0 || totalBytes > MaximumBatchBytes - itemBytes)
+                    if (itemBytes < 0 || totalBytes > DecoratedCommandContentEvidence.MaximumBatchBytes - itemBytes)
                     {
                         failureCode = FolderResultCode.ValidationFailed;
                         return false;
@@ -832,9 +842,9 @@ internal static partial class GatewayCommandPayloadTranslator
 
         if (fileOperationKind is not ("add" or "change")
             || contentHashReference is null
-            || !ContentHashReferencePattern().IsMatch(contentHashReference)
+            || !DecoratedCommandContentEvidence.IsValidHashReference(contentHashReference)
             || byteLength is null
-            || byteLength.Value is < 0 or > MaximumFileBytes)
+            || byteLength.Value is < 0 or > DecoratedCommandContentEvidence.MaximumFileBytes)
         {
             failureCode = FolderResultCode.ValidationFailed;
             return false;
@@ -850,7 +860,7 @@ internal static partial class GatewayCommandPayloadTranslator
 
             if (!HasOnlyAllowedProperties(inlineElement, PutFileInlineProperties, allowNullProperty: null, out failureCode)
                 || !TryReadRequiredString(inlineElement, "mediaType", out string? mediaType, out failureCode)
-                || !IsValidMediaType(mediaType)
+                || !DecoratedCommandContentEvidence.IsValidMediaType(mediaType)
                 || !TryReadRequiredStringAllowEmpty(inlineElement, "contentBytes", out string? contentBytes, out failureCode)
                 || !TryReadOptionalString(inlineElement, "contentMediaType", out string? contentMediaType, out failureCode))
             {
@@ -862,32 +872,8 @@ internal static partial class GatewayCommandPayloadTranslator
                 return false;
             }
 
-            if ((contentMediaType is not null && !IsValidMediaType(contentMediaType))
-                || contentBytes!.Length > MaximumInlineBase64Length
-                || HasWhitespace(contentBytes)
-                || (contentBytes.Length == 0 && byteLength.Value != 0))
-            {
-                failureCode = FolderResultCode.ValidationFailed;
-                return false;
-            }
-
-            byte[] decoded;
-            try
-            {
-                decoded = Convert.FromBase64String(contentBytes);
-            }
-            catch (FormatException)
-            {
-                failureCode = FolderResultCode.ValidationFailed;
-                return false;
-            }
-
-            if (decoded.LongLength > InlineContentByteLimit
-                || decoded.LongLength != byteLength.Value
-                || !string.Equals(
-                    "hashref_" + Convert.ToHexStringLower(SHA256.HashData(decoded)),
-                    contentHashReference,
-                    StringComparison.Ordinal))
+            if ((contentMediaType is not null && !DecoratedCommandContentEvidence.IsValidMediaType(contentMediaType))
+                || !DecoratedCommandContentEvidence.TryDecodeInline(contentBytes, byteLength.Value, contentHashReference, out byte[]? decoded))
             {
                 failureCode = FolderResultCode.ValidationFailed;
                 return false;
@@ -902,7 +888,7 @@ internal static partial class GatewayCommandPayloadTranslator
                 byteLength.Value,
                 mediaType!,
                 "inline_decoded",
-                decoded.LongLength,
+                byteLength.Value,
                 expectedFileVersion,
                 expectedLockFence,
                 ownerFileId,
@@ -922,7 +908,7 @@ internal static partial class GatewayCommandPayloadTranslator
 
             if (!HasOnlyAllowedProperties(streamElement, PutFileStreamProperties, allowNullProperty: null, out failureCode)
                 || !TryReadRequiredString(streamElement, "mediaType", out string? mediaType, out failureCode)
-                || !IsValidMediaType(mediaType)
+                || !DecoratedCommandContentEvidence.IsValidMediaType(mediaType)
                 || !TryReadRequiredInt64(streamElement, "declaredLength", out long declaredLength, out failureCode)
                 || !TryReadRequiredInt64(streamElement, "observedLength", out long observedLength, out failureCode)
                 || !TryReadRequiredIdentifier(streamElement, "stagingReference", out string? stagingReference, out failureCode)
@@ -939,8 +925,8 @@ internal static partial class GatewayCommandPayloadTranslator
 
             if (!string.Equals(uploadMode, "request_body_stream", StringComparison.Ordinal)
                 || !string.Equals(observedHash, contentHashReference, StringComparison.Ordinal)
-                || declaredLength is < StreamContentMinimumBytes or > MaximumFileBytes
-                || observedLength is < StreamContentMinimumBytes or > MaximumFileBytes
+                || declaredLength is <= DecoratedCommandContentEvidence.InlineByteLimit or > DecoratedCommandContentEvidence.MaximumFileBytes
+                || observedLength is <= DecoratedCommandContentEvidence.InlineByteLimit or > DecoratedCommandContentEvidence.MaximumFileBytes
                 || declaredLength != byteLength.Value
                 || observedLength != byteLength.Value)
             {
@@ -1348,10 +1334,24 @@ internal static partial class GatewayCommandPayloadTranslator
         return true;
     }
 
-    private static bool TryReadRequiredIdempotencyKey(
-        JsonElement obj,
-        out FolderResultCode failureCode)
-        => TryReadRequiredIdentifier(obj, "idempotencyKey", out _, out failureCode);
+    private static bool TryReadRequiredIdempotencyKey(JsonElement obj, out FolderResultCode failureCode)
+        => TryReadRequiredIdempotencyKey(obj, out _, out failureCode);
+
+    private static bool TryReadRequiredIdempotencyKey(JsonElement obj, out string? key, out FolderResultCode failureCode)
+    {
+        if (!TryReadRequiredIdentifier(obj, "idempotencyKey", out key, out failureCode))
+        {
+            return false;
+        }
+
+        if (FolderCanonicalSegmentIdentifier.IsProcessEvidence(key) && FolderCommandValidator.IsSafeEvidenceIdentifier(key))
+        {
+            return true;
+        }
+
+        failureCode = FolderResultCode.ValidationFailed;
+        return false;
+    }
 
     private static bool TryReadRequiredInt32(
         JsonElement obj,
@@ -1545,53 +1545,6 @@ internal static partial class GatewayCommandPayloadTranslator
         return false;
     }
 
-    private static bool IsValidMediaType(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value) || value.Length > 128)
-        {
-            return false;
-        }
-
-        int slash = value.IndexOf('/');
-        return slash > 0
-            && slash < value.Length - 1
-            && IsMediaToken(value[..slash])
-            && IsMediaToken(value[(slash + 1)..]);
-    }
-
-    private static bool IsMediaToken(string value)
-    {
-        if (value.Length == 0 || !char.IsAsciiLetterOrDigit(value[0]))
-        {
-            return false;
-        }
-
-        foreach (char c in value)
-        {
-            bool accepted = char.IsAsciiLetterOrDigit(c)
-                || c is '!' or '#' or '$' or '&' or '^' or '_' or '.' or '+' or '-';
-            if (!accepted)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool HasWhitespace(string value)
-    {
-        foreach (char c in value)
-        {
-            if (char.IsWhiteSpace(c))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static FrozenSet<string> BuildAuditMetadataKeySet()
     {
         HashSet<string> values = new(StringComparer.Ordinal);
@@ -1607,6 +1560,4 @@ internal static partial class GatewayCommandPayloadTranslator
         return values.ToFrozenSet(StringComparer.Ordinal);
     }
 
-    [GeneratedRegex("\\Ahashref_[A-Za-z0-9]{32,96}\\z", RegexOptions.CultureInvariant)]
-    private static partial Regex ContentHashReferencePattern();
 }

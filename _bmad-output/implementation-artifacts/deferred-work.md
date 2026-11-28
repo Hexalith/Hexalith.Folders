@@ -3499,3 +3499,8 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 ## Deferred from: code review of spec-5-14-gateway-query-review-corrections (2026-11-28)
 
 - Align sibling operational query handlers (`FolderLifecycleStatusQueryHandler.cs:109-111`, `WorkspaceLockStatusQueryHandler.cs:164`, `WorkspaceStatusQueryHandler.cs:391,439,522`, `WorkspaceCleanupStatusQueryHandler.cs:305-306,332`) with `EventStoreOperationalStatusReadModel.ClockSkewTolerance` (5 minutes): `EventStoreOperationalStatusReadModel.ReadAsync` (`:372,396`) accepts observations up to 5 minutes ahead of `clock.UtcNow` and `OperationalStatusFold` propagates the monotonic maximum `ObservedAt` across a folder stream, so a single event with in-tolerance future skew lets `GetBranchRefPolicy` succeed while the other nine operational queries fail with `ReadModelUnavailable` (`freshness_observed_in_future`). Pre-existing outside the Q02 scope of Story 5.14's review corrections.
+
+## Deferred from: code review of spec-5-13-admit-and-authorize-gateway-dispatched-folders-commands.md (2026-11-28)
+
+- C05 reserved actor routing. The generic McpCli head forwards `ProviderBindingRef`, while the Folders intent adapter requires `ProviderBindingActorId.Create(providerBindingRef)` under D2. The callback fixture supplies the derived actor directly. Resolve the existing Story 5.12 E5 handoff before claiming all 13 decorated commands can dispatch.
+- C05 provider family vocabulary. The existing deferred item for this story documents the disjoint contract and domain values. The full review confirmed that the `forgejo` acceptance fixture bypasses the decorated contract's 16-character minimum. Resolve the vocabulary before using C05 as enrollment evidence.

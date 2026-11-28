@@ -308,6 +308,55 @@ the five failing test names match the pre-existing baseline, but their byte-boun
 mismatch evidence changes as these rows change. The McpCli selector runs as an
 independent CI step so those PD10 failures cannot mask its pass/fail result.
 
+## Story 5.13 Gateway command enrollment handoff
+
+The Folders owner approved the following direction on 2026-11-28. Gateway
+command enrollment depends on current Folders authorization at admission. C04
+cutover also depends on retained-key evidence, and inline C10 enrollment depends
+on a verified receipt path.
+
+### C04 retained idempotency keys
+
+The EventStore and deployment owners first inventory live C04 claims against the
+active catalog and admission store. If there are no live claims, the owner can
+qualify the corrected descriptor against the retained consumed-key state. If a
+brief pause in new C04 admissions is acceptable, let existing terminal claims
+reach their configured expiry and reconcile in-flight or recoverable work before
+cutover. Preserve consumed-key records throughout.
+
+If live legacy claims must cross the deployment, scope compatibility to C04 and
+the retained replay window. Compare a retry with the trusted original request
+before returning its stored outcome. The historical digest omitted the flat
+policy fields, so digest equality alone cannot prove equivalence. Fail closed
+when the original evidence is unavailable. Verify equivalent replay, changed
+policy conflict, and expired-key denial without any duplicate append.
+
+### Authorization before command admission
+
+EventStore owns a pre-admission check after Gateway authentication. Folders owns
+the decision for the verified caller, tenant, operation, and resource scope.
+Use the existing layered policy before the Gateway consults idempotency state or
+returns a replay, conflict, or expiry outcome. Retain the `/process` check for
+actual execution. At intake, check the decorated payload key against the supplied
+Gateway admission key so the result identifies the key that reserved the intent.
+The current intent adapter receives the payload and task extension. The Gateway
+owns the request key. Qualify this path through both the Folders and Platform Gateway
+compositions used for enrollment. Verify that a current authorized retry returns
+the original result and that a revoked retry receives the safe denial before any
+protected read or extra write.
+
+### C10 content receipts
+
+Folders owns content preflight and staging. Reuse the authoritative content store
+and existing path, file-version, ownership, and lease checks. Use retry-safe
+staging and the content store's cleanup lifecycle for unused receipts. The Gateway
+command must carry receipt references and verification metadata before EventStore
+archives it. The current stream descriptor's 262,145-byte minimum leaves inline
+sizes without a compatible receipt carrier. Folders, EventStore, and McpCli must
+agree on that carrier before enabling inline C10. Verify that an archived command
+contains receipt metadata only and can recover through the same authorized content
+path without duplicate effects.
+
 ## Story 5.14 Gateway runtime enrollment
 
 The 17 public projection routes in

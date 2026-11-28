@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 using Dapr.Actors;
@@ -112,6 +113,83 @@ public sealed class McpCliCommandAdmissionTests
         Encoding.UTF8.GetString(v2Descriptor.CanonicalIntent).ShouldNotContain(InlineContentSecret);
         Encoding.UTF8.GetString(v2Descriptor.CanonicalIntent).ShouldNotContain(
             Convert.ToBase64String(Encoding.UTF8.GetBytes(InlineContentSecret)));
+    }
+
+    [Fact]
+    public async Task RegisteredAdaptersRejectMalformedDecoratedRetriesBeforeResolvingIntent()
+    {
+        using FoldersDeclaredAdmissionFixture fixture = await FoldersDeclaredAdmissionFixture.CreateAsync().ConfigureAwait(true);
+        await fixture.ActivateAsync().ConfigureAwait(true);
+        CancellationToken token = TestContext.Current.CancellationToken;
+
+        foreach (string id in new[] { "C01", "C03", "C10" })
+        {
+            (string commandType, string target, _, byte[] payload) = BuildV1AndV2Pair(id);
+            var command = new SubmitCommand(MessageIdFirst, TenantId, FoldersServerModule.DomainName, target,
+                commandType, payload, OpaqueCorrelationId, OpaqueUserId,
+                new Dictionary<string, string> { ["taskId"] = OpaqueTaskId }, IdempotencyKey: OpaqueIdempotencyKey);
+            _ = await fixture.Registry.ResolveAsync(command, token).ConfigureAwait(true);
+            await Should.ThrowAsync<ArgumentException>(() => fixture.Registry.ResolveAsync(
+                command with { MessageId = MessageIdSecond, Extensions = null }, token)).ConfigureAwait(true);
+            await Should.ThrowAsync<ArgumentException>(() => fixture.Registry.ResolveAsync(command with
+            {
+                MessageId = MessageIdSecond,
+                Extensions = new Dictionary<string, string> { ["taskId"] = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789" },
+            }, token)).ConfigureAwait(true);
+
+            JsonObject malformed = JsonNode.Parse(payload)!.AsObject();
+            malformed["unknownProperty"] = true;
+            await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+            malformed.Remove("unknownProperty");
+            if (id == "C01")
+            {
+                malformed["archiveReasonCode"] = 0;
+                await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+            }
+
+            if (id == "C03")
+            {
+                JsonArray keys = malformed["auditMetadataKeys"]!.AsArray();
+                keys.Add(keys[0]!.DeepClone());
+                await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+            }
+
+            if (id == "C10")
+            {
+                JsonObject item = malformed["changes"]![0]!.AsObject();
+                JsonNode inline = item["inlineContent"]!;
+                inline["contentMediaType"] = null;
+                await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+                inline.AsObject().Remove("contentMediaType");
+                byte[] wrongBytes = new byte[item["byteLength"]!.GetValue<int>()];
+                inline["contentBytes"] = Convert.ToBase64String(wrongBytes);
+                await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+
+                item.Remove("inlineContent");
+                item["transportOperation"] = "PutFileStream";
+                item["byteLength"] = 262_145;
+                JsonObject stream = new()
+                {
+                    ["mediaType"] = "text/plain",
+                    ["declaredLength"] = 262_145,
+                    ["observedLength"] = 262_145,
+                    ["stagingReference"] = "content_" + new string('a', 64),
+                    ["observedContentHashReference"] = item["contentHashReference"]!.DeepClone(),
+                    ["uploadMode"] = "request_body_stream",
+                };
+                item["streamDescriptor"] = stream;
+                _ = await ResolveChangedAsync(malformed).ConfigureAwait(true);
+                stream["observedLength"] = 262_146;
+                await Should.ThrowAsync<ArgumentException>(() => ResolveChangedAsync(malformed)).ConfigureAwait(true);
+            }
+
+            Task<TrustedIdempotencyDescriptor> ResolveChangedAsync(JsonObject changed)
+                => fixture.Registry.ResolveAsync(command with
+                {
+                    MessageId = MessageIdSecond,
+                    Payload = Encoding.UTF8.GetBytes(changed.ToJsonString()),
+                }, token);
+        }
     }
 
     [Fact]

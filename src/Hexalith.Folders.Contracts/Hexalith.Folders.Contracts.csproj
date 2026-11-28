@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders" />
+    <InternalsVisibleTo Include="Hexalith.Folders.EventStoreExtensions" />
     <InternalsVisibleTo Include="Hexalith.Folders.Tests" />
     <InternalsVisibleTo Include="Hexalith.Folders.Server" />
     <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />

@@ -24,6 +24,10 @@ internal static partial class FolderCanonicalSegmentIdentifier
             && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
             && PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
+    /// <summary>Checks whether a process identifier is eligible for use in retained evidence.</summary>
+    internal static bool IsProcessEvidence(string? value)
+        => IsValid(value) && !FolderSensitiveDiagnosticDetector.ContainsSecret(value!);
+
     /// <summary>
     /// Returns whether <paramref name="value"/> matches the strict lowercase segment grammar without the
     /// opaque-identifier allowance that <see cref="IsValid"/> grants. The <c>/process</c> boundary and

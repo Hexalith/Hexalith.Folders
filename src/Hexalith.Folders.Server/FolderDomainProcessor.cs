@@ -642,18 +642,18 @@ public sealed partial class FolderDomainProcessor(
         => result.Code switch
         {
             OrganizationProviderBindingResultCode.Accepted
-                or OrganizationProviderBindingResultCode.AlreadyApplied => OrganizationAcceptedResult(result),
+                or OrganizationProviderBindingResultCode.AlreadyApplied => OrganizationAcceptedResult(envelope, result),
             _ => Rejection(envelope, MapOrganizationResultCode(result.Code), null),
         };
 
-    private static DomainResult OrganizationAcceptedResult(OrganizationProviderBindingResult result)
+    private static DomainResult OrganizationAcceptedResult(CommandEnvelope envelope, OrganizationProviderBindingResult result)
     {
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == OrganizationProviderBindingResultCode.AlreadyApplied,
             CorrelationId: FolderCanonicalSegmentIdentifier.IsValid(result.CorrelationId) ? result.CorrelationId : null,
             TaskId: FolderCanonicalSegmentIdentifier.IsValid(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsValid(result.IdempotencyKey) ? result.IdempotencyKey : null);
+            IdempotencyKey: ResultIdempotencyKey(envelope, result.IdempotencyKey));
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);
@@ -1345,10 +1345,13 @@ public sealed partial class FolderDomainProcessor(
                 return await ProcessDecoratedContentBatchAsync(envelope, cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException) { return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null); }
-        return await ProcessSingleFileMutationAsync(envelope).ConfigureAwait(false);
+        return await ProcessSingleFileMutationAsync(envelope, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<DomainResult> ProcessSingleFileMutationAsync(CommandEnvelope envelope)
+    private async Task<DomainResult> ProcessSingleFileMutationAsync(
+        CommandEnvelope envelope,
+        CancellationToken cancellationToken,
+        string? callerIdempotencyKey = null)
     {
         string taskId = ReadRequiredTaskId(envelope);
         FileMutationPayload? payload;
@@ -1358,7 +1361,7 @@ public sealed partial class FolderDomainProcessor(
         }
         catch (Exception ex) when (ex is JsonException or NotSupportedException)
         {
-            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null, callerIdempotencyKey);
         }
 
         if (payload is null
@@ -1367,7 +1370,7 @@ public sealed partial class FolderDomainProcessor(
             || string.IsNullOrWhiteSpace(payload.WorkspaceId)
             || (payload.TaskId is not null && !string.Equals(payload.TaskId, taskId, StringComparison.Ordinal)))
         {
-            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null, callerIdempotencyKey);
         }
 
         LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
@@ -1376,7 +1379,7 @@ public sealed partial class FolderDomainProcessor(
             || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
             || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
         {
-            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null, callerIdempotencyKey);
         }
 
         if (payload.AcceptedSdkKey is { } sdkKey && httpContextAccessor?.HttpContext is { } nativeContext)
@@ -1432,14 +1435,18 @@ public sealed partial class FolderDomainProcessor(
         FolderResult result;
         try
         {
-            result = await _workspaceFileMutationService.MutateAsync(request, CancellationToken.None).ConfigureAwait(false);
+            result = await _workspaceFileMutationService.MutateAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Rejection(envelope, FolderResultCode.FolderAclDenied, null, callerIdempotencyKey);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null, callerIdempotencyKey);
         }
 
-        return ToDomainResult(envelope, result);
+        return ToDomainResult(envelope, result, callerIdempotencyKey);
     }
 
     private DomainResult ProcessContentErasure(CommandEnvelope command)
@@ -1498,7 +1505,9 @@ public sealed partial class FolderDomainProcessor(
         if (payload is null
             || string.IsNullOrWhiteSpace(envelope.AggregateId)
             || string.IsNullOrWhiteSpace(payload.WorkspaceId)
-            || !GatewayCommandPayloadTranslator.AreValidAuditMetadataKeys(payload.AuditMetadataKeys, allowEmpty: !isDecoratedV2))
+            || (!isDecoratedV2 && (payload.AuditMetadataKeys is not { Count: <= 24 } legacyKeys
+                || legacyKeys.Distinct(StringComparer.Ordinal).Count() != legacyKeys.Count
+                || !legacyKeys.All(FoldersDomainServiceEndpoints.IsCommitMessageClassification))))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -1565,11 +1574,11 @@ public sealed partial class FolderDomainProcessor(
         => TryReadCanonicalExtension(envelope.Extensions, "taskId")!;
 
     private static bool IsValidProcessEnvelope(CommandEnvelope envelope)
-        => FolderCanonicalSegmentIdentifier.IsValid(envelope.MessageId)
-        && FolderCanonicalSegmentIdentifier.IsValid(envelope.CorrelationId)
-        && FolderCanonicalSegmentIdentifier.IsValid(envelope.TenantId)
-        && FolderCanonicalSegmentIdentifier.IsValid(envelope.AggregateId)
-        && FolderCanonicalSegmentIdentifier.IsValid(envelope.UserId)
+        => FolderCanonicalSegmentIdentifier.IsProcessEvidence(envelope.MessageId)
+        && FolderCanonicalSegmentIdentifier.IsProcessEvidence(envelope.CorrelationId)
+        && FolderCanonicalSegmentIdentifier.IsProcessEvidence(envelope.TenantId)
+        && FolderCanonicalSegmentIdentifier.IsProcessEvidence(envelope.AggregateId)
+        && FolderCanonicalSegmentIdentifier.IsProcessEvidence(envelope.UserId)
         && TryReadCanonicalExtension(envelope.Extensions, "taskId") is not null;
 
     // Extension values arriving on the /process boundary are not validated by the REST endpoint, so the
@@ -1578,7 +1587,7 @@ public sealed partial class FolderDomainProcessor(
     {
         if (extensions is null
             || !extensions.TryGetValue(key, out string? value)
-            || !FolderCanonicalSegmentIdentifier.IsValid(value))
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(value))
         {
             return null;
         }
@@ -1706,26 +1715,40 @@ public sealed partial class FolderDomainProcessor(
             ? TenantProjectionFreshnessStatus.Unknown
             : TenantProjectionFreshnessStatus.Fresh;
 
-    private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result)
+    private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result, string? callerIdempotencyKey = null)
         => result.Events.Count > 0 || result.IsAccepted
-            ? AcceptedResult(result)
-            : Rejection(envelope, result.Code, result);
+            ? AcceptedResult(result, callerIdempotencyKey ?? ResultIdempotencyKey(envelope, result.IdempotencyKey))
+            : Rejection(envelope, result.Code, result, callerIdempotencyKey);
 
-    private static DomainResult AcceptedResult(FolderResult result)
+    private static string? ResultIdempotencyKey(CommandEnvelope envelope, string? executionKey)
+    {
+        if (GatewayCommandPayloadTranslator.TryReadDecoratedCallerKey(envelope.Payload, out string? callerKey))
+        {
+            return callerKey;
+        }
+
+        return FolderCanonicalSegmentIdentifier.IsProcessEvidence(executionKey) ? executionKey : null;
+    }
+
+    private static DomainResult AcceptedResult(FolderResult result, string? idempotencyKey)
     {
         FolderProcessResultPayload payload = new(
             Status: "accepted",
             IdempotentReplay: result.Code == FolderResultCode.IdempotentReplay,
             CorrelationId: FolderCanonicalSegmentIdentifier.IsValid(result.CorrelationId) ? result.CorrelationId : null,
             TaskId: FolderCanonicalSegmentIdentifier.IsValid(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: FolderCanonicalSegmentIdentifier.IsValid(result.IdempotencyKey) ? result.IdempotencyKey : null,
+            IdempotencyKey: idempotencyKey,
             FailureCode: result.IsAccepted ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);
     }
 
-    private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
+    private static DomainResult Rejection(
+        CommandEnvelope envelope,
+        FolderResultCode code,
+        FolderResult? result,
+        string? callerIdempotencyKey = null)
     {
         if (Enum.IsDefined(code)) Activity.Current?.SetTag("hexalith.folders.rejection.result_code", code.ToString());
         // FolderCommandRejected.Create canonicalizes correlation/idempotency identifiers
@@ -1734,16 +1757,20 @@ public sealed partial class FolderDomainProcessor(
         // fail the canonical filter are dropped to null and a metadata-only trace tag is
         // stamped so operators can correlate the dropped-value case without identifier text
         // leaking through the payload.
-        IRejectionEvent rejection = CreateRejectionEvent(envelope, code, result);
+        IRejectionEvent rejection = CreateRejectionEvent(envelope, code, result, callerIdempotencyKey);
 
         return DomainResult.Rejection([rejection]);
     }
 
-    private static IRejectionEvent CreateRejectionEvent(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
+    private static IRejectionEvent CreateRejectionEvent(
+        CommandEnvelope envelope,
+        FolderResultCode code,
+        FolderResult? result,
+        string? callerIdempotencyKey)
     {
         string correlationId = result?.CorrelationId ?? envelope.CorrelationId;
         string? taskId = result?.TaskId ?? TryReadCanonicalExtension(envelope.Extensions, "taskId");
-        string idempotencyKey = result?.IdempotencyKey ?? envelope.MessageId;
+        string? idempotencyKey = callerIdempotencyKey ?? ResultIdempotencyKey(envelope, result?.IdempotencyKey ?? envelope.MessageId);
 
         if (code == FolderResultCode.LockConflict
             && string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal))

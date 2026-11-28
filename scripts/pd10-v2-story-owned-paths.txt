@@ -161,6 +161,7 @@ src/Hexalith.Folders.Contracts/Projections/Audit/FreshnessMetadata.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/OperationTimelineEntry.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/OperationTimelinePage.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/PaginationMetadata.cs
+src/Hexalith.Folders.Contracts/Projections/Audit/ProviderCredentialShape.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactableAuditActorReference.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactableAuditOperationReference.cs
 src/Hexalith.Folders.Contracts/Projections/Audit/RedactableAuditTimestamp.cs
@@ -222,11 +223,13 @@ src/Hexalith.Folders.EventStoreExtensions/ConfigureBranchRefPolicyIdempotencyInt
 src/Hexalith.Folders.EventStoreExtensions/ConfigureProviderBindingIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/CreateFolderIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/CreateRepositoryBackedFolderIdempotencyIntentAdapter.cs
+src/Hexalith.Folders.EventStoreExtensions/DecoratedCommandContentEvidence.cs
 src/Hexalith.Folders.EventStoreExtensions/FolderAccessIdempotencyIntent.cs
 src/Hexalith.Folders.EventStoreExtensions/FoldersCanonicalIntentBuilder.cs
 src/Hexalith.Folders.EventStoreExtensions/FoldersCatalogAdapterSource.cs
 src/Hexalith.Folders.EventStoreExtensions/FoldersCatalogAdapters.cs
 src/Hexalith.Folders.EventStoreExtensions/FoldersCommandIntentDeclarations.cs
+src/Hexalith.Folders.EventStoreExtensions/GatewayCommandIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/GrantFolderAccessIdempotencyIntentAdapter.cs
 src/Hexalith.Folders.EventStoreExtensions/Hexalith.Folders.EventStoreExtensions.csproj
 src/Hexalith.Folders.EventStoreExtensions/LockWorkspaceIdempotencyIntentAdapter.cs

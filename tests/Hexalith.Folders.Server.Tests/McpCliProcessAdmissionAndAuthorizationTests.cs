@@ -99,8 +99,10 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
-    [Fact]
-    public async Task AllThirteenDecoratedV2CommandsExecuteThroughSignedProcessWithUppercaseUlidsAndPersistExactState()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CommandLifecycleExecutesThroughSignedProcessWithUppercaseUlidsAndPreservesLegacyCommit(bool legacyCommit)
     {
         ProcessHarness harness = await ProcessHarness.CreateAsync().ConfigureAwait(true);
         await using var harnessScope = harness.ConfigureAwait(true);
@@ -120,7 +122,7 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             ["configure_provider_binding"],
             messageId: "01ARZ3NDEKTSV4RRFFQ69G5F01").ConfigureAwait(true);
         c05.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(ProviderBindingConfigured).FullName);
-        AssertProcessResultEcho(c05.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, "01ARZ3NDEKTSV4RRFFQ69G5F01");
+        AssertProcessResultEcho(c05.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, OpaqueIdempotencyKey);
         OrganizationState orgState = harness.FoldOrganization(providerActorId, orgEvents);
         orgState.ProviderBindings.ShouldContainKey(ProviderBindingRef);
 
@@ -137,7 +139,7 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             ["create_folder"],
             messageId: "01ARZ3NDEKTSV4RRFFQ69G5F02").ConfigureAwait(true);
         c06.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(FolderCreated).FullName);
-        AssertProcessResultEcho(c06.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, "01ARZ3NDEKTSV4RRFFQ69G5F02");
+        AssertProcessResultEcho(c06.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, OpaqueIdempotencyKey);
         FolderState folderState = harness.FoldFolder(OpaqueFolderId, folderEvents);
         folderState.IsCreated.ShouldBeTrue();
         folderState.FolderId.ShouldBe(OpaqueFolderId);
@@ -385,7 +387,7 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             ["mutate_files"],
             messageId: "01ARZ3NDEKTSV4RRFFQ69G5F12").ConfigureAwait(true);
         c10Add.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(WorkspaceFileMutationAccepted).FullName);
-        AssertProcessResultEcho(c10Add.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, "01ARZ3NDEKTSV4RRFFQ69G5F12");
+        AssertProcessResultEcho(c10Add.ResultPayload, OpaqueCorrelationId, OpaqueTaskId, OpaqueIdempotencyKey);
         string serializedAddEvent = Encoding.UTF8.GetString(c10Add.Events[0].Payload);
         serializedAddEvent.ShouldNotContain(InlineBodyText);
         serializedAddEvent.ShouldNotContain(Convert.ToBase64String(contentBytes));
@@ -431,11 +433,21 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             messageId: "01ARZ3NDEKTSV4RRFFQ69G5F13").ConfigureAwait(true);
         c10Remove.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(WorkspaceFileMutationAccepted).FullName);
 
-        // C03: CommitWorkspace (valid unique AuditMetadataKeys)
-        (DomainServiceWireResult c03, folderEvents) = await harness.ExecuteAcceptedAsync(
-            OpaqueFolderId,
-            FoldersServerModule.CommitWorkspaceCommandType,
-            SerializeDecorated(new ContractsCommitWorkspace(
+        // C03 accepts the closed decorated vocabulary and legacy REST classification tokens.
+        byte[] commit = legacyCommit
+            ? JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = OpaqueWorkspaceId,
+                operationId = "Opaque_CommitOp_01ARZ3NDEK",
+                taskId = OpaqueTaskId,
+                branchRefTarget = "branchref_main01",
+                changedPathMetadataDigest = "digest_0123456789abcdef",
+                authorMetadataReference = "authorref_0123456789",
+                commitMessageClassification = "generated_summary",
+                auditMetadataKeys = new[] { "generated_summary" },
+            })
+            : SerializeDecorated(new ContractsCommitWorkspace(
                 "Opaque_CommitOp_01ARZ3NDEK",
                 OpaqueTaskId,
                 "branchref_main01",
@@ -445,7 +457,11 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
                 [AuditMetadataKey.OperationId, AuditMetadataKey.TaskId],
                 OpaqueFolderId,
                 OpaqueWorkspaceId,
-                OpaqueIdempotencyKey)),
+                OpaqueIdempotencyKey));
+        (DomainServiceWireResult c03, folderEvents) = await harness.ExecuteAcceptedAsync(
+            OpaqueFolderId,
+            FoldersServerModule.CommitWorkspaceCommandType,
+            commit,
             folderEvents,
             ["commit", ProviderReadinessValidationService.ReadActionToken],
             messageId: "01ARZ3NDEKTSV4RRFFQ69G5F14").ConfigureAwait(true);
@@ -1111,6 +1127,8 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
         afterBatch.ContentPublications.Count.ShouldBe(3);
 
         // Second-item failure rollback: item 1 is valid add, item 2 fails expectedFileVersion mismatch on existing batch-a.md
+        harness.ContentProbe.Reset();
+        int uploadsBefore = (await harness.ListUploadsAsync().ConfigureAwait(true)).Count;
         byte[] fileCBytes = Encoding.UTF8.GetBytes("must-roll-back-when-second-item-fails");
         string fileCHash = "hashref_" + Convert.ToHexStringLower(SHA256.HashData(fileCBytes));
         RejectedWirePayload rollbackRejected = await harness.ExecuteRejectedAsync(
@@ -1146,7 +1164,130 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             folderEvents,
             ["mutate_files"]).ConfigureAwait(true);
         rollbackRejected.Code.ShouldBe(nameof(FolderResultCode.AppendConflict));
+        rollbackRejected.IdempotencyKey.ShouldBe(OpaqueIdempotencyKey);
+        harness.ContentProbe.UploadCalls.ShouldBe(0);
+        (await harness.ListUploadsAsync().ConfigureAwait(true)).Count.ShouldBe(uploadsBefore);
         harness.FoldFolder(OpaqueFolderId, folderEvents).ContentPublications.Count.ShouldBe(3);
+
+        RejectedWirePayload pathRejected = await harness.ExecuteRejectedAsync(
+            OpaqueFolderId,
+            FoldersServerModule.MutateFilesCommandType,
+            SerializeDecorated(new ContractsMutateFiles(
+                [InlineAdd("other/allowed.md", "opaque_path_first_operation", fileCBytes),
+                    InlineAdd("Docs/case-alias.md", "opaque_path_second_operation", fileCBytes)],
+                OpaqueFolderId, OpaqueWorkspaceId, OpaqueIdempotencyKey, OpaqueTaskId)),
+            folderEvents, ["mutate_files"]).ConfigureAwait(true);
+
+        pathRejected.Code.ShouldBe(nameof(FolderResultCode.PathPolicyDenied));
+        harness.ContentProbe.UploadCalls.ShouldBe(0);
+        (await harness.ListUploadsAsync().ConfigureAwait(true)).Count.ShouldBe(uploadsBefore);
+        harness.FoldFolder(OpaqueFolderId, folderEvents).ContentPublications.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task DecoratedBatchExpiryAfterPreparationProducesNoPublication()
+    {
+        ProcessHarness harness = await ProcessHarness.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = harness.ConfigureAwait(true);
+        List<EventEnvelope> events = await harness.SeedLockedWorkspaceAsync(OpaqueFolderId, OpaqueWorkspaceId, OpaqueTaskId).ConfigureAwait(true);
+        byte[] bytes = Encoding.UTF8.GetBytes("lease expiry fixture");
+        harness.ContentProbe.AfterPrepare = () => harness.Clock.Advance(TimeSpan.FromHours(1));
+        RejectedWirePayload rejected = await harness.ExecuteRejectedAsync(
+            OpaqueFolderId,
+            FoldersServerModule.MutateFilesCommandType,
+            SerializeDecorated(new ContractsMutateFiles(
+                [InlineAdd("docs/expiry.txt", "Opaque_ExpireOp_01ARZ3NDEK", bytes)],
+                OpaqueFolderId, OpaqueWorkspaceId, OpaqueIdempotencyKey, OpaqueTaskId)),
+            events, ["mutate_files"]).ConfigureAwait(true);
+
+        rejected.Code.ShouldBe(nameof(FolderResultCode.LockExpired));
+        rejected.IdempotencyKey.ShouldBe(OpaqueIdempotencyKey);
+        harness.FoldFolder(OpaqueFolderId, events).ContentPublications.ShouldBeEmpty();
+        (await harness.ListVisibleContentAsync().ConfigureAwait(true)).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task RequestCancellationReachesDecoratedPerItemInspection()
+    {
+        ProcessHarness harness = await ProcessHarness.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = harness.ConfigureAwait(true);
+        List<EventEnvelope> events = await harness.SeedLockedWorkspaceAsync(OpaqueFolderId, OpaqueWorkspaceId, OpaqueTaskId).ConfigureAwait(true);
+        var inspectionEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var inspectionCanceled = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        bool prepared = false;
+        harness.ContentProbe.AfterPrepare = () => prepared = true;
+        harness.ContentProbe.BeforeInspect = async token =>
+        {
+            using var registration = token.Register(() => inspectionCanceled.TrySetResult());
+            inspectionEntered.TrySetResult();
+            await Task.Delay(TimeSpan.FromSeconds(10), token).ConfigureAwait(false);
+        };
+
+        CommandEnvelope command = ProcessHarness.CreateEnvelope(OpaqueFolderId, FoldersServerModule.MutateFilesCommandType,
+            SerializeDecorated(new ContractsMutateFiles(
+                [InlineAdd("docs/cancel.txt", "opaque_canceled_operation", "cancellation fixture"u8.ToArray())],
+                OpaqueFolderId, OpaqueWorkspaceId, OpaqueIdempotencyKey, OpaqueTaskId)), "01ARZ3NDEKTSV4RRFFQ69G5F02");
+        CancellationToken testToken = TestContext.Current.CancellationToken;
+        using var request = CancellationTokenSource.CreateLinkedTokenSource(testToken);
+        Task<HttpResponseMessage> response = harness.PostProcessAsync(command, events, ["mutate_files"], cancellationToken: request.Token);
+        await inspectionEntered.Task.WaitAsync(TimeSpan.FromSeconds(5), testToken).ConfigureAwait(true);
+        await request.CancelAsync().ConfigureAwait(true);
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            using HttpResponseMessage unexpected = await response.ConfigureAwait(true);
+        }).ConfigureAwait(true);
+        await inspectionCanceled.Task.WaitAsync(TimeSpan.FromSeconds(5), testToken).ConfigureAwait(true);
+
+        prepared.ShouldBeFalse();
+        harness.FoldFolder(OpaqueFolderId, events).ContentPublications.ShouldBeEmpty();
+    }
+
+    private static FileMutationRequest InlineAdd(string path, string operationId, byte[] bytes)
+        => new(0, 1, FileMutationRequestFileOperationKind.Add, FileMutationRequestTransportOperation.PutFileInline,
+            operationId, new ContractsPathMetadata(path, path[(path.LastIndexOf('/') + 1)..],
+                PathMetadataPathPolicyClass.ContentAllowed, PathMetadataUnicodeNormalization.NFC),
+            ContentHashReference: "hashref_" + Convert.ToHexStringLower(SHA256.HashData(bytes)),
+            ByteLength: bytes.Length, InlineContent: new PutFileInline("text/plain", Convert.ToBase64String(bytes)));
+
+    [Fact]
+    public async Task DecoratedBatchAboveAggregateByteLimitStopsBeforeContentStore()
+    {
+        ProcessHarness harness = await ProcessHarness.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = harness.ConfigureAwait(true);
+        List<EventEnvelope> events = await harness.SeedLockedWorkspaceAsync(OpaqueFolderId, OpaqueWorkspaceId, OpaqueTaskId).ConfigureAwait(true);
+        const int FileSize = 1_048_576;
+        string hash = "hashref_" + new string('a', 64);
+        FileMutationRequest[] changes = Enumerable.Range(1, 11).Select(index => new FileMutationRequest(
+            0, 1, FileMutationRequestFileOperationKind.Add, FileMutationRequestTransportOperation.PutFileStream,
+            $"opaque_batch_operation_{index}",
+            new ContractsPathMetadata($"docs/file-{index}.txt", $"file-{index}.txt", PathMetadataPathPolicyClass.ContentAllowed, PathMetadataUnicodeNormalization.NFC),
+            ContentHashReference: hash, ByteLength: FileSize,
+            StreamDescriptor: new PutFileStream("text/plain", FileSize, FileSize, $"opaque_staged_receipt_{index}", hash, PutFileStreamUploadMode.RequestBodyStream))).ToArray();
+        RejectedWirePayload rejected = await harness.ExecuteRejectedAsync(
+            OpaqueFolderId,
+            FoldersServerModule.MutateFilesCommandType,
+            SerializeDecorated(new ContractsMutateFiles(changes, OpaqueFolderId, OpaqueWorkspaceId, OpaqueIdempotencyKey, OpaqueTaskId)),
+            events, ["mutate_files"]).ConfigureAwait(true);
+
+        rejected.Code.ShouldBe(nameof(FolderResultCode.ValidationFailed));
+        harness.ContentProbe.UploadCalls.ShouldBe(0);
+        harness.ContentProbe.VerifyCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CredentialShapedCorrelationIsRejectedBeforeFolderAccess()
+    {
+        ProcessHarness harness = await ProcessHarness.CreateAsync().ConfigureAwait(true);
+        await using var cleanup = harness.ConfigureAwait(true);
+        const string SensitiveShape = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789";
+        CommandEnvelope command = ProcessHarness.CreateEnvelope(OpaqueFolderId, FoldersServerModule.CreateFolderCommandType,
+            SerializeDecorated(new ContractsCreateFolder(new FolderMetadata("Folder", SensitiveMetadataTier.TenantSensitive),
+                OpaqueIdempotencyKey, OpaqueFolderId)), "01ARZ3NDEKTSV4RRFFQ69G5F02") with { CorrelationId = SensitiveShape };
+        using HttpResponseMessage response = await harness.PostProcessAsync(command, [], ["create_folder"]).ConfigureAwait(true);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotContain(SensitiveShape);
+        harness.PermissionProvider.Calls.ShouldBe(0);
     }
 
     private static byte[] SerializeDecorated<T>(T command)
@@ -1366,6 +1507,20 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             return seedStore.UploadAsync(principal, request, new MemoryStream(bytes, writable: false), TestContext.Current.CancellationToken);
         }
 
+        public Task<IReadOnlyList<ContentUploadStatus>> ListUploadsAsync()
+            => CreateContentObserver().ListUploadsAsync(ContentObserverPrincipal(), ContentObserverScope(), TestContext.Current.CancellationToken);
+
+        public Task<IReadOnlyList<ContentBinding>> ListVisibleContentAsync()
+            => CreateContentObserver().ListAsync(ContentObserverPrincipal(), ContentObserverScope(), TestContext.Current.CancellationToken);
+
+        private DaprAuthoritativeContentStore CreateContentObserver() => new(
+            _dapr, new WorkspaceContentProductionSeedAuthority(accepted: false),
+            _app.Services.GetRequiredService<IOptions<AuthoritativeContentOptions>>(), Clock);
+
+        private static ClaimsPrincipal ContentObserverPrincipal() => new(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, OpaqueUserId)], "test"));
+
+        private static ContentScope ContentObserverScope() => new(TenantId, FoldersServerModule.DomainName, OpaqueFolderId, OpaqueWorkspaceId);
+
         public static CommandEnvelope CreateEnvelope(
             string aggregateId,
             string commandType,
@@ -1414,7 +1569,8 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             List<EventEnvelope> currentEvents,
             string[] permissions,
             string? receiptTenant = null,
-            string? receiptSubject = null)
+            string? receiptSubject = null,
+            CancellationToken? cancellationToken = null)
         {
             string receipt = HumanAuthorityReceiptCodec.Issue(
                 command,
@@ -1429,7 +1585,7 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
                 {
                     HumanAuthorityReceipt = receipt,
                 },
-                TestContext.Current.CancellationToken);
+                cancellationToken ?? TestContext.Current.CancellationToken);
         }
 
         public async Task<(DomainServiceWireResult Result, List<EventEnvelope> UpdatedEvents)> ExecuteAcceptedAsync(
@@ -1569,6 +1725,10 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
 
         public bool ThrowUnauthorizedOnPrepare { get; set; }
 
+        public Action? AfterPrepare { get; set; }
+
+        public Func<CancellationToken, Task>? BeforeInspect { get; set; }
+
         public void RecordUpload() => UploadCalls++;
 
         public void RecordVerify() => VerifyCalls++;
@@ -1578,6 +1738,8 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             UploadCalls = 0;
             VerifyCalls = 0;
             ThrowUnauthorizedOnPrepare = false;
+            AfterPrepare = null;
+            BeforeInspect = null;
         }
     }
 
@@ -1597,17 +1759,25 @@ public sealed class McpCliProcessAdmissionAndAuthorizationTests
             return inner.VerifyUploadAsync(principal, request, cancellationToken);
         }
 
-        public Task<ContentReadResult> InspectUploadAsync(ClaimsPrincipal principal, ContentUploadVerification request, CancellationToken cancellationToken = default)
-            => inner.InspectUploadAsync(principal, request, cancellationToken);
+        public async Task<ContentReadResult> InspectUploadAsync(ClaimsPrincipal principal, ContentUploadVerification request, CancellationToken cancellationToken = default)
+        {
+            if (probe.BeforeInspect is { } beforeInspect)
+            {
+                await beforeInspect(cancellationToken).ConfigureAwait(false);
+            }
 
-        public Task PrepareAsync(ClaimsPrincipal principal, ContentPublicationRequest request, CancellationToken cancellationToken = default)
+            return await inner.InspectUploadAsync(principal, request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task PrepareAsync(ClaimsPrincipal principal, ContentPublicationRequest request, CancellationToken cancellationToken = default)
         {
             if (probe.ThrowUnauthorizedOnPrepare)
             {
                 throw new UnauthorizedAccessException("Simulated mid-flight authorization denial during PrepareAsync.");
             }
 
-            return inner.PrepareAsync(principal, request, cancellationToken);
+            await inner.PrepareAsync(principal, request, cancellationToken).ConfigureAwait(false);
+            probe.AfterPrepare?.Invoke();
         }
 
         public Task<ContentPublicationOutcome> RecoverAsync(ClaimsPrincipal principal, ContentScope scope, string commandId, CancellationToken cancellationToken = default)

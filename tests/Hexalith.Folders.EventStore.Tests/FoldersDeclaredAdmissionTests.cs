@@ -187,7 +187,7 @@ public sealed class FoldersDeclaredAdmissionTests
         SubmitCommand valid = Command(legacy);
         long priorLease = (await fixture.Store.ReadAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).State.LastLease;
 
-        await Should.ThrowAsync<JsonException>(() => fixture.Registry.ResolveAsync(
+        await Should.ThrowAsync<ArgumentException>(() => fixture.Registry.ResolveAsync(
             valid with { Payload = "{"u8.ToArray() }, TestContext.Current.CancellationToken)).ConfigureAwait(true);
 
         RouteCatalogActivationState afterFailure = (await fixture.Store.ReadAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).State;

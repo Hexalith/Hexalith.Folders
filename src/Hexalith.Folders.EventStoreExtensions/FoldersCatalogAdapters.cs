@@ -1,31 +1,32 @@
 using Hexalith.EventStore.DomainService;
+using Hexalith.Folders.Contracts.Commands;
 
 namespace Hexalith.Folders.EventStore;
 
-/// <summary>Creates the unchanged module command policies for EventStore gateways.</summary>
+/// <summary>Creates the module command policies for EventStore gateways.</summary>
 internal static class FoldersCatalogAdapters
 {
     /// <summary>Returns one fresh instance of every existing trusted mutation adapter.</summary>
     internal static IReadOnlyList<IDeclaredIdempotencyIntentAdapter> Create() =>
     [
-        new ArchiveFolderIdempotencyIntentAdapter(),
+        new GatewayCommandIntentAdapter<ArchiveFolder>(new ArchiveFolderIdempotencyIntentAdapter()),
         new AuthorizeContentErasureIdempotencyIntentAdapter(),
-        new BindRepositoryIdempotencyIntentAdapter(),
+        new GatewayCommandIntentAdapter<BindRepository>(new BindRepositoryIdempotencyIntentAdapter()),
         new ChangeNativeTaskIdempotencyIntentAdapter(),
-        new CommitWorkspaceIdempotencyIntentAdapter(),
-        new ConfigureBranchRefPolicyIdempotencyIntentAdapter(),
-        new ConfigureProviderBindingIdempotencyIntentAdapter(),
-        new CreateFolderIdempotencyIntentAdapter(),
-        new CreateRepositoryBackedFolderIdempotencyIntentAdapter(),
-        new GrantFolderAccessIdempotencyIntentAdapter(),
-        new LockWorkspaceIdempotencyIntentAdapter(),
-        new MutateFilesIdempotencyIntentAdapter(),
+        new GatewayCommandIntentAdapter<CommitWorkspace>(new CommitWorkspaceIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<ConfigureBranchRefPolicy>(new ConfigureBranchRefPolicyIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<ConfigureProviderBinding>(new ConfigureProviderBindingIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<CreateFolder>(new CreateFolderIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<CreateRepositoryBackedFolder>(new CreateRepositoryBackedFolderIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<GrantFolderAccess>(new GrantFolderAccessIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<LockWorkspace>(new LockWorkspaceIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<MutateFiles>(new MutateFilesIdempotencyIntentAdapter()),
         new OrganizationAclIdempotencyIntentAdapter("Hexalith.Folders.Commands.GrantOrganizationAclPrincipal", "grant-organization-acl-principal"),
         new OrganizationAclIdempotencyIntentAdapter("Hexalith.Folders.Commands.InitializeOrganizationAclBaseline", "initialize-organization-acl-baseline"),
         new OrganizationAclIdempotencyIntentAdapter("Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal", "revoke-organization-acl-principal"),
-        new PrepareWorkspaceIdempotencyIntentAdapter(),
+        new GatewayCommandIntentAdapter<PrepareWorkspace>(new PrepareWorkspaceIdempotencyIntentAdapter()),
         new ProvisionFolderIdempotencyIntentAdapter(),
-        new ReleaseWorkspaceLockIdempotencyIntentAdapter(),
-        new RevokeFolderAccessIdempotencyIntentAdapter()
+        new GatewayCommandIntentAdapter<ReleaseWorkspaceLock>(new ReleaseWorkspaceLockIdempotencyIntentAdapter()),
+        new GatewayCommandIntentAdapter<RevokeFolderAccess>(new RevokeFolderAccessIdempotencyIntentAdapter())
     ];
 }

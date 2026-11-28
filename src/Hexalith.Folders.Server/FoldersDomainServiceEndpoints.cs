@@ -3430,7 +3430,8 @@ public static partial class FoldersDomainServiceEndpoints
         && value.Length is >= 16 and <= FoldersServerModule.MaxCanonicalIdentifierLength
         && CommitChangedPathMetadataDigestRegex.IsMatch(value);
 
-    private static bool IsCommitMessageClassification(string? value)
+    /// <summary>Checks the legacy classification token grammar used by commit ingress.</summary>
+    internal static bool IsCommitMessageClassification(string? value)
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= 80
         && CommitMessageClassificationRegex.IsMatch(value);

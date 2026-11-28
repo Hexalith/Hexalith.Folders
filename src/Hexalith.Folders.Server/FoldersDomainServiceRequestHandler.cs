@@ -261,14 +261,14 @@ public sealed class FoldersDomainServiceRequestHandler(
     private static bool TryValidateProcessEnvelope(CommandEnvelope command, out string? taskId)
     {
         taskId = null;
-        if (!FolderCanonicalSegmentIdentifier.IsValid(command.MessageId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(command.CorrelationId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(command.TenantId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(command.AggregateId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(command.UserId)
+        if (!FolderCanonicalSegmentIdentifier.IsProcessEvidence(command.MessageId)
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(command.CorrelationId)
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(command.TenantId)
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(command.AggregateId)
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(command.UserId)
             || command.Extensions is null
             || !command.Extensions.TryGetValue("taskId", out string? extensionTaskId)
-            || !FolderCanonicalSegmentIdentifier.IsValid(extensionTaskId))
+            || !FolderCanonicalSegmentIdentifier.IsProcessEvidence(extensionTaskId))
         {
             return false;
         }

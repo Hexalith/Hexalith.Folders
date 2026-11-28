@@ -16,6 +16,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.EventStore" />
     <InternalsVisibleTo Include="Hexalith.Folders.EventStore.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Server" />
     <None Include="../../module/hexalith.module-manifest.v2.json" Pack="true" PackagePath="build/hexalith.module-manifest.v2.json" />
   </ItemGroup>
 </Project>
