@@ -1,0 +1,449 @@
+{
+  "story": "12.2",
+  "status": "in-progress",
+  "date": "2026-11-28",
+  "scope": "Axis 3B source qualification for Gateway command and technical native actor admission, with one non-expiring durable fence per overlapping host generation",
+  "source_revisions": {
+    ".": "ef921e08cb76be552f4ed36ee9e81dfa343cd354",
+    "references/Hexalith.AI.Tools": "f4c12476ace1c4f10b423c9ac9181882c9f47c3c",
+    "references/Hexalith.Builds": "aebabdadadffa108801992253c7910f37437b115",
+    "references/Hexalith.CiCd": "95deeacbb6601f67d8f78d2bcded6392fd1cbba4",
+    "references/Hexalith.Commons": "881ab57961de99ee129dd03a61d4a53d537af59d",
+    "references/Hexalith.EventStore": "dcd28ad72bffb935cdd72f2aac6be83bb22397bc",
+    "references/Hexalith.FrontComposer": "1df797a868fc6c5fe29c6610ae91d1e1f6cd234d",
+    "references/Hexalith.McpCli": "d8f36fe933e12b605144e6c6e12cf4faaec38cc3",
+    "references/Hexalith.Memories": "860a9622559a7fdaac2838250cc504b9cc39303c",
+    "references/Hexalith.Parties": "11f8a6cba608ef79a5c8fe96c789c3fe6ab66b05",
+    "references/Hexalith.Platform": "5b2102ec4cb11b008ab904cb26c8deb550f5c62c",
+    "references/Hexalith.PolymorphicSerializations": "693237318be0c52e22fd5c77569b195327495b9a",
+    "references/Hexalith.Projects": "aacb60f028548f768db15c6821cdd80a5ae8e588",
+    "references/Hexalith.Tenants": "b5cce6f814e692f41c7c91ff6adbe6626d19fb38"
+  },
+  "checkout_observation": {
+    "entry_folders_head": "057f7c1c868ff0b26662b7a1fe0527572fbbaa9e",
+    "entry_eventstore_head": "821b779d69149123a01ecc5032f6eb53a066f2c2",
+    "other_session_advanced_heads_during_work": [
+      ".",
+      "references/Hexalith.EventStore"
+    ],
+    "builds_cohort": "5.6.0"
+  },
+  "prior_measurement": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-sm4-1a2a3a-20261128.json",
+    "sha256": "ba390d280b7de65e28e5eb4798d5baf5c7d21508a8221bf97d76890023412192"
+  },
+  "protected_acceptance_sha256": {
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs": "d29afa3ca0649744e84413c37bfbb41c9de0bd106160c900cb2a8c8e970c1b82",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs": "2ae3113138f54e35fa0137e72eabc0dd26f486159f418273a0b24b6e8687258d",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "f5e8767ad02d57441dc3c46f1366e72eb77853fc9c6c0371555a73e1efd1babc"
+  },
+  "frozen_story_sha256": "ba0f887340b68da1029f3c412d6d38b9a8639c20839d0cc65bee049f147f183f",
+  "axis3b_eventstore_sources_sha256": {
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/IRouteCatalogQuiescenceVerifier.cs": "5db3ed731b3cad9df0572d62bb6a64e8399b5f9d5ede8922debfc4d00cf92ce8",
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogActiveGenerationLease.cs": "80f13dbfb2345f513e24720a3df0da49a9ea462823ff7d610d4cf64b2654387d",
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogAuthority.cs": "b917c87e3da36c1e18f9854969bec0c8bc7639f3beb0a67b9821367816d04ab6",
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogDispatchFence.cs": "d0125b8490729726a64c586274c0b9d0a0c6624292de510d492a970355735406",
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/RouteCatalogDispatchLease.cs": "0ad379efd962b91d89757330a9aec945eae4c6cfa8f1752eec11e7abe528a543",
+    "src/Hexalith.EventStore.ServiceDefaults/Routing/TechnicalHttpRouteCatalogReceiver.cs": "3a5a6f8e6cbd917c12c967c327909efbf3134ba81789a2fc7bf245c5eaed8f97"
+  },
+  "axis3b_eventstore_tests_sha256": {
+    "tests/Hexalith.EventStore.Server.Tests/Routing/RouteCatalogActiveGenerationLeaseTests.cs": "31f43843199d224de189c34722dba907d624c3f83f4254d87ca5a1889c6fa7a6",
+    "tests/Hexalith.EventStore.Server.Tests/Routing/TechnicalHttpCorePeerTests.cs": "207d6881a0a056e566b45dc7875bce95e42f7c71120ea09f51eb685edc079e28"
+  },
+  "matrix": {
+    "rows": [
+      "delivery_and_replay",
+      "task_closure",
+      "conflict_and_crash",
+      "denial_and_storage",
+      "retention"
+    ],
+    "receipt": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/final-matrix-audit.json",
+      "sha256": "9f522fab20a0673fc1f62589b75747f6dbf135058cb9ba3b90b25f380b9019ae"
+    }
+  },
+  "focused_builds": {
+    "reviewed-eventstore-Server-build": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/reviewed-eventstore-Server-build.log",
+        "sha256": "11da6e1282ecaeec7a3dd1b46be39ba2c1b0f7c1783ce212d8b574f9939aa60f"
+      }
+    },
+    "reviewed-eventstore-Contracts-build": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/reviewed-eventstore-Contracts-build.log",
+        "sha256": "9b1dea471d707f0fa09347da57583994e8f916887fc1d5d7f8effcd8a275a0b9"
+      }
+    },
+    "candidate-3b-final-build": {
+      "passed": true,
+      "warnings": 1,
+      "errors": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-build.log",
+        "sha256": "fea27b934bff68db65d939c12c498983628244edc299dd8c0f8dc2be662378b2"
+      }
+    },
+    "candidate-3b-final-memories": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-memories.log",
+        "sha256": "2b5a79e18f1aa43007955211b24b2abc97dadaeaf684003925676419373f0435"
+      }
+    },
+    "candidate-3b-final-observer": {
+      "passed": true,
+      "warnings": 0,
+      "errors": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-observer.log",
+        "sha256": "cf1d90531ab69a42c3171033b05d1b1b4b9f7df3fccc037a8cafc49c9775e8a6"
+      }
+    }
+  },
+  "focused_suites": {
+    "eventstore_command_routing_fence_and_receivers": {
+      "total": 379,
+      "passed": 379,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 39.643,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/reviewed-eventstore-Server.xml",
+        "sha256": "8a3f1200e3f0e14cbc5ada574c3a9c4c02949d5ac1f12aebb9296f4ab2aa728d"
+      }
+    },
+    "eventstore_contracts_routing": {
+      "total": 234,
+      "passed": 234,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 0.377,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/reviewed-eventstore-Contracts.xml",
+        "sha256": "28c394dbc00266ca033472f8f232c5024a2b11b52c9dadb480ac9c3f160f1616"
+      }
+    },
+    "folders_operational_status_authorization_provider_and_binding": {
+      "total": 289,
+      "passed": 289,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 88.255,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-folders-Tests.xml",
+        "sha256": "e4cdf2d43e67567fc00ddce496eae8dc5edbfcd3c1059f95b703a531a980f352"
+      }
+    },
+    "folders_server_request_and_host": {
+      "total": 50,
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 60.606,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-folders-Server.Tests.xml",
+        "sha256": "8486350435071eb374741b43ab3944dac939ea3af05ee361faba22896f14368a"
+      }
+    },
+    "folders_pd10_contracts": {
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 5.269,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-folders-Contracts.Tests.xml",
+        "sha256": "7de4514d3b42d137f74bc9807b9e048fde4f7e7dc4f33982e8ef3b63c8609a9d"
+      }
+    }
+  },
+  "focus_commands": {
+    "eventstore": "run-with-temp .artifacts/story-12-2-sm4-3b-20261128/run-eventstore-focused.sh",
+    "folders": "run-with-temp .artifacts/story-12-2-sm4-3b-20261128/run-sm4-final.sh"
+  },
+  "recorded_fixture_corrections": [
+    "The initial xUnit invocation used an unsupported interior class wildcard and executed no tests. The fixture selection was corrected to a prefix wildcard.",
+    "The first receiver-overlap fixture sent the human command without the sidecar channel, so it bypassed the intended receiver. The test now supplies the channel and exact committed peer headers.",
+    "The next receiver fixture sent the human bearer header to the actor callback and received 401. The final test uses an independent channel-only HTTP client."
+  ],
+  "step_4_independent_review": {
+    "layers": [
+      "blind-hunter",
+      "edge-case-hunter",
+      "verification-gap"
+    ],
+    "initial_findings": 14,
+    "follow_up_findings": 5,
+    "initial_diff": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/axis3b-review.diff",
+      "sha256": "9087eb242ae427a6633164f3235ccf9ddf67a62ac8221790b0f3ef0635d6d7a3"
+    },
+    "final_diff": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/axis3b-final.diff",
+      "sha256": "cf3b1fc48385469c45042ca1d6e0835f884fdd1840c9a4dbd5878f1460a5f051"
+    },
+    "provisional_reference_and_exact_trust_rechecked_independently": true,
+    "triage": "Axis 3B independent review table in the Story 12.2 spec",
+    "release_qualification_limit": "A legacy full-state writer can strip the shared admission marker. The co-sourced Debug fleet passed qualification. Mixed-version authority writers require separate compatibility qualification before rollout."
+  },
+  "strict_class": "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+  "strict_live_run": {
+    "command": "run-with-temp .artifacts/story-12-2-sm4-3b-20261128/run-sm4-final.sh",
+    "utc_start": "2026-11-28T16:13:30.274953+00:00",
+    "utc_end": "2026-11-28T16:18:17.895381+00:00",
+    "exit_code": 0,
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": [],
+    "runtime_module_observations": 271,
+    "fixture_module_observations": 363,
+    "test": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 261.015,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-private.xml",
+        "sha256": "25b9e6c9125d6c857bfe4a1cca5e044d829ad01da1a2b582f1234d301a9dc8cf"
+      }
+    },
+    "test_method_seconds": 193.199,
+    "one_minute_host_load": {
+      "samples": 21,
+      "min": 4.2,
+      "max": 10.53,
+      "mean": 6.64
+    },
+    "cleanup_remaining": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 0,
+      "remaining_observed_directories": 0
+    },
+    "disposable_checkout_removed": true,
+    "producer_audit": {
+      "count": 236,
+      "source_pdb_asset_issues": 0,
+      "protected_bodies_match": true,
+      "frozen_block_match": true,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-producers-audit.json",
+        "sha256": "0916e84afe8351d64797c860ab58186f4f18295e17cfebd5803191d0e420386f"
+      }
+    },
+    "loaded_audit": {
+      "observations": 633,
+      "distinct_libraries": 81,
+      "issues": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-loaded-audit.json",
+        "sha256": "b5a49e689e9dcad4a00626a4641b8c8797206b1cf5d0c35c63e30b41af95f6af"
+      }
+    },
+    "receipt": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-receipt.json",
+      "sha256": "167ac170c87ff9eb95d22862463213f47d78638e6d84bb990719e9e38a5a163c"
+    },
+    "measurement_receipt": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-final-measurements.json",
+      "sha256": "541d65f69f7cc7470c1fc6da95eb196a641ffe1dfc7f1c0b6e7a7564ab053a59"
+    },
+    "measurements": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 1165.999,
+        "p95_ms": 1631.051,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true,
+        "prior_1a2a3a_p95_ms": 3072.568,
+        "p95_change_percent": -46.9
+      },
+      "workers_operational_delivery": {
+        "count": 26,
+        "p50_ms": 1029.136,
+        "p95_ms": 1698.679,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true,
+        "prior_1a2a3a_p95_ms": 1817.041,
+        "p95_change_percent": -6.5
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 249.364,
+        "p95_ms": 270.486,
+        "p95_budget_ms": 500.0,
+        "over_budget": false,
+        "prior_1a2a3a_p95_ms": 385.674,
+        "p95_change_percent": -29.9
+      }
+    },
+    "bind_repository_trace": [
+      {
+        "elapsed_ms": 1499,
+        "eventstore_catalog_http_starts_including_background": {
+          "GET": 109,
+          "POST": 51
+        },
+        "completed_fenced_actor_rpc_ms": [
+          1018
+        ]
+      }
+    ],
+    "lifecycle_read_observed_range_ms": [
+      3,
+      14059
+    ]
+  },
+  "superseded_strict_run_before_final_reference_reservation": {
+    "command": "run-with-temp .artifacts/story-12-2-sm4-3b-20261128/run-sm4.sh",
+    "utc_start": "2026-11-28T16:07:11.930943+00:00",
+    "utc_end": "2026-11-28T16:12:33.280991+00:00",
+    "exit_code": 0,
+    "source_or_head_drift": [],
+    "working_tree_status_changes": [],
+    "runtime_file_drift": [],
+    "runtime_module_observations": 272,
+    "fixture_module_observations": 314,
+    "test": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0,
+      "seconds": 289.444,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-private.xml",
+        "sha256": "f7d1f3abd049966bd4bcd1e05fc1f04ab86a63d273d69e465d1f44343c9f35a1"
+      }
+    },
+    "test_method_seconds": 210.089,
+    "one_minute_host_load": {
+      "samples": 24,
+      "min": 3.02,
+      "max": 12.09,
+      "mean": 6.22
+    },
+    "cleanup_remaining": {
+      "remaining_observed_descendants": 0,
+      "remaining_owned_containers": 0,
+      "remaining_unattributed_containers": 0,
+      "remaining_observed_directories": 0
+    },
+    "disposable_checkout_removed": true,
+    "producer_audit": {
+      "count": 236,
+      "source_pdb_asset_issues": 0,
+      "protected_bodies_match": true,
+      "frozen_block_match": true,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-producers-audit.json",
+        "sha256": "bfd0581be2ecf135cf19d8f4d0da5eae3db741d1795b36405178b5edc1f63721"
+      }
+    },
+    "loaded_audit": {
+      "observations": 585,
+      "distinct_libraries": 81,
+      "issues": 0,
+      "receipt": {
+        "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-loaded-audit.json",
+        "sha256": "4a5cf05e5f7471f1ccaa416e1dd5395eb2672bcf489d88832e211460ac20d35b"
+      }
+    },
+    "receipt": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-receipt.json",
+      "sha256": "c3f5a9941a1e082df73d09c8acfce8f2b6f9700174f6351e53654ecb6b6668d8"
+    },
+    "measurement_receipt": {
+      "path": ".artifacts/story-12-2-sm4-3b-20261128/candidate-3b-measurements.json",
+      "sha256": "bf00e0a6e03c426d0def4e2d54e194331360961480ca1df321b46ecb2e8dbea8"
+    },
+    "measurements": {
+      "command_acknowledgement": {
+        "count": 10,
+        "p50_ms": 1243.058,
+        "p95_ms": 1771.251,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true,
+        "prior_1a2a3a_p95_ms": 3072.568,
+        "p95_change_percent": -42.4
+      },
+      "workers_operational_delivery": {
+        "count": 26,
+        "p50_ms": 884.145,
+        "p95_ms": 1643.728,
+        "p95_budget_ms": 1000.0,
+        "over_budget": true,
+        "prior_1a2a3a_p95_ms": 1817.041,
+        "p95_change_percent": -9.5
+      },
+      "status_read": {
+        "count": 12,
+        "p50_ms": 320.152,
+        "p95_ms": 339.054,
+        "p95_budget_ms": 500.0,
+        "over_budget": false,
+        "prior_1a2a3a_p95_ms": 385.674,
+        "p95_change_percent": -12.1
+      }
+    },
+    "bind_repository_trace": [
+      {
+        "elapsed_ms": 1609,
+        "eventstore_catalog_http_starts_including_background": {
+          "GET": 125,
+          "POST": 61
+        },
+        "completed_fenced_actor_rpc_ms": [
+          1073
+        ]
+      }
+    ],
+    "lifecycle_read_observed_range_ms": [
+      3,
+      14060
+    ]
+  },
+  "prior_bind_repository_overlapping_eventstore_catalog_http": {
+    "GET": 186,
+    "POST": 118
+  },
+  "pd10_candidate_inventory": {
+    "artifact_count": 1752,
+    "candidate_set_sha256": "f782b4b4e83d835c9070342631f9e9bee47195a05ef3a650910e92778b2d3d0b",
+    "manifest": {
+      "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending-2026-11-12.yaml",
+      "sha256": "b8bae03f13a6fbce2b2e59d62977de119200d32cc68450dafaba782182d10d26"
+    }
+  },
+  "prior_1a2a3a_mean_one_minute_host_load": 15.45,
+  "scope_limits": [
+    "The performance budgets are unchanged. The test reports the percentiles without turning their budgets into acceptance assertions.",
+    "Overlapping catalog HTTP counts include background traffic and are not a per-command RPC count.",
+    "The only protected class executed this phase was OperationalStatusDurabilityAcceptanceTests. All three protected source hashes match.",
+    "Story 12.2 and its release and governance prerequisites remain in progress. Builds remains pinned pending FrontComposer cohort qualification."
+  ]
+}
